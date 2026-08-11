@@ -254,6 +254,22 @@
     params.delete('google_login');
     params.delete('web_login');
     params.set('return_to', location.origin + location.pathname);
+    try {
+      var fp = localStorage.getItem('ug_fp');
+      if (!fp) {
+        var bytes = new Uint8Array(16);
+        if (window.crypto && window.crypto.getRandomValues) {
+          window.crypto.getRandomValues(bytes);
+          fp = Array.prototype.map.call(bytes, function (b) {
+            return b.toString(16).padStart(2, '0');
+          }).join('');
+        } else {
+          fp = String(Date.now()) + Math.random().toString(16).slice(2);
+        }
+        localStorage.setItem('ug_fp', fp);
+      }
+      params.set('ug_fp', fp);
+    } catch (e) { /* storage can be blocked */ }
     link.href = apiUrl('/web/auth/google/start') + '?' + params.toString();
   }
 
