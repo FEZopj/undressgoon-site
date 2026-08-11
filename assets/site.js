@@ -9,6 +9,7 @@
   var IMAGE_COUNT = CFG.imageCount || 22;
   var THUMB_EXT = CFG.thumbExt || '.webp';
   var BOT_URL = CFG.botUrl || 'https://t.me/goonmasterbotbot?start=web';
+  var ETA_SECONDS = Number(CFG.etaSeconds || 30);
   var i18n = CFG.i18n || {};
   var currentSession = null;
   var telegramLinkPoll = 0;
@@ -245,6 +246,63 @@
     if (!el) return;
     el.textContent = text || '';
     el.dataset.tone = tone || '';
+  }
+
+  function ensureGenerationLoader() {
+    var panel = document.querySelector('.result-panel');
+    if (!panel) return null;
+    var loader = document.getElementById('generation-loader');
+    if (loader) return loader;
+    loader = document.createElement('div');
+    loader.className = 'generation-loader';
+    loader.id = 'generation-loader';
+    loader.hidden = true;
+    loader.setAttribute('aria-live', 'polite');
+    loader.innerHTML =
+      '<div class="gen-orbit" aria-hidden="true"><span></span></div>' +
+      '<div class="gen-loader-copy">' +
+        '<strong id="gen-loader-title"></strong>' +
+        '<span id="gen-loader-sub"></span>' +
+      '</div>' +
+      '<div class="gen-progress" aria-hidden="true"><span id="gen-progress-bar"></span></div>';
+    panel.insertBefore(loader, panel.firstChild);
+    return loader;
+  }
+
+  function updateGenerationLoader(phase, startedAt) {
+    var loader = ensureGenerationLoader();
+    var empty = document.getElementById('web-result-empty');
+    if (!loader) return;
+    var elapsed = Math.max(0, Math.round((Date.now() - (startedAt || Date.now())) / 1000));
+    var title = document.getElementById('gen-loader-title');
+    var sub = document.getElementById('gen-loader-sub');
+    var bar = document.getElementById('gen-progress-bar');
+    var label = t('genRunningTitle', 'Generating your image');
+    var detail = t('genRunningSub', '{elapsed}s elapsed. Typical wait is {eta}s, sometimes a little longer.')
+      .replace('{elapsed}', String(elapsed))
+      .replace('{eta}', String(ETA_SECONDS));
+    var progress = Math.min(96, 18 + Math.round((elapsed / Math.max(ETA_SECONDS, 1)) * 72));
+    if (phase === 'preparing') {
+      label = t('genPreparingTitle', 'Preparing your upload');
+      detail = t('genPreparingSub', 'Reading your photo and starting the AI job.');
+      progress = 5;
+    } else if (phase === 'queued') {
+      label = t('genQueuedTitle', 'Queued for generation');
+      detail = t('genQueuedSub', 'Your photo is uploaded. The AI will start in a moment.');
+      progress = 9;
+    }
+    if (title) title.textContent = label;
+    if (sub) sub.textContent = detail;
+    if (bar) bar.style.width = progress + '%';
+    loader.hidden = false;
+    if (empty) empty.hidden = true;
+  }
+
+  function hideGenerationLoader(showEmpty) {
+    var loader = document.getElementById('generation-loader');
+    var empty = document.getElementById('web-result-empty');
+    if (loader) loader.hidden = true;
+    if (empty && showEmpty) empty.hidden = false;
   }
 
   function offerSummary() {
@@ -574,13 +632,18 @@
         });
       })
       .then(function (payload) {
-        if (payload.status === 'done') return payload;
+        if (payload.status === 'done') {
+          hideGenerationLoader(false);
+          return payload;
+        }
         if (payload.status === 'failed' || payload.ok === false) {
+          hideGenerationLoader(true);
           var error = new Error(payload.message || t('genericError', 'Something went wrong.'));
           error.payload = payload;
           throw error;
         }
         var elapsed = Math.max(1, Math.round((Date.now() - started) / 1000));
+        updateGenerationLoader(payload.status, started);
         var waiting = payload.status === 'queued' ?
           t('queued', 'Queued... generation will start in a moment.') :
           t('stillGenerating', 'Still generating... {s}s elapsed.').replace('{s}', String(elapsed));
@@ -910,9 +973,11 @@
       if (submit) submit.disabled = true;
       setStatus(t('readingUpload', 'Reading upload...'), 'working');
       paintResults([]);
+      updateGenerationLoader('preparing', Date.now());
 
       payloadPromise
         .then(function (payload) {
+          updateGenerationLoader('preparing', Date.now());
           setStatus(t('generating', 'Generating... this usually takes under a minute.'), 'working');
           return fetch(apiUrl('/web/generate'), {
             method: 'POST',
@@ -932,6 +997,7 @@
         })
         .then(function (data) {
           if (data.jobId) {
+            updateGenerationLoader('queued', Date.now());
             setStatus(t('queued', 'Queued... generation will start in a moment.'), 'working');
             return waitForGeneration(data.jobId);
           }
@@ -945,6 +1011,7 @@
           return refreshWebSession();
         })
         .catch(function (err) {
+          hideGenerationLoader(true);
           var payload = err.payload || {};
           if (payload.code === 'insufficient_credits') {
             showCheckout(true, 'empty');
