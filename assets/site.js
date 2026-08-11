@@ -173,6 +173,7 @@
     } catch (e) { /* private mode */ }
 
     setTimeout(function () {
+      if (currentSession && currentSession.user) return;
       if ((window.scrollY || 0) < 200) return;
       toast.classList.add('show');
       try { sessionStorage.setItem('ug_toast', '1'); } catch (e) {}
@@ -391,6 +392,7 @@
     var telegramNote = document.getElementById('telegram-link-note');
     var user = currentSession && currentSession.user;
     var authed = !!user;
+    var toast = document.getElementById('reengage-toast');
 
     if (account) account.textContent = authed ? ('@' + (user.username || user.id)) : t('notLoggedIn', 'Not logged in');
     if (balance) balance.textContent = authed ? formatCredits(user.credits) : t('loginToSeeCredits', 'Login to see credits');
@@ -404,6 +406,7 @@
     if (accountAvatar) accountAvatar.textContent = authed ? userInitial(user) : 'U';
     if (accountEmail) accountEmail.textContent = authed ? (user.email || userLabel(user)) : t('signedIn', 'Signed in');
     if (accountMenuCredits) accountMenuCredits.textContent = authed ? formatCredits(user.credits) : '';
+    if (toast && authed) toast.classList.remove('show');
     var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
     if (accountLinkTelegram) accountLinkTelegram.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
     if (telegramLink) telegramLink.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
