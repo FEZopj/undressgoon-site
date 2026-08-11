@@ -103,16 +103,16 @@
     var marquee = document.getElementById('marquee');
     if (!marquee) return;
 
-    // Marquee cards are animated with transforms, which makes lazy hydration
-    // unreliable in some browsers. The thumb set is small, so load it directly.
     var ids = nums();
 
     function cardHtml(n, eager) {
       var alt = i18n.imgAlt || 'AI undress result';
+      var src = thumbUrl(n);
+      var imgSource = eager ? 'src="' + src + '"' : 'data-src="' + src + '"';
       return (
         '<div class="result-card" data-n="' + n + '">' +
-          '<img src="' + thumbUrl(n) + '" alt="' + alt + '" width="480" height="600" ' +
-            'decoding="async" loading="' + (eager ? 'eager' : 'auto') + '" ' +
+          '<img ' + imgSource + ' alt="' + alt + '" width="480" height="600" ' +
+            'decoding="async" loading="' + (eager ? 'eager' : 'lazy') + '" ' +
             (eager ? 'fetchpriority="high" ' : '') + '/>' +
         '</div>'
       );
@@ -122,15 +122,39 @@
     var html = ids.map(function (n, idx) { return cardHtml(n, idx < 4); }).join('');
     marquee.innerHTML = html + html;
 
+    function hydrateCard(card) {
+      var img = card.querySelector('img');
+      if (!img) return;
+      var pendingSrc = img.getAttribute('data-src');
+      if (pendingSrc) {
+        img.setAttribute('src', pendingSrc);
+        img.removeAttribute('data-src');
+      }
+      onImgLoad(img, card);
+    }
+
+    var lazyCards = [];
     marquee.querySelectorAll('.result-card').forEach(function (card) {
       var img = card.querySelector('img');
       if (!img) return;
-      if (img.getAttribute('src')) {
-        onImgLoad(img, card);
-        return;
-      }
-      // Placeholder shimmer until hydrated
+      if (img.getAttribute('src')) hydrateCard(card);
+      else lazyCards.push(card);
     });
+
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(entry.target);
+          hydrateCard(entry.target);
+        });
+      }, { rootMargin: '600px 800px' });
+      lazyCards.forEach(function (card) { observer.observe(card); });
+    } else {
+      window.setTimeout(function () {
+        lazyCards.forEach(hydrateCard);
+      }, 1200);
+    }
   }
 
   // Sticky bottom CTA after scroll
@@ -366,6 +390,7 @@
       window.lucide.createIcons();
     }
   }
+  window.UG_REFRESH_ICONS = refreshIcons;
 
   function setTheme(theme) {
     var clean = theme === 'light' ? 'light' : 'dark';
@@ -381,9 +406,9 @@
     document.querySelectorAll('.logo img').forEach(function (img) {
       var src = img.getAttribute('src') || '';
       if (clean === 'light') {
-        img.setAttribute('src', src.replace('brand-logo.png', 'brand-logo-light.png'));
+        img.setAttribute('src', src.replace('brand-logo-fast.png', 'brand-logo-light-fast.png').replace('brand-logo.png', 'brand-logo-light-fast.png'));
       } else {
-        img.setAttribute('src', src.replace('brand-logo-light.png', 'brand-logo.png'));
+        img.setAttribute('src', src.replace('brand-logo-light-fast.png', 'brand-logo-fast.png').replace('brand-logo-light.png', 'brand-logo-fast.png'));
       }
     });
   }

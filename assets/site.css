@@ -78,7 +78,7 @@ html[data-theme="light"] header {
   object-fit: contain;
 }
 html[data-theme="light"] .logo img {
-  content: url('brand-logo-light.png');
+  content: url('brand-logo-light-fast.png');
 }
 .footer-logo {
   margin-bottom: 16px;
