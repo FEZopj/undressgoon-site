@@ -480,6 +480,15 @@
       return file && file.files && file.files.length ? file.files[0] : null;
     }
 
+    function readFileAsDataUrl(chosen) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function () { resolve(String(reader.result || '')); };
+        reader.onerror = function () { reject(new Error('Could not read the selected photo.')); };
+        reader.readAsDataURL(chosen);
+      });
+    }
+
     function updateUploadPreview() {
       var chosen = selectedPersonFile();
       if (!chosen) {
@@ -519,12 +528,15 @@
       }
 
       var payload = new FormData();
-      payload.append('person', chosen, chosen.name || 'upload.jpg');
       payload.append('prompt', prompt ? prompt.value.trim() : '');
       payload.append('mode', mode ? mode.value : 'prompt');
       payload.append('terms_accepted', '1');
       payload.append('variations', '1');
-      return payload;
+      payload.append('person_name', chosen.name || 'upload.jpg');
+      return readFileAsDataUrl(chosen).then(function (dataUrl) {
+        payload.append('person_b64', dataUrl);
+        return payload;
+      });
     }
 
     if (file) {
@@ -565,17 +577,21 @@
     if (!form) return;
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      var payload = buildGenerationPayload();
-      if (!payload) return;
+      var payloadPromise = buildGenerationPayload();
+      if (!payloadPromise) return;
       if (submit) submit.disabled = true;
-      setStatus('Generating... this usually takes under a minute.', 'working');
+      setStatus('Reading upload...', 'working');
       paintResults([]);
 
-      fetch(apiUrl('/web/generate'), {
-        method: 'POST',
-        credentials: 'include',
-        body: payload
-      })
+      payloadPromise
+        .then(function (payload) {
+          setStatus('Generating... this usually takes under a minute.', 'working');
+          return fetch(apiUrl('/web/generate'), {
+            method: 'POST',
+            credentials: 'include',
+            body: payload
+          });
+        })
         .then(function (res) {
           return res.json().catch(function () { return {}; }).then(function (data) {
             if (!res.ok || !data.ok) {
