@@ -843,9 +843,9 @@
       modeInputs.forEach(function (input) {
         if (input.parentElement) input.parentElement.classList.toggle('active', input.checked);
       });
-      if (label) label.textContent = scene ? t('sceneIdeasLabel', 'Scene ideas') : t('presetsLabel', 'Presets');
+      if (label) label.textContent = t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT');
       if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
-      if (clear) clear.textContent = scene ? t('customScene', 'Custom scene') : t('customPrompt', 'Custom prompt');
+      if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
         help.hidden = !scene;

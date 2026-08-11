@@ -1044,8 +1044,12 @@ html[data-theme="light"] .upload-preview {
 .preset-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
+  text-align: center;
+}
+.preset-top .field-label {
+  width: 100%;
 }
 .preset-top button {
   border: 0;
@@ -1054,6 +1058,9 @@ html[data-theme="light"] .upload-preview {
   font-weight: 800;
   font-size: 0.82rem;
   cursor: pointer;
+}
+.preset-top button[hidden] {
+  display: none;
 }
 .scene-help {
   margin: -2px 0 2px;
