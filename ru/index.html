@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon — ИИ бот раздевания | Ню, микро бикини, BDSM, латекс</title>
-  <meta name="description" content="Раздень любое фото с ИИ. Полностью ню, микро бикини, BDSM, латекс. Полностью кастомные промпты. Бесплатные кредиты в Telegram." />
+  <title>UndressGoon — ИИ Undress генератор | Ню, микро-бикини, BDSM, латекс</title>
+  <meta name="description" content="Загрузи фото, выбери пресет и генерируй прямо на сайте." />
   <meta name="keywords" content="раздеть ИИ, undress бот, генератор ню, gooning, telegram undress, undressgoon" />
   <meta name="theme-color" content="#070709" />
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon — бот раздевания и goon в Telegram" />
-  <meta property="og:description" content="Раздень любое фото с ИИ. Бесплатные кредиты при открытии бота." />
+  <meta property="og:title" content="UndressGoon — ИИ Undress генератор | Ню, микро-бикини, BDSM, латекс" />
+  <meta property="og:description" content="Загрузи фото, выбери пресет и генерируй прямо на сайте." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/ru/" />
   <meta property="og:image" content="https://undressgoon.app/results/thumbs/1.webp" />
@@ -28,11 +28,12 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260811-4" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260811-6" as="style" />
   <link rel="preload" href="../assets/brand-logo.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260811-4" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260811-6" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
 <body>
 
@@ -50,17 +51,14 @@
           <a href="../fr/index.html">FR</a>
           <a href="../de/index.html">DE</a>
         </nav>
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg" data-bot-cta>
-          <svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.04 15.3l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.88c.97.53 1.66.25 1.92-.9l3.48-16.34h.01c.31-1.44-.52-2-1.46-1.65L1.36 9.37C-.05 9.92-.03 10.7 1.12 11.05l5.52 1.72L19.4 5.2c.63-.41 1.2-.19.73.22"/></svg>
-          Открыть бота
-        </a>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Генерировать</a>
       </div>
     </div>
   </header>
 
   <section class="hero">
     <div class="container">
-      <div class="badge">🔥 #1 бот раздевания и gooning в Telegram</div>
+      <div class="badge">🔥 ИИ undress генератор для быстрых веб-сессий</div>
       <div class="live-pill" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span><strong id="live-count">24</strong> человек генерируют сейчас</span>
@@ -70,20 +68,112 @@
         <span class="grad">Полностью ню. Микро бикини. BDSM. Латекс.</span>
       </h1>
       <p class="hero-sub">
-        Чистый инструмент для <strong>gooning</strong>. Загрузи фото и напиши <strong>точно</strong>, что хочешь — кастомные промпты. Бесплатные кредиты сразу в Telegram.
+        Чистый инструмент для <strong>gooning</strong>. Загрузи фото и напиши <strong>точно</strong>, что хочешь — кастомные промпты. Генерируй здесь с бесплатными кредитами после Google-логина.
       </p>
       <div class="cta-group">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent btn-lg btn-pulse" data-bot-cta>
-          <svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.04 15.3l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.88c.97.53 1.66.25 1.92-.9l3.48-16.34h.01c.31-1.44-.52-2-1.46-1.65L1.36 9.37C-.05 9.92-.03 10.7 1.12 11.05l5.52 1.72L19.4 5.2c.63-.41 1.2-.19.73.22"/></svg>
-          Начать бесплатно в Telegram
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Начать бесплатно
         </a>
       </div>
       <p class="free-note">🎁 <strong>Мгновенные бесплатные кредиты</strong> — без email, карты и приложений</p>
       <div class="trust-row">
         <span>⚡ Результат за 15–40с</span>
-        <span>🔒 Приватно в Telegram</span>
+        <span>🔒 Приватная веб-сессия</span>
         <span>✍️ Безлимитные промпты</span>
         <span>🔞 Только 18+</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="generator-section" id="generate">
+    <div class="container">
+      <div class="generator-head">
+        <span class="badge">Генерируй на сайте</span>
+        <h2>Загрузи, напиши, сгенерируй. Без смены приложения.</h2>
+        <p>Бесплатный кредит привязан к Google-аккаунту, поэтому баланс одинаковый в любом браузере.</p>
+      </div>
+
+      <div class="generator-app" data-web-generator>
+        <div class="generator-panel">
+          <div class="account-row">
+            <div>
+              <span class="mini-label">Аккаунт</span>
+              <strong id="web-account">Не вошли</strong>
+              <small id="web-balance">Войдите, чтобы увидеть кредиты</small>
+            </div>
+            <button class="btn btn-tg btn-sm" type="button" id="web-logout" hidden>Выйти</button>
+          </div>
+
+          <div class="login-box" id="login-box">
+            <p>Логин подтверждает, что бесплатный кредит принадлежит реальному пользователю. После этого можно генерировать здесь.</p>
+            <a class="btn btn-google" id="google-login" href="#">Продолжить с Google</a>
+          </div>
+
+          <div class="referral-card" id="referral-card" hidden>
+            <div>
+              <span class="mini-label">Реферальные кредиты</span>
+              <strong>Зови друзей. Собирай бесплатные runs.</strong>
+              <small id="referral-copy">Ты получаешь бонусные кредиты, когда кто-то заходит и генерирует.</small>
+            </div>
+            <div class="referral-actions">
+              <input id="referral-link" readonly value="" aria-label="Referral link" />
+              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+            </div>
+          </div>
+
+          <form class="web-form" id="web-generate-form">
+            <label class="upload-zone" for="person-photo">
+              <input id="person-photo" name="person" type="file" accept="image/*" required />
+              <img class="upload-preview" id="upload-preview" alt="" hidden />
+              <span class="upload-main"><i data-lucide="image-plus"></i> Выбрать фото</span>
+              <span class="upload-sub" id="upload-name">JPG, PNG или WebP до 12 MB</span>
+            </label>
+
+            <div class="mode-row" role="group" aria-label="Generation mode">
+              <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Редактировать outfit</label>
+              <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Сцена</label>
+            </div>
+
+            <div class="preset-picker">
+              <div class="preset-top">
+                <span class="field-label">Пресеты</span>
+                <button type="button" id="preset-clear">Кастомный промпт</button>
+              </div>
+              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Preset categories"></div>
+              <div class="preset-grid" id="preset-grid"></div>
+            </div>
+
+            <label class="field-label" for="web-prompt">Промпт</label>
+            <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Пример: крошечное черное микро-бикини, блестящая кожа, селфи в зеркале спальни"></textarea>
+
+            <label class="consent-line">
+              <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
+              <span>Я подтверждаю, что мне 18+ и у меня есть законное право использовать это фото.</span>
+            </label>
+
+            <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> Сгенерировать 1 изображение</button>
+            <p class="form-status" id="web-status" aria-live="polite"></p>
+          </form>
+
+          <div class="checkout-panel" id="checkout-panel" hidden>
+            <div class="checkout-head">
+              <span class="mini-label">Пополнить</span>
+              <strong>Продолжай сессию</strong>
+              <small>Crypto checkout работает на сайте. Оплата картой идет через Telegram Stars как запасной вариант.</small>
+            </div>
+            <div class="pack-grid" id="pack-grid"></div>
+            <a class="card-fallback" href="https://t.me/goonmasterbotbot?start=web" target="_blank" rel="noopener">
+              Оплатить картой в Telegram
+            </a>
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <div class="result-empty" id="web-result-empty">
+            <strong>Твой результат появится здесь</strong>
+            <span>Кредит резервируется только при старте генерации. Неудачные задания возвращаются автоматически.</span>
+          </div>
+          <div class="web-results" id="web-results"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -120,8 +210,8 @@
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
-          <h3>Открой бота</h3>
-          <p>Один тап → Telegram открывает UndressGoon. Кредиты грузятся сами.</p>
+          <h3>Логин</h3>
+          <p>Продолжи с Google, чтобы реальный аккаунт получил бесплатный кредит.</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
@@ -140,7 +230,7 @@
         </div>
       </div>
       <div style="text-align:center;margin-top:28px;">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg btn-lg" data-bot-cta>Попробуй шаг 1 бесплатно →</a>
+        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>Попробуй шаг 1 бесплатно →</a>
       </div>
     </div>
   </section>
@@ -202,7 +292,7 @@
       <p class="section-sub">Нажми на любое изображение, чтобы открыть бота и сгенерировать своё бесплатно</p>
       <div class="gallery" id="gallery"></div>
       <div style="text-align:center;margin-top:32px;">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg btn-lg" data-bot-cta>
+        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>
           Сгенерируй своё бесплатно →
         </a>
       </div>
@@ -222,26 +312,26 @@
             <li>Мгновенные бесплатные кредиты</li>
             <li>Кастомные промпты</li>
             <li>Без email и карты</li>
-            <li>Работает в Telegram</li>
+            <li>Работает прямо на сайте</li>
           </ul>
-          <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent" style="width:100%;" data-bot-cta>Забрать бесплатные кредиты →</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Забрать бесплатные кредиты →</a>
         </div>
         <div class="value-card">
           <h3>Больше кредитов</h3>
-          <div class="price">В боте <span>/ когда готов</span></div>
+          <div class="price">На сайте <span>/ когда готов</span></div>
           <ul>
             <li>Пакеты, когда free кончится</li>
             <li>Более длинные сессии</li>
             <li>То же качество, больше объёма</li>
             <li>Плати только если зашло</li>
           </ul>
-          <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg" style="width:100%;" data-bot-cta>Открыть бота и апгрейд позже</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Открыть бота и апгрейд позже</a>
         </div>
       </div>
       <div class="proof-strip">
         <div class="proof-chip"><strong>«Бесплатные кредиты убедили.»</strong> Попробовал раз — к другим сайтам не вернулся.</div>
         <div class="proof-chip"><strong>«Кастомные промпты жёсткие.»</strong> Что пишу — то и делает.</div>
-        <div class="proof-chip"><strong>«Приватно и быстро.»</strong> Всё в Telegram. Без странных аккаунтов.</div>
+        <div class="proof-chip"><strong>«Приватно и быстро.»</strong> Без chat flow. Просто upload и generate.</div>
       </div>
     </div>
   </section>
@@ -251,7 +341,7 @@
       <div class="cta-band">
         <h2>Твой фетиш. Твой промпт. Твоя реальность.</h2>
         <p>Кастомные промпты разрешены. Опиши точно, что хочешь — UndressGoon превратит это в картинки за секунды.</p>
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent btn-lg btn-pulse" data-bot-cta>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>
           Открыть UndressGoon сейчас →
         </a>
         <p class="urgency">🎁 Бесплатные кредиты ждут · без регистрации · 18+</p>
@@ -262,9 +352,9 @@
   <footer>
     <div class="container">
       <a class="logo footer-logo" href="../index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo.png" alt="UndressGoon" width="270" height="77" loading="lazy" /></a>
-      <p class="footer-seo">UndressGoon — ведущий Telegram ИИ-бот раздевания и gooning-инструмент. Генерируй ню, снимай одежду, создавай микро бикини, BDSM, латекс и кастомные фетиш-промпты. Бесплатные кредиты для старта.</p>
+      <p class="footer-seo">UndressGoon ? ?? undress ????????? ? gooning-??????????. ????????? nude ??-???????????, ?????? ?????? ? ??, ???????? ?????-??????, BDSM, ??????, wet look, ????? ? ????????? ?????-??????? ?? ?????? ????. ???????? ????? ?? ????? ? ??????????? ????????? ??? ??????.</p>
       <p style="font-size:0.9rem;color:var(--muted);">
-        undressgoon.app · <a href="https://t.me/goonmasterbotbot?start=web" style="color:var(--tg);" data-bot-cta>t.me/goonmasterbotbot</a>
+        undressgoon.app · <a href="#generate" style="color:var(--tg);" data-generate-cta>t.me/goonmasterbotbot</a>
       </p>
       <p class="disclaimer">
         Только 18+. Загружай только фото, на которые у тебя есть право. ИИ-инструмент для вымышленного adult-контента и личных фантазий. Результат может ограничиваться safety-фильтрами.<br><br><a href="../terms.html" style="color: var(--accent);">Условия использования</a> · Используя сайт, ты принимаешь условия и подтверждаешь 18+.
@@ -276,14 +366,14 @@
     <div class="sticky-inner">
       <div class="sticky-copy">
         <strong>🎁 Бесплатные кредиты готовы</strong>
-        <span>Открой Telegram · раздень за секунды</span>
+        <span>Upload · preset · generate</span>
       </div>
-      <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent" data-bot-cta>Начать бесплатно →</a>
+      <a href="#generate" class="btn btn-accent" data-generate-cta>Начать бесплатно →</a>
     </div>
   </div>
 
   <div class="toast" id="reengage-toast">
-    Ещё думаешь? <a href="https://t.me/goonmasterbotbot?start=web" data-bot-cta>Забери бесплатные кредиты →</a> без карты.
+    Ещё думаешь? <a href="#generate" data-generate-cta>Забери бесплатные кредиты →</a> без карты.
   </div>
 
   <script>
@@ -292,12 +382,59 @@
       thumbBase: '../results/thumbs/',
       thumbExt: '.webp',
       botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      presets: [
+        { key: 'nude', category: 'hot', label: 'Полностью ню', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
+        { key: 'oily', category: 'hot', label: 'Масляное ню', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'bondage', category: 'hot', label: 'Шибари ню', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
+        { key: 'lingerie', category: 'clothes', label: 'Прозрачное белье', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'crotchless', category: 'clothes', label: 'Открытое белье', prompt: 'sexy crotchless panties and open-cup bra, exposed adult lingerie look' },
+        { key: 'bikini', category: 'clothes', label: 'Микро-бикини', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
+        { key: 'wet', category: 'clothes', label: 'Мокрая футболка', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
+        { key: 'bdsm', category: 'clothes', label: 'BDSM-портупея', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
+        { key: 'latex', category: 'clothes', label: 'Латекс', prompt: 'shiny tight black latex catsuit unzipped down the front' },
+        { key: 'tights', category: 'clothes', label: 'Только колготки', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
+        { key: 'stockings', category: 'clothes', label: 'Только чулки', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
+        { key: 'schoolgirl', category: 'fantasy', label: 'Школьница', prompt: 'tiny pleated schoolgirl-style skirt with no panties and a tight white blouse unbuttoned low showing cleavage; adult cosplay' },
+        { key: 'nurse', category: 'fantasy', label: 'Секси медсестра', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'maid', category: 'fantasy', label: 'Французская горничная', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'office', category: 'fantasy', label: 'Офисный образ', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
+      ],
       i18n: {
-        imgAlt: 'Результат ИИ-раздевания',
-        galleryCta: 'Сделать бесплатно →'
+        notLoggedIn: "Не вошли",
+        loginToSeeCredits: "Войдите, чтобы увидеть кредиты",
+        creditSingular: "{n} кредит доступен",
+        creditPlural: "{n} кредитов доступно",
+        creditsWord: "кредитов",
+        payCrypto: "Оплатить crypto",
+        opening: "Открывается...",
+        creatingCheckout: "Создаем безопасный crypto checkout...",
+        checkoutFail: "Не удалось создать checkout.",
+        generatedResult: "Сгенерированный результат",
+        tabHot: "Самое hot",
+        tabClothes: "Одежда",
+        tabFantasy: "Фантазия",
+        uploadHint: "JPG, PNG или WebP до 12 MB",
+        readFail: "Не удалось прочитать выбранное фото.",
+        missingPhoto: "Сначала загрузи фото человека.",
+        termsRequired: "Подтверди 18+ и права на это фото.",
+        promptRequired: "Сначала выбери пресет или напиши промпт.",
+        copied: "Скопировано",
+        copy: "Копировать",
+        readingUpload: "Читаем upload...",
+        generating: "Генерация... обычно меньше минуты.",
+        doneBalance: "Готово. Баланс: {balance}.",
+        outOfCredits: "Кредиты закончились. Пополни ниже, чтобы продолжить.",
+        loginFirst: "Сначала войди через Google.",
+        genericError: "Что-то пошло не так.",
+        imgAlt: "ИИ undress результат",
+        galleryCta: "Сделай свое бесплатно →",
+        referralSingular: "Получи {reward} кредитов за активного реферала. {count} активное приглашение сейчас.",
+        referralPlural: "Получи {reward} кредитов за активного реферала. {count} активных приглашений сейчас."
       }
     };
   </script>
-  <script src="../assets/site.js?v=20260811-4" defer></script>
+  <script src="../assets/site.js?v=20260811-6" defer></script>
 </body>
 </html>

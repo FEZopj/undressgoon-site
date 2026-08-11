@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon — Bot de Nudes com IA | Nu, Micro Biquíni, BDSM, Látex</title>
-  <meta name="description" content="Tire a roupa de qualquer foto com IA. Nu completo, micro biquíni, BDSM, látex. Prompts 100% personalizados. Créditos grátis no Telegram." />
-  <meta name="keywords" content="tirar roupa IA, undress IA, gerador de nudes, bot undress, gooning, telegram nude, undressgoon" />
+  <title>UndressGoon — Gerador IA Undress | Nude, Micro Biquíni, BDSM, Látex</title>
+  <meta name="description" content="Envie uma foto, escolha um preset e gere direto no site. Nude completo, micro biquíni, BDSM, látex e prompts personalizados." />
+  <meta name="keywords" content="tirar roupa IA, undress IA, gerador de nudes, gerador undress, gooning, web undress, undressgoon" />
   <meta name="theme-color" content="#070709" />
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon — Bot de Nudes e Goon no Telegram" />
-  <meta property="og:description" content="Tire a roupa de qualquer foto com IA. Créditos grátis ao abrir o bot." />
+  <meta property="og:title" content="UndressGoon — Gerador IA Undress no site" />
+  <meta property="og:description" content="Envie uma foto, escolha um preset e gere direto no site." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/pt/" />
   <meta property="og:image" content="https://undressgoon.app/results/thumbs/1.webp" />
@@ -28,11 +28,12 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260811-4" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260811-6" as="style" />
   <link rel="preload" href="../assets/brand-logo.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260811-4" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260811-6" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
 <body>
 
@@ -50,17 +51,14 @@
           <a href="../fr/index.html">FR</a>
           <a href="../de/index.html">DE</a>
         </nav>
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg" data-bot-cta>
-          <svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.04 15.3l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.88c.97.53 1.66.25 1.92-.9l3.48-16.34h.01c.31-1.44-.52-2-1.46-1.65L1.36 9.37C-.05 9.92-.03 10.7 1.12 11.05l5.52 1.72L19.4 5.2c.63-.41 1.2-.19.73.22"/></svg>
-          Abrir Bot
-        </a>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Gerar</a>
       </div>
     </div>
   </header>
 
   <section class="hero">
     <div class="container">
-      <div class="badge">🔥 #1 Bot de Nudes e Gooning no Telegram</div>
+      <div class="badge">🔥 Gerador IA undress para sessões web instantâneas</div>
       <div class="live-pill" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span><strong id="live-count">24</strong> pessoas gerando agora</span>
@@ -70,20 +68,112 @@
         <span class="grad">Nu completo. Micro biquíni. BDSM. Látex.</span>
       </h1>
       <p class="hero-sub">
-        A ferramenta de <strong>gooning</strong> definitiva. Envie uma foto e digite <strong>exatamente</strong> o que quer — prompts 100% personalizados. Créditos grátis ao abrir o Telegram.
+        A ferramenta de <strong>gooning</strong> definitiva. Envie uma foto e digite <strong>exatamente</strong> o que quer — prompts 100% personalizados. Gere aqui com créditos grátis após login Google.
       </p>
       <div class="cta-group">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent btn-lg btn-pulse" data-bot-cta>
-          <svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.04 15.3l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.88c.97.53 1.66.25 1.92-.9l3.48-16.34h.01c.31-1.44-.52-2-1.46-1.65L1.36 9.37C-.05 9.92-.03 10.7 1.12 11.05l5.52 1.72L19.4 5.2c.63-.41 1.2-.19.73.22"/></svg>
-          Começar Grátis no Telegram
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Começar a gerar grátis
         </a>
       </div>
       <p class="free-note">🎁 <strong>Créditos grátis na hora</strong> — sem email, sem cartão, sem app</p>
       <div class="trust-row">
         <span>⚡ Resultados em 15–40s</span>
-        <span>🔒 Privado no Telegram</span>
+        <span>🔒 Sessão web privada</span>
         <span>✍️ Prompts ilimitados</span>
         <span>🔞 Apenas +18</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="generator-section" id="generate">
+    <div class="container">
+      <div class="generator-head">
+        <span class="badge">Gerar no site</span>
+        <h2>Envie, escreva, gere. Sem trocar de app.</h2>
+        <p>Seu crédito grátis fica ligado à sua conta Google, então o mesmo saldo vale em qualquer navegador.</p>
+      </div>
+
+      <div class="generator-app" data-web-generator>
+        <div class="generator-panel">
+          <div class="account-row">
+            <div>
+              <span class="mini-label">Conta</span>
+              <strong id="web-account">Sem login</strong>
+              <small id="web-balance">Entre para ver créditos</small>
+            </div>
+            <button class="btn btn-tg btn-sm" type="button" id="web-logout" hidden>Sair</button>
+          </div>
+
+          <div class="login-box" id="login-box">
+            <p>O login prova que uma pessoa real possui o crédito grátis. Depois você gera aqui.</p>
+            <a class="btn btn-google" id="google-login" href="#">Continuar com Google</a>
+          </div>
+
+          <div class="referral-card" id="referral-card" hidden>
+            <div>
+              <span class="mini-label">Créditos de indicação</span>
+              <strong>Convide amigos. Junte runs grátis.</strong>
+              <small id="referral-copy">Você ganha créditos bônus quando alguém entra e gera.</small>
+            </div>
+            <div class="referral-actions">
+              <input id="referral-link" readonly value="" aria-label="Referral link" />
+              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+            </div>
+          </div>
+
+          <form class="web-form" id="web-generate-form">
+            <label class="upload-zone" for="person-photo">
+              <input id="person-photo" name="person" type="file" accept="image/*" required />
+              <img class="upload-preview" id="upload-preview" alt="" hidden />
+              <span class="upload-main"><i data-lucide="image-plus"></i> Escolher foto</span>
+              <span class="upload-sub" id="upload-name">JPG, PNG ou WebP até 12 MB</span>
+            </label>
+
+            <div class="mode-row" role="group" aria-label="Generation mode">
+              <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Editar outfit</label>
+              <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Cena</label>
+            </div>
+
+            <div class="preset-picker">
+              <div class="preset-top">
+                <span class="field-label">Presets</span>
+                <button type="button" id="preset-clear">Prompt personalizado</button>
+              </div>
+              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Preset categories"></div>
+              <div class="preset-grid" id="preset-grid"></div>
+            </div>
+
+            <label class="field-label" for="web-prompt">Prompt</label>
+            <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Exemplo: micro biquíni preto minúsculo, pele brilhante, selfie no espelho do quarto"></textarea>
+
+            <label class="consent-line">
+              <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
+              <span>Confirmo que tenho 18+ e o direito legal de usar esta foto.</span>
+            </label>
+
+            <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> Gerar 1 imagem</button>
+            <p class="form-status" id="web-status" aria-live="polite"></p>
+          </form>
+
+          <div class="checkout-panel" id="checkout-panel" hidden>
+            <div class="checkout-head">
+              <span class="mini-label">Recarregar</span>
+              <strong>Continue a sessão</strong>
+              <small>Checkout crypto funciona no site. Pagamentos com cartão usam Telegram Stars como alternativa.</small>
+            </div>
+            <div class="pack-grid" id="pack-grid"></div>
+            <a class="card-fallback" href="https://t.me/goonmasterbotbot?start=web" target="_blank" rel="noopener">
+              Pagar com cartão no Telegram
+            </a>
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <div class="result-empty" id="web-result-empty">
+            <strong>Seu resultado aparece aqui</strong>
+            <span>O crédito só é reservado quando a geração começa. Falhas são reembolsadas automaticamente.</span>
+          </div>
+          <div class="web-results" id="web-results"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -120,8 +210,8 @@
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
-          <h3>Abra o bot</h3>
-          <p>Um toque → o Telegram abre o UndressGoon. Créditos grátis carregam sozinhos.</p>
+          <h3>Login</h3>
+          <p>Continue com Google para uma conta real possuir o crédito grátis.</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
@@ -140,7 +230,7 @@
         </div>
       </div>
       <div style="text-align:center;margin-top:28px;">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg btn-lg" data-bot-cta>Teste o passo 1 grátis →</a>
+        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>Teste o passo 1 grátis →</a>
       </div>
     </div>
   </section>
@@ -199,10 +289,10 @@
   <section class="section" style="padding-top:20px;">
     <div class="container">
       <h2 class="section-title">Resultados reais de gooning</h2>
-      <p class="section-sub">Toque em qualquer imagem para abrir o bot e gerar a sua grátis</p>
+      <p class="section-sub">Toque em qualquer imagem para ir ao gerador do site</p>
       <div class="gallery" id="gallery"></div>
       <div style="text-align:center;margin-top:32px;">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg btn-lg" data-bot-cta>
+        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>
           Gere a sua grátis →
         </a>
       </div>
@@ -212,7 +302,7 @@
   <section class="section" style="padding-top:10px;">
     <div class="container">
       <h2 class="section-title">Comece grátis. Evolua quando viciar.</h2>
-      <p class="section-sub">Créditos grátis para provar a qualidade — faça upgrade no bot quando quiser mais</p>
+      <p class="section-sub">Créditos grátis para provar a qualidade — recarregue com crypto no site quando quiser mais</p>
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">Comece aqui</span>
@@ -222,26 +312,26 @@
             <li>Créditos grátis na hora</li>
             <li>Prompts personalizados</li>
             <li>Sem email ou cartão</li>
-            <li>Funciona no Telegram</li>
+            <li>Funciona direto no site</li>
           </ul>
-          <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent" style="width:100%;" data-bot-cta>Resgatar créditos grátis →</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Resgatar créditos grátis →</a>
         </div>
         <div class="value-card">
           <h3>Mais créditos</h3>
-          <div class="price">No bot <span>/ quando quiser</span></div>
+          <div class="price">No site <span>/ quando quiser</span></div>
           <ul>
             <li>Pacotes quando os grátis acabarem</li>
             <li>Sessões mais longas</li>
             <li>Mesma qualidade, mais volume</li>
             <li>Pague só se amar</li>
           </ul>
-          <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg" style="width:100%;" data-bot-cta>Abrir bot e evoluir depois</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Gere primeiro, recarregue depois</a>
         </div>
       </div>
       <div class="proof-strip">
         <div class="proof-chip"><strong>“Os créditos grátis me venderam.”</strong> Testei uma vez → nunca voltei a outros sites.</div>
         <div class="proof-chip"><strong>“Prompts personalizados são brutais.”</strong> O que eu digito, ele segue de verdade.</div>
-        <div class="proof-chip"><strong>“Privado e rápido.”</strong> Fica no Telegram. Sem contas estranhas.</div>
+        <div class="proof-chip"><strong>“Privado e rápido.”</strong> Sem fluxo de chat. Só envie e gere.</div>
       </div>
     </div>
   </section>
@@ -251,7 +341,7 @@
       <div class="cta-band">
         <h2>Seu fetiche. Seu prompt. Sua realidade.</h2>
         <p>Prompts personalizados permitidos. Descreva exatamente o que quer e o UndressGoon transforma em imagens em segundos.</p>
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent btn-lg btn-pulse" data-bot-cta>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>
           Abrir UndressGoon Agora →
         </a>
         <p class="urgency">🎁 Créditos grátis esperando · sem cadastro · +18</p>
@@ -262,9 +352,9 @@
   <footer>
     <div class="container">
       <a class="logo footer-logo" href="../index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo.png" alt="UndressGoon" width="270" height="77" loading="lazy" /></a>
-      <p class="footer-seo">UndressGoon é o bot de nudes com IA e ferramenta de gooning líder no Telegram. Gere imagens nuas com IA, remova roupas, crie micro biquíni, BDSM, látex e prompts de fetiche personalizados. Créditos grátis para começar.</p>
+      <p class="footer-seo">UndressGoon ? um gerador IA undress e ferramenta de gooning. Gere imagens nude IA, remova roupas com IA, crie micro biqu?ni, BDSM, l?tex, wet look, lingerie e prompts fetichistas personalizados a partir de qualquer foto. Funciona direto no site com cr?ditos gr?tis para come?ar.</p>
       <p style="font-size:0.9rem;color:var(--muted);">
-        undressgoon.app · <a href="https://t.me/goonmasterbotbot?start=web" style="color:var(--tg);" data-bot-cta>t.me/goonmasterbotbot</a>
+        undressgoon.app · <a href="#generate" style="color:var(--tg);" data-generate-cta>t.me/goonmasterbotbot</a>
       </p>
       <p class="disclaimer">
         Apenas para adultos (18+). Envie apenas fotos que você tem o direito legal de usar. Ferramenta de IA para conteúdo adulto fictício e fantasia pessoal. Imagens podem ser restringidas por filtros de segurança.<br><br><a href="../terms.html" style="color: var(--accent);">Termos de Serviço</a> · Ao usar este site você aceita os Termos e confirma ter 18+.
@@ -276,14 +366,14 @@
     <div class="sticky-inner">
       <div class="sticky-copy">
         <strong>🎁 Créditos grátis prontos</strong>
-        <span>Abra o Telegram · nudes em segundos</span>
+        <span>Envie · preset · gere</span>
       </div>
-      <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent" data-bot-cta>Começar grátis →</a>
+      <a href="#generate" class="btn btn-accent" data-generate-cta>Começar grátis →</a>
     </div>
   </div>
 
   <div class="toast" id="reengage-toast">
-    Ainda pensando? <a href="https://t.me/goonmasterbotbot?start=web" data-bot-cta>Pegue créditos grátis →</a> sem cartão.
+    Ainda pensando? <a href="#generate" data-generate-cta>Pegue créditos grátis →</a> sem cartão.
   </div>
 
   <script>
@@ -292,12 +382,59 @@
       thumbBase: '../results/thumbs/',
       thumbExt: '.webp',
       botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      presets: [
+        { key: 'nude', category: 'hot', label: 'Totalmente Nua', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
+        { key: 'oily', category: 'hot', label: 'Nua Oleosa', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'bondage', category: 'hot', label: 'Shibari Nua', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
+        { key: 'lingerie', category: 'clothes', label: 'Lingerie Transparente', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'crotchless', category: 'clothes', label: 'Calcinha Aberta', prompt: 'sexy crotchless panties and open-cup bra, exposed adult lingerie look' },
+        { key: 'bikini', category: 'clothes', label: 'Micro Biquíni', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
+        { key: 'wet', category: 'clothes', label: 'Camisa Molhada', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
+        { key: 'bdsm', category: 'clothes', label: 'Arnês BDSM', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
+        { key: 'latex', category: 'clothes', label: 'Látex', prompt: 'shiny tight black latex catsuit unzipped down the front' },
+        { key: 'tights', category: 'clothes', label: 'Só Meia-Calça', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
+        { key: 'stockings', category: 'clothes', label: 'Só Meias 7/8', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
+        { key: 'schoolgirl', category: 'fantasy', label: 'Colegial', prompt: 'tiny pleated schoolgirl-style skirt with no panties and a tight white blouse unbuttoned low showing cleavage; adult cosplay' },
+        { key: 'nurse', category: 'fantasy', label: 'Enfermeira Safada', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'maid', category: 'fantasy', label: 'Maid Francesa', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'office', category: 'fantasy', label: 'Look Escritório', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
+      ],
       i18n: {
-        imgAlt: 'Resultado de nude com IA',
-        galleryCta: 'Gere grátis →'
+        imgAlt: "Resultado IA undress",
+        galleryCta: "Faça a sua grátis →",
+        creditSingular: "{n} crédito disponível",
+        creditPlural: "{n} créditos disponíveis",
+        notLoggedIn: "Sem login",
+        loginToSeeCredits: "Entre para ver créditos",
+        creditsWord: "créditos",
+        payCrypto: "Pagar crypto",
+        opening: "Abrindo...",
+        creatingCheckout: "Criando checkout crypto seguro...",
+        checkoutFail: "Não foi possível criar o checkout.",
+        generatedResult: "Resultado gerado",
+        tabHot: "Mais hot",
+        tabClothes: "Roupas",
+        tabFantasy: "Fantasia",
+        uploadHint: "JPG, PNG ou WebP até 12 MB",
+        readFail: "Não foi possível ler a foto selecionada.",
+        missingPhoto: "Envie primeiro uma foto de pessoa.",
+        termsRequired: "Confirme que tem 18+ e direitos sobre esta foto.",
+        promptRequired: "Escolha um preset ou escreva um prompt primeiro.",
+        copied: "Copiado",
+        copy: "Copiar",
+        readingUpload: "Lendo upload...",
+        generating: "Gerando... normalmente leva menos de um minuto.",
+        doneBalance: "Pronto. Saldo: {balance}.",
+        outOfCredits: "Sem créditos. Recarregue abaixo para continuar.",
+        loginFirst: "Entre com Google primeiro.",
+        genericError: "Algo deu errado.",
+        referralSingular: "Ganhe {reward} créditos por indicação ativa. {count} convite ativo até agora.",
+        referralPlural: "Ganhe {reward} créditos por indicação ativa. {count} convites ativos até agora."
       }
     };
   </script>
-  <script src="../assets/site.js?v=20260811-4" defer></script>
+  <script src="../assets/site.js?v=20260811-6" defer></script>
 </body>
 </html>

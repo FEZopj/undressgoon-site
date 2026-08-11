@@ -11,6 +11,16 @@
   var BOT_URL = CFG.botUrl || 'https://t.me/goonmasterbotbot?start=web';
   var i18n = CFG.i18n || {};
 
+  function t(key, fallback) {
+    return i18n && Object.prototype.hasOwnProperty.call(i18n, key) ? i18n[key] : fallback;
+  }
+
+  function formatCredits(count) {
+    var n = Number(count || 0);
+    var template = n === 1 ? t('creditSingular', '{n} credit available') : t('creditPlural', '{n} credits available');
+    return template.replace('{n}', String(n));
+  }
+
   // Resolve paths for both https://undressgoon.app/ and file:///.../index.html
   // Prefer explicit UG_CONFIG.thumbBase; else derive from this script's src attribute.
   function detectThumbBase() {
@@ -264,8 +274,8 @@
     var user = session && session.user;
     var authed = !!user;
 
-    if (account) account.textContent = authed ? ('@' + (user.username || user.id)) : 'Not logged in';
-    if (balance) balance.textContent = authed ? (user.credits + ' credit' + (user.credits === 1 ? '' : 's') + ' available') : 'Login to see credits';
+    if (account) account.textContent = authed ? ('@' + (user.username || user.id)) : t('notLoggedIn', 'Not logged in');
+    if (balance) balance.textContent = authed ? formatCredits(user.credits) : t('loginToSeeCredits', 'Login to see credits');
     if (login) login.hidden = authed;
     if (logout) logout.hidden = !authed;
     if (form) form.classList.toggle('is-locked', !authed);
@@ -284,8 +294,12 @@
     if (!active) return;
     input.value = referral.link;
     if (copy) {
-      copy.textContent = 'Earn ' + referral.rewardCredits + ' credits per active referral. ' +
-        referral.count + ' active invite' + (referral.count === 1 ? '' : 's') + ' so far.';
+      var inviteTemplate = Number(referral.count || 0) === 1 ?
+        t('referralSingular', 'Earn {reward} credits per active referral. {count} active invite so far.') :
+        t('referralPlural', 'Earn {reward} credits per active referral. {count} active invites so far.');
+      copy.textContent = inviteTemplate
+        .replace('{reward}', String(referral.rewardCredits))
+        .replace('{count}', String(referral.count));
     }
   }
 
@@ -316,9 +330,9 @@
           return (
             '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
               '<i data-lucide="coins"></i>' +
-              '<strong>' + pack.credits + ' credits</strong>' +
+              '<strong>' + pack.credits + ' ' + t('creditsWord', 'credits') + '</strong>' +
               '<span>' + pack.price + '</span>' +
-              '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> Pay crypto</button>' +
+              '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> ' + t('payCrypto', 'Pay crypto') + '</button>' +
             '</div>'
           );
         }).join('');
@@ -327,8 +341,8 @@
           button.addEventListener('click', function () {
             var code = button.getAttribute('data-pack');
             button.disabled = true;
-            button.textContent = 'Opening...';
-            setStatus('Creating secure crypto checkout...', 'working');
+            button.textContent = t('opening', 'Opening...');
+            setStatus(t('creatingCheckout', 'Creating secure crypto checkout...'), 'working');
             fetch(apiUrl('/web/crypto/create'), {
               method: 'POST',
               credentials: 'include',
@@ -345,9 +359,9 @@
                 location.href = payload.invoiceUrl;
               })
               .catch(function (err) {
-                setStatus(err.message || 'Could not create checkout.', 'error');
+                setStatus(err.message || t('checkoutFail', 'Could not create checkout.'), 'error');
                 button.disabled = false;
-                button.textContent = 'Pay crypto';
+                button.textContent = t('payCrypto', 'Pay crypto');
               });
           });
         });
@@ -367,7 +381,7 @@
       a.download = 'undressgoon-web-' + (idx + 1) + '.jpg';
       var el = document.createElement('img');
       el.src = url;
-      el.alt = 'Generated result ' + (idx + 1);
+      el.alt = t('generatedResult', 'Generated result') + ' ' + (idx + 1);
       a.appendChild(el);
       target.appendChild(a);
     });
@@ -383,9 +397,9 @@
     if (!tabs || !grid || !prompt || !presets.length) return;
 
     var cats = [
-      { key: 'hot', label: 'Hottest' },
-      { key: 'clothes', label: 'Clothes' },
-      { key: 'fantasy', label: 'Fantasy' }
+      { key: 'hot', label: t('tabHot', 'Hottest') },
+      { key: 'clothes', label: t('tabClothes', 'Clothes') },
+      { key: 'fantasy', label: t('tabFantasy', 'Fantasy') }
     ];
     var active = 'hot';
     var selected = '';
@@ -457,7 +471,7 @@
     var previewUrl = '';
 
     if (!CFG.apiBase && location.protocol === 'file:') {
-      setStatus('Set UG_CONFIG.apiBase to your bot backend URL before uploading to cPanel.', 'error');
+      setStatus(t('apiMissing', 'Set UG_CONFIG.apiBase to your bot backend URL before uploading to cPanel.'), 'error');
     }
 
     initGoogleLogin();
@@ -473,7 +487,7 @@
         uploadPreview.removeAttribute('src');
       }
       if (uploadZone) uploadZone.classList.remove('has-preview');
-      if (fileName) fileName.textContent = 'JPG, PNG, or WebP up to 12 MB';
+      if (fileName) fileName.textContent = t('uploadHint', 'JPG, PNG, or WebP up to 12 MB');
     }
 
     function selectedPersonFile() {
@@ -484,7 +498,7 @@
       return new Promise(function (resolve, reject) {
         var reader = new FileReader();
         reader.onload = function () { resolve(String(reader.result || '')); };
-        reader.onerror = function () { reject(new Error('Could not read the selected photo.')); };
+        reader.onerror = function () { reject(new Error(t('readFail', 'Could not read the selected photo.'))); };
         reader.readAsDataURL(chosen);
       });
     }
@@ -512,17 +526,17 @@
       var chosen = selectedPersonFile();
 
       if (!chosen) {
-        setStatus('Upload a person photo first.', 'error');
+        setStatus(t('missingPhoto', 'Upload a person photo first.'), 'error');
         if (file) file.focus();
         return null;
       }
       if (!consent || !consent.checked) {
-        setStatus('Confirm you are 18+ and have rights to this photo.', 'error');
+        setStatus(t('termsRequired', 'Confirm you are 18+ and have rights to this photo.'), 'error');
         if (consent) consent.focus();
         return null;
       }
       if (prompt && !prompt.value.trim()) {
-        setStatus('Pick a preset or write a prompt first.', 'error');
+        setStatus(t('promptRequired', 'Pick a preset or write a prompt first.'), 'error');
         prompt.focus();
         return null;
       }
@@ -561,10 +575,10 @@
         var input = document.getElementById('referral-link');
         if (!input || !input.value) return;
         navigator.clipboard.writeText(input.value).then(function () {
-          copyReferral.innerHTML = '<i data-lucide="check"></i> Copied';
+          copyReferral.innerHTML = '<i data-lucide="check"></i> ' + t('copied', 'Copied');
           refreshIcons();
           setTimeout(function () {
-            copyReferral.innerHTML = '<i data-lucide="copy"></i> Copy';
+            copyReferral.innerHTML = '<i data-lucide="copy"></i> ' + t('copy', 'Copy');
             refreshIcons();
           }, 1800);
         }).catch(function () {
@@ -580,12 +594,12 @@
       var payloadPromise = buildGenerationPayload();
       if (!payloadPromise) return;
       if (submit) submit.disabled = true;
-      setStatus('Reading upload...', 'working');
+      setStatus(t('readingUpload', 'Reading upload...'), 'working');
       paintResults([]);
 
       payloadPromise
         .then(function (payload) {
-          setStatus('Generating... this usually takes under a minute.', 'working');
+          setStatus(t('generating', 'Generating... this usually takes under a minute.'), 'working');
           return fetch(apiUrl('/web/generate'), {
             method: 'POST',
             credentials: 'include',
@@ -604,19 +618,19 @@
         })
         .then(function (data) {
           paintResults(data.images || []);
-          setStatus('Done. Balance: ' + data.balance + ' credit' + (data.balance === 1 ? '' : 's') + '.', 'success');
+          setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
           return refreshWebSession();
         })
         .catch(function (err) {
           var payload = err.payload || {};
           if (payload.code === 'insufficient_credits') {
             showCheckout(true);
-            setStatus('Out of credits. Top up below to keep generating.', 'error');
+            setStatus(t('outOfCredits', 'Out of credits. Top up below to keep generating.'), 'error');
           } else if (payload.code === 'not_authenticated') {
-            setStatus('Login with Google first.', 'error');
+            setStatus(t('loginFirst', 'Login with Google first.'), 'error');
             updateWebAccount(null);
           } else {
-            setStatus(err.message || 'Something went wrong.', 'error');
+            setStatus(err.message || t('genericError', 'Something went wrong.'), 'error');
           }
         })
         .finally(function () {
