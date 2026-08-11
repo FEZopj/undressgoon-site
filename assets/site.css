@@ -917,8 +917,18 @@ html[data-theme="light"] .topup-dialog {
   background: linear-gradient(135deg, #2AABEE, #53d7ff, #198dd1);
 }
 .topup-actions .telegram-link {
-  background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,45,85,0.18));
-  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  background: linear-gradient(135deg, #1f2937, #111827);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+html[data-theme="light"] .topup-actions .telegram-link {
+  color: #07130d;
+  background: linear-gradient(135deg, #d9f99d, #86efac);
+  border-color: rgba(22, 138, 72, 0.25);
+  box-shadow: 0 9px 28px rgba(22, 138, 72, 0.2);
+}
+html[data-theme="light"] .topup-actions .telegram-link:hover {
+  box-shadow: 0 14px 36px rgba(22, 138, 72, 0.28);
 }
 .topup-note {
   display: block;

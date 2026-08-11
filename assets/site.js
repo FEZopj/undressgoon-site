@@ -374,7 +374,7 @@
           return (
             '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
               badge +
-              '<i data-lucide="' + (idx === 1 ? 'gem' : 'coins') + '"></i>' +
+              '<i data-lucide="coins"></i>' +
               '<strong>' + pack.credits + ' ' + t('creditsWord', 'credits') + '</strong>' +
               '<span>' + pack.price + '</span>' +
               '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> ' + t('payCrypto', 'Crypto') + '</button>' +
