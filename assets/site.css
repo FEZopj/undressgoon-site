@@ -529,6 +529,10 @@ html[data-theme="light"] .account-menu {
   background: linear-gradient(135deg, rgba(255,45,85,0.08), rgba(42,171,238,0.06));
   border-radius: 22px;
 }
+html[data-theme="light"] .generator-app {
+  border-color: rgba(17, 19, 26, 0.08);
+  background: linear-gradient(135deg, rgba(255,45,85,0.1), rgba(42,171,238,0.06));
+}
 .generator-panel,
 .result-panel {
   background: rgba(17, 17, 20, 0.94);
@@ -536,6 +540,11 @@ html[data-theme="light"] .account-menu {
   border-radius: 18px;
   padding: 18px;
   box-shadow: 0 18px 60px rgba(0,0,0,0.28);
+}
+html[data-theme="light"] .generator-panel {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(17, 19, 26, 0.1);
+  box-shadow: 0 18px 60px rgba(28, 35, 55, 0.14);
 }
 .session-card {
   display: flex;
@@ -546,6 +555,10 @@ html[data-theme="light"] .account-menu {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 14px;
   background: linear-gradient(135deg, rgba(255,45,85,0.12), rgba(42,171,238,0.07));
+}
+html[data-theme="light"] .session-card {
+  border-color: rgba(255,45,85,0.22);
+  background: linear-gradient(135deg, rgba(255,45,85,0.1), rgba(42,171,238,0.08));
 }
 .session-card > svg {
   flex: 0 0 auto;
@@ -618,6 +631,10 @@ html[data-theme="light"] .login-box {
   background: linear-gradient(135deg, rgba(74,222,128,0.11), rgba(42,171,238,0.08));
   border: 1px solid rgba(74, 222, 128, 0.28);
 }
+html[data-theme="light"] .referral-card {
+  background: linear-gradient(135deg, rgba(74,222,128,0.12), rgba(42,171,238,0.09));
+  border-color: rgba(22, 138, 72, 0.24);
+}
 .referral-card[hidden] {
   display: none;
 }
@@ -679,6 +696,9 @@ html[data-theme="light"] .web-form textarea {
   border-radius: 14px;
   background: rgba(255, 45, 85, 0.08);
   border: 1px solid rgba(255, 45, 85, 0.28);
+}
+html[data-theme="light"] .checkout-panel {
+  background: rgba(255, 45, 85, 0.1);
 }
 
 .modal-promo {
@@ -923,6 +943,13 @@ html[data-theme="light"] .topup-dialog {
   background: var(--surface2);
   cursor: pointer;
   text-align: center;
+}
+html[data-theme="light"] .upload-zone,
+html[data-theme="light"] .mode-row label,
+html[data-theme="light"] .preset-tabs button,
+html[data-theme="light"] .preset-grid button {
+  border-color: rgba(17, 19, 26, 0.12);
+  background: #eef1f7;
 }
 .upload-zone:hover {
   border-color: var(--accent);
