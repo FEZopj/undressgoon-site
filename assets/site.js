@@ -75,23 +75,17 @@
     var marquee = document.getElementById('marquee');
     if (!marquee) return;
 
-    // Horizontal marquees sit in the viewport height — native lazy often never fires.
-    // Keep original numeric order (1, 2, 3…); hydrate off-screen cards via IntersectionObserver.
+    // Marquee cards are animated with transforms, which makes lazy hydration
+    // unreliable in some browsers. The thumb set is small, so load it directly.
     var ids = nums();
 
     function cardHtml(n, eager) {
       var alt = i18n.imgAlt || 'AI undress result';
-      if (eager) {
-        return (
-          '<div class="result-card" data-n="' + n + '">' +
-            '<img src="' + thumbUrl(n) + '" alt="' + alt + '" width="480" height="600" ' +
-              'decoding="async" loading="eager" fetchpriority="high" />' +
-          '</div>'
-        );
-      }
       return (
         '<div class="result-card" data-n="' + n + '">' +
-          '<img data-src="' + thumbUrl(n) + '" alt="' + alt + '" width="480" height="600" decoding="async" />' +
+          '<img src="' + thumbUrl(n) + '" alt="' + alt + '" width="480" height="600" ' +
+            'decoding="async" loading="' + (eager ? 'eager' : 'auto') + '" ' +
+            (eager ? 'fetchpriority="high" ' : '') + '/>' +
         '</div>'
       );
     }
@@ -109,33 +103,6 @@
       }
       // Placeholder shimmer until hydrated
     });
-
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var card = entry.target;
-          var img = card.querySelector('img[data-src]');
-          if (img) {
-            img.src = img.getAttribute('data-src');
-            img.removeAttribute('data-src');
-            onImgLoad(img, card);
-          }
-          io.unobserve(card);
-        });
-      }, { root: null, rootMargin: '200px 400px', threshold: 0.01 });
-
-      marquee.querySelectorAll('.result-card').forEach(function (card) {
-        if (card.querySelector('img[data-src]')) io.observe(card);
-      });
-    } else {
-      // Fallback: load all thumbs (still tiny WebPs)
-      marquee.querySelectorAll('img[data-src]').forEach(function (img) {
-        img.src = img.getAttribute('data-src');
-        img.removeAttribute('data-src');
-        onImgLoad(img, img.parentElement);
-      });
-    }
   }
 
   function buildGallery() {
