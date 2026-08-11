@@ -246,19 +246,40 @@ html[data-theme="light"] .account-menu {
 
 /* BUTTONS */
 .btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 11px 20px;
   border-radius: 12px;
-  font-weight: 700;
+  font-weight: 900;
   font-size: 0.92rem;
-  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, background 0.2s;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s, filter 0.18s, background 0.18s;
   cursor: pointer;
   border: none;
   white-space: nowrap;
   text-align: center;
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: -40% auto -40% -65%;
+  z-index: 1;
+  width: 58%;
+  transform: rotate(18deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+.btn:hover::before {
+  opacity: 1;
+  animation: cta-shine 0.78s ease-out;
+}
+.btn:active {
+  transform: translateY(0) scale(0.97);
 }
 .btn:disabled {
   opacity: 0.52;
@@ -288,14 +309,14 @@ html[data-theme="light"] .account-menu {
   stroke-width: 2.3;
 }
 .btn-tg {
-  background: var(--tg);
+  background: linear-gradient(135deg, #2AABEE, #4adeff 52%, #198dd1);
   color: #fff;
-  box-shadow: 0 4px 20px rgba(42, 171, 238, 0.35);
+  box-shadow: 0 7px 24px rgba(42, 171, 238, 0.38);
 }
 .btn-tg:hover {
-  background: #229ED9;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(42, 171, 238, 0.45);
+  transform: translateY(-3px) scale(1.02);
+  filter: saturate(1.12) brightness(1.04);
+  box-shadow: 0 12px 34px rgba(42, 171, 238, 0.5);
 }
 .btn-google {
   background: #fff;
@@ -319,13 +340,21 @@ html[data-theme="light"] .account-menu {
   transform: translateY(-2px);
 }
 .btn-accent {
-  background: var(--accent);
+  background: linear-gradient(135deg, #ff174f 0%, #ff2d55 34%, #ff6b8a 68%, #b44cff 100%);
+  background-size: 220% 220%;
   color: #fff;
-  box-shadow: 0 4px 24px var(--glow);
+  box-shadow:
+    0 7px 24px var(--glow),
+    0 0 0 1px rgba(255,255,255,0.08) inset;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.24);
 }
 .btn-accent:hover {
-  background: var(--accent2);
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.025);
+  filter: saturate(1.15) brightness(1.05);
+  box-shadow:
+    0 14px 40px rgba(255, 45, 85, 0.45),
+    0 0 0 1px rgba(255,255,255,0.14) inset;
+  animation: cta-gradient 1.8s ease infinite;
 }
 .btn-lg {
   padding: 16px 34px;
@@ -333,11 +362,19 @@ html[data-theme="light"] .account-menu {
   border-radius: 14px;
 }
 .btn-pulse {
-  animation: pulse 2.4s infinite;
+  animation: pulse 2.1s infinite, cta-gradient 3.4s ease infinite;
 }
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.5); }
-  50% { box-shadow: 0 0 0 14px rgba(255, 45, 85, 0); }
+  0%, 100% { box-shadow: 0 7px 24px var(--glow), 0 0 0 0 rgba(255, 45, 85, 0.48); }
+  50% { box-shadow: 0 16px 46px rgba(255, 45, 85, 0.42), 0 0 0 15px rgba(255, 45, 85, 0); }
+}
+@keyframes cta-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes cta-shine {
+  0% { transform: translateX(0) rotate(18deg); }
+  100% { transform: translateX(330%) rotate(18deg); }
 }
 
 .tg-icon {
@@ -610,6 +647,8 @@ html[data-theme="light"] .web-form textarea {
   background: #ffffff;
 }
 .referral-actions button {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -621,6 +660,13 @@ html[data-theme="light"] .web-form textarea {
   background: var(--green);
   font-weight: 900;
   cursor: pointer;
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.25);
+  transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+}
+.referral-actions button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 13px 32px rgba(74, 222, 128, 0.35);
 }
 .checkout-panel {
   display: grid;
@@ -705,6 +751,8 @@ html[data-theme="light"] .web-form textarea {
   font-weight: 900;
 }
 .pack-card button {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -713,9 +761,18 @@ html[data-theme="light"] .web-form textarea {
   border-radius: 10px;
   padding: 9px 8px;
   color: #fff;
-  background: var(--accent);
+  background: linear-gradient(135deg, #ff174f, #ff2d55 48%, #b44cff);
+  background-size: 180% 180%;
   font-weight: 900;
   cursor: pointer;
+  box-shadow: 0 8px 22px rgba(255, 45, 85, 0.28);
+  transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+}
+.pack-card button:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.05) saturate(1.12);
+  box-shadow: 0 13px 32px rgba(255, 45, 85, 0.42);
+  animation: cta-gradient 1.8s ease infinite;
 }
 .pack-card button:disabled {
   opacity: 0.6;
@@ -813,6 +870,8 @@ html[data-theme="light"] .topup-dialog {
   gap: 10px;
 }
 .topup-actions button {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -823,12 +882,20 @@ html[data-theme="light"] .topup-dialog {
   color: #fff;
   font-weight: 900;
   cursor: pointer;
+  box-shadow: 0 9px 28px rgba(0,0,0,0.2);
+  transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+}
+.topup-actions button:hover {
+  transform: translateY(-2px) scale(1.015);
+  filter: brightness(1.04);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.28);
 }
 .topup-actions .card-fallback {
-  background: var(--tg);
+  background: linear-gradient(135deg, #2AABEE, #53d7ff, #198dd1);
 }
 .topup-actions .telegram-link {
-  background: rgba(255,255,255,0.1);
+  background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,45,85,0.18));
+  border: 1px solid rgba(255,255,255,0.1);
 }
 .topup-note {
   display: block;
@@ -1481,11 +1548,23 @@ html[data-theme="light"] .sticky-cta {
 }
 .sticky-cta.show { transform: translateY(0); }
 .sticky-inner {
+  position: relative;
   max-width: 720px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 12px;
+}
+.sticky-inner::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -32px;
+  width: min(620px, 90vw);
+  height: 74px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(255,45,85,0.18), transparent 68%);
+  pointer-events: none;
 }
 .sticky-copy {
   flex: 1;
@@ -1503,6 +1582,7 @@ html[data-theme="light"] .sticky-cta {
 .sticky-cta .btn {
   flex-shrink: 0;
   padding: 12px 18px;
+  animation: pulse 2.3s infinite, cta-gradient 3.4s ease infinite;
 }
 
 /* AGE / EXIT SOFT NUDGE - optional toast */
@@ -1576,6 +1656,8 @@ html[data-theme="light"] .toast {
 @media (prefers-reduced-motion: reduce) {
   .marquee { animation: none; }
   .btn-pulse { animation: none; }
+  .sticky-cta .btn { animation: none; }
+  .btn:hover::before { animation: none; opacity: 0; }
   .live-dot { animation: none; }
   .hero h1 .grad { animation: none; }
   .result-card::after { animation: none; }
