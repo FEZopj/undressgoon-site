@@ -1095,6 +1095,20 @@ html[data-theme="light"] .upload-preview {
   border-color: rgba(255, 45, 85, 0.85);
   background: rgba(255, 45, 85, 0.16);
 }
+.preset-tabs button.active {
+  color: #fff;
+  border-color: rgba(255, 45, 85, 0.95);
+  background:
+    linear-gradient(135deg, rgba(255, 45, 85, 0.95), rgba(180, 76, 255, 0.78));
+  box-shadow: 0 12px 26px rgba(255, 45, 85, 0.25);
+}
+html[data-theme="light"] .preset-tabs button.active {
+  color: #fff;
+  border-color: rgba(255, 45, 85, 0.95);
+  background:
+    linear-gradient(135deg, rgba(255, 45, 85, 0.95), rgba(180, 76, 255, 0.78));
+  box-shadow: 0 12px 28px rgba(255, 45, 85, 0.22);
+}
 .preset-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
