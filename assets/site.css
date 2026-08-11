@@ -295,13 +295,18 @@ header {
   grid-template-columns: minmax(0, 0.95fr) minmax(280px, 1.05fr);
   gap: 16px;
   align-items: stretch;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, rgba(255,45,85,0.08), rgba(42,171,238,0.06));
+  border-radius: 22px;
 }
 .generator-panel,
 .result-panel {
-  background: var(--surface);
+  background: rgba(17, 17, 20, 0.94);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 18px;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.28);
 }
 .account-row {
   display: flex;
@@ -346,6 +351,72 @@ header {
   color: var(--muted);
   font-size: 0.88rem;
   margin-bottom: 10px;
+}
+.checkout-panel {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 45, 85, 0.08);
+  border: 1px solid rgba(255, 45, 85, 0.28);
+}
+.checkout-panel[hidden] {
+  display: none;
+}
+.checkout-head strong,
+.checkout-head small {
+  display: block;
+}
+.checkout-head small {
+  color: var(--muted);
+  margin-top: 3px;
+  font-size: 0.82rem;
+}
+.pack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.pack-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.pack-card.featured {
+  border-color: rgba(255, 45, 85, 0.75);
+  box-shadow: 0 0 28px rgba(255,45,85,0.12);
+}
+.pack-card strong {
+  font-size: 0.95rem;
+}
+.pack-card span {
+  color: var(--green);
+  font-weight: 900;
+}
+.pack-card button {
+  border: 0;
+  border-radius: 10px;
+  padding: 9px 8px;
+  color: #fff;
+  background: var(--accent);
+  font-weight: 900;
+  cursor: pointer;
+}
+.pack-card button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.card-fallback {
+  display: block;
+  text-align: center;
+  color: var(--tg);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 .web-form {
   display: grid;
@@ -470,7 +541,7 @@ header {
   resize: vertical;
   min-height: 116px;
   color: var(--text);
-  background: var(--surface2);
+  background: #0e0e12;
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
@@ -503,6 +574,9 @@ header {
 .result-panel {
   min-height: 520px;
   display: grid;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 34%),
+    rgba(17, 17, 20, 0.94);
 }
 .result-empty {
   align-self: center;
@@ -992,6 +1066,7 @@ footer {
   .result-panel { border-radius: 14px; padding: 14px; }
   .account-row { align-items: flex-start; }
   .mode-row { grid-template-columns: 1fr; }
+  .pack-grid { grid-template-columns: 1fr; }
   .preset-grid { grid-template-columns: repeat(2, 1fr); }
   .result-panel { min-height: 280px; }
   .stats { gap: 20px 32px; }

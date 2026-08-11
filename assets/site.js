@@ -137,7 +137,7 @@
       // First row roughly eager on desktop; rest native-lazy
       var eager = idx < 4;
       return (
-        '<a class="gallery-item" href="' + BOT_URL + '" target="_blank" rel="noopener" data-n="' + n + '">' +
+        '<a class="gallery-item" href="#generate" data-generate-cta data-n="' + n + '">' +
           '<img src="' + thumbUrl(n) + '" alt="' + (i18n.imgAlt || 'AI undress result') + '" ' +
             'width="480" height="600" decoding="async" loading="' + (eager ? 'eager' : 'lazy') + '" />' +
           '<div class="g-overlay"><span>' + overlayText + '</span></div>' +
@@ -213,12 +213,11 @@
     }
   }
 
-  // Wire all bot CTAs with consistent URL + optional UTM
   function normalizeCtas() {
-    document.querySelectorAll('[data-bot-cta]').forEach(function (a) {
-      a.setAttribute('href', BOT_URL);
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener');
+    document.querySelectorAll('[data-generate-cta]').forEach(function (a) {
+      a.setAttribute('href', '#generate');
+      a.removeAttribute('target');
+      a.removeAttribute('rel');
     });
   }
 
@@ -232,6 +231,11 @@
     if (!el) return;
     el.textContent = text || '';
     el.dataset.tone = tone || '';
+  }
+
+  function showCheckout(show) {
+    var panel = document.getElementById('checkout-panel');
+    if (panel) panel.hidden = !show;
   }
 
   function initGoogleLogin() {
@@ -260,6 +264,7 @@
     if (logout) logout.hidden = !authed;
     if (form) form.classList.toggle('is-locked', !authed);
     if (submit) submit.disabled = !authed;
+    if (authed) showCheckout(Number(user.credits || 0) <= 0);
     if (authed && user.consentAccepted) {
       var consent = document.getElementById('web-consent');
       if (consent) consent.checked = true;
@@ -280,6 +285,54 @@
         updateWebAccount(null);
         return null;
       });
+  }
+
+  function loadPacks() {
+    var grid = document.getElementById('pack-grid');
+    if (!grid) return;
+    fetch(apiUrl('/web/packs'), { credentials: 'include' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (!data || !data.ok) return;
+        grid.innerHTML = (data.packs || []).map(function (pack, idx) {
+          return (
+            '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
+              '<strong>' + pack.credits + ' credits</strong>' +
+              '<span>' + pack.price + '</span>' +
+              '<button type="button" data-pack="' + pack.code + '">Pay crypto</button>' +
+            '</div>'
+          );
+        }).join('');
+        grid.querySelectorAll('button[data-pack]').forEach(function (button) {
+          button.addEventListener('click', function () {
+            var code = button.getAttribute('data-pack');
+            button.disabled = true;
+            button.textContent = 'Opening...';
+            setStatus('Creating secure crypto checkout...', 'working');
+            fetch(apiUrl('/web/crypto/create'), {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code: code })
+            })
+              .then(function (res) {
+                return res.json().catch(function () { return {}; }).then(function (payload) {
+                  if (!res.ok || !payload.ok) throw new Error(payload.message || 'Could not create checkout.');
+                  return payload;
+                });
+              })
+              .then(function (payload) {
+                location.href = payload.invoiceUrl;
+              })
+              .catch(function (err) {
+                setStatus(err.message || 'Could not create checkout.', 'error');
+                button.disabled = false;
+                button.textContent = 'Pay crypto';
+              });
+          });
+        });
+      })
+      .catch(function () {});
   }
 
   function paintResults(images) {
@@ -385,6 +438,7 @@
     initGoogleLogin();
     refreshWebSession();
     initPresets();
+    loadPacks();
 
     if (file && fileName) {
       file.addEventListener('change', function () {
@@ -432,9 +486,10 @@
         .catch(function (err) {
           var payload = err.payload || {};
           if (payload.code === 'insufficient_credits') {
-            setStatus('Out of credits. Open the bot to buy more.', 'error');
+            showCheckout(true);
+            setStatus('Out of credits. Top up below to keep generating.', 'error');
           } else if (payload.code === 'not_authenticated') {
-            setStatus('Login with Telegram first.', 'error');
+            setStatus('Login with Google first.', 'error');
             updateWebAccount(null);
           } else {
             setStatus(err.message || 'Something went wrong.', 'error');

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon — AI Undress Bot | Nude, Micro Bikini, BDSM, Latex Goon Tool</title>
-  <meta name="description" content="Undress any photo with AI. Fully nude, micro bikinis, BDSM gear, latex, wet looks, lingerie. Fully customized prompts allowed. Free credits on Telegram — start in 10 seconds." />
+  <title>UndressGoon — AI Undress Generator | Nude, Micro Bikini, BDSM, Latex</title>
+  <meta name="description" content="Undress any photo with AI directly on the website. Fully nude, micro bikinis, BDSM gear, latex, wet looks, lingerie and fully customized prompts." />
   <meta name="keywords" content="undress AI, AI undress, undress bot, nude AI, AI nude generator, goon AI, gooning bot, deepnude alternative, telegram undress, AI porn, undress photo, nude generator, micro bikini AI, BDSM AI, latex AI, wet look AI, AI clothes remover, custom AI prompt, fetish AI, undressgoon" />
   <meta name="theme-color" content="#070709" />
-  <meta property="og:title" content="UndressGoon — AI Undress & Goon Bot on Telegram" />
-  <meta property="og:description" content="Undress any photo with AI. Free credits the second you open the bot. Fully custom prompts." />
+  <meta property="og:title" content="UndressGoon — AI Undress Generator" />
+  <meta property="og:description" content="Upload a photo, choose a preset, and generate directly on the website." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/" />
   <meta property="og:image" content="https://undressgoon.app/results/thumbs/1.webp" />
@@ -45,17 +45,14 @@
           <a href="fr/index.html">FR</a>
           <a href="de/index.html">DE</a>
         </nav>
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg" data-bot-cta>
-          <svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.04 15.3l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.88c.97.53 1.66.25 1.92-.9l3.48-16.34h.01c.31-1.44-.52-2-1.46-1.65L1.36 9.37C-.05 9.92-.03 10.7 1.12 11.05l5.52 1.72L19.4 5.2c.63-.41 1.2-.19.73.22"/></svg>
-          Open Bot
-        </a>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Generate</a>
       </div>
     </div>
   </header>
 
   <section class="hero">
     <div class="container">
-      <div class="badge">🔥 #1 Telegram Undress & Goon AI</div>
+      <div class="badge">🔥 AI undress generator for instant web sessions</div>
       <div class="live-pill" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span><strong id="live-count">24</strong> people generating right now</span>
@@ -65,19 +62,16 @@
         <span class="grad">Fully nude. Micro bikini. BDSM. Latex.</span>
       </h1>
       <p class="hero-sub">
-        The pure <strong>gooning tool</strong>. Upload a photo and type <strong>exactly</strong> what you want —
-        fully customized prompts allowed. Free credits the second you open Telegram.
+        The pure <strong>gooning tool</strong>. Upload a photo, pick a preset, or type <strong>exactly</strong>
+        what you want. Generate directly here with free credits after Google login.
       </p>
       <div class="cta-group">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent btn-lg btn-pulse" data-bot-cta>
-          <svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.04 15.3l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.88c.97.53 1.66.25 1.92-.9l3.48-16.34h.01c.31-1.44-.52-2-1.46-1.65L1.36 9.37C-.05 9.92-.03 10.7 1.12 11.05l5.52 1.72L19.4 5.2c.63-.41 1.2-.19.73.22"/></svg>
-          Start Free on Telegram
-        </a>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Start generating free</a>
       </div>
       <p class="free-note">🎁 <strong>Free credits instantly</strong> — no email, no card, no app install</p>
       <div class="trust-row">
         <span>⚡ Results in 15–40s</span>
-        <span>🔒 Private in Telegram</span>
+        <span>🔒 Private web session</span>
         <span>✍️ Unlimited custom prompts</span>
         <span>🔞 18+ only</span>
       </div>
@@ -88,7 +82,7 @@
     <div class="container">
       <div class="generator-head">
         <span class="badge">Generate on the website</span>
-        <h2>Upload, prompt, generate. No bot chat required.</h2>
+        <h2>Upload, prompt, generate. No app switch required.</h2>
         <p>Your one free credit is tied to your Google account, so the same backend balance is enforced on every browser.</p>
       </div>
 
@@ -140,6 +134,18 @@
             <button class="btn btn-accent btn-lg" type="submit" id="web-submit">Generate 1 image</button>
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
+
+          <div class="checkout-panel" id="checkout-panel" hidden>
+            <div class="checkout-head">
+              <span class="mini-label">Top up</span>
+              <strong>Keep the session going</strong>
+              <small>Crypto checkout runs on the website. Card payments use Telegram Stars as fallback.</small>
+            </div>
+            <div class="pack-grid" id="pack-grid"></div>
+            <a class="card-fallback" href="https://t.me/goonmasterbotbot?start=web" target="_blank" rel="noopener">
+              Pay by card in Telegram
+            </a>
+          </div>
         </div>
 
         <div class="result-panel">
@@ -185,8 +191,8 @@
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
-          <h3>Open the bot</h3>
-          <p>One tap → Telegram opens UndressGoon. Free credits load automatically.</p>
+          <h3>Login</h3>
+          <p>Continue with Google so one real account owns the free credit.</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
@@ -205,7 +211,7 @@
         </div>
       </div>
       <div style="text-align:center;margin-top:28px;">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg btn-lg" data-bot-cta>Try step 1 free →</a>
+        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>Try step 1 free →</a>
       </div>
     </div>
   </section>
@@ -264,12 +270,10 @@
   <section class="section" style="padding-top:20px;">
     <div class="container">
       <h2 class="section-title">Real goon results</h2>
-      <p class="section-sub">Tap any image to open the bot and generate yours free</p>
+      <p class="section-sub">Tap any image to jump into the website generator</p>
       <div class="gallery" id="gallery"></div>
       <div style="text-align:center;margin-top:32px;">
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg btn-lg" data-bot-cta>
-          Generate yours free →
-        </a>
+        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>Generate yours free →</a>
       </div>
     </div>
   </section>
@@ -277,7 +281,7 @@
   <section class="section" style="padding-top:10px;">
     <div class="container">
       <h2 class="section-title">Start free. Go harder when you're hooked.</h2>
-      <p class="section-sub">Free credits to prove the quality — upgrade inside the bot when you want more</p>
+      <p class="section-sub">Free credits to prove the quality — top up with crypto on-site when you want more</p>
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">Start here</span>
@@ -287,26 +291,26 @@
             <li>Instant free credits</li>
             <li>Full custom prompts</li>
             <li>No email or card</li>
-            <li>Works in Telegram</li>
+            <li>Works directly on the website</li>
           </ul>
-          <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent" style="width:100%;" data-bot-cta>Claim free credits →</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Claim free credits →</a>
         </div>
         <div class="value-card">
           <h3>More credits</h3>
-          <div class="price">Inside bot <span>/ when ready</span></div>
+          <div class="price">On-site <span>/ when ready</span></div>
           <ul>
-            <li>Credit packs when free runs out</li>
+            <li>Crypto packs when free runs out</li>
             <li>Faster binge sessions</li>
             <li>Same quality, more volume</li>
-            <li>Pay only if you love it</li>
+            <li>Card fallback if needed</li>
           </ul>
-          <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-tg" style="width:100%;" data-bot-cta>Open bot & upgrade later</a>
+          <a href="#generate" class="btn btn-tg" style="width:100%;" data-generate-cta>Generate first, top up later</a>
         </div>
       </div>
       <div class="proof-strip">
         <div class="proof-chip"><strong>“Free credits sold me.”</strong> Tried once → never went back to random sites.</div>
         <div class="proof-chip"><strong>“Custom prompts are filthy.”</strong> Whatever I type, it actually follows.</div>
-        <div class="proof-chip"><strong>“Private & fast.”</strong> Stays in Telegram. No weird accounts.</div>
+        <div class="proof-chip"><strong>“Private & fast.”</strong> No chat flow. Just upload and generate.</div>
       </div>
     </div>
   </section>
@@ -319,9 +323,7 @@
           Fully customized prompts allowed. Describe exactly what you want — any outfit, any pose, any fantasy —
           and UndressGoon turns it into goon-ready images in seconds.
         </p>
-        <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent btn-lg btn-pulse" data-bot-cta>
-          Open UndressGoon Now →
-        </a>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Open UndressGoon Now →</a>
         <p class="urgency">🎁 Free credits waiting · no signup wall · 18+</p>
       </div>
     </div>
@@ -331,14 +333,14 @@
     <div class="container">
       <div class="logo" style="margin-bottom:16px;">Undress<span>Goon</span></div>
       <p class="footer-seo">
-        UndressGoon is the leading Telegram AI undress bot and gooning tool.
+        UndressGoon is an AI undress generator and gooning tool.
         Generate fully nude AI images, remove clothes with AI, create micro bikini,
         BDSM, latex, wet look, lingerie and fully customized fetish prompts from any photo.
-        Turn any fantasy into reality. Fast AI nude generator and clothes remover that works inside Telegram.
+        Turn any fantasy into reality. Fast AI nude generator and clothes remover that works directly on the website.
         Free credits to start. Perfect for gooning sessions.
       </p>
       <p style="font-size:0.9rem;color:var(--muted);">
-        undressgoon.app · <a href="https://t.me/goonmasterbotbot?start=web" style="color:var(--tg);" data-bot-cta>t.me/goonmasterbotbot</a>
+        undressgoon.app
       </p>
       <p class="disclaimer">
         Adult only (18+). Only upload photos you have the legal right to use.
@@ -354,14 +356,14 @@
     <div class="sticky-inner">
       <div class="sticky-copy">
         <strong>🎁 Free credits ready</strong>
-        <span>Open Telegram · undress in seconds</span>
+        <span>Upload · preset · generate</span>
       </div>
-      <a href="https://t.me/goonmasterbotbot?start=web" class="btn btn-accent" data-bot-cta>Start free →</a>
+      <a href="#generate" class="btn btn-accent" data-generate-cta>Start free →</a>
     </div>
   </div>
 
   <div class="toast" id="reengage-toast">
-    Still deciding? <a href="https://t.me/goonmasterbotbot?start=web" data-bot-cta>Grab free credits →</a> no card needed.
+    Still deciding? <a href="#generate" data-generate-cta>Grab free credits →</a> no card needed.
   </div>
 
   <script>
