@@ -448,6 +448,7 @@
     var accountLinkTelegram = document.getElementById('account-link-telegram');
     var telegramLink = document.getElementById('telegram-link');
     var telegramNote = document.getElementById('telegram-link-note');
+    var stickyFreeCopy = document.querySelector('#sticky-cta .sticky-copy');
     var user = currentSession && currentSession.user;
     var authed = !!user;
     var toast = document.getElementById('reengage-toast');
@@ -464,6 +465,7 @@
     if (accountAvatar) accountAvatar.textContent = authed ? userInitial(user) : 'U';
     if (accountEmail) accountEmail.textContent = authed ? (user.email || userLabel(user)) : t('signedIn', 'Signed in');
     if (accountMenuCredits) accountMenuCredits.textContent = authed ? formatCredits(user.credits) : '';
+    if (stickyFreeCopy) stickyFreeCopy.hidden = authed;
     if (toast && authed) toast.classList.remove('show');
     var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
     if (accountLinkTelegram) accountLinkTelegram.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
