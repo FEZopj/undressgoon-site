@@ -20,6 +20,18 @@
     return i18n && Object.prototype.hasOwnProperty.call(i18n, key) ? i18n[key] : fallback;
   }
 
+  function esc(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (ch) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch];
+    });
+  }
+
   function formatCredits(count) {
     var n = Number(count || 0);
     var template = n === 1 ? t('creditSingular', '{n} credit available') : t('creditPlural', '{n} credits available');
@@ -328,27 +340,36 @@
   function initGoogleLogin() {
     var link = document.getElementById('google-login');
     if (!link) return;
-    var params = new URLSearchParams(location.search || '');
-    params.delete('google_login');
-    params.delete('web_login');
-    params.set('return_to', location.origin + location.pathname);
-    try {
-      var fp = localStorage.getItem('ug_fp');
-      if (!fp) {
-        var bytes = new Uint8Array(16);
-        if (window.crypto && window.crypto.getRandomValues) {
-          window.crypto.getRandomValues(bytes);
-          fp = Array.prototype.map.call(bytes, function (b) {
-            return b.toString(16).padStart(2, '0');
-          }).join('');
+    function updateHref() {
+      var params = new URLSearchParams(location.search || '');
+      params.delete('google_login');
+      params.delete('web_login');
+      params.set('return_to', location.origin + location.pathname);
+      try {
+        var fp = localStorage.getItem('ug_fp');
+        if (!fp) {
+          var bytes = new Uint8Array(16);
+          if (window.crypto && window.crypto.getRandomValues) {
+            window.crypto.getRandomValues(bytes);
+            fp = Array.prototype.map.call(bytes, function (b) {
+              return b.toString(16).padStart(2, '0');
+            }).join('');
+          } else {
+            fp = String(Date.now()) + Math.random().toString(16).slice(2);
+          }
+          localStorage.setItem('ug_fp', fp);
         } else {
-          fp = String(Date.now()) + Math.random().toString(16).slice(2);
+          fp = String(fp).slice(0, 96);
         }
-        localStorage.setItem('ug_fp', fp);
-      }
-      params.set('ug_fp', fp);
-    } catch (e) { /* storage can be blocked */ }
-    link.href = apiUrl('/web/auth/google/start') + '?' + params.toString();
+        params.set('ug_fp', fp);
+      } catch (e) { /* storage can be blocked */ }
+      link.href = apiUrl('/web/auth/google/start') + '?' + params.toString();
+    }
+    updateHref();
+    if (!link.dataset.loginBound) {
+      link.dataset.loginBound = '1';
+      link.addEventListener('click', updateHref);
+    }
   }
 
   function updateWebAccount(session) {
@@ -435,14 +456,14 @@
         if (!data || !data.ok) return;
         packOffer = data;
         grid.innerHTML = (data.packs || []).map(function (pack, idx) {
-          var badge = idx === 1 ? '<em>' + t('bestValue', 'Popular') + '</em>' : '';
+          var badge = idx === 1 ? '<em>' + esc(t('bestValue', 'Popular')) + '</em>' : '';
           var baseCredits = Number(pack.baseCredits || pack.credits || 0);
           var bonusCredits = Number(pack.bonusCredits || 0);
           var creditLine = bonusCredits > 0 ?
-            baseCredits + ' + ' + bonusCredits + ' ' + t('freeCreditsWord', 'free') :
-            Number(pack.credits || baseCredits) + ' ' + t('creditsWord', 'credits');
+            baseCredits + ' + ' + bonusCredits + ' ' + esc(t('freeCreditsWord', 'free')) :
+            Number(pack.credits || baseCredits) + ' ' + esc(t('creditsWord', 'credits'));
           var bonusLine = bonusCredits > 0 ?
-            '<small class="pack-bonus">' + Number(pack.credits || (baseCredits + bonusCredits)) + ' ' + t('creditsTotal', 'credits total') + '</small>' :
+            '<small class="pack-bonus">' + Number(pack.credits || (baseCredits + bonusCredits)) + ' ' + esc(t('creditsTotal', 'credits total')) + '</small>' :
             '';
           return (
             '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
@@ -450,8 +471,8 @@
               '<i data-lucide="coins"></i>' +
               '<strong>' + creditLine + '</strong>' +
               bonusLine +
-              '<span>' + pack.price + '</span>' +
-              '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> ' + t('payCrypto', 'Crypto') + '</button>' +
+              '<span>' + esc(pack.price) + '</span>' +
+              '<button type="button" data-pack="' + esc(pack.code) + '"><i data-lucide="bitcoin"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' +
             '</div>'
           );
         }).join('');
@@ -649,7 +670,7 @@
 
     function renderTabs() {
       tabs.innerHTML = cats.map(function (cat) {
-        return '<button type="button" class="' + (cat.key === active ? 'active' : '') + '" data-cat="' + cat.key + '">' + cat.label + '</button>';
+        return '<button type="button" class="' + (cat.key === active ? 'active' : '') + '" data-cat="' + esc(cat.key) + '">' + esc(cat.label) + '</button>';
       }).join('');
       tabs.querySelectorAll('button').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -665,7 +686,7 @@
         return p.category === active;
       }).map(function (p) {
         var icon = p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt');
-        return '<button type="button" class="' + (p.key === selected ? 'active' : '') + '" data-key="' + p.key + '"><i data-lucide="' + icon + '"></i>' + p.label + '</button>';
+        return '<button type="button" class="' + (p.key === selected ? 'active' : '') + '" data-key="' + esc(p.key) + '"><i data-lucide="' + icon + '"></i>' + esc(p.label) + '</button>';
       }).join('');
       refreshIcons();
       grid.querySelectorAll('button').forEach(function (button) {
@@ -771,6 +792,16 @@
 
       if (!chosen) {
         setStatus(t('missingPhoto', 'Upload a person photo first.'), 'error');
+        if (file) file.focus();
+        return null;
+      }
+      if (!/image\/(jpeg|png|webp)/i.test(chosen.type || '')) {
+        setStatus(t('badPhotoType', 'Upload a valid JPG, PNG, or WebP photo.'), 'error');
+        if (file) file.focus();
+        return null;
+      }
+      if (chosen.size > 12 * 1024 * 1024) {
+        setStatus(t('photoTooLarge', 'Photo is too large. Upload an image up to 12 MB.'), 'error');
         if (file) file.focus();
         return null;
       }
