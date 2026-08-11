@@ -28,6 +28,7 @@
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
   <link rel="stylesheet" href="assets/site.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
 <body>
 
@@ -70,10 +71,10 @@
       </div>
       <p class="free-note">🎁 <strong>Free credits instantly</strong> — no email, no card, no app install</p>
       <div class="trust-row">
-        <span>⚡ Results in 15–40s</span>
-        <span>🔒 Private web session</span>
-        <span>✍️ Unlimited custom prompts</span>
-        <span>🔞 18+ only</span>
+        <span><i data-lucide="zap"></i> Results in 15–40s</span>
+        <span><i data-lucide="shield-check"></i> Private web session</span>
+        <span><i data-lucide="sparkles"></i> Presets + custom prompts</span>
+        <span><i data-lucide="badge-check"></i> 18+ only</span>
       </div>
     </div>
   </section>
@@ -102,16 +103,28 @@
             <a class="btn btn-google" id="google-login" href="#">Continue with Google</a>
           </div>
 
+          <div class="referral-card" id="referral-card" hidden>
+            <div>
+              <span class="mini-label">Referral credits</span>
+              <strong>Invite friends. Stack free runs.</strong>
+              <small id="referral-copy">You get bonus credits when someone joins and generates.</small>
+            </div>
+            <div class="referral-actions">
+              <input id="referral-link" readonly value="" aria-label="Referral link" />
+              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+            </div>
+          </div>
+
           <form class="web-form" id="web-generate-form">
             <label class="upload-zone" for="person-photo">
               <input id="person-photo" name="person" type="file" accept="image/*" required />
-              <span class="upload-main">Choose a photo</span>
+              <span class="upload-main"><i data-lucide="image-plus"></i> Choose a photo</span>
               <span class="upload-sub" id="upload-name">JPG, PNG, or WebP up to 12 MB</span>
             </label>
 
             <div class="mode-row" role="group" aria-label="Generation mode">
-              <label><input type="radio" name="mode" value="prompt" checked /> Outfit edit</label>
-              <label><input type="radio" name="mode" value="portrait" /> Scene</label>
+              <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Outfit edit</label>
+              <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Scene</label>
             </div>
 
             <div class="preset-picker">
@@ -131,7 +144,7 @@
               <span>I confirm I am 18+ and have the legal right to use this photo.</span>
             </label>
 
-            <button class="btn btn-accent btn-lg" type="submit" id="web-submit">Generate 1 image</button>
+            <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> Generate 1 image</button>
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
 
@@ -164,23 +177,27 @@
   </div>
 
   <div class="container">
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num">180k+</div>
-        <div class="stat-label">Images generated</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">42k+</div>
-        <div class="stat-label">Active gooners</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">15-40s</div>
-        <div class="stat-label">Average generation</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">∞</div>
-        <div class="stat-label">Custom prompts</div>
-      </div>
+      <div class="stats">
+        <div class="stat">
+          <i data-lucide="images"></i>
+          <div class="stat-num">180k+</div>
+          <div class="stat-label">Images generated</div>
+        </div>
+        <div class="stat">
+          <i data-lucide="users"></i>
+          <div class="stat-num">42k+</div>
+          <div class="stat-label">Active gooners</div>
+        </div>
+        <div class="stat">
+          <i data-lucide="timer"></i>
+          <div class="stat-num">15-40s</div>
+          <div class="stat-label">Average generation</div>
+        </div>
+        <div class="stat">
+          <i data-lucide="infinity"></i>
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Custom prompts</div>
+        </div>
     </div>
   </div>
 
@@ -190,22 +207,22 @@
       <p class="section-sub">From clothed photo to pure goon material in under a minute</p>
       <div class="steps">
         <div class="step">
-          <div class="step-num">1</div>
+          <div class="step-num"><i data-lucide="log-in"></i></div>
           <h3>Login</h3>
           <p>Continue with Google so one real account owns the free credit.</p>
         </div>
         <div class="step">
-          <div class="step-num">2</div>
+          <div class="step-num"><i data-lucide="upload"></i></div>
           <h3>Send any photo</h3>
           <p>Clear face-forward shot works best for AI undress</p>
         </div>
         <div class="step">
-          <div class="step-num">3</div>
+          <div class="step-num"><i data-lucide="sparkles"></i></div>
           <h3>Type your fantasy</h3>
           <p>Fully customized prompts — describe any fetish or scene</p>
         </div>
         <div class="step">
-          <div class="step-num">4</div>
+          <div class="step-num"><i data-lucide="download"></i></div>
           <h3>Get the nudes</h3>
           <p>Goon-ready AI results in 15–40 seconds</p>
         </div>
@@ -222,32 +239,32 @@
       <p class="section-sub">No limits on what you can describe. Fully customized prompts are allowed.</p>
       <div class="features">
         <div class="feature">
-          <div class="feature-icon">✍️</div>
+          <div class="feature-icon"><i data-lucide="pen-line"></i></div>
           <h3>Fully Custom Prompts</h3>
           <p>Type exactly what you want. Any outfit, any pose, any fetish, any fantasy — the AI follows your words.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🔥</div>
+          <div class="feature-icon"><i data-lucide="flame"></i></div>
           <h3>AI Clothes Remover</h3>
           <p>One-tap undress. Fully nude, topless, bottomless or any level of exposure you describe.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">👙</div>
+          <div class="feature-icon"><i data-lucide="sparkles"></i></div>
           <h3>Micro Bikini & Lingerie</h3>
           <p>Tiny micro bikinis, sheer lingerie, wet white shirts, schoolgirl outfits and more.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">⛓</div>
+          <div class="feature-icon"><i data-lucide="link"></i></div>
           <h3>BDSM & Latex</h3>
           <p>Harnesses, collars, tight latex catsuits, leather, oil, shiny skin — pure filth.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">👕</div>
+          <div class="feature-icon"><i data-lucide="shirt"></i></div>
           <h3>Garment Swap</h3>
           <p>Send a photo of any clothing or lingerie and the AI puts it on the person.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🎭</div>
+          <div class="feature-icon"><i data-lucide="scan-face"></i></div>
           <h3>Pose & Face Lock</h3>
           <p>Combine two photos: keep her face, copy the pose or outfit from another image.</p>
         </div>
@@ -285,6 +302,7 @@
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">Start here</span>
+          <i class="plan-icon" data-lucide="ticket"></i>
           <h3>Free trial</h3>
           <div class="price">$0 <span>/ to try</span></div>
           <ul>
@@ -296,6 +314,7 @@
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Claim free credits →</a>
         </div>
         <div class="value-card">
+          <i class="plan-icon" data-lucide="coins"></i>
           <h3>More credits</h3>
           <div class="price">On-site <span>/ when ready</span></div>
           <ul>
@@ -311,6 +330,14 @@
         <div class="proof-chip"><strong>“Free credits sold me.”</strong> Tried once → never went back to random sites.</div>
         <div class="proof-chip"><strong>“Custom prompts are filthy.”</strong> Whatever I type, it actually follows.</div>
         <div class="proof-chip"><strong>“Private & fast.”</strong> No chat flow. Just upload and generate.</div>
+      </div>
+      <div class="referral-band">
+        <i data-lucide="gift"></i>
+        <div>
+          <strong>Bring friends, earn more credits.</strong>
+          <span>Every active referral gives you more generations without paying.</span>
+        </div>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Get invite link</a>
       </div>
     </div>
   </section>

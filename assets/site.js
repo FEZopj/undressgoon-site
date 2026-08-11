@@ -238,6 +238,12 @@
     if (panel) panel.hidden = !show;
   }
 
+  function refreshIcons() {
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
   function initGoogleLogin() {
     var link = document.getElementById('google-login');
     if (!link) return;
@@ -265,9 +271,25 @@
     if (form) form.classList.toggle('is-locked', !authed);
     if (submit) submit.disabled = !authed;
     if (authed) showCheckout(Number(user.credits || 0) <= 0);
+    updateReferral(session && session.referral, authed);
     if (authed && user.consentAccepted) {
       var consent = document.getElementById('web-consent');
       if (consent) consent.checked = true;
+    }
+  }
+
+  function updateReferral(referral, authed) {
+    var card = document.getElementById('referral-card');
+    var input = document.getElementById('referral-link');
+    var copy = document.getElementById('referral-copy');
+    if (!card || !input) return;
+    var active = !!(authed && referral && referral.enabled && referral.link);
+    card.hidden = !active;
+    if (!active) return;
+    input.value = referral.link;
+    if (copy) {
+      copy.textContent = 'Earn ' + referral.rewardCredits + ' credits per active referral. ' +
+        referral.count + ' active invite' + (referral.count === 1 ? '' : 's') + ' so far.';
     }
   }
 
@@ -297,12 +319,14 @@
         grid.innerHTML = (data.packs || []).map(function (pack, idx) {
           return (
             '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
+              '<i data-lucide="coins"></i>' +
               '<strong>' + pack.credits + ' credits</strong>' +
               '<span>' + pack.price + '</span>' +
-              '<button type="button" data-pack="' + pack.code + '">Pay crypto</button>' +
+              '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> Pay crypto</button>' +
             '</div>'
           );
         }).join('');
+        refreshIcons();
         grid.querySelectorAll('button[data-pack]').forEach(function (button) {
           button.addEventListener('click', function () {
             var code = button.getAttribute('data-pack');
@@ -387,8 +411,10 @@
       grid.innerHTML = presets.filter(function (p) {
         return p.category === active;
       }).map(function (p) {
-        return '<button type="button" class="' + (p.key === selected ? 'active' : '') + '" data-key="' + p.key + '">' + p.label + '</button>';
+        var icon = p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt');
+        return '<button type="button" class="' + (p.key === selected ? 'active' : '') + '" data-key="' + p.key + '"><i data-lucide="' + icon + '"></i>' + p.label + '</button>';
       }).join('');
+      refreshIcons();
       grid.querySelectorAll('button').forEach(function (button) {
         button.addEventListener('click', function () {
           var key = button.getAttribute('data-key');
@@ -456,6 +482,25 @@
       });
     }
 
+    var copyReferral = document.getElementById('copy-referral');
+    if (copyReferral) {
+      copyReferral.addEventListener('click', function () {
+        var input = document.getElementById('referral-link');
+        if (!input || !input.value) return;
+        navigator.clipboard.writeText(input.value).then(function () {
+          copyReferral.innerHTML = '<i data-lucide="check"></i> Copied';
+          refreshIcons();
+          setTimeout(function () {
+            copyReferral.innerHTML = '<i data-lucide="copy"></i> Copy';
+            refreshIcons();
+          }, 1800);
+        }).catch(function () {
+          input.select();
+          document.execCommand('copy');
+        });
+      });
+    }
+
     if (!form) return;
     form.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -519,5 +564,6 @@
     initSticky();
     initLiveCounter();
     initToast();
+    refreshIcons();
   }
 })();
