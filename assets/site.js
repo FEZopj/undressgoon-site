@@ -12,6 +12,9 @@
   var i18n = CFG.i18n || {};
   var currentSession = null;
   var telegramLinkPoll = 0;
+  var packOffer = null;
+  var firstGenerationDone = false;
+  var exitOfferArmed = false;
 
   function t(key, fallback) {
     return i18n && Object.prototype.hasOwnProperty.call(i18n, key) ? i18n[key] : fallback;
@@ -165,6 +168,40 @@
     }, 22000);
   }
 
+  function shouldShowExitOffer() {
+    if (!firstGenerationDone) return false;
+    try {
+      if (sessionStorage.getItem('ug_exit_offer_seen')) return false;
+    } catch (e) {}
+    var panel = document.getElementById('checkout-panel');
+    return !(panel && !panel.hidden);
+  }
+
+  function showExitOffer() {
+    if (!shouldShowExitOffer()) return false;
+    try { sessionStorage.setItem('ug_exit_offer_seen', '1'); } catch (e) {}
+    showCheckout(true, 'exit_post_gen');
+    return true;
+  }
+
+  function armExitOffer() {
+    if (exitOfferArmed) return;
+    exitOfferArmed = true;
+    document.addEventListener('mouseout', function (event) {
+      if (event.relatedTarget || event.toElement) return;
+      if (event.clientY > 8) return;
+      showExitOffer();
+    });
+    if (window.history && window.history.pushState) {
+      try { window.history.pushState({ ugExitGuard: true }, '', location.href); } catch (e) {}
+      window.addEventListener('popstate', function () {
+        if (showExitOffer()) {
+          try { window.history.pushState({ ugExitGuard: true }, '', location.href); } catch (e) {}
+        }
+      });
+    }
+  }
+
   // Preload first few thumbs for instant marquee paint
   function preloadCritical() {
     for (var i = 1; i <= 4; i++) {
@@ -197,14 +234,41 @@
     el.dataset.tone = tone || '';
   }
 
+  function offerSummary() {
+    var promo = packOffer && packOffer.promo;
+    if (promo && promo.active && Number(promo.bonusPercent || 0) > 0) {
+      return '+' + Number(promo.bonusPercent || 0) + '% bonus credits on every pack';
+    }
+    if (promo && promo.active && Number(promo.extraCredits || 0) > 0) {
+      return '+' + Number(promo.extraCredits || 0) + ' bonus credits on every pack';
+    }
+    return t('specialPackOffer', 'Special credit packs unlocked');
+  }
+
+  function updateModalPromo(reason) {
+    var promo = document.querySelector('.modal-promo span');
+    if (!promo) return;
+    if (reason === 'exit_post_gen') {
+      promo.textContent = t('firstResultOffer', 'First result bonus: {offer}.').replace('{offer}', offerSummary());
+      return;
+    }
+    promo.textContent = t('modalPromoDefault', 'Special credit packs: bigger bundles drop your per-image cost.');
+  }
+
   function showCheckout(show, reason) {
     var panel = document.getElementById('checkout-panel');
     if (!panel) return;
     if (show) {
       var title = document.getElementById('topup-title');
       var copy = document.getElementById('topup-copy');
-      if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready for another image?');
-      if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Pick a pack and keep generating on the website.');
+      if (reason === 'exit_post_gen') {
+        if (title) title.textContent = t('exitOfferTitle', 'Wait - your first result unlocked a private deal');
+        if (copy) copy.textContent = t('exitOfferCopy', 'Keep going now and get bonus credits added automatically to every pack.');
+      } else {
+        if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready for another image?');
+        if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Pick a pack and keep generating on the website.');
+      }
+      updateModalPromo(reason);
       panel.hidden = false;
       document.body.classList.add('modal-open');
       setTimeout(function () { panel.classList.add('is-open'); }, 20);
@@ -369,13 +433,23 @@
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
         if (!data || !data.ok) return;
+        packOffer = data;
         grid.innerHTML = (data.packs || []).map(function (pack, idx) {
           var badge = idx === 1 ? '<em>' + t('bestValue', 'Popular') + '</em>' : '';
+          var baseCredits = Number(pack.baseCredits || pack.credits || 0);
+          var bonusCredits = Number(pack.bonusCredits || 0);
+          var creditLine = bonusCredits > 0 ?
+            baseCredits + ' + ' + bonusCredits + ' ' + t('freeCreditsWord', 'free') :
+            Number(pack.credits || baseCredits) + ' ' + t('creditsWord', 'credits');
+          var bonusLine = bonusCredits > 0 ?
+            '<small class="pack-bonus">' + Number(pack.credits || (baseCredits + bonusCredits)) + ' ' + t('creditsTotal', 'credits total') + '</small>' :
+            '';
           return (
             '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
               badge +
               '<i data-lucide="coins"></i>' +
-              '<strong>' + pack.credits + ' ' + t('creditsWord', 'credits') + '</strong>' +
+              '<strong>' + creditLine + '</strong>' +
+              bonusLine +
               '<span>' + pack.price + '</span>' +
               '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> ' + t('payCrypto', 'Crypto') + '</button>' +
             '</div>'
@@ -788,6 +862,8 @@
           });
         })
         .then(function (data) {
+          firstGenerationDone = true;
+          armExitOffer();
           paintResults(data.images || []);
           setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
           return refreshWebSession();

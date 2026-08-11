@@ -769,6 +769,13 @@ html[data-theme="light"] .checkout-panel {
 .pack-card strong {
   font-size: 0.95rem;
 }
+.pack-bonus {
+  display: inline-block;
+  margin-top: -2px;
+  color: var(--accent2);
+  font-size: 0.72rem;
+  font-weight: 950;
+}
 .pack-card span {
   color: var(--green);
   font-weight: 900;
