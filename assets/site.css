@@ -51,11 +51,26 @@ header {
   gap: 16px;
 }
 .logo {
-  font-weight: 800;
-  font-size: 1.25rem;
-  letter-spacing: -0.03em;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 1;
 }
-.logo span { color: var(--accent); }
+.logo img {
+  display: block;
+  width: 190px;
+  height: auto;
+  max-width: 22vw;
+  object-fit: contain;
+}
+.footer-logo {
+  margin-bottom: 16px;
+}
+.footer-logo img {
+  width: 270px;
+  height: auto;
+  max-width: 100%;
+}
 
 .header-right {
   display: flex;
@@ -1210,6 +1225,8 @@ footer {
 
 @media (max-width: 700px) {
   .lang-switch { display: none; }
+  .logo { max-width: 164px; }
+  .logo img { width: 138px; max-width: 138px; }
   .hero { padding: 40px 0 22px; }
   .btn-lg { width: 100%; max-width: 360px; }
   .generator-app { grid-template-columns: 1fr; }
