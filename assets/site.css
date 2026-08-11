@@ -1661,6 +1661,17 @@ html[data-theme="light"] .toast {
   .features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+@media (max-width: 860px) {
+  .generator-app {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .result-panel { min-height: 360px; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .value-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 700px) {
   .lang-switch { display: none; }
   .logo { max-width: 164px; }
@@ -1676,13 +1687,22 @@ html[data-theme="light"] .toast {
   .generator-app { grid-template-columns: 1fr; }
   .generator-panel,
   .result-panel { border-radius: 14px; padding: 14px; }
+  .session-card { align-items: flex-start; }
   .account-row { align-items: flex-start; }
   .referral-actions { grid-template-columns: 1fr; }
   .mode-row { grid-template-columns: 1fr; }
   .pack-grid { grid-template-columns: 1fr; }
-  .topup-dialog { padding: 18px; }
+  .topup-modal { padding: 12px; align-items: end; }
+  .topup-dialog {
+    width: min(100%, 520px);
+    max-height: calc(100vh - 24px);
+    padding: 18px;
+    border-radius: 18px 18px 0 0;
+  }
   .topup-actions { grid-template-columns: 1fr; }
   .preset-grid { grid-template-columns: repeat(2, 1fr); }
+  .promo-strip { display: grid; justify-content: stretch; }
+  .proof-chip { max-width: 100%; }
   .referral-band { grid-template-columns: 1fr; text-align: center; }
   .referral-band > svg { margin: 0 auto; }
   .features { grid-template-columns: 1fr; }
@@ -1691,6 +1711,74 @@ html[data-theme="light"] .toast {
   .result-card { width: 156px; height: 224px; contain-intrinsic-size: 156px 224px; }
   .marquee-wrap { min-height: 240px; }
   .sticky-copy span { display: none; }
+}
+
+@media (max-width: 430px) {
+  body { padding-bottom: 104px; }
+  .container { padding: 0 12px; }
+  header { padding: 10px 0; }
+  .header-inner { gap: 8px; }
+  .logo { max-width: 124px; }
+  .logo img { width: 120px; max-width: 120px; }
+  .header-right { gap: 6px; }
+  .header-right > .btn {
+    min-height: 38px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+  }
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+  .account-trigger {
+    min-height: 38px;
+    padding: 4px;
+    border-radius: 12px;
+  }
+  .account-avatar {
+    width: 30px;
+    height: 30px;
+  }
+  .hero { padding-top: 32px; }
+  .trust-row {
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  .trust-row span {
+    width: 100%;
+    justify-content: center;
+  }
+  .generator-app {
+    padding: 6px;
+    border-radius: 18px;
+  }
+  .generator-panel,
+  .result-panel {
+    padding: 12px;
+  }
+  .upload-zone {
+    min-height: 112px;
+    padding: 14px;
+  }
+  .preset-tabs { grid-template-columns: 1fr; }
+  .preset-grid { grid-template-columns: 1fr; }
+  .web-form textarea { min-height: 104px; }
+  .steps { grid-template-columns: 1fr; }
+  .section { padding: 44px 0; }
+  .section-sub { margin-bottom: 24px; }
+  .value-card { padding: 20px 16px; }
+  .cta-band {
+    padding: 34px 16px;
+    border-radius: 18px;
+  }
+  .sticky-inner { gap: 8px; }
+  .sticky-copy strong { font-size: 0.84rem; }
+  .sticky-cta .btn {
+    padding: 11px 12px;
+    font-size: 0.84rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
