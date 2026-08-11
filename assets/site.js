@@ -272,10 +272,6 @@
     if (submit) submit.disabled = !authed;
     if (authed) showCheckout(Number(user.credits || 0) <= 0);
     updateReferral(session && session.referral, authed);
-    if (authed && user.consentAccepted) {
-      var consent = document.getElementById('web-consent');
-      if (consent) consent.checked = true;
-    }
   }
 
   function updateReferral(referral, authed) {
@@ -453,9 +449,12 @@
 
     var file = document.getElementById('person-photo');
     var fileName = document.getElementById('upload-name');
+    var uploadZone = document.querySelector('.upload-zone');
+    var uploadPreview = document.getElementById('upload-preview');
     var form = document.getElementById('web-generate-form');
     var logout = document.getElementById('web-logout');
     var submit = document.getElementById('web-submit');
+    var previewUrl = '';
 
     if (!CFG.apiBase && location.protocol === 'file:') {
       setStatus('Set UG_CONFIG.apiBase to your bot backend URL before uploading to cPanel.', 'error');
@@ -466,9 +465,71 @@
     initPresets();
     loadPacks();
 
-    if (file && fileName) {
+    function clearUploadPreview() {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = '';
+      if (uploadPreview) {
+        uploadPreview.hidden = true;
+        uploadPreview.removeAttribute('src');
+      }
+      if (uploadZone) uploadZone.classList.remove('has-preview');
+      if (fileName) fileName.textContent = 'JPG, PNG, or WebP up to 12 MB';
+    }
+
+    function selectedPersonFile() {
+      return file && file.files && file.files.length ? file.files[0] : null;
+    }
+
+    function updateUploadPreview() {
+      var chosen = selectedPersonFile();
+      if (!chosen) {
+        clearUploadPreview();
+        return;
+      }
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(chosen);
+      if (uploadPreview) {
+        uploadPreview.src = previewUrl;
+        uploadPreview.hidden = false;
+      }
+      if (uploadZone) uploadZone.classList.add('has-preview');
+      if (fileName) fileName.textContent = chosen.name;
+    }
+
+    function buildGenerationPayload() {
+      var consent = document.getElementById('web-consent');
+      var prompt = document.getElementById('web-prompt');
+      var mode = document.querySelector('input[name="mode"]:checked');
+      var chosen = selectedPersonFile();
+
+      if (!chosen) {
+        setStatus('Upload a person photo first.', 'error');
+        if (file) file.focus();
+        return null;
+      }
+      if (!consent || !consent.checked) {
+        setStatus('Confirm you are 18+ and have rights to this photo.', 'error');
+        if (consent) consent.focus();
+        return null;
+      }
+      if (prompt && !prompt.value.trim()) {
+        setStatus('Pick a preset or write a prompt first.', 'error');
+        prompt.focus();
+        return null;
+      }
+
+      var payload = new FormData();
+      payload.append('person', chosen, chosen.name || 'upload.jpg');
+      payload.append('prompt', prompt ? prompt.value.trim() : '');
+      payload.append('mode', mode ? mode.value : 'prompt');
+      payload.append('terms_accepted', '1');
+      payload.append('variations', '1');
+      return payload;
+    }
+
+    if (file) {
       file.addEventListener('change', function () {
-        fileName.textContent = file.files && file.files[0] ? file.files[0].name : 'JPG, PNG, or WebP up to 12 MB';
+        updateUploadPreview();
       });
     }
 
@@ -504,6 +565,8 @@
     if (!form) return;
     form.addEventListener('submit', function (event) {
       event.preventDefault();
+      var payload = buildGenerationPayload();
+      if (!payload) return;
       if (submit) submit.disabled = true;
       setStatus('Generating... this usually takes under a minute.', 'working');
       paintResults([]);
@@ -511,7 +574,7 @@
       fetch(apiUrl('/web/generate'), {
         method: 'POST',
         credentials: 'include',
-        body: new FormData(form)
+        body: payload
       })
         .then(function (res) {
           return res.json().catch(function () { return {}; }).then(function (data) {

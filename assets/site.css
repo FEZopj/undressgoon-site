@@ -512,14 +512,28 @@ header {
 .upload-zone:hover {
   border-color: var(--accent);
 }
+.upload-zone.has-preview {
+  place-items: stretch;
+  text-align: left;
+}
 .upload-zone input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
+.upload-preview {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #09090c;
+  box-shadow: 0 16px 42px rgba(0,0,0,0.28);
+}
 .upload-main {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   font-weight: 800;
 }

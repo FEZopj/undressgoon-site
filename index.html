@@ -118,6 +118,7 @@
           <form class="web-form" id="web-generate-form">
             <label class="upload-zone" for="person-photo">
               <input id="person-photo" name="person" type="file" accept="image/*" required />
+              <img class="upload-preview" id="upload-preview" alt="" hidden />
               <span class="upload-main"><i data-lucide="image-plus"></i> Choose a photo</span>
               <span class="upload-sub" id="upload-name">JPG, PNG, or WebP up to 12 MB</span>
             </label>
@@ -140,7 +141,7 @@
             <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Example: tiny black micro bikini, glossy skin, bedroom mirror selfie"></textarea>
 
             <label class="consent-line">
-              <input type="checkbox" id="web-consent" name="terms_accepted" value="1" />
+              <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
               <span>I confirm I am 18+ and have the legal right to use this photo.</span>
             </label>
 
