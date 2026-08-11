@@ -77,6 +77,9 @@ html[data-theme="light"] header {
   max-width: 22vw;
   object-fit: contain;
 }
+html[data-theme="light"] .logo img {
+  content: url('brand-logo-light.png');
+}
 .footer-logo {
   margin-bottom: 16px;
 }

@@ -233,6 +233,14 @@
     }
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', clean === 'light' ? '#f6f7fb' : '#070709');
+    document.querySelectorAll('.logo img').forEach(function (img) {
+      var src = img.getAttribute('src') || '';
+      if (clean === 'light') {
+        img.setAttribute('src', src.replace('brand-logo.png', 'brand-logo-light.png'));
+      } else {
+        img.setAttribute('src', src.replace('brand-logo-light.png', 'brand-logo.png'));
+      }
+    });
   }
 
   function initTheme() {
