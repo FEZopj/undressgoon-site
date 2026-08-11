@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260811-7" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260811-8" as="style" />
   <link rel="preload" href="../assets/brand-logo.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260811-7" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260811-8" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
 <body>
@@ -52,6 +52,26 @@
           <a href="../de/index.html">DE</a>
         </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>Генерировать</a>
+        <div class="site-account" id="site-account" hidden>
+          <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
+            <span class="account-avatar" id="site-account-avatar">U</span>
+            <span class="account-trigger-text">
+              <strong id="site-account-name">My account</strong>
+              <small id="site-account-credits">0 credits</small>
+            </span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="site-account-menu" hidden>
+            <div class="account-menu-head">
+              <strong id="account-email">Signed in</strong>
+              <span id="account-menu-credits">0 credits available</span>
+            </div>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> Get credits</button>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Link Telegram</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Contact support</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -94,15 +114,13 @@
 
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
-          <div class="account-row">
+          <div class="session-card">
+            <i data-lucide="sparkles"></i>
             <div>
-              <span class="mini-label">Аккаунт</span>
-              <strong id="web-account">Не вошли</strong>
-              <small id="web-balance">Войдите, чтобы увидеть кредиты</small>
+              <strong>Start with a real photo</strong>
+              <small>Upload, choose a preset, confirm rights, then generate.</small>
             </div>
-            <button class="btn btn-tg btn-sm" type="button" id="web-logout" hidden>Выйти</button>
           </div>
-
           <div class="login-box" id="login-box">
             <p>Логин подтверждает, что бесплатный кредит принадлежит реальному пользователю. После этого можно генерировать здесь.</p>
             <a class="btn btn-google" id="google-login" href="#">Продолжить с Google</a>
@@ -153,18 +171,6 @@
             <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> Сгенерировать 1 изображение</button>
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
-
-          <div class="checkout-panel" id="checkout-panel" hidden>
-            <div class="checkout-head">
-              <span class="mini-label">Пополнить</span>
-              <strong>Продолжай сессию</strong>
-              <small>Crypto checkout работает на сайте. Оплата картой идет через Telegram Stars как запасной вариант.</small>
-            </div>
-            <div class="pack-grid" id="pack-grid"></div>
-            <a class="card-fallback" href="https://t.me/goonmasterbotbot?start=web" target="_blank" rel="noopener">
-              Оплатить картой в Telegram
-            </a>
-          </div>
         </div>
 
         <div class="result-panel">
@@ -376,6 +382,21 @@
     Ещё думаешь? <a href="#generate" data-generate-cta>Забери бесплатные кредиты →</a> без карты.
   </div>
 
+  <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
+    <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
+    <div class="topup-dialog">
+      <button class="modal-close" type="button" id="topup-close" aria-label="Close"><i data-lucide="x"></i></button>
+      <span class="mini-label" id="topup-eyebrow">Credits</span>
+      <h3 id="topup-title">Ready for another image?</h3>
+      <p id="topup-copy">Pick a pack and keep generating on the website.</p>
+      <div class="pack-grid" id="pack-grid"></div>
+      <div class="topup-actions">
+        <button class="card-fallback" type="button" id="card-pay"><i data-lucide="credit-card"></i> Pay by card</button>
+        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Link Telegram</button>
+      </div>
+      <small class="topup-note" id="telegram-link-note">Crypto stays here. Card checkout opens Telegram after you link it once.</small>
+    </div>
+  </div>
   <script>
     window.UG_CONFIG = {
       imageCount: 22,
@@ -428,6 +449,25 @@
         outOfCredits: "Кредиты закончились. Пополни ниже, чтобы продолжить.",
         loginFirst: "Сначала войди через Google.",
         genericError: "Что-то пошло не так.",
+        myAccount: "My account",
+        signedIn: "Signed in",
+        getCredits: "Get credits",
+        contactSupport: "Contact support",
+        logout: "Logout",
+        payCard: "Pay by card",
+        linkTelegram: "Link Telegram",
+        telegramLinkedShort: "Telegram linked",
+        bestValue: "Popular",
+        topupTitle: "Ready for another image?",
+        topupCopy: "Pick a pack and keep generating on the website.",
+        topupEmptyTitle: "You are out of credits",
+        topupEmptyCopy: "Choose a pack and keep generating in seconds.",
+        telegramLinkNote: "Crypto stays here. Card checkout opens Telegram after you link it once.",
+        telegramLinkedNote: "Card checkout is ready for this account.",
+        linkingTelegram: "Opening Telegram link...",
+        telegramLinkFail: "Could not create Telegram link.",
+        telegramLinked: "Telegram is linked. Card checkout is ready.",
+        telegramLinkOpened: "Confirm the link in Telegram, then come back here.",
         imgAlt: "ИИ undress результат",
         galleryCta: "Сделай свое бесплатно →",
         referralSingular: "Получи {reward} кредитов за активного реферала. {count} активное приглашение сейчас.",
@@ -435,6 +475,6 @@
       }
     };
   </script>
-  <script src="../assets/site.js?v=20260811-7" defer></script>
+  <script src="../assets/site.js?v=20260811-8" defer></script>
 </body>
 </html>

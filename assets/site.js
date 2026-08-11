@@ -10,6 +10,8 @@
   var THUMB_EXT = CFG.thumbExt || '.webp';
   var BOT_URL = CFG.botUrl || 'https://t.me/goonmasterbotbot?start=web';
   var i18n = CFG.i18n || {};
+  var currentSession = null;
+  var telegramLinkPoll = 0;
 
   function t(key, fallback) {
     return i18n && Object.prototype.hasOwnProperty.call(i18n, key) ? i18n[key] : fallback;
@@ -19,6 +21,16 @@
     var n = Number(count || 0);
     var template = n === 1 ? t('creditSingular', '{n} credit available') : t('creditPlural', '{n} credits available');
     return template.replace('{n}', String(n));
+  }
+
+  function userLabel(user) {
+    if (!user) return t('myAccount', 'My account');
+    return user.name || user.firstName || user.email || user.username || t('myAccount', 'My account');
+  }
+
+  function userInitial(user) {
+    var label = userLabel(user).trim();
+    return (label ? label.charAt(0) : 'U').toUpperCase();
   }
 
   // Resolve paths for both https://undressgoon.app/ and file:///.../index.html
@@ -210,9 +222,23 @@
     el.dataset.tone = tone || '';
   }
 
-  function showCheckout(show) {
+  function showCheckout(show, reason) {
     var panel = document.getElementById('checkout-panel');
-    if (panel) panel.hidden = !show;
+    if (!panel) return;
+    if (show) {
+      var title = document.getElementById('topup-title');
+      var copy = document.getElementById('topup-copy');
+      if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready for another image?');
+      if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Pick a pack and keep generating on the website.');
+      panel.hidden = false;
+      document.body.classList.add('modal-open');
+      setTimeout(function () { panel.classList.add('is-open'); }, 20);
+      refreshIcons();
+      return;
+    }
+    panel.classList.remove('is-open');
+    document.body.classList.remove('modal-open');
+    setTimeout(function () { panel.hidden = true; }, 180);
   }
 
   function refreshIcons() {
@@ -232,13 +258,23 @@
   }
 
   function updateWebAccount(session) {
+    currentSession = session && session.ok ? session : null;
     var account = document.getElementById('web-account');
     var balance = document.getElementById('web-balance');
     var login = document.getElementById('login-box');
     var logout = document.getElementById('web-logout');
     var form = document.getElementById('web-generate-form');
     var submit = document.getElementById('web-submit');
-    var user = session && session.user;
+    var siteAccount = document.getElementById('site-account');
+    var accountName = document.getElementById('site-account-name');
+    var accountCredits = document.getElementById('site-account-credits');
+    var accountAvatar = document.getElementById('site-account-avatar');
+    var accountEmail = document.getElementById('account-email');
+    var accountMenuCredits = document.getElementById('account-menu-credits');
+    var accountLinkTelegram = document.getElementById('account-link-telegram');
+    var telegramLink = document.getElementById('telegram-link');
+    var telegramNote = document.getElementById('telegram-link-note');
+    var user = currentSession && currentSession.user;
     var authed = !!user;
 
     if (account) account.textContent = authed ? ('@' + (user.username || user.id)) : t('notLoggedIn', 'Not logged in');
@@ -247,8 +283,18 @@
     if (logout) logout.hidden = !authed;
     if (form) form.classList.toggle('is-locked', !authed);
     if (submit) submit.disabled = !authed;
-    if (authed) showCheckout(Number(user.credits || 0) <= 0);
-    updateReferral(session && session.referral, authed);
+    if (siteAccount) siteAccount.hidden = !authed;
+    if (accountName) accountName.textContent = authed ? userLabel(user) : t('myAccount', 'My account');
+    if (accountCredits) accountCredits.textContent = authed ? formatCredits(user.credits) : '';
+    if (accountAvatar) accountAvatar.textContent = authed ? userInitial(user) : 'U';
+    if (accountEmail) accountEmail.textContent = authed ? (user.email || userLabel(user)) : t('signedIn', 'Signed in');
+    if (accountMenuCredits) accountMenuCredits.textContent = authed ? formatCredits(user.credits) : '';
+    var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
+    if (accountLinkTelegram) accountLinkTelegram.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
+    if (telegramLink) telegramLink.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
+    if (telegramNote) telegramNote.textContent = linked ? t('telegramLinkedNote', 'Card checkout is ready for this account.') : t('telegramLinkNote', 'Crypto stays here. Card checkout opens Telegram after you link it once.');
+    updateReferral(currentSession && currentSession.referral, authed);
+    refreshIcons();
   }
 
   function updateReferral(referral, authed) {
@@ -294,12 +340,14 @@
       .then(function (data) {
         if (!data || !data.ok) return;
         grid.innerHTML = (data.packs || []).map(function (pack, idx) {
+          var badge = idx === 1 ? '<em>' + t('bestValue', 'Popular') + '</em>' : '';
           return (
             '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
-              '<i data-lucide="coins"></i>' +
+              badge +
+              '<i data-lucide="' + (idx === 1 ? 'gem' : 'coins') + '"></i>' +
               '<strong>' + pack.credits + ' ' + t('creditsWord', 'credits') + '</strong>' +
               '<span>' + pack.price + '</span>' +
-              '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> ' + t('payCrypto', 'Pay crypto') + '</button>' +
+              '<button type="button" data-pack="' + pack.code + '"><i data-lucide="bitcoin"></i> ' + t('payCrypto', 'Crypto') + '</button>' +
             '</div>'
           );
         }).join('');
@@ -334,6 +382,130 @@
         });
       })
       .catch(function () {});
+  }
+
+  function pollTelegramLink() {
+    if (telegramLinkPoll) window.clearInterval(telegramLinkPoll);
+    var tries = 0;
+    telegramLinkPoll = window.setInterval(function () {
+      tries += 1;
+      refreshWebSession().then(function (session) {
+        if (session && session.telegram && session.telegram.linked) {
+          window.clearInterval(telegramLinkPoll);
+          telegramLinkPoll = 0;
+          setStatus(t('telegramLinked', 'Telegram is linked. Card checkout is ready.'), 'success');
+        } else if (tries >= 20) {
+          window.clearInterval(telegramLinkPoll);
+          telegramLinkPoll = 0;
+        }
+      });
+    }, 3000);
+  }
+
+  function requestTelegramLink() {
+    setStatus(t('linkingTelegram', 'Opening Telegram link...'), 'working');
+    return fetch(apiUrl('/web/link/telegram'), {
+      method: 'POST',
+      credentials: 'include'
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (payload) {
+          if (!res.ok || !payload.ok) throw new Error(payload.message || t('telegramLinkFail', 'Could not create Telegram link.'));
+          return payload;
+        });
+      })
+      .then(function (payload) {
+        if (payload.linked) {
+          setStatus(t('telegramLinked', 'Telegram is linked. Card checkout is ready.'), 'success');
+          return refreshWebSession().then(function () { return payload; });
+        }
+        window.open(payload.botUrl || BOT_URL, '_blank', 'noopener');
+        setStatus(t('telegramLinkOpened', 'Confirm the link in Telegram, then come back here.'), 'success');
+        pollTelegramLink();
+        return payload;
+      })
+      .catch(function (err) {
+        setStatus(err.message || t('telegramLinkFail', 'Could not create Telegram link.'), 'error');
+        throw err;
+      });
+  }
+
+  function openCardCheckout() {
+    if (!currentSession || !currentSession.user) {
+      setStatus(t('loginFirst', 'Login with Google first.'), 'error');
+      return;
+    }
+    if (currentSession.telegram && currentSession.telegram.linked) {
+      window.open(BOT_URL, '_blank', 'noopener');
+      return;
+    }
+    requestTelegramLink();
+  }
+
+  function initAccountControls() {
+    var trigger = document.getElementById('site-account-trigger');
+    var menu = document.getElementById('site-account-menu');
+    var topup = document.getElementById('account-topup');
+    var linkTelegram = document.getElementById('account-link-telegram');
+    var modalLink = document.getElementById('telegram-link');
+    var cardPay = document.getElementById('card-pay');
+    var close = document.getElementById('topup-close');
+    var logout = document.getElementById('account-logout');
+
+    if (topup) topup.innerHTML = '<i data-lucide="coins"></i> ' + t('getCredits', 'Get credits');
+    var support = document.querySelector('.account-menu a[href*="start=support"]');
+    if (support) support.innerHTML = '<i data-lucide="message-circle"></i> ' + t('contactSupport', 'Contact support');
+    if (logout) logout.innerHTML = '<i data-lucide="log-out"></i> ' + t('logout', 'Logout');
+    if (cardPay) cardPay.innerHTML = '<i data-lucide="credit-card"></i> ' + t('payCard', 'Pay by card');
+
+    function closeMenu() {
+      if (menu) menu.hidden = true;
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    if (trigger && menu) {
+      trigger.addEventListener('click', function (event) {
+        event.stopPropagation();
+        menu.hidden = !menu.hidden;
+        trigger.setAttribute('aria-expanded', menu.hidden ? 'false' : 'true');
+      });
+      document.addEventListener('click', closeMenu);
+      menu.addEventListener('click', function (event) { event.stopPropagation(); });
+    }
+    if (topup) {
+      topup.addEventListener('click', function () {
+        closeMenu();
+        showCheckout(true);
+      });
+    }
+    if (linkTelegram) {
+      linkTelegram.addEventListener('click', function () {
+        closeMenu();
+        requestTelegramLink();
+      });
+    }
+    if (modalLink) modalLink.addEventListener('click', requestTelegramLink);
+    if (cardPay) cardPay.addEventListener('click', openCardCheckout);
+    if (close) close.addEventListener('click', function () { showCheckout(false); });
+    document.querySelectorAll('[data-close-topup]').forEach(function (button) {
+      button.addEventListener('click', function () { showCheckout(false); });
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeMenu();
+        showCheckout(false);
+      }
+    });
+    if (logout) {
+      logout.addEventListener('click', function () {
+        fetch(apiUrl('/web/logout'), { method: 'POST', credentials: 'include' })
+          .finally(function () {
+            closeMenu();
+            updateWebAccount(null);
+            initGoogleLogin();
+          });
+      });
+    }
   }
 
   function paintResults(images) {
@@ -445,6 +617,7 @@
     refreshWebSession();
     initPresets();
     loadPacks();
+    initAccountControls();
 
     function clearUploadPreview() {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -514,6 +687,7 @@
       payload.append('terms_accepted', '1');
       payload.append('variations', '1');
       payload.append('person_name', chosen.name || 'upload.jpg');
+      payload.append('person', chosen, chosen.name || 'upload.jpg');
       return readFileAsDataUrl(chosen).then(function (dataUrl) {
         payload.append('person_b64', dataUrl);
         return payload;
@@ -591,8 +765,8 @@
         .catch(function (err) {
           var payload = err.payload || {};
           if (payload.code === 'insufficient_credits') {
-            showCheckout(true);
-            setStatus(t('outOfCredits', 'Out of credits. Top up below to keep generating.'), 'error');
+            showCheckout(true, 'empty');
+            setStatus(t('outOfCredits', 'You are out of credits. Pick a pack to keep generating.'), 'error');
           } else if (payload.code === 'not_authenticated') {
             setStatus(t('loginFirst', 'Login with Google first.'), 'error');
             updateWebAccount(null);

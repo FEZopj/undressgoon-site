@@ -99,6 +99,104 @@ header {
   background: rgba(255,255,255,0.06);
 }
 
+.site-account {
+  position: relative;
+}
+.account-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 6px 10px 6px 7px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+}
+.account-trigger:hover,
+.account-trigger[aria-expanded="true"] {
+  border-color: rgba(255, 45, 85, 0.55);
+  background: rgba(255, 45, 85, 0.12);
+}
+.account-avatar {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  font-weight: 950;
+}
+.account-trigger-text {
+  display: grid;
+  min-width: 0;
+  text-align: left;
+  line-height: 1.1;
+}
+.account-trigger-text strong {
+  max-width: 126px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.84rem;
+}
+.account-trigger-text small {
+  color: var(--green);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+.account-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 260;
+  display: grid;
+  gap: 6px;
+  min-width: 250px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  background: rgba(17, 17, 20, 0.98);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+}
+.account-menu-head {
+  display: grid;
+  gap: 2px;
+  padding: 8px 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.account-menu-head strong {
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+}
+.account-menu-head span {
+  color: var(--green);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.account-menu button,
+.account-menu a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--text);
+  background: transparent;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+}
+.account-menu button:hover,
+.account-menu a:hover {
+  background: rgba(255,255,255,0.08);
+}
+
 /* BUTTONS */
 .btn {
   display: inline-flex;
@@ -131,7 +229,12 @@ header {
 .plan-icon,
 .pack-card svg,
 .preset-grid svg,
-.referral-band svg {
+.referral-band svg,
+.account-trigger svg,
+.account-menu svg,
+.topup-actions svg,
+.modal-close svg,
+.session-card svg {
   width: 18px;
   height: 18px;
   stroke-width: 2.3;
@@ -346,6 +449,31 @@ header {
   padding: 18px;
   box-shadow: 0 18px 60px rgba(0,0,0,0.28);
 }
+.session-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 13px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255,45,85,0.12), rgba(42,171,238,0.07));
+}
+.session-card > svg {
+  flex: 0 0 auto;
+  color: var(--accent2);
+}
+.session-card strong,
+.session-card small {
+  display: block;
+}
+.session-card strong {
+  font-size: 0.98rem;
+}
+.session-card small {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
 .account-row {
   display: flex;
   justify-content: space-between;
@@ -466,6 +594,7 @@ header {
   gap: 8px;
 }
 .pack-card {
+  position: relative;
   display: grid;
   gap: 6px;
   padding: 12px 10px;
@@ -477,6 +606,18 @@ header {
 }
 .pack-card > svg {
   color: var(--green);
+}
+.pack-card em {
+  position: absolute;
+  top: -9px;
+  right: 8px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--accent);
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 950;
 }
 .pack-card.featured {
   border-color: rgba(255, 45, 85, 0.75);
@@ -512,6 +653,103 @@ header {
   color: var(--tg);
   font-size: 0.86rem;
   font-weight: 800;
+}
+.modal-open {
+  overflow: hidden;
+}
+.topup-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.topup-modal.is-open {
+  opacity: 1;
+}
+.topup-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0,0,0,0.68);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+.topup-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(620px, calc(100vw - 32px));
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,45,85,0.24), transparent 30%),
+    linear-gradient(145deg, #15151a, #0d0d11);
+  box-shadow: 0 28px 110px rgba(0,0,0,0.6);
+  transform: translateY(14px) scale(0.98);
+  transition: transform 0.18s ease;
+}
+.topup-modal.is-open .topup-dialog {
+  transform: translateY(0) scale(1);
+}
+.topup-dialog h3 {
+  font-size: clamp(1.45rem, 4vw, 2rem);
+  line-height: 1.1;
+  font-weight: 900;
+}
+.topup-dialog p,
+.topup-note {
+  color: var(--muted);
+}
+.modal-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+}
+.topup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.topup-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+.topup-actions .card-fallback {
+  background: var(--tg);
+}
+.topup-actions .telegram-link {
+  background: rgba(255,255,255,0.1);
+}
+.topup-note {
+  display: block;
+  font-size: 0.78rem;
+  text-align: center;
 }
 .web-form {
   display: grid;
@@ -1227,6 +1465,11 @@ footer {
   .lang-switch { display: none; }
   .logo { max-width: 164px; }
   .logo img { width: 138px; max-width: 138px; }
+  .header-right { gap: 8px; }
+  .header-right > .btn { padding: 10px 12px; }
+  .account-trigger { padding-right: 7px; }
+  .account-trigger-text { display: none; }
+  .account-menu { right: -2px; min-width: min(270px, calc(100vw - 28px)); }
   .hero { padding: 40px 0 22px; }
   .btn-lg { width: 100%; max-width: 360px; }
   .generator-app { grid-template-columns: 1fr; }
@@ -1236,6 +1479,8 @@ footer {
   .referral-actions { grid-template-columns: 1fr; }
   .mode-row { grid-template-columns: 1fr; }
   .pack-grid { grid-template-columns: 1fr; }
+  .topup-dialog { padding: 18px; }
+  .topup-actions { grid-template-columns: 1fr; }
   .preset-grid { grid-template-columns: repeat(2, 1fr); }
   .referral-band { grid-template-columns: 1fr; text-align: center; }
   .referral-band > svg { margin: 0 auto; }
