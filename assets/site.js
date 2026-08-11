@@ -558,6 +558,41 @@
       });
   }
 
+  function waitForGeneration(jobId, startedAt) {
+    var started = startedAt || Date.now();
+    return fetch(apiUrl('/web/generation/' + encodeURIComponent(jobId)), {
+      credentials: 'include'
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (payload) {
+          if (!res.ok) {
+            var error = new Error(payload.message || t('genericError', 'Something went wrong.'));
+            error.payload = payload;
+            throw error;
+          }
+          return payload;
+        });
+      })
+      .then(function (payload) {
+        if (payload.status === 'done') return payload;
+        if (payload.status === 'failed' || payload.ok === false) {
+          var error = new Error(payload.message || t('genericError', 'Something went wrong.'));
+          error.payload = payload;
+          throw error;
+        }
+        var elapsed = Math.max(1, Math.round((Date.now() - started) / 1000));
+        var waiting = payload.status === 'queued' ?
+          t('queued', 'Queued... generation will start in a moment.') :
+          t('stillGenerating', 'Still generating... {s}s elapsed.').replace('{s}', String(elapsed));
+        setStatus(waiting, 'working');
+        return new Promise(function (resolve) {
+          setTimeout(resolve, payload.status === 'queued' ? 1800 : 2600);
+        }).then(function () {
+          return waitForGeneration(jobId, started);
+        });
+      });
+  }
+
   function openCardCheckout() {
     if (!currentSession || !currentSession.user) {
       setStatus(t('loginFirst', 'Login with Google first.'), 'error');
@@ -894,6 +929,13 @@
             }
             return data;
           });
+        })
+        .then(function (data) {
+          if (data.jobId) {
+            setStatus(t('queued', 'Queued... generation will start in a moment.'), 'working');
+            return waitForGeneration(data.jobId);
+          }
+          return data;
         })
         .then(function (data) {
           firstGenerationDone = true;
