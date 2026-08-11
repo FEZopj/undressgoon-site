@@ -758,18 +758,109 @@
     var grid = document.getElementById('preset-grid');
     var prompt = document.getElementById('web-prompt');
     var clear = document.getElementById('preset-clear');
+    var picker = document.querySelector('.preset-picker');
+    var modeInputs = document.querySelectorAll('input[name="mode"]');
+    var label = document.querySelector('.preset-top .field-label');
+    var promptLabel = document.querySelector('label[for="web-prompt"]');
     var presets = CFG.presets || [];
     if (!tabs || !grid || !prompt || !presets.length) return;
 
-    var cats = [
+    var outfitCats = [
       { key: 'hot', label: t('tabHot', 'Hottest') },
       { key: 'clothes', label: t('tabClothes', 'Clothes') },
       { key: 'fantasy', label: t('tabFantasy', 'Fantasy') }
     ];
+    var sceneCats = [
+      { key: 'mirror', label: t('tabMirror', 'Mirror') },
+      { key: 'room', label: t('tabRoom', 'Room') },
+      { key: 'cinematic', label: t('tabCinematic', 'Cinematic') }
+    ];
+    var scenePresets = CFG.scenePresets || [
+      {
+        key: 'scene_mirror',
+        category: 'mirror',
+        label: 'Bedroom Mirror',
+        prompt: 'full-body bedroom mirror selfie, warm bedside lighting, natural pose, confident expression, clear face, realistic phone photo, detailed background'
+      },
+      {
+        key: 'scene_hotel',
+        category: 'room',
+        label: 'Hotel Suite',
+        prompt: 'luxury hotel suite, standing near the bed, soft evening light, elegant pose, clear face, realistic skin texture, full body in frame'
+      },
+      {
+        key: 'scene_bathroom',
+        category: 'mirror',
+        label: 'Bathroom Selfie',
+        prompt: 'bathroom mirror selfie, bright vanity lights, phone held to the side, full outfit visible, clear face, realistic casual photo'
+      },
+      {
+        key: 'scene_neon',
+        category: 'cinematic',
+        label: 'Neon Room',
+        prompt: 'cinematic neon-lit bedroom, pink and blue light, standing pose, glossy fashion-photo mood, clear recognizable face, full body, high detail'
+      },
+      {
+        key: 'scene_locker',
+        category: 'room',
+        label: 'Locker Room',
+        prompt: 'private locker room scene, mirror wall, athletic pose, realistic indoor lighting, clear face, full body visible, detailed environment'
+      },
+      {
+        key: 'scene_sofa',
+        category: 'cinematic',
+        label: 'Sofa Pose',
+        prompt: 'sitting on a modern sofa, relaxed confident pose, warm studio lighting, clear face, full body composition, realistic photo detail'
+      }
+    ];
     var active = 'hot';
     var selected = '';
+    var sceneHelp = null;
+
+    function activeMode() {
+      var checked = document.querySelector('input[name="mode"]:checked');
+      return checked && checked.value === 'portrait' ? 'portrait' : 'prompt';
+    }
+
+    function activeCats() {
+      return activeMode() === 'portrait' ? sceneCats : outfitCats;
+    }
+
+    function activePresets() {
+      return activeMode() === 'portrait' ? scenePresets : presets;
+    }
+
+    function ensureSceneHelp() {
+      if (sceneHelp || !picker) return sceneHelp;
+      sceneHelp = document.createElement('p');
+      sceneHelp.className = 'scene-help';
+      picker.insertBefore(sceneHelp, tabs);
+      return sceneHelp;
+    }
+
+    function syncModeCopy() {
+      var scene = activeMode() === 'portrait';
+      modeInputs.forEach(function (input) {
+        if (input.parentElement) input.parentElement.classList.toggle('active', input.checked);
+      });
+      if (label) label.textContent = scene ? t('sceneIdeasLabel', 'Scene ideas') : t('presetsLabel', 'Presets');
+      if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
+      if (clear) clear.textContent = scene ? t('customScene', 'Custom scene') : t('customPrompt', 'Custom prompt');
+      var help = ensureSceneHelp();
+      if (help) {
+        help.hidden = !scene;
+        help.textContent = t('sceneHelp', 'Scenes work best when you describe the room, lighting, pose, framing, and mood. Use one of these as a starting point.');
+      }
+      prompt.placeholder = scene ?
+        t('scenePlaceholder', 'Example: luxury hotel suite, standing near the bed, warm evening light, confident pose, clear face, full body in frame') :
+        t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
+    }
 
     function renderTabs() {
+      var cats = activeCats();
+      if (!cats.some(function (cat) { return cat.key === active; })) {
+        active = cats[0].key;
+      }
       tabs.innerHTML = cats.map(function (cat) {
         return '<button type="button" class="' + (cat.key === active ? 'active' : '') + '" data-cat="' + esc(cat.key) + '">' + esc(cat.label) + '</button>';
       }).join('');
@@ -783,22 +874,24 @@
     }
 
     function renderGrid() {
-      grid.innerHTML = presets.filter(function (p) {
+      var mode = activeMode();
+      grid.innerHTML = activePresets().filter(function (p) {
         return p.category === active;
       }).map(function (p) {
-        var icon = p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt');
+        var icon = mode === 'portrait' ? 'camera' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt'));
         return '<button type="button" class="' + (p.key === selected ? 'active' : '') + '" data-key="' + esc(p.key) + '"><i data-lucide="' + icon + '"></i>' + esc(p.label) + '</button>';
       }).join('');
       refreshIcons();
       grid.querySelectorAll('button').forEach(function (button) {
         button.addEventListener('click', function () {
           var key = button.getAttribute('data-key');
-          var preset = presets.find(function (p) { return p.key === key; });
+          var mode = activeMode();
+          var preset = activePresets().find(function (p) { return p.key === key; });
           if (!preset) return;
           selected = preset.key;
           prompt.value = preset.prompt;
-          var mode = document.querySelector('input[name="mode"][value="prompt"]');
-          if (mode) mode.checked = true;
+          var modeInput = document.querySelector('input[name="mode"][value="' + (mode === 'portrait' ? 'portrait' : 'prompt') + '"]');
+          if (modeInput) modeInput.checked = true;
           renderGrid();
           prompt.focus();
         });
@@ -817,7 +910,19 @@
       selected = '';
       renderGrid();
     });
+    modeInputs.forEach(function (input) {
+      input.addEventListener('change', function () {
+        active = activeMode() === 'portrait' ? sceneCats[0].key : outfitCats[0].key;
+        selected = '';
+        prompt.value = '';
+        syncModeCopy();
+        renderTabs();
+        renderGrid();
+        prompt.focus();
+      });
+    });
 
+    syncModeCopy();
     renderTabs();
     renderGrid();
   }
