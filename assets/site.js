@@ -236,6 +236,16 @@
     });
   }
 
+  function initLanguageSwitch() {
+    document.querySelectorAll('.lang-switch select').forEach(function (select) {
+      if (select.dataset.bound) return;
+      select.dataset.bound = '1';
+      select.addEventListener('change', function () {
+        if (select.value) window.location.href = select.value;
+      });
+    });
+  }
+
   function apiUrl(path) {
     var base = (CFG.apiBase || '').replace(/\/$/, '');
     return base + path;
@@ -1149,6 +1159,7 @@
     preloadCritical();
     buildMarquee();
     normalizeCtas();
+    initLanguageSwitch();
     initTheme();
     initWebGenerator();
     initSticky();

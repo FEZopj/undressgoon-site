@@ -118,30 +118,53 @@ html[data-theme="light"] .account-trigger {
   border-color: rgba(17, 19, 26, 0.12);
   background: rgba(255,255,255,0.72);
 }
-html[data-theme="light"] .lang-switch a:hover,
-html[data-theme="light"] .lang-switch a.active {
-  background: rgba(17, 19, 26, 0.06);
+html[data-theme="light"] .lang-switch select {
+  border-color: rgba(17, 19, 26, 0.12);
+  background: rgba(255,255,255,0.72);
+  color: #11131a;
 }
 
 .lang-switch {
-  display: flex;
-  gap: 4px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   font-size: 0.78rem;
-  font-weight: 600;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  max-width: 320px;
+  font-weight: 800;
 }
-.lang-switch a {
-  color: var(--muted);
-  padding: 4px 6px;
-  border-radius: 6px;
-  transition: color 0.2s, background 0.2s;
+.lang-switch::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg) translateY(-2px);
+  pointer-events: none;
 }
-.lang-switch a:hover,
-.lang-switch a.active {
-  color: var(--text);
+.lang-switch select {
+  appearance: none;
+  width: 92px;
+  min-height: 40px;
+  padding: 9px 34px 9px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
   background: rgba(255,255,255,0.06);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.lang-switch select:hover,
+.lang-switch select:focus {
+  border-color: rgba(255, 45, 85, 0.55);
+  background: rgba(255, 45, 85, 0.1);
+  box-shadow: 0 10px 24px rgba(255, 45, 85, 0.12);
+}
+.lang-switch option {
+  color: #11131a;
+  background: #fff;
 }
 
 .site-account {
@@ -1811,7 +1834,7 @@ html[data-theme="light"] .toast {
 }
 
 @media (max-width: 700px) {
-  .lang-switch { display: none; }
+  .lang-switch select { width: 70px; min-height: 40px; padding-left: 10px; }
   .logo { max-width: 164px; }
   .logo img { width: 138px; max-width: 138px; }
   .header-right { gap: 8px; }

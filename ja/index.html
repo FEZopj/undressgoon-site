@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260811-22" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260811-23" as="style" />
   <link rel="preload" href="../assets/brand-logo.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260811-22" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260811-23" />
   <script src="../assets/lucide.min.js" defer></script>
 </head>
 <body>
@@ -42,14 +42,16 @@
       <a class="logo" href="../index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo.png" alt="UndressGoon" width="220" height="63" /></a>
       <div class="header-right">
         <nav class="lang-switch" aria-label="Language">
-          <a href="../index.html">EN</a>
-          <a href="../es/index.html">ES</a>
-          <a href="../pt/index.html">PT</a>
-          <a href="../zh/index.html">中文</a>
-          <a href="../ja/index.html" class="active">日本語</a>
-          <a href="../ru/index.html">RU</a>
-          <a href="../fr/index.html">FR</a>
-          <a href="../de/index.html">DE</a>
+          <select aria-label="Select language">
+          <option value="../index.html">EN</option>
+          <option value="../es/index.html">ES</option>
+          <option value="../pt/index.html">PT</option>
+          <option value="../zh/index.html">ZH</option>
+          <option value="../ja/index.html" selected>JA</option>
+          <option value="../ru/index.html">RU</option>
+          <option value="../fr/index.html">FR</option>
+          <option value="../de/index.html">DE</option>
+          </select>
         </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>生成</a>
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
@@ -470,6 +472,6 @@
       }
     };
   </script>
-  <script src="../assets/site.js?v=20260811-26" defer></script>
+  <script src="../assets/site.js?v=20260811-27" defer></script>
 </body>
 </html>
