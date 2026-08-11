@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="assets/site.css?v=20260811-10" as="style" />
+  <link rel="preload" href="assets/site.css?v=20260811-11" as="style" />
   <link rel="preload" href="assets/brand-logo.png" as="image" type="image/png" />
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="assets/site.css?v=20260811-10" />
+  <link rel="stylesheet" href="assets/site.css?v=20260811-11" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
 <body>
@@ -54,6 +54,7 @@
           <a href="de/index.html">DE</a>
         </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>Generate</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
@@ -303,6 +304,11 @@
     <div class="container">
       <h2 class="section-title">Start free. Go harder when you're hooked.</h2>
       <p class="section-sub">Free credits to prove the quality — top up with crypto on-site when you want more</p>
+      <div class="promo-strip">
+        <span><i data-lucide="badge-percent"></i> Launch pricing live</span>
+        <strong>Bigger packs unlock the lowest per-image price.</strong>
+        <small>No subscription. Start free, then top up only when you want more.</small>
+      </div>
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">Start here</span>
@@ -406,6 +412,7 @@
       <span class="mini-label" id="topup-eyebrow">Credits</span>
       <h3 id="topup-title">Ready for another image?</h3>
       <p id="topup-copy">Pick a pack and keep generating on the website.</p>
+      <div class="modal-promo"><i data-lucide="badge-percent"></i><span>Launch pricing live: bigger credit packs unlock the lowest per-image cost.</span></div>
       <div class="pack-grid" id="pack-grid"></div>
       <div class="topup-actions">
         <button class="card-fallback" type="button" id="card-pay"><i data-lucide="credit-card"></i> Pay by card</button>
@@ -417,7 +424,7 @@
 
   <script>
     window.UG_CONFIG = {
-      imageCount: 22,
+      imageCount: 32,
       thumbBase: 'results/thumbs/',
       thumbExt: '.webp',
       botUrl: 'https://t.me/goonmasterbotbot?start=web',
@@ -445,6 +452,6 @@
       }
     };
   </script>
-  <script src="assets/site.js?v=20260811-10" defer></script>
+  <script src="assets/site.js?v=20260811-11" defer></script>
 </body>
 </html>

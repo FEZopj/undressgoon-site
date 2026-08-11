@@ -222,6 +222,37 @@
     }
   }
 
+  function setTheme(theme) {
+    var clean = theme === 'light' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', clean);
+    var toggle = document.getElementById('theme-toggle');
+    if (toggle) {
+      toggle.setAttribute('aria-pressed', clean === 'light' ? 'true' : 'false');
+      toggle.setAttribute('aria-label', clean === 'light' ? t('darkTheme', 'Switch to dark theme') : t('lightTheme', 'Switch to light theme'));
+      toggle.innerHTML = '<i data-lucide="' + (clean === 'light' ? 'moon' : 'sun') + '"></i>';
+    }
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', clean === 'light' ? '#f6f7fb' : '#070709');
+  }
+
+  function initTheme() {
+    var saved = '';
+    try { saved = localStorage.getItem('ug_theme') || ''; } catch (e) {}
+    if (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      saved = 'light';
+    }
+    setTheme(saved === 'light' ? 'light' : 'dark');
+    var toggle = document.getElementById('theme-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        try { localStorage.setItem('ug_theme', next); } catch (e) {}
+        setTheme(next);
+        refreshIcons();
+      });
+    }
+  }
+
   function initGoogleLogin() {
     var link = document.getElementById('google-login');
     if (!link) return;
@@ -784,6 +815,7 @@
     preloadCritical();
     buildMarquee();
     normalizeCtas();
+    initTheme();
     initWebGenerator();
     initSticky();
     initLiveCounter();
