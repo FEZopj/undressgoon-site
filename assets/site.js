@@ -458,6 +458,7 @@
     var accountLinkTelegram = document.getElementById('account-link-telegram');
     var telegramLink = document.getElementById('telegram-link');
     var telegramNote = document.getElementById('telegram-link-note');
+    var stickyCta = document.getElementById('sticky-cta');
     var stickyFreeCopy = document.querySelector('#sticky-cta .sticky-copy');
     var user = currentSession && currentSession.user;
     var authed = !!user;
@@ -475,6 +476,10 @@
     if (accountAvatar) accountAvatar.textContent = authed ? userInitial(user) : 'U';
     if (accountEmail) accountEmail.textContent = authed ? (user.email || userLabel(user)) : t('signedIn', 'Signed in');
     if (accountMenuCredits) accountMenuCredits.textContent = authed ? formatCredits(user.credits) : '';
+    if (stickyCta) {
+      stickyCta.hidden = authed;
+      if (authed) stickyCta.classList.remove('show');
+    }
     if (stickyFreeCopy) stickyFreeCopy.hidden = authed;
     if (toast && authed) toast.classList.remove('show');
     var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
