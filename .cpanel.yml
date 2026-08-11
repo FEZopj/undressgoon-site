@@ -1,0 +1,16 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/public_html/
+    - /bin/cp index.html $DEPLOYPATH
+    - /bin/cp terms.html $DEPLOYPATH
+    - /bin/cp .htaccess $DEPLOYPATH
+    - /bin/cp -R assets $DEPLOYPATH
+    - /bin/cp -R results $DEPLOYPATH
+    - /bin/cp -R de $DEPLOYPATH
+    - /bin/cp -R es $DEPLOYPATH
+    - /bin/cp -R fr $DEPLOYPATH
+    - /bin/cp -R ja $DEPLOYPATH
+    - /bin/cp -R pt $DEPLOYPATH
+    - /bin/cp -R ru $DEPLOYPATH
+    - /bin/cp -R zh $DEPLOYPATH
