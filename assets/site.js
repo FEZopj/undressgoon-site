@@ -117,31 +117,6 @@
     });
   }
 
-  function buildGallery() {
-    var gallery = document.getElementById('gallery');
-    if (!gallery) return;
-
-    var overlayText = i18n.galleryCta || 'Make yours free →';
-    var html = nums().map(function (n, idx) {
-      // First row roughly eager on desktop; rest native-lazy
-      var eager = idx < 4;
-      return (
-        '<a class="gallery-item" href="#generate" data-generate-cta data-n="' + n + '">' +
-          '<img src="' + thumbUrl(n) + '" alt="' + (i18n.imgAlt || 'AI undress result') + '" ' +
-            'width="480" height="600" decoding="async" loading="' + (eager ? 'eager' : 'lazy') + '" />' +
-          '<div class="g-overlay"><span>' + overlayText + '</span></div>' +
-        '</a>'
-      );
-    }).join('');
-
-    gallery.innerHTML = html;
-
-    gallery.querySelectorAll('.gallery-item').forEach(function (item) {
-      var img = item.querySelector('img');
-      if (img) onImgLoad(img, item);
-    });
-  }
-
   // Sticky bottom CTA after scroll
   function initSticky() {
     var bar = document.getElementById('sticky-cta');
@@ -808,7 +783,6 @@
   function boot() {
     preloadCritical();
     buildMarquee();
-    buildGallery();
     normalizeCtas();
     initWebGenerator();
     initSticky();

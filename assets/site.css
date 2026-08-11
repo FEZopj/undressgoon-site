@@ -1164,68 +1164,6 @@ header {
   color: var(--accent2);
 }
 
-/* GALLERY */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
-}
-.gallery-item {
-  aspect-ratio: 3/4;
-  border-radius: 14px;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid var(--border);
-  background: linear-gradient(135deg, #1a1a20, #121216);
-  content-visibility: auto;
-  contain-intrinsic-size: 160px 213px;
-  cursor: pointer;
-}
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0;
-  transition: opacity 0.35s ease, transform 0.45s ease;
-}
-.gallery-item img.loaded { opacity: 1; }
-.gallery-item:hover img.loaded { transform: scale(1.06); }
-.gallery-item .g-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 12px;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
-  opacity: 0;
-  transition: opacity 0.25s;
-  pointer-events: none;
-}
-.gallery-item:hover .g-overlay,
-.gallery-item:focus-within .g-overlay { opacity: 1; }
-.g-overlay span {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #fff;
-  background: var(--accent);
-  padding: 7px 12px;
-  border-radius: 100px;
-  box-shadow: 0 4px 16px var(--glow);
-}
-.gallery-item::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-.gallery-item.has-img::after { opacity: 0; }
-
 /* VALUE / PRICING TEASER */
 .value-grid {
   display: grid;
@@ -1489,7 +1427,6 @@ footer {
   .result-card { width: 156px; height: 224px; contain-intrinsic-size: 156px 224px; }
   .marquee-wrap { min-height: 240px; }
   .sticky-copy span { display: none; }
-  .gallery { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1497,6 +1434,5 @@ footer {
   .btn-pulse { animation: none; }
   .live-dot { animation: none; }
   .hero h1 .grad { animation: none; }
-  .result-card::after,
-  .gallery-item::after { animation: none; }
+  .result-card::after { animation: none; }
 }
