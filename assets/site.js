@@ -779,38 +779,38 @@
       {
         key: 'scene_mirror',
         category: 'mirror',
-        label: 'Bedroom Mirror',
-        prompt: 'full-body bedroom mirror selfie, warm bedside lighting, natural pose, confident expression, clear face, realistic phone photo, detailed background'
+        label: 'Nude Mirror',
+        prompt: 'fully naked adult bedroom mirror selfie, bare breasts, no clothing, warm bedside lighting, confident pose, clear face, full body visible, realistic phone photo, detailed background'
       },
       {
         key: 'scene_hotel',
         category: 'room',
-        label: 'Hotel Suite',
-        prompt: 'luxury hotel suite, standing near the bed, soft evening light, elegant pose, clear face, realistic skin texture, full body in frame'
+        label: 'Hotel Nude',
+        prompt: 'fully nude adult in a luxury hotel suite, bare breasts, standing near the bed, soft evening light, seductive confident pose, clear face, realistic skin texture, full body in frame'
       },
       {
         key: 'scene_bathroom',
         category: 'mirror',
-        label: 'Bathroom Selfie',
-        prompt: 'bathroom mirror selfie, bright vanity lights, phone held to the side, full outfit visible, clear face, realistic casual photo'
+        label: 'Shower Mirror',
+        prompt: 'fully naked adult bathroom mirror selfie after shower, bare breasts, wet skin, bright vanity lights, phone held to the side, clear face, realistic casual photo'
       },
       {
         key: 'scene_neon',
         category: 'cinematic',
-        label: 'Neon Room',
-        prompt: 'cinematic neon-lit bedroom, pink and blue light, standing pose, glossy fashion-photo mood, clear recognizable face, full body, high detail'
+        label: 'Neon Nude',
+        prompt: 'cinematic fully nude adult in a neon-lit bedroom, bare breasts, pink and blue light, standing pose, glossy skin, clear recognizable face, full body, high detail'
       },
       {
         key: 'scene_locker',
         category: 'room',
-        label: 'Locker Room',
-        prompt: 'private locker room scene, mirror wall, athletic pose, realistic indoor lighting, clear face, full body visible, detailed environment'
+        label: 'Locker Nude',
+        prompt: 'fully naked adult in a private locker room, bare breasts, mirror wall, athletic confident pose, realistic indoor lighting, clear face, full body visible, detailed environment'
       },
       {
         key: 'scene_sofa',
         category: 'cinematic',
-        label: 'Sofa Pose',
-        prompt: 'sitting on a modern sofa, relaxed confident pose, warm studio lighting, clear face, full body composition, realistic photo detail'
+        label: 'Sofa Nude',
+        prompt: 'fully nude adult sitting on a modern sofa, bare breasts, relaxed seductive pose, warm studio lighting, clear face, full body composition, realistic photo detail'
       }
     ];
     var active = 'hot';
@@ -852,7 +852,7 @@
         help.textContent = t('sceneHelp', 'Scenes work best when you describe the room, lighting, pose, framing, and mood. Use one of these as a starting point.');
       }
       prompt.placeholder = scene ?
-        t('scenePlaceholder', 'Example: luxury hotel suite, standing near the bed, warm evening light, confident pose, clear face, full body in frame') :
+        t('scenePlaceholder', 'Example: fully nude adult in a luxury hotel suite, bare breasts, warm evening light, confident pose, clear face, full body in frame') :
         t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
     }
 
