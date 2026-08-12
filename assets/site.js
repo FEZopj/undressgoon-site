@@ -576,7 +576,8 @@
         if (!data || !data.ok) return;
         packOffer = data;
         grid.innerHTML = (data.packs || []).map(function (pack, idx) {
-          var badge = idx === 1 ? '<em>' + esc(t('bestValue', 'Popular')) + '</em>' : '';
+          var isBestValue = idx === 2 || /best value/i.test(String(pack.title || ''));
+          var badge = isBestValue ? '<em>' + esc(t('bestValue', 'Best Value')) + '</em>' : '';
           var baseCredits = Number(pack.baseCredits || pack.credits || 0);
           var bonusCredits = Number(pack.bonusCredits || 0);
           var creditLine = bonusCredits > 0 ?
@@ -586,7 +587,7 @@
             '<small class="pack-bonus">' + Number(pack.credits || (baseCredits + bonusCredits)) + ' ' + esc(t('creditsTotal', 'credits total')) + '</small>' :
             '';
           return (
-            '<div class="pack-card ' + (idx === 1 ? 'featured' : '') + '">' +
+            '<div class="pack-card ' + (isBestValue ? 'featured' : '') + '">' +
               badge +
               '<i data-lucide="coins"></i>' +
               '<strong>' + creditLine + '</strong>' +
