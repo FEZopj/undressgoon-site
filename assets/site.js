@@ -494,7 +494,6 @@
     var accountMenuCredits = document.getElementById('account-menu-credits');
     var accountLinkTelegram = document.getElementById('account-link-telegram');
     var telegramLink = document.getElementById('telegram-link');
-    var telegramNote = document.getElementById('telegram-link-note');
     var stickyCta = document.getElementById('sticky-cta');
     var stickyFreeCopy = document.querySelector('#sticky-cta .sticky-copy');
     var user = currentSession && currentSession.user;
@@ -528,7 +527,6 @@
     var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
     if (accountLinkTelegram) accountLinkTelegram.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
     if (telegramLink) telegramLink.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
-    if (telegramNote) telegramNote.textContent = t('telegramLinkNote', 'Card checkout opens in a private secure tab. Crypto remains available here.');
     updateReferral(currentSession && currentSession.referral, authed);
     refreshIcons();
   }
