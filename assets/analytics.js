@@ -76,7 +76,10 @@
   function identify(userId, properties) {
     if (!enabled || !userId) return;
     var anonId = getDistinctId();
-    currentDistinctId = 'web_' + String(userId);
+    // Must match the backend's distinct_id (config.py / web/server.py identify
+    // the same account as the raw id, no prefix) so browser events merge with
+    // server-side payment/generation events onto one person.
+    currentDistinctId = String(userId);
     try { localStorage.setItem(storageKey, currentDistinctId); } catch (e) {}
     send('$identify', {
       '$anon_distinct_id': anonId,
