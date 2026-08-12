@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260811-24" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260811-25" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260811-24" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260811-25" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -81,29 +81,21 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">🔥 KI Undress Generator für sofortige Web-Sessions</div>
+      <div class="badge">AI Undress Generator</div>
       <div class="live-pill" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span><strong id="live-count">24</strong> Personen generieren gerade</span>
       </div>
-      <h1>
-        Zieh jedes Foto mit KI aus.<br>
-        <span class="grad">Voll nackt. Micro Bikini. BDSM. Latex.</span>
-      </h1>
-      <p class="hero-sub">
-        Das pure <strong>Gooning-Tool</strong>. Lade ein Foto hoch und tippe <strong>genau</strong>, was du willst — voll custom Prompts. Generiere hier mit Gratis-Credits nach Google-Login.
-      </p>
+      <h1>Entkleide jedes Foto mit KI.</h1>
+      <p class="hero-sub">Lade ein Foto hoch, waehle ein Preset oder schreibe deinen eigenen Prompt. Dein Gratis-Credit wird nach dem Google-Login freigeschaltet.</p>
       <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Kostenlos generieren
-        </a>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Generator oeffnen</a>
       </div>
-      <p class="free-note"><strong>Claim your free credit now</strong> - Google login, no card needed</p>
+      <p class="free-note"><strong>Gratis-Credit</strong> · Google login · keine Karte</p>
       <div class="trust-row">
-        <span>⚡ Ergebnisse in 15–40s</span>
-        <span>🔒 Private Web-Session</span>
-        <span>✍️ Unbegrenzte Prompts</span>
-        <span>🔞 Nur 18+</span>
-        <span>Privat: kein Verlauf gespeichert</span>
+        <span><i data-lucide="zap"></i> 15-40s Ergebnisse</span>
+        <span><i data-lucide="shield-check"></i> Private Web-Session</span>
+        <span><i data-lucide="badge-check"></i> Nur 18+</span>
       </div>
     </div>
   </section>
@@ -111,20 +103,12 @@
   <section class="generator-section" id="generate">
     <div class="container">
       <div class="generator-head">
-        <span class="badge">Auf der Website generieren</span>
-        <h2>Hochladen, prompten, generieren. Kein App-Wechsel.</h2>
-        <p>Dein Gratis-Credit ist an dein Google-Konto gebunden, damit derselbe Kontostand in jedem Browser gilt.</p>
+        <h2>Jetzt generieren</h2>
+        <p>Erst hochladen. Presets und eigene Prompts sind darunter.</p>
       </div>
 
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
-          <div class="session-card">
-            <i data-lucide="sparkles"></i>
-            <div>
-              <strong>Start with a real photo</strong>
-              <small>Upload, choose a preset, confirm rights, then generate.</small>
-            </div>
-          </div>
           <div class="login-box" id="login-box">
             <p>Der Login beweist, dass ein echter Nutzer den Gratis-Credit besitzt. Danach kannst du hier generieren.</p>
             <a class="btn btn-google" id="google-login" href="#">Mit Google fortfahren</a>
@@ -148,6 +132,7 @@
               <img class="upload-preview" id="upload-preview" alt="" hidden />
               <span class="upload-main"><i data-lucide="image-plus"></i> Foto wählen</span>
               <span class="upload-sub" id="upload-name">JPG, PNG oder WebP bis 12 MB</span>
+              <span class="upload-tip">Klares Foto von vorne funktioniert am besten.</span>
             </label>
 
             <div class="mode-row" role="group" aria-label="Generation mode">
@@ -169,7 +154,7 @@
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>Ich bestätige, dass ich 18+ bin und das rechtliche Nutzungsrecht an diesem Foto habe.</span>
+              <span>Ich bin 18+ und habe Rechte/Einwilligung fuer dieses Foto. Ich akzeptiere die <a href="../terms.html">Bedingungen</a>.</span>
             </label>
 
             <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> 1 Bild generieren</button>
@@ -214,38 +199,6 @@
   </div>
 
   <section class="section">
-    <div class="container">
-      <h2 class="section-title">Ausziehen in 4 Schritten</h2>
-      <p class="section-sub">Vom bekleideten Foto zu purem Goon-Material in unter einer Minute</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3>Login</h3>
-          <p>Mit Google fortfahren, damit ein echtes Konto den Gratis-Credit besitzt.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3>Foto senden</h3>
-          <p>Klares Frontfoto funktioniert am besten</p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3>Fantasie tippen</h3>
-          <p>Voll custom Prompts — beschreib jeden Fetisch</p>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <h3>Nudes bekommen</h3>
-          <p>Goon-ready Ergebnisse in 15–40 Sekunden</p>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:28px;">
-        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>Schritt 1 kostenlos testen →</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:0;">
     <div class="container">
       <h2 class="section-title">Jeden Fetisch real machen</h2>
       <p class="section-sub">Keine Limits. Voll custom Prompts sind erlaubt.</p>
@@ -344,10 +297,8 @@
       <div class="cta-band">
         <h2>Dein Fetisch. Dein Prompt. Deine Realität.</h2>
         <p>Voll custom Prompts erlaubt. Beschreib genau, was du willst — UndressGoon macht in Sekunden Bilder draus.</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>
-          UndressGoon jetzt öffnen →
-        </a>
-        <p class="urgency">🎁 Gratis-Credits warten · keine Anmelde-Wand · 18+</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Generator oeffnen</a>
+        <p class="urgency">🎁 Gratis-Credit · Google login · keine Karte · 18+</p>
       </div>
     </div>
   </section>

@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260811-24" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260811-25" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260811-24" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260811-25" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -81,29 +81,21 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">🔥 即时网页会话 AI undress 生成器</div>
+      <div class="badge">AI undress 生成器</div>
       <div class="live-pill" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span><strong id="live-count">24</strong> 人正在生成中</span>
       </div>
-      <h1>
-        用AI脱掉任何照片。<br>
-        <span class="grad">全裸。微型比基尼。BDSM。乳胶。</span>
-      </h1>
-      <p class="hero-sub">
-        纯粹的<strong>gooning</strong>工具。上传照片，输入你<strong>想要的一切</strong>——完全自定义提示词。Google 登录后可直接在这里用免费额度生成。
-      </p>
+      <h1>用 AI 处理任何照片。</h1>
+      <p class="hero-sub">上传照片，选择预设，或直接写自己的提示词。Google 登录后即可领取免费点数。</p>
       <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>免费开始生成
-        </a>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>打开生成器</a>
       </div>
-      <p class="free-note"><strong>Claim your free credit now</strong> - Google login, no card needed</p>
+      <p class="free-note"><strong>免费点数</strong> · Google 登录 · 无需银行卡</p>
       <div class="trust-row">
-        <span>⚡ 15–40秒出图</span>
-        <span>🔒 私密网页会话</span>
-        <span>✍️ 无限自定义提示</span>
-        <span>🔞 仅限18+</span>
-        <span>私密：不保存结果历史</span>
+        <span><i data-lucide="zap"></i> 15-40 秒出图</span>
+        <span><i data-lucide="shield-check"></i> 私密网页会话</span>
+        <span><i data-lucide="badge-check"></i> 仅限 18+</span>
       </div>
     </div>
   </section>
@@ -111,20 +103,12 @@
   <section class="generator-section" id="generate">
     <div class="container">
       <div class="generator-head">
-        <span class="badge">在网站生成</span>
-        <h2>上传、输入、生成。无需切换 app。</h2>
-        <p>你的免费额度绑定 Google 账号，因此每个浏览器都会执行同一个余额。</p>
+        <h2>立即生成</h2>
+        <p>先上传照片。预设和自定义提示词就在下方。</p>
       </div>
 
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
-          <div class="session-card">
-            <i data-lucide="sparkles"></i>
-            <div>
-              <strong>Start with a real photo</strong>
-              <small>Upload, choose a preset, confirm rights, then generate.</small>
-            </div>
-          </div>
           <div class="login-box" id="login-box">
             <p>登录可证明免费额度属于真实用户。之后你就能在这里生成。</p>
             <a class="btn btn-google" id="google-login" href="#">继续使用 Google</a>
@@ -148,6 +132,7 @@
               <img class="upload-preview" id="upload-preview" alt="" hidden />
               <span class="upload-main"><i data-lucide="image-plus"></i> 选择照片</span>
               <span class="upload-sub" id="upload-name">JPG、PNG 或 WebP，最大 12 MB</span>
+              <span class="upload-tip">清晰正脸照片效果最好。</span>
             </label>
 
             <div class="mode-row" role="group" aria-label="Generation mode">
@@ -169,7 +154,7 @@
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>我确认已满 18 岁，并拥有使用这张照片的合法权利。</span>
+              <span>我已满 18 岁，并有权/同意使用此照片。我同意<a href="../terms.html">条款</a>。</span>
             </label>
 
             <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> 生成 1 张图片</button>
@@ -214,38 +199,6 @@
   </div>
 
   <section class="section">
-    <div class="container">
-      <h2 class="section-title">4步完成脱衣</h2>
-      <p class="section-sub">从着装照片到goon素材，不到一分钟</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3>登录</h3>
-          <p>使用 Google 登录，让真实账号拥有免费额度。</p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3>发送任意照片</h3>
-          <p>清晰正脸效果最佳</p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3>输入你的幻想</h3>
-          <p>完全自定义提示——描述任何癖好或场景</p>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <h3>获得结果</h3>
-          <p>15–40秒生成goon级图片</p>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:28px;">
-        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>免费试第1步 →</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:0;">
     <div class="container">
       <h2 class="section-title">把任何癖好变成现实</h2>
       <p class="section-sub">描述无上限。完全自定义提示词已开放。</p>
@@ -344,10 +297,8 @@
       <div class="cta-band">
         <h2>你的癖好。你的提示。你的现实。</h2>
         <p>允许完全自定义提示。精确描述你想要的——UndressGoon几秒内变成图片。</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>
-          立即打开 UndressGoon →
-        </a>
-        <p class="urgency">🎁 免费额度已就绪 · 无注册墙 · 18+</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>打开生成器</a>
+        <p class="urgency">🎁 免费点数 · Google 登录 · 无需银行卡 · 18+</p>
       </div>
     </div>
   </section>

@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="assets/site.css?v=20260811-24" as="style" />
+  <link rel="preload" href="assets/site.css?v=20260811-25" as="style" />
   <link rel="preload" href="assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="assets/site.css?v=20260811-24" />
+  <link rel="stylesheet" href="assets/site.css?v=20260811-25" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -83,29 +83,25 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">🔥 AI undress generator for instant web sessions</div>
+      <div class="badge">AI undress generator</div>
       <div class="live-pill" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span><strong id="live-count">24</strong> people generating right now</span>
       </div>
       <h1>
-        Undress any photo with AI.<br>
-        <span class="grad">Fully nude. Micro bikini. BDSM. Latex.</span>
+        Undress any photo with AI.
       </h1>
       <p class="hero-sub">
-        The pure <strong>gooning tool</strong>. Upload a photo, pick a preset, or type <strong>exactly</strong>
-        what you want. Generate directly here with free credits after Google login.
+        Upload a photo, choose a preset, or write your own prompt. Your free credit unlocks after Google login.
       </p>
       <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Start generating free</a>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Open generator</a>
       </div>
-      <p class="free-note"><strong>Claim your free credit now</strong> - Google login, no card needed</p>
+      <p class="free-note"><strong>Free credit</strong> · Google login · no card</p>
       <div class="trust-row">
-        <span><i data-lucide="zap"></i> Results in 15–40s</span>
+        <span><i data-lucide="zap"></i> 15–40s results</span>
         <span><i data-lucide="shield-check"></i> Private web session</span>
-        <span><i data-lucide="sparkles"></i> Presets + custom prompts</span>
         <span><i data-lucide="badge-check"></i> 18+ only</span>
-        <span><i data-lucide="lock-keyhole"></i> No public result gallery</span>
       </div>
     </div>
   </section>
@@ -113,20 +109,12 @@
   <section class="generator-section" id="generate">
     <div class="container">
       <div class="generator-head">
-        <span class="badge">Generate on the website</span>
-        <h2>Upload, prompt, generate. No app switch required.</h2>
-        <p>Log in now to claim your free credit. No card needed, and your balance follows your Google account.</p>
+        <h2>Generate now</h2>
+        <p>Upload first. Presets and custom prompts are below.</p>
       </div>
 
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
-          <div class="session-card">
-            <i data-lucide="sparkles"></i>
-            <div>
-              <strong>Start with a real photo</strong>
-              <small>Upload, choose a preset, confirm rights, then generate.</small>
-            </div>
-          </div>
 
           <div class="login-box" id="login-box">
             <p>Log in now to claim your free credit. No card needed.</p>
@@ -151,6 +139,7 @@
               <img class="upload-preview" id="upload-preview" alt="" hidden />
               <span class="upload-main"><i data-lucide="image-plus"></i> Choose a photo</span>
               <span class="upload-sub" id="upload-name">JPG, PNG, or WebP up to 12 MB</span>
+              <span class="upload-tip">Clear face-forward shot works best.</span>
             </label>
 
             <div class="mode-row" role="group" aria-label="Generation mode">
@@ -172,7 +161,7 @@
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>I confirm I am 18+, have the legal right and consent to use this photo, and agree to the Terms.</span>
+              <span>I am 18+ and have rights/consent to use this photo. I agree to the <a href="terms.html">Terms</a>.</span>
             </label>
 
             <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> Generate 1 image</button>
@@ -221,38 +210,6 @@
   </div>
 
   <section class="section">
-    <div class="container">
-      <h2 class="section-title">Undress in 4 steps</h2>
-      <p class="section-sub">From clothed photo to pure goon material in under a minute</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num"><i data-lucide="log-in"></i></div>
-          <h3>Login</h3>
-          <p>Continue with Google to claim your free credit and keep your balance safe.</p>
-        </div>
-        <div class="step">
-          <div class="step-num"><i data-lucide="upload"></i></div>
-          <h3>Send any photo</h3>
-          <p>Clear face-forward shot works best for AI undress</p>
-        </div>
-        <div class="step">
-          <div class="step-num"><i data-lucide="sparkles"></i></div>
-          <h3>Type your fantasy</h3>
-          <p>Fully customized adult prompts within safety rules</p>
-        </div>
-        <div class="step">
-          <div class="step-num"><i data-lucide="download"></i></div>
-          <h3>Get the nudes</h3>
-          <p>Goon-ready AI results in 15–40 seconds</p>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:28px;">
-        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>Try step 1 free →</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:0;">
     <div class="container">
       <h2 class="section-title">Turn adult fantasies into polished AI edits</h2>
       <p class="section-sub">Describe the adult look you want. Custom prompts are allowed within safety rules.</p>
@@ -364,7 +321,7 @@
           and UndressGoon turns it into goon-ready images in seconds.
         </p>
         <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Open UndressGoon Now →</a>
-        <p class="urgency">🎁 Free credits waiting · Google login required · 18+</p>
+        <p class="urgency">🎁 Free credit · Google login · no card · 18+</p>
       </div>
     </div>
   </section>

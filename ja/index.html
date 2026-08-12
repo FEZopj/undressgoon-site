@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260811-24" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260811-25" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260811-24" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260811-25" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -81,29 +81,21 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">🔥 即時Webセッション用 AI undress 生成ツール</div>
+      <div class="badge">AI undress ジェネレーター</div>
       <div class="live-pill" aria-live="polite">
         <span class="live-dot" aria-hidden="true"></span>
         <span><strong id="live-count">24</strong> 人が今生成中</span>
       </div>
-      <h1>
-        AIであらゆる写真を脱衣。<br>
-        <span class="grad">フルヌード。マイクロビキニ。BDSM。ラテックス。</span>
-      </h1>
-      <p class="hero-sub">
-        純粋な<strong>gooning</strong>ツール。写真を送り、<strong>欲しいものそのまま</strong>を入力——完全カスタムプロンプト。Googleログイン後、無料クレジットでここから生成できます。
-      </p>
+      <h1>どんな写真もAIで加工。</h1>
+      <p class="hero-sub">写真をアップロードして、プリセットを選ぶか自分のプロンプトを書くだけ。無料クレジットはGoogleログイン後に使えます。</p>
       <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>無料で生成開始
-        </a>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>ジェネレーターを開く</a>
       </div>
-      <p class="free-note"><strong>Claim your free credit now</strong> - Google login, no card needed</p>
+      <p class="free-note"><strong>無料クレジット</strong> · Googleログイン · カード不要</p>
       <div class="trust-row">
-        <span>⚡ 15–40秒で生成</span>
-        <span>🔒 プライベートWebセッション</span>
-        <span>✍️ 無制限カスタムプロンプト</span>
-        <span>🔞 18歳以上のみ</span>
-        <span>プライベート：結果履歴は保存しません</span>
+        <span><i data-lucide="zap"></i> 15-40秒で結果</span>
+        <span><i data-lucide="shield-check"></i> プライベートWebセッション</span>
+        <span><i data-lucide="badge-check"></i> 18+のみ</span>
       </div>
     </div>
   </section>
@@ -111,20 +103,12 @@
   <section class="generator-section" id="generate">
     <div class="container">
       <div class="generator-head">
-        <span class="badge">サイト上で生成</span>
-        <h2>アップロード、入力、生成。アプリ切替なし。</h2>
-        <p>無料クレジットはGoogleアカウントに紐づくため、どのブラウザでも同じ残高が適用されます。</p>
+        <h2>今すぐ生成</h2>
+        <p>まず写真をアップロード。プリセットとカスタムプロンプトは下にあります。</p>
       </div>
 
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
-          <div class="session-card">
-            <i data-lucide="sparkles"></i>
-            <div>
-              <strong>Start with a real photo</strong>
-              <small>Upload, choose a preset, confirm rights, then generate.</small>
-            </div>
-          </div>
           <div class="login-box" id="login-box">
             <p>ログインにより、無料クレジットが実在ユーザーに紐づきます。その後ここで生成できます。</p>
             <a class="btn btn-google" id="google-login" href="#">Googleで続行</a>
@@ -148,6 +132,7 @@
               <img class="upload-preview" id="upload-preview" alt="" hidden />
               <span class="upload-main"><i data-lucide="image-plus"></i> 写真を選択</span>
               <span class="upload-sub" id="upload-name">JPG、PNG、WebP 最大12 MB</span>
+              <span class="upload-tip">顔が正面ではっきり写った写真が最適です。</span>
             </label>
 
             <div class="mode-row" role="group" aria-label="Generation mode">
@@ -169,7 +154,7 @@
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>私は18歳以上で、この写真を使用する法的権利があることを確認します。</span>
+              <span>私は18歳以上で、この写真を使う権利/同意があります。<a href="../terms.html">規約</a>に同意します。</span>
             </label>
 
             <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> 1枚生成</button>
@@ -214,38 +199,6 @@
   </div>
 
   <section class="section">
-    <div class="container">
-      <h2 class="section-title">4ステップで脱衣</h2>
-      <p class="section-sub">着衣写真からgoon素材まで1分以内</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3>ログイン</h3>
-          <p>Googleで続行し、実在アカウントに無料クレジットを紐づけます。</p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3>写真を送る</h3>
-          <p>正面のクリアな顔写真がベスト</p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3>妄想を入力</h3>
-          <p>完全カスタムプロンプト——どんなフェチでも</p>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <h3>ヌードを受け取る</h3>
-          <p>15–40秒でgoon向け結果</p>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:28px;">
-        <a href="#generate" class="btn btn-accent btn-lg" data-generate-cta>ステップ1を無料で試す →</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:0;">
     <div class="container">
       <h2 class="section-title">どんなフェチも現実に</h2>
       <p class="section-sub">描写に制限なし。完全カスタムプロンプトOK。</p>
@@ -344,10 +297,8 @@
       <div class="cta-band">
         <h2>君のフェチ。君のプロンプト。君の現実。</h2>
         <p>完全カスタムプロンプトOK。欲しいものを正確に——UndressGoonが数秒で画像に。</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>
-          今すぐ UndressGoon を開く →
-        </a>
-        <p class="urgency">🎁 無料クレジット待機中 · 登録壁なし · 18+</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>ジェネレーターを開く</a>
+        <p class="urgency">🎁 無料クレジット · Googleログイン · カード不要 · 18+</p>
       </div>
     </div>
   </section>
