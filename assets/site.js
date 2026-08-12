@@ -13,6 +13,7 @@
   var i18n = CFG.i18n || {};
   var currentSession = null;
   var telegramLinkPoll = 0;
+  var checkoutCreditPoll = 0;
   var packOffer = null;
   var firstGenerationDone = false;
   var exitOfferArmed = false;
@@ -527,7 +528,7 @@
     var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
     if (accountLinkTelegram) accountLinkTelegram.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
     if (telegramLink) telegramLink.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
-    if (telegramNote) telegramNote.textContent = linked ? t('telegramLinkedNote', 'Card checkout is ready for this account.') : t('telegramLinkNote', 'Crypto stays here. Card checkout opens Telegram after you link it once.');
+    if (telegramNote) telegramNote.textContent = t('telegramLinkNote', 'Card checkout opens in a private secure tab. Crypto remains available here.');
     updateReferral(currentSession && currentSession.referral, authed);
     refreshIcons();
   }
@@ -586,6 +587,12 @@
           var bonusLine = bonusCredits > 0 ?
             '<small class="pack-bonus">' + Number(pack.credits || (baseCredits + bonusCredits)) + ' ' + esc(t('creditsTotal', 'credits total')) + '</small>' :
             '';
+          var cryptoButton = data.cryptoEnabled !== false ?
+            '<button type="button" data-crypto-pack="' + esc(pack.code) + '"><i data-lucide="bitcoin"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' :
+            '';
+          var cardButton = data.cardEnabled ?
+            '<button type="button" class="pay-card-pack" data-card-pack="' + esc(pack.code) + '"><i data-lucide="credit-card"></i> ' + esc(t('payCard', 'Card')) + '</button>' :
+            '';
           return (
             '<div class="pack-card ' + (isBestValue ? 'featured' : '') + '">' +
               badge +
@@ -593,14 +600,14 @@
               '<strong>' + creditLine + '</strong>' +
               bonusLine +
               '<span>' + esc(pack.price) + '</span>' +
-              '<button type="button" data-pack="' + esc(pack.code) + '"><i data-lucide="bitcoin"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' +
+              '<div class="pack-actions">' + cardButton + cryptoButton + '</div>' +
             '</div>'
           );
         }).join('');
         refreshIcons();
-        grid.querySelectorAll('button[data-pack]').forEach(function (button) {
+        grid.querySelectorAll('button[data-crypto-pack]').forEach(function (button) {
           button.addEventListener('click', function () {
-            var code = button.getAttribute('data-pack');
+            var code = button.getAttribute('data-crypto-pack');
             button.disabled = true;
             button.textContent = t('opening', 'Opening...');
             setStatus(t('creatingCheckout', 'Creating secure crypto checkout...'), 'working');
@@ -623,11 +630,83 @@
                 setStatus(err.message || t('checkoutFail', 'Could not create checkout.'), 'error');
                 button.disabled = false;
                 button.textContent = t('payCrypto', 'Pay crypto');
+                refreshIcons();
               });
+          });
+        });
+        grid.querySelectorAll('button[data-card-pack]').forEach(function (button) {
+          button.addEventListener('click', function () {
+            startCardCheckout(button.getAttribute('data-card-pack'), button);
           });
         });
       })
       .catch(function () {});
+  }
+
+  function pollCreditsAfterCheckout(startCredits) {
+    if (checkoutCreditPoll) window.clearInterval(checkoutCreditPoll);
+    var tries = 0;
+    checkoutCreditPoll = window.setInterval(function () {
+      tries += 1;
+      refreshWebSession().then(function (session) {
+        var credits = Number(session && session.user && session.user.credits || 0);
+        if (credits > Number(startCredits || 0)) {
+          window.clearInterval(checkoutCreditPoll);
+          checkoutCreditPoll = 0;
+          showCheckout(false);
+          setStatus(t('cardCreditsAdded', 'Payment complete. Credits added to your account.'), 'success');
+        } else if (tries >= 100) {
+          window.clearInterval(checkoutCreditPoll);
+          checkoutCreditPoll = 0;
+        }
+      });
+    }, 3000);
+  }
+
+  function startCardCheckout(code, button) {
+    if (!currentSession || !currentSession.user) {
+      setStatus(t('loginFirst', 'Login with Google first.'), 'error');
+      return;
+    }
+    if (!code) {
+      setStatus(t('checkoutFail', 'Could not create checkout.'), 'error');
+      return;
+    }
+    var original = button ? button.innerHTML : '';
+    if (button) {
+      button.disabled = true;
+      button.textContent = t('opening', 'Opening...');
+    }
+    setStatus(t('creatingCardCheckout', 'Opening secure card checkout...'), 'working');
+    return fetch(apiUrl('/web/card/create'), {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code })
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (payload) {
+          if (!res.ok || !payload.ok) throw new Error(payload.message || t('checkoutFail', 'Could not create checkout.'));
+          return payload;
+        });
+      })
+      .then(function (payload) {
+        var win = window.open(payload.checkoutUrl, '_blank', 'noopener');
+        if (!win) location.href = payload.checkoutUrl;
+        track('website_card_checkout_opened', { code: code });
+        setStatus(t('cardCheckoutOpened', 'Card checkout opened. Return here after payment.'), 'success');
+        pollCreditsAfterCheckout(currentSession && currentSession.user && currentSession.user.credits);
+      })
+      .catch(function (err) {
+        setStatus(err.message || t('checkoutFail', 'Could not create checkout.'), 'error');
+      })
+      .finally(function () {
+        if (button) {
+          button.disabled = false;
+          button.innerHTML = original || '<i data-lucide="credit-card"></i> ' + t('payCard', 'Card');
+          refreshIcons();
+        }
+      });
   }
 
   function pollTelegramLink() {
@@ -639,7 +718,7 @@
         if (session && session.telegram && session.telegram.linked) {
           window.clearInterval(telegramLinkPoll);
           telegramLinkPoll = 0;
-          setStatus(t('telegramLinked', 'Telegram is linked. Card checkout is ready.'), 'success');
+          setStatus(t('telegramLinked', 'Telegram is linked.'), 'success');
         } else if (tries >= 20) {
           window.clearInterval(telegramLinkPoll);
           telegramLinkPoll = 0;
@@ -662,7 +741,7 @@
       })
       .then(function (payload) {
         if (payload.linked) {
-          setStatus(t('telegramLinked', 'Telegram is linked. Card checkout is ready.'), 'success');
+          setStatus(t('telegramLinked', 'Telegram is linked.'), 'success');
           return refreshWebSession().then(function () { return payload; });
         }
         window.open(payload.botUrl || BOT_URL, '_blank', 'noopener');
@@ -721,11 +800,13 @@
       setStatus(t('loginFirst', 'Login with Google first.'), 'error');
       return;
     }
-    if (currentSession.telegram && currentSession.telegram.linked) {
-      window.open(BOT_URL, '_blank', 'noopener');
+    var packs = packOffer && packOffer.packs || [];
+    var best = packs[2] || packs[1] || packs[0];
+    if (best && best.code) {
+      startCardCheckout(best.code, null);
       return;
     }
-    requestTelegramLink();
+    setStatus(t('checkoutFail', 'Could not create checkout.'), 'error');
   }
 
   function initAccountControls() {

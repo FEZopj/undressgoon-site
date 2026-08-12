@@ -805,6 +805,15 @@ html[data-theme="light"] .checkout-panel {
   color: var(--green);
   font-weight: 900;
 }
+.pack-actions {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.pack-actions button:only-child {
+  grid-column: 1 / -1;
+}
 .pack-card button {
   position: relative;
   overflow: hidden;
@@ -822,6 +831,13 @@ html[data-theme="light"] .checkout-panel {
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(255, 45, 85, 0.28);
   transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+}
+.pack-card button.pay-card-pack {
+  background: linear-gradient(135deg, #27d17f, #21b7ff 55%, #6d5dfc);
+  box-shadow: 0 8px 22px rgba(33, 183, 255, 0.22);
+}
+.pack-card button.pay-card-pack:hover {
+  box-shadow: 0 13px 32px rgba(33, 183, 255, 0.36);
 }
 .pack-card button:hover {
   transform: translateY(-2px) scale(1.02);
