@@ -134,9 +134,9 @@ html[data-theme="light"] .lang-switch select {
 .lang-switch::after {
   content: "";
   position: absolute;
-  right: 12px;
-  width: 7px;
-  height: 7px;
+  right: 10px;
+  width: 6px;
+  height: 6px;
   border-right: 2px solid var(--muted);
   border-bottom: 2px solid var(--muted);
   transform: rotate(45deg) translateY(-2px);
@@ -144,14 +144,15 @@ html[data-theme="light"] .lang-switch select {
 }
 .lang-switch select {
   appearance: none;
-  width: 92px;
-  min-height: 40px;
-  padding: 9px 34px 9px 12px;
+  width: 68px;
+  min-height: 38px;
+  padding: 8px 26px 8px 11px;
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
+  border-radius: 11px;
   background: rgba(255,255,255,0.06);
   color: var(--text);
   font: inherit;
+  font-weight: 900;
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
@@ -2065,7 +2066,8 @@ html[data-theme="light"] .toast {
 
 @media (max-width: 700px) {
   .container { padding: 0 12px; }
-  .lang-switch select { width: 70px; min-height: 40px; padding-left: 10px; }
+  .lang-switch select { width: 62px; min-height: 38px; padding: 8px 24px 8px 10px; }
+  .lang-switch::after { right: 9px; }
   .logo { max-width: 164px; }
   .logo img { width: 138px; max-width: 138px; }
   .header-right { gap: 8px; }
