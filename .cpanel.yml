@@ -4,6 +4,15 @@ deployment:
     - export DEPLOYPATH=$HOME/public_html/
     - /bin/cp index.html $DEPLOYPATH
     - /bin/cp terms.html $DEPLOYPATH
+    - /bin/cp privacy.html $DEPLOYPATH
+    - /bin/cp acceptable-use.html $DEPLOYPATH
+    - /bin/cp consent.html $DEPLOYPATH
+    - /bin/cp refunds.html $DEPLOYPATH
+    - /bin/cp dmca.html $DEPLOYPATH
+    - /bin/cp report-abuse.html $DEPLOYPATH
+    - /bin/cp contact.html $DEPLOYPATH
+    - /bin/cp age-safety.html $DEPLOYPATH
+    - /bin/cp legal.config.json $DEPLOYPATH
     - /bin/cp .htaccess $DEPLOYPATH
     - /bin/cp favicon.ico $DEPLOYPATH
     - /bin/cp apple-touch-icon.png $DEPLOYPATH
