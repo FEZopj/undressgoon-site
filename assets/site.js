@@ -17,6 +17,17 @@
   var firstGenerationDone = false;
   var exitOfferArmed = false;
 
+  function track(event, properties) {
+    if (typeof window.ugTrack === 'function') {
+      window.ugTrack(event, properties || {});
+    }
+  }
+
+  function selectedModeValue() {
+    var mode = document.querySelector('input[name="mode"]:checked');
+    return mode ? mode.value : 'prompt';
+  }
+
   function t(key, fallback) {
     return i18n && Object.prototype.hasOwnProperty.call(i18n, key) ? i18n[key] : fallback;
   }
@@ -507,6 +518,12 @@
     }
     if (stickyFreeCopy) stickyFreeCopy.hidden = authed;
     if (toast && authed) toast.classList.remove('show');
+    if (authed && typeof window.ugIdentify === 'function') {
+      window.ugIdentify(user.id, {
+        credits: user.credits,
+        telegram_linked: !!(currentSession && currentSession.telegram && currentSession.telegram.linked)
+      });
+    }
     var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
     if (accountLinkTelegram) accountLinkTelegram.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
     if (telegramLink) telegramLink.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
@@ -1080,6 +1097,9 @@
     if (file) {
       file.addEventListener('change', function () {
         updateUploadPreview();
+        if (selectedPersonFile()) {
+          track('website_photo_selected', { mode: selectedModeValue() });
+        }
       });
     }
 
@@ -1117,6 +1137,7 @@
       event.preventDefault();
       var payloadPromise = buildGenerationPayload();
       if (!payloadPromise) return;
+      track('website_generation_submit', { mode: selectedModeValue(), logged_in: !!(currentSession && currentSession.user) });
       if (submit) submit.disabled = true;
       setStatus(t('readingUpload', 'Reading upload...'), 'working');
       paintResults([]);
@@ -1154,6 +1175,10 @@
           firstGenerationDone = true;
           armExitOffer();
           paintResults(data.images || []);
+          track('website_generation_success', {
+            image_count: (data.images || []).length,
+            balance: data.balance
+          });
           setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
           return refreshWebSession();
         })
@@ -1161,12 +1186,15 @@
           hideGenerationLoader(true);
           var payload = err.payload || {};
           if (payload.code === 'insufficient_credits') {
+            track('website_generation_out_of_credits', {});
             showCheckout(true, 'empty');
             setStatus(t('outOfCredits', 'You are out of credits. Pick a pack to keep generating.'), 'error');
           } else if (payload.code === 'not_authenticated') {
+            track('website_generation_not_authenticated', {});
             setStatus(t('loginFirst', 'Login with Google first.'), 'error');
             updateWebAccount(null);
           } else {
+            track('website_generation_error', { code: payload.code || 'unknown' });
             setStatus(err.message || t('genericError', 'Something went wrong.'), 'error');
           }
         })
