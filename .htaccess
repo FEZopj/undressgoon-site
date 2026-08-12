@@ -24,7 +24,7 @@
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
   Header always set X-Frame-Options "DENY"
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src https://api.undressgoon.app; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src https://api.undressgoon.app; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' mailto:"
 </IfModule>
 
 # Prefer compressed transfer when available
@@ -37,4 +37,17 @@
   AddType image/webp .webp
   AddType image/x-icon .ico
   AddType application/manifest+json .webmanifest
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^terms/?$ terms.html [L]
+  RewriteRule ^privacy/?$ privacy.html [L]
+  RewriteRule ^acceptable-use/?$ acceptable-use.html [L]
+  RewriteRule ^consent/?$ consent.html [L]
+  RewriteRule ^refunds/?$ refunds.html [L]
+  RewriteRule ^dmca/?$ dmca.html [L]
+  RewriteRule ^report-abuse/?$ report-abuse.html [L]
+  RewriteRule ^contact/?$ contact.html [L]
+  RewriteRule ^age-safety/?$ age-safety.html [L]
 </IfModule>

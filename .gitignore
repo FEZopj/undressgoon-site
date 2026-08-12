@@ -3,3 +3,4 @@ _fix_paths.py
 _gen_locales.py
 .DS_Store
 Thumbs.db
+_qa/
