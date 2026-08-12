@@ -997,8 +997,8 @@ html[data-theme="light"] .preset-grid button {
   border-color: var(--accent);
 }
 .upload-zone.has-preview {
-  place-items: stretch;
-  text-align: left;
+  place-items: center;
+  text-align: center;
 }
 .upload-zone input {
   position: absolute;
@@ -1007,8 +1007,8 @@ html[data-theme="light"] .preset-grid button {
 }
 .upload-preview {
   width: 100%;
-  max-height: 240px;
-  object-fit: cover;
+  max-height: min(58vh, 520px);
+  object-fit: contain;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: #09090c;
@@ -2179,6 +2179,9 @@ html[data-theme="light"] .toast {
   .upload-zone {
     min-height: 112px;
     padding: 14px;
+  }
+  .upload-preview {
+    max-height: min(52vh, 420px);
   }
   .preset-tabs { grid-template-columns: 1fr; }
   .preset-grid { grid-template-columns: 1fr; }
