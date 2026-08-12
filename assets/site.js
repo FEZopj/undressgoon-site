@@ -588,7 +588,7 @@
             '<small class="pack-bonus">' + Number(pack.credits || (baseCredits + bonusCredits)) + ' ' + esc(t('creditsTotal', 'credits total')) + '</small>' :
             '';
           var cryptoButton = data.cryptoEnabled !== false ?
-            '<button type="button" data-crypto-pack="' + esc(pack.code) + '"><i data-lucide="bitcoin"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' :
+            '<button type="button" data-crypto-pack="' + esc(pack.code) + '"><i data-lucide="wallet"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' :
             '';
           var cardButton = data.cardEnabled ?
             '<button type="button" class="pay-card-pack" data-card-pack="' + esc(pack.code) + '"><i data-lucide="credit-card"></i> ' + esc(t('payCard', 'Card')) + '</button>' :
@@ -608,6 +608,7 @@
         grid.querySelectorAll('button[data-crypto-pack]').forEach(function (button) {
           button.addEventListener('click', function () {
             var code = button.getAttribute('data-crypto-pack');
+            var original = button.innerHTML;
             button.disabled = true;
             button.textContent = t('opening', 'Opening...');
             setStatus(t('creatingCheckout', 'Creating secure crypto checkout...'), 'working');
@@ -629,7 +630,7 @@
               .catch(function (err) {
                 setStatus(err.message || t('checkoutFail', 'Could not create checkout.'), 'error');
                 button.disabled = false;
-                button.textContent = t('payCrypto', 'Pay crypto');
+                button.innerHTML = original || '<i data-lucide="wallet"></i> ' + esc(t('payCrypto', 'Crypto'));
                 refreshIcons();
               });
           });
@@ -815,7 +816,6 @@
     var topup = document.getElementById('account-topup');
     var linkTelegram = document.getElementById('account-link-telegram');
     var modalLink = document.getElementById('telegram-link');
-    var cardPay = document.getElementById('card-pay');
     var close = document.getElementById('topup-close');
     var logout = document.getElementById('account-logout');
 
@@ -823,7 +823,6 @@
     var support = document.querySelector('.account-menu a[href*="start=support"]');
     if (support) support.innerHTML = '<i data-lucide="message-circle"></i> ' + t('contactSupport', 'Contact support');
     if (logout) logout.innerHTML = '<i data-lucide="log-out"></i> ' + t('logout', 'Logout');
-    if (cardPay) cardPay.innerHTML = '<i data-lucide="credit-card"></i> ' + t('payCard', 'Pay by card');
 
     function closeMenu() {
       if (menu) menu.hidden = true;
@@ -852,7 +851,6 @@
       });
     }
     if (modalLink) modalLink.addEventListener('click', requestTelegramLink);
-    if (cardPay) cardPay.addEventListener('click', openCardCheckout);
     if (close) close.addEventListener('click', function () { showCheckout(false); });
     document.querySelectorAll('[data-close-topup]').forEach(function (button) {
       button.addEventListener('click', function () { showCheckout(false); });

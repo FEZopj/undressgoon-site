@@ -94,7 +94,7 @@
     send('$pageview', { url: location.href.split('#')[0] });
     document.addEventListener('click', function (event) {
       var target = event.target && event.target.closest && event.target.closest(
-        '[data-generate-cta], #google-login, #account-topup, #account-link-telegram, #telegram-link, #card-pay, #copy-referral'
+        '[data-generate-cta], #google-login, #account-topup, #account-link-telegram, #telegram-link, #copy-referral'
       );
       if (!target) return;
       send('website_click', {
