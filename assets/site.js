@@ -692,8 +692,12 @@
         });
       })
       .then(function (payload) {
-        var win = window.open(payload.checkoutUrl, '_blank', 'noopener');
-        if (!win) location.href = payload.checkoutUrl;
+        var win = window.open(payload.checkoutUrl, '_blank');
+        if (win) {
+          try { win.opener = null; } catch (e) { /* best effort */ }
+        } else {
+          throw new Error(t('popupBlocked', 'Popup blocked. Allow popups and click Card again.'));
+        }
         track('website_card_checkout_opened', { code: code });
         setStatus(t('cardCheckoutOpened', 'Card checkout opened. Return here after payment.'), 'success');
         pollCreditsAfterCheckout(currentSession && currentSession.user && currentSession.user.credits);
