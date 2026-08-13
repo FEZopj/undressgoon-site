@@ -65,16 +65,41 @@
       try { localStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
       setTimeout(function () {
         setStatus(t('discountSaved', 'Discount saved. It will apply at checkout if eligible.'), 'success');
+        updateDiscountUi();
       }, 600);
       return;
     }
     try { discountCode = cleanDiscountCode(localStorage.getItem('ug_discount_code') || ''); } catch (e) {}
+    updateDiscountUi();
   }
 
   function checkoutPayload(code) {
     var payload = { code: code };
     if (discountCode) payload.discountCode = discountCode;
     return payload;
+  }
+
+  function updateDiscountUi(message, tone) {
+    var input = document.getElementById('discount-code');
+    var note = document.getElementById('discount-note');
+    if (input && document.activeElement !== input) input.value = discountCode || '';
+    if (note) {
+      note.textContent = message || (discountCode ? t('discountReady', 'Code ready for checkout.') : '');
+      note.className = tone ? ('discount-note ' + tone) : 'discount-note';
+    }
+    updateModalPromo();
+  }
+
+  function saveDiscountCode(value) {
+    discountCode = cleanDiscountCode(value);
+    try {
+      if (discountCode) localStorage.setItem('ug_discount_code', discountCode);
+      else localStorage.removeItem('ug_discount_code');
+    } catch (e) {}
+    updateDiscountUi(
+      discountCode ? t('discountReady', 'Code ready for checkout.') : t('discountCleared', 'Discount code cleared.'),
+      discountCode ? 'success' : ''
+    );
   }
 
   function userLabel(user) {
@@ -706,6 +731,21 @@
       button.disabled = true;
       button.textContent = t('opening', 'Opening...');
     }
+    var checkoutWindow = window.open('about:blank', '_blank');
+    if (!checkoutWindow) {
+      setStatus(t('popupBlocked', 'Popup blocked. Allow popups and click Card again.'), 'error');
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = original || '<i data-lucide="credit-card"></i> ' + t('payCard', 'Card');
+        refreshIcons();
+      }
+      return;
+    }
+    try { checkoutWindow.opener = null; } catch (e) {}
+    try {
+      checkoutWindow.document.write('<!doctype html><title>Opening checkout...</title><body style="font-family:Arial,sans-serif;padding:24px">Opening checkout...</body>');
+      checkoutWindow.document.close();
+    } catch (e) {}
     setStatus(t('creatingCardCheckout', 'Opening secure card checkout...'), 'working');
     return fetch(apiUrl('/web/card/create'), {
       method: 'POST',
@@ -720,18 +760,13 @@
         });
       })
       .then(function (payload) {
-        var win = window.open('about:blank', '_blank');
-        if (win) {
-          try { win.opener = null; } catch (e) { /* best effort */ }
-          win.location.replace(payload.checkoutUrl);
-        } else {
-          throw new Error(t('popupBlocked', 'Popup blocked. Allow popups and click Card again.'));
-        }
+        checkoutWindow.location.replace(payload.checkoutUrl);
         track('website_card_checkout_opened', { code: code });
         setStatus(t('cardCheckoutOpened', 'Card checkout opened. Return here after payment.'), 'success');
         pollCreditsAfterCheckout(currentSession && currentSession.user && currentSession.user.credits);
       })
       .catch(function (err) {
+        try { checkoutWindow.close(); } catch (e) {}
         setStatus(err.message || t('checkoutFail', 'Could not create checkout.'), 'error');
       })
       .finally(function () {
@@ -884,6 +919,22 @@
       });
     }
     if (modalLink) modalLink.addEventListener('click', requestTelegramLink);
+    var discountInput = document.getElementById('discount-code');
+    var discountApply = document.getElementById('discount-apply');
+    if (discountInput) {
+      discountInput.value = discountCode || '';
+      discountInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          saveDiscountCode(discountInput.value);
+        }
+      });
+    }
+    if (discountApply) {
+      discountApply.addEventListener('click', function () {
+        saveDiscountCode(discountInput ? discountInput.value : '');
+      });
+    }
     if (close) close.addEventListener('click', function () { showCheckout(false); });
     document.querySelectorAll('[data-close-topup]').forEach(function (button) {
       button.addEventListener('click', function () { showCheckout(false); });

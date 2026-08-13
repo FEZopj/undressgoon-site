@@ -744,6 +744,64 @@ html[data-theme="light"] .checkout-panel {
   flex: 0 0 auto;
   color: var(--accent2);
 }
+.discount-box {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+}
+html[data-theme="light"] .discount-box {
+  background: rgba(255, 255, 255, 0.72);
+}
+.discount-box label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+.discount-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+.discount-row input {
+  min-width: 0;
+  height: 44px;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  padding: 0 12px;
+  color: var(--text);
+  background: var(--surface2);
+  font: inherit;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.discount-row input:focus {
+  outline: none;
+  border-color: rgba(255, 45, 85, 0.75);
+  box-shadow: 0 0 0 3px rgba(255, 45, 85, 0.13);
+}
+.discount-row button {
+  border: 0;
+  border-radius: 11px;
+  padding: 0 15px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff174f, #ff2d55 55%, #b44cff);
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+.discount-note {
+  min-height: 16px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.discount-note.success {
+  color: var(--green);
+}
 .checkout-panel[hidden] {
   display: none;
 }

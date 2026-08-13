@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="../assets/site.css?v=20260813-payui1" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260813-admin1" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260813-payui1" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260813-admin1" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -350,7 +350,14 @@
       <span class="mini-label" id="topup-eyebrow">Credits</span>
       <h3 id="topup-title">Ready for another image?</h3>
       <p id="topup-copy">Pick a pack and keep generating on the website.</p>
-      <div class="modal-promo"><i data-lucide="badge-percent"></i><span>スペシャルクレジットパック：大きいパックほど1枚あたりのコストが下がります。</span></div>
+      <div class="discount-box">
+        <label for="discount-code">Discount code</label>
+        <div class="discount-row">
+          <input id="discount-code" name="discount-code" type="text" inputmode="text" autocomplete="off" placeholder="COMEBACK20" />
+          <button type="button" id="discount-apply">Apply</button>
+        </div>
+        <small class="discount-note" id="discount-note"></small>
+      </div>
       <div class="pack-grid" id="pack-grid"></div>
       <div class="topup-actions">
         <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Link Telegram</button>
@@ -440,6 +447,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260813-discount1" defer></script>
+  <script src="../assets/site.js?v=20260813-checkoutadmin1" defer></script>
 </body>
 </html>
