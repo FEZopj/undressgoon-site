@@ -402,30 +402,7 @@
     if (empty && showEmpty) empty.hidden = false;
   }
 
-  function offerSummary() {
-    var promo = packOffer && packOffer.promo;
-    if (promo && promo.active && Number(promo.bonusPercent || 0) > 0) {
-      return '+' + Number(promo.bonusPercent || 0) + '% bonus credits on every pack';
-    }
-    if (promo && promo.active && Number(promo.extraCredits || 0) > 0) {
-      return '+' + Number(promo.extraCredits || 0) + ' bonus credits on every pack';
-    }
-    return t('specialPackOffer', 'Special credit packs unlocked');
-  }
-
-  function updateModalPromo(reason) {
-    var promo = document.querySelector('.modal-promo span');
-    if (!promo) return;
-    if (discountCode) {
-      promo.textContent = t('discountLoaded', 'Private discount loaded. It will apply at checkout if eligible.');
-      return;
-    }
-    if (reason === 'exit_post_gen') {
-      promo.textContent = t('firstResultOffer', 'First result bonus: {offer}.').replace('{offer}', offerSummary());
-      return;
-    }
-    promo.textContent = t('modalPromoDefault', 'Special credit packs: bigger bundles drop your per-image cost.');
-  }
+  function updateModalPromo() {}
 
   function showCheckout(show, reason) {
     var panel = document.getElementById('checkout-panel');

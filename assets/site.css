@@ -726,24 +726,6 @@ html[data-theme="light"] .checkout-panel {
   background: rgba(255, 45, 85, 0.1);
 }
 
-.modal-promo {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 11px 12px;
-  border-radius: 13px;
-  color: var(--text);
-  background: linear-gradient(135deg, rgba(255,45,85,0.16), rgba(42,171,238,0.1));
-  border: 1px solid rgba(255, 45, 85, 0.28);
-  font-size: 0.88rem;
-  font-weight: 800;
-}
-.modal-promo svg {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  color: var(--accent2);
-}
 .discount-box {
   display: grid;
   gap: 7px;
