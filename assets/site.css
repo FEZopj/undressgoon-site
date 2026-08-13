@@ -847,9 +847,24 @@ html[data-theme="light"] .discount-box {
   font-size: 0.72rem;
   font-weight: 950;
 }
-.pack-card span {
+.pack-card .pack-price {
   color: var(--green);
   font-weight: 900;
+}
+.pack-card .pack-price.discounted {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 7px;
+}
+.pack-card .pack-price.discounted s {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+.pack-card .pack-price.discounted b {
+  color: var(--green);
+  font-size: 1.1rem;
 }
 .pack-actions {
   width: 100%;

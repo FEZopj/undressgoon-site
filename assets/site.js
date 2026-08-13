@@ -16,6 +16,7 @@
   var checkoutCreditPoll = 0;
   var packOffer = null;
   var discountCode = '';
+  var discountOffer = null;
   var firstGenerationDone = false;
   var exitOfferArmed = false;
 
@@ -88,12 +89,14 @@
       note.className = tone ? ('discount-note ' + tone) : 'discount-note';
     }
     updateModalPromo();
+    updatePackPrices();
   }
 
   function saveDiscountCode(value) {
     var clean = cleanDiscountCode(value);
     if (!clean) {
       discountCode = '';
+      discountOffer = null;
       try { localStorage.removeItem('ug_discount_code'); } catch (e) {}
       updateDiscountUi(t('discountCleared', 'Discount code cleared.'), '');
       return Promise.resolve(false);
@@ -114,11 +117,17 @@
       .then(function (payload) {
         if (!payload.valid) {
           discountCode = '';
+          discountOffer = null;
           try { localStorage.removeItem('ug_discount_code'); } catch (e) {}
           updateDiscountUi(payload.message || t('discountInvalid', 'Invalid code.'), 'error');
           return false;
         }
         discountCode = cleanDiscountCode(payload.code || clean);
+        discountOffer = {
+          code: discountCode,
+          percentOff: Number(payload.percentOff || 0),
+          bonusPercent: Number(payload.bonusPercent || 0)
+        };
         try { localStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
         var label = payload.percentOff ? (payload.percentOff + '% off applied.') :
           (payload.bonusPercent ? ('+' + payload.bonusPercent + '% bonus credits applied.') : (payload.message || 'Discount applied.'));
@@ -133,6 +142,7 @@
 
   function saveDiscountCodeLocal(value) {
     discountCode = cleanDiscountCode(value);
+    discountOffer = null;
     try {
       if (discountCode) localStorage.setItem('ug_discount_code', discountCode);
       else localStorage.removeItem('ug_discount_code');
@@ -141,6 +151,46 @@
       discountCode ? t('discountReady', 'Code ready for checkout.') : t('discountCleared', 'Discount code cleared.'),
       discountCode ? 'success' : ''
     );
+  }
+
+  function formatMoneyFromCents(cents) {
+    var amount = Math.max(0, Number(cents || 0)) / 100;
+    return '$' + amount.toFixed(2);
+  }
+
+  function packAmountCents(pack) {
+    if (!pack) return 0;
+    if (pack.amountCents != null) return Number(pack.amountCents || 0);
+    if (pack.amount_cents != null) return Number(pack.amount_cents || 0);
+    var parsed = String(pack.price || '').replace(/[^0-9.]/g, '');
+    return Math.round(Number(parsed || 0) * 100);
+  }
+
+  function discountedAmountCents(pack) {
+    var cents = packAmountCents(pack);
+    var percent = Number(discountOffer && discountOffer.percentOff || 0);
+    if (!discountCode || !percent) return cents;
+    return Math.max(0, Math.round(cents * (100 - percent) / 100));
+  }
+
+  function packPriceHtml(pack) {
+    var original = packAmountCents(pack);
+    var discounted = discountedAmountCents(pack);
+    if (discountCode && discountOffer && Number(discountOffer.percentOff || 0) > 0 && discounted < original) {
+      return '<span class="pack-price discounted"><s>' + esc(formatMoneyFromCents(original)) + '</s><b>' + esc(formatMoneyFromCents(discounted)) + '</b></span>';
+    }
+    return '<span class="pack-price">' + esc(pack.price || formatMoneyFromCents(original)) + '</span>';
+  }
+
+  function updatePackPrices() {
+    var grid = document.getElementById('pack-grid');
+    if (!grid || !packOffer || !packOffer.packs) return;
+    grid.querySelectorAll('.pack-card[data-pack-code]').forEach(function (card) {
+      var code = card.getAttribute('data-pack-code');
+      var pack = (packOffer.packs || []).find(function (item) { return String(item.code) === code; });
+      var price = card.querySelector('.pack-price');
+      if (pack && price) price.outerHTML = packPriceHtml(pack);
+    });
   }
 
   function userLabel(user) {
@@ -665,12 +715,12 @@
             '<button type="button" class="pay-card-pack" data-card-pack="' + esc(pack.code) + '"><i data-lucide="credit-card"></i> ' + esc(t('payCard', 'Card')) + '</button>' :
             '';
           return (
-            '<div class="pack-card ' + (isBestValue ? 'featured' : '') + '">' +
+            '<div class="pack-card ' + (isBestValue ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '">' +
               badge +
               '<i data-lucide="coins"></i>' +
               '<strong>' + creditLine + '</strong>' +
               bonusLine +
-              '<span>' + esc(pack.price) + '</span>' +
+              packPriceHtml(pack) +
               '<div class="pack-actions">' + cardButton + cryptoButton + '</div>' +
             '</div>'
           );
