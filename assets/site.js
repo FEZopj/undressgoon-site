@@ -690,9 +690,10 @@
         });
       })
       .then(function (payload) {
-        var win = window.open(payload.checkoutUrl, '_blank');
+        var win = window.open('about:blank', '_blank');
         if (win) {
           try { win.opener = null; } catch (e) { /* best effort */ }
+          win.location.replace(payload.checkoutUrl);
         } else {
           throw new Error(t('popupBlocked', 'Popup blocked. Allow popups and click Card again.'));
         }
