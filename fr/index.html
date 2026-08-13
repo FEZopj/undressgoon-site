@@ -1,18 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon â€” GÃ©nÃ©rateur IA Undress | Nu, Micro Bikini, BDSM, Latex</title>
-  <meta name="description" content="Importe une photo, choisis un preset et gÃ©nÃ¨re directement sur le site. Nu complet, micro bikini, BDSM, latex et prompts personnalisÃ©s." />
-  <meta name="keywords" content="dÃ©shabiller IA, undress IA, gÃ©nÃ©rateur nude, g?n?rateur undress, web undress, undressgoon" />
+  <title>UndressGoon — Générateur IA Undress | Nu, Micro Bikini, BDSM, Latex</title>
+  <meta name="description" content="Importe une photo, choisis un preset et génère directement sur le site. Nu complet, micro bikini, BDSM, latex et prompts personnalisés." />
+  <meta name="keywords" content="déshabiller IA, undress IA, générateur nude, g?n?rateur undress, web undress, undressgoon" />
   <meta name="theme-color" content="#070709" />
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon â€” GÃ©nÃ©rateur IA Undress sur le web" />
-  <meta property="og:description" content="Importe une photo, choisis un preset et gÃ©nÃ¨re directement sur le site." />
+  <meta property="og:title" content="UndressGoon — Générateur IA Undress sur le web" />
+  <meta property="og:description" content="Importe une photo, choisis un preset et génère directement sur le site." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/fr/" />
   <meta property="og:image" content="https://undressgoon.app/results/thumbs/1.webp" />
@@ -53,7 +53,7 @@
           <option value="../de/index.html">DE</option>
           </select>
         </nav>
-        <a href="#generate" class="btn btn-accent" data-generate-cta>GÃ©nÃ©rer</a>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Générer</a>
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
@@ -87,7 +87,7 @@
       <div class="cta-group">
         <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Ouvrir le generateur</a>
       </div>
-      <p class="free-note"><strong>Credit gratuit</strong> Â· Google login Â· sans carte</p>
+      <p class="free-note"><strong>Credit gratuit</strong> · Google login · sans carte</p>
       <div class="trust-row">
         <span><i data-lucide="zap"></i> Resultats 15-40s</span>
         <span><i data-lucide="shield-check"></i> Session web privee</span>
@@ -106,15 +106,15 @@
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
           <div class="login-box" id="login-box">
-            <p>La connexion prouve quâ€™un vrai utilisateur possÃ¨de le crÃ©dit gratuit. Ensuite tu peux gÃ©nÃ©rer ici.</p>
+            <p>La connexion prouve qu’un vrai utilisateur possède le crédit gratuit. Ensuite tu peux générer ici.</p>
             <a class="btn btn-google" id="google-login" href="#">Continuer avec Google</a>
           </div>
 
           <div class="referral-card" id="referral-card" hidden>
             <div>
-              <span class="mini-label">CrÃ©dits de parrainage</span>
+              <span class="mini-label">Crédits de parrainage</span>
               <strong>Invite des amis. Cumule des runs gratuits.</strong>
-              <small id="referral-copy">Tu gagnes des crÃ©dits bonus quand quelquâ€™un rejoint et gÃ©nÃ¨re.</small>
+              <small id="referral-copy">Tu gagnes des crédits bonus quand quelqu’un rejoint et génère.</small>
             </div>
             <div class="referral-actions">
               <input id="referral-link" readonly value="" aria-label="Referral link" />
@@ -127,13 +127,13 @@
               <input id="person-photo" name="person" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" required />
               <img class="upload-preview" id="upload-preview" alt="" hidden />
               <span class="upload-main"><i data-lucide="image-plus"></i> Choisir une photo</span>
-              <span class="upload-sub" id="upload-name">JPG, PNG ou WebP jusquâ€™Ã  12 MB</span>
+              <span class="upload-sub" id="upload-name">JPG, PNG ou WebP jusqu’à 12 MB</span>
               <span class="upload-tip">Une photo nette de face fonctionne mieux.</span>
             </label>
 
             <div class="mode-row" role="group" aria-label="Generation mode">
               <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Modifier outfit</label>
-              <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> ScÃ¨ne</label>
+              <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Scène</label>
             </div>
 
             <div class="preset-picker">
@@ -155,15 +155,15 @@
               </span>
             </label>
 
-            <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> GÃ©nÃ©rer 1 image</button>
+            <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> Générer 1 image</button>
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
         </div>
 
         <div class="result-panel">
           <div class="result-empty" id="web-result-empty">
-            <strong>Ton rÃ©sultat apparaÃ®t ici</strong>
-            <span>Un crÃ©dit est rÃ©servÃ© seulement quand la gÃ©nÃ©ration dÃ©marre. Les Ã©checs sont remboursÃ©s automatiquement.</span>
+            <strong>Ton résultat apparaît ici</strong>
+            <span>Un crédit est réservé seulement quand la génération démarre. Les échecs sont remboursés automatiquement.</span>
           </div>
           <div class="web-results" id="web-results"></div>
         </div>
@@ -202,37 +202,37 @@
 
   <section class="section">
     <div class="container">
-      <h2 class="section-title">Transforme n'importe quel fantasme en rÃ©alitÃ©</h2>
-      <p class="section-sub">Aucune limite sur ce que tu peux dÃ©crire. Prompts personnalisÃ©s autorisÃ©s.</p>
+      <h2 class="section-title">Transforme n'importe quel fantasme en réalité</h2>
+      <p class="section-sub">Aucune limite sur ce que tu peux décrire. Prompts personnalisés autorisés.</p>
       <div class="features">
         <div class="feature">
-          <div class="feature-icon">âœï¸</div>
-          <h3>Prompts 100% PersonnalisÃ©s</h3>
-          <p>Ã‰cris exactement ce que tu veux. Tenue, pose, fÃ©tichisme â€” l'IA obÃ©it.</p>
+          <div class="feature-icon">✍️</div>
+          <h3>Prompts 100% Personnalisés</h3>
+          <p>Écris exactement ce que tu veux. Tenue, pose, fétichisme — l'IA obéit.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">ðŸ”¥</div>
-          <h3>Retrait de VÃªtements IA</h3>
-          <p>Un tap pour dÃ©nuder. Nu complet ou le niveau que tu dÃ©cris.</p>
+          <div class="feature-icon">🔥</div>
+          <h3>Retrait de Vêtements IA</h3>
+          <p>Un tap pour dénuder. Nu complet ou le niveau que tu décris.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">ðŸ‘™</div>
+          <div class="feature-icon">👙</div>
           <h3>Micro Bikini & Lingerie</h3>
-          <p>Micro bikinis, lingerie transparente, chemises mouillÃ©es et plus.</p>
+          <p>Micro bikinis, lingerie transparente, chemises mouillées et plus.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">â›“</div>
+          <div class="feature-icon">⛓</div>
           <h3>BDSM & Latex</h3>
           <p>Harnais, colliers, catsuits latex, cuir, huile, peau brillante.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">ðŸ‘•</div>
-          <h3>Swap de VÃªtements</h3>
-          <p>Envoie une photo de vÃªtement et l'IA l'habille sur la personne.</p>
+          <div class="feature-icon">👕</div>
+          <h3>Swap de Vêtements</h3>
+          <p>Envoie une photo de vêtement et l'IA l'habille sur la personne.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">ðŸŽ­</div>
-          <h3>Pose & Visage FigÃ©</h3>
+          <div class="feature-icon">🎭</div>
+          <h3>Pose & Visage Figé</h3>
           <p>Combine deux photos : garde le visage, copie la pose d'une autre image.</p>
         </div>
       </div>
@@ -241,11 +241,11 @@
         <span class="tag">micro bikini</span>
         <span class="tag">harnais BDSM</span>
         <span class="tag">latex</span>
-        <span class="tag">look mouillÃ©</span>
+        <span class="tag">look mouillé</span>
         <span class="tag">lingerie</span>
         <span class="tag">uniforme plisse</span>
-        <span class="tag">peau huilÃ©e</span>
-        <span class="tag">prompt personnalisÃ©</span>
+        <span class="tag">peau huilée</span>
+        <span class="tag">prompt personnalisé</span>
         <span class="tag">tout fantasme</span>
       </div>
     </div>
@@ -255,7 +255,7 @@
   <section class="section" style="padding-top:10px;">
     <div class="container">
       <h2 class="section-title">Commence gratuit. Monte en puissance quand tu es accro.</h2>
-      <p class="section-sub">CrÃ©dits gratuits pour prouver la qualitÃ© â€” recharge en crypto sur le site quand tu veux plus</p>
+      <p class="section-sub">Crédits gratuits pour prouver la qualité — recharge en crypto sur le site quand tu veux plus</p>
       <div class="promo-strip">
         <span><i data-lucide="badge-percent"></i> Packs speciaux</span>
         <strong>Les gros packs donnent plus d images pour moins cher.</strong>
@@ -268,20 +268,20 @@
           <h3>Essai gratuit</h3>
           <div class="price">$0 <span>/ pour essayer</span></div>
           <ul>
-            <li>CrÃ©dits gratuits instantanÃ©s</li>
-            <li>Prompts personnalisÃ©s</li>
+            <li>Crédits gratuits instantanés</li>
+            <li>Prompts personnalisés</li>
             <li>No card needed to start</li>
             <li>Fonctionne directement sur le site</li>
           </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>RÃ©cupÃ©rer crÃ©dits gratuits â†’</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Récupérer crédits gratuits →</a>
         </div>
         <div class="value-card">
-          <h3>Plus de crÃ©dits</h3>
+          <h3>Plus de crédits</h3>
           <div class="price">Sur le site <span>/ quand tu veux</span></div>
           <ul>
             <li>Packs quand les gratuits finissent</li>
             <li>Sessions plus longues</li>
-            <li>MÃªme qualitÃ©, plus de volume</li>
+            <li>Même qualité, plus de volume</li>
             <li>Paye seulement si tu aimes</li>
           </ul>
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>G?n?re d?abord, recharge ensuite</a>
@@ -298,10 +298,10 @@
   <section class="section">
     <div class="container">
       <div class="cta-band">
-        <h2>Ton fantasme. Ton prompt. Ta rÃ©alitÃ©.</h2>
-        <p>Prompts personnalisÃ©s autorisÃ©s. DÃ©cris exactement ce que tu veux â€” UndressGoon le transforme en images en secondes.</p>
+        <h2>Ton fantasme. Ton prompt. Ta réalité.</h2>
+        <p>Prompts personnalisés autorisés. Décris exactement ce que tu veux — UndressGoon le transforme en images en secondes.</p>
         <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Ouvrir le generateur</a>
-        <p class="urgency">ðŸŽ Credit gratuit Â· Google login Â· sans carte Â· 18+</p>
+        <p class="urgency">🎁 Credit gratuit · Google login · sans carte · 18+</p>
       </div>
     </div>
   </section>
@@ -338,15 +338,15 @@
   <div class="sticky-cta" id="sticky-cta">
     <div class="sticky-inner">
       <div class="sticky-copy">
-        <strong>ðŸŽ CrÃ©dits gratuits prÃªts</strong>
-        <span>Upload Â· preset Â· gÃ©nÃ¨re</span>
+        <strong>🎁 Crédits gratuits prêts</strong>
+        <span>Upload · preset · génère</span>
       </div>
-      <a href="#generate" class="btn btn-accent" data-generate-cta>Commencer gratuit â†’</a>
+      <a href="#generate" class="btn btn-accent" data-generate-cta>Commencer gratuit →</a>
     </div>
   </div>
 
   <div class="toast" id="reengage-toast">
-    Encore hÃ©sitant ? <a href="#generate" data-generate-cta>Prends des crÃ©dits gratuits â†’</a> sans carte.
+    Encore hésitant ? <a href="#generate" data-generate-cta>Prends des crédits gratuits →</a> sans carte.
   </div>
 
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
@@ -374,49 +374,49 @@
       authProvider: 'google',
       presets: [
         { key: 'nude', category: 'hot', label: 'Totalement Nue', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
-        { key: 'oily', category: 'hot', label: 'Nue HuilÃ©e', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'oily', category: 'hot', label: 'Nue Huilée', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
         { key: 'bondage', category: 'hot', label: 'Shibari Nue', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
         { key: 'lingerie', category: 'clothes', label: 'Lingerie Transparente', prompt: 'tiny sheer black lingerie that barely covers anything' },
         { key: 'crotchless', category: 'clothes', label: 'Ouverte', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
         { key: 'bikini', category: 'clothes', label: 'Micro Bikini', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
-        { key: 'wet', category: 'clothes', label: 'T-shirt MouillÃ©', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
+        { key: 'wet', category: 'clothes', label: 'T-shirt Mouillé', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
         { key: 'bdsm', category: 'clothes', label: 'Harnais BDSM', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
         { key: 'latex', category: 'clothes', label: 'Latex', prompt: 'shiny tight black latex catsuit unzipped down the front' },
         { key: 'tights', category: 'clothes', label: 'Collants Seuls', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
         { key: 'stockings', category: 'clothes', label: 'Bas Seuls', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
         { key: 'pleated_uniform', category: 'fantasy', label: 'Pleated Uniform', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
-        { key: 'nurse', category: 'fantasy', label: 'InfirmiÃ¨re Sexy', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
-        { key: 'maid', category: 'fantasy', label: 'Maid FranÃ§aise', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'nurse', category: 'fantasy', label: 'Infirmière Sexy', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'maid', category: 'fantasy', label: 'Maid Française', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
         { key: 'office', category: 'fantasy', label: 'Look Bureau', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
-        imgAlt: "RÃ©sultat IA undress",
-        creditSingular: "{n} crÃ©dit disponible",
-        creditPlural: "{n} crÃ©dits disponibles",
-        notLoggedIn: "Non connectÃ©",
-        loginToSeeCredits: "Connecte-toi pour voir les crÃ©dits",
-        creditsWord: "crÃ©dits",
+        imgAlt: "Résultat IA undress",
+        creditSingular: "{n} crédit disponible",
+        creditPlural: "{n} crédits disponibles",
+        notLoggedIn: "Non connecté",
+        loginToSeeCredits: "Connecte-toi pour voir les crédits",
+        creditsWord: "crédits",
         payCrypto: "Payer crypto",
         opening: "Ouverture...",
-        creatingCheckout: "CrÃ©ation du checkout crypto sÃ©curisÃ©...",
-        checkoutFail: "Impossible de crÃ©er le checkout.",
-        generatedResult: "RÃ©sultat gÃ©nÃ©rÃ©",
+        creatingCheckout: "Création du checkout crypto sécurisé...",
+        checkoutFail: "Impossible de créer le checkout.",
+        generatedResult: "Résultat généré",
         tabHot: "Plus hot",
-        tabClothes: "VÃªtements",
+        tabClothes: "Vêtements",
         tabFantasy: "Fantaisie",
-        uploadHint: "JPG, PNG ou WebP jusquâ€™Ã  12 MB",
-        readFail: "Impossible de lire la photo sÃ©lectionnÃ©e.",
-        missingPhoto: "Importe dâ€™abord une photo de personne.",
+        uploadHint: "JPG, PNG ou WebP jusqu’à 12 MB",
+        readFail: "Impossible de lire la photo sélectionnée.",
+        missingPhoto: "Importe d’abord une photo de personne.",
         termsRequired: "Confirme avoir 18+ et les droits sur cette photo.",
-        promptRequired: "Choisis un preset ou Ã©cris un prompt dâ€™abord.",
-        copied: "CopiÃ©",
+        promptRequired: "Choisis un preset ou écris un prompt d’abord.",
+        copied: "Copié",
         copy: "Copier",
-        readingUpload: "Lecture de lâ€™upload...",
-        generating: "GÃ©nÃ©ration... cela prend souvent moins dâ€™une minute.",
-        doneBalance: "TerminÃ©. Solde : {balance}.",
-        outOfCredits: "Plus de crÃ©dits. Recharge ci-dessous pour continuer.",
-        loginFirst: "Connecte-toi avec Google dâ€™abord.",
-        genericError: "Une erreur est arrivÃ©e.",
+        readingUpload: "Lecture de l’upload...",
+        generating: "Génération... cela prend souvent moins d’une minute.",
+        doneBalance: "Terminé. Solde : {balance}.",
+        outOfCredits: "Plus de crédits. Recharge ci-dessous pour continuer.",
+        loginFirst: "Connecte-toi avec Google d’abord.",
+        genericError: "Une erreur est arrivée.",
         myAccount: "Mon compte",
         signedIn: "Connecte",
         getCredits: "Obtenir credits",
@@ -434,8 +434,8 @@
         telegramLinkFail: "Impossible de creer le lien Telegram.",
         telegramLinked: "Telegram lie.",
         telegramLinkOpened: "Confirme dans Telegram puis reviens ici.",
-        referralSingular: "Gagne {reward} crÃ©dits par parrainage actif. {count} invitation active pour lâ€™instant.",
-        referralPlural: "Gagne {reward} crÃ©dits par parrainage actif. {count} invitations actives pour lâ€™instant."
+        referralSingular: "Gagne {reward} crédits par parrainage actif. {count} invitation active pour l’instant.",
+        referralPlural: "Gagne {reward} crédits par parrainage actif. {count} invitations actives pour l’instant."
       }
     };
   </script>
@@ -446,6 +446,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260813-refprivacy1" defer></script>
+  <script src="../assets/site.js?v=20260813-nonote1" defer></script>
 </body>
 </html>
