@@ -34,6 +34,7 @@
 
 # WebP MIME
 <IfModule mod_mime.c>
+  AddDefaultCharset UTF-8
   AddType image/webp .webp
   AddType image/x-icon .ico
   AddType application/manifest+json .webmanifest

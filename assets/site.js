@@ -15,6 +15,7 @@
   var telegramLinkPoll = 0;
   var checkoutCreditPoll = 0;
   var packOffer = null;
+  var discountCode = '';
   var firstGenerationDone = false;
   var exitOfferArmed = false;
 
@@ -49,6 +50,31 @@
     var n = Number(count || 0);
     var template = n === 1 ? t('creditSingular', '{n} credit available') : t('creditPlural', '{n} credits available');
     return template.replace('{n}', String(n));
+  }
+
+  function cleanDiscountCode(value) {
+    return String(value || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 40);
+  }
+
+  function initDiscountCode() {
+    var params;
+    try { params = new URLSearchParams(location.search || ''); } catch (e) { params = null; }
+    var fromUrl = params ? cleanDiscountCode(params.get('discount') || params.get('coupon') || '') : '';
+    if (fromUrl) {
+      discountCode = fromUrl;
+      try { localStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
+      setTimeout(function () {
+        setStatus(t('discountSaved', 'Discount saved. It will apply at checkout if eligible.'), 'success');
+      }, 600);
+      return;
+    }
+    try { discountCode = cleanDiscountCode(localStorage.getItem('ug_discount_code') || ''); } catch (e) {}
+  }
+
+  function checkoutPayload(code) {
+    var payload = { code: code };
+    if (discountCode) payload.discountCode = discountCode;
+    return payload;
   }
 
   function userLabel(user) {
@@ -187,11 +213,11 @@
     check();
   }
 
-  // Live "generating now" counter — soft social proof
+  // Live "generating now" counter for soft social proof.
   function initLiveCounter() {
     var el = document.getElementById('live-count');
     if (!el) return;
-    var base = 18 + Math.floor(Math.random() * 22); // 18–39
+    var base = 18 + Math.floor(Math.random() * 22); // 18-39
     el.textContent = String(base);
 
     setInterval(function () {
@@ -365,6 +391,10 @@
   function updateModalPromo(reason) {
     var promo = document.querySelector('.modal-promo span');
     if (!promo) return;
+    if (discountCode) {
+      promo.textContent = t('discountLoaded', 'Private discount loaded. It will apply at checkout if eligible.');
+      return;
+    }
     if (reason === 'exit_post_gen') {
       promo.textContent = t('firstResultOffer', 'First result bonus: {offer}.').replace('{offer}', offerSummary());
       return;
@@ -614,7 +644,7 @@
               method: 'POST',
               credentials: 'include',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ code: code })
+              body: JSON.stringify(checkoutPayload(code))
             })
               .then(function (res) {
                 return res.json().catch(function () { return {}; }).then(function (payload) {
@@ -681,7 +711,7 @@
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: code })
+      body: JSON.stringify(checkoutPayload(code))
     })
       .then(function (res) {
         return res.json().catch(function () { return {}; }).then(function (payload) {
@@ -1302,6 +1332,7 @@
     normalizeCtas();
     initLanguageSwitch();
     initTheme();
+    initDiscountCode();
     initWebGenerator();
     initSticky();
     initLiveCounter();
