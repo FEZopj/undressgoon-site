@@ -784,6 +784,12 @@ html[data-theme="light"] .discount-box {
 .discount-note.success {
   color: var(--green);
 }
+.discount-note.error {
+  color: var(--accent2);
+}
+.discount-note.working {
+  color: var(--tg);
+}
 .checkout-panel[hidden] {
   display: none;
 }

@@ -91,6 +91,47 @@
   }
 
   function saveDiscountCode(value) {
+    var clean = cleanDiscountCode(value);
+    if (!clean) {
+      discountCode = '';
+      try { localStorage.removeItem('ug_discount_code'); } catch (e) {}
+      updateDiscountUi(t('discountCleared', 'Discount code cleared.'), '');
+      return Promise.resolve(false);
+    }
+    updateDiscountUi(t('checkingDiscount', 'Checking code...'), 'working');
+    return fetch(apiUrl('/web/discount/validate'), {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ discountCode: clean })
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (payload) {
+          if (!res.ok || !payload.ok) throw new Error(payload.message || t('discountCheckFail', 'Could not check this code.'));
+          return payload;
+        });
+      })
+      .then(function (payload) {
+        if (!payload.valid) {
+          discountCode = '';
+          try { localStorage.removeItem('ug_discount_code'); } catch (e) {}
+          updateDiscountUi(payload.message || t('discountInvalid', 'Invalid code.'), 'error');
+          return false;
+        }
+        discountCode = cleanDiscountCode(payload.code || clean);
+        try { localStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
+        var label = payload.percentOff ? (payload.percentOff + '% off applied.') :
+          (payload.bonusPercent ? ('+' + payload.bonusPercent + '% bonus credits applied.') : (payload.message || 'Discount applied.'));
+        updateDiscountUi(label, 'success');
+        return true;
+      })
+      .catch(function (err) {
+        updateDiscountUi(err.message || t('discountCheckFail', 'Could not check this code.'), 'error');
+        return false;
+      });
+  }
+
+  function saveDiscountCodeLocal(value) {
     discountCode = cleanDiscountCode(value);
     try {
       if (discountCode) localStorage.setItem('ug_discount_code', discountCode);
@@ -658,6 +699,7 @@
                 location.href = payload.invoiceUrl;
               })
               .catch(function (err) {
+                if (/discount/i.test(err.message || '')) saveDiscountCodeLocal('');
                 setStatus(err.message || t('checkoutFail', 'Could not create checkout.'), 'error');
                 button.disabled = false;
                 button.innerHTML = original || '<i data-lucide="wallet"></i> ' + esc(t('payCrypto', 'Crypto'));
@@ -744,6 +786,7 @@
       })
       .catch(function (err) {
         try { checkoutWindow.close(); } catch (e) {}
+        if (/discount/i.test(err.message || '')) saveDiscountCodeLocal('');
         setStatus(err.message || t('checkoutFail', 'Could not create checkout.'), 'error');
       })
       .finally(function () {
