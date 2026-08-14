@@ -2289,18 +2289,27 @@ html[data-theme="light"] .toast {
   .result-card::after { animation: none; }
 }
 
-/* --- Email signup / login (added alongside Google) --- */
-.login-or { display:flex; align-items:center; gap:10px; margin:12px 0; color:rgba(255,255,255,0.5); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
-.login-or::before, .login-or::after { content:""; flex:1; height:1px; background:rgba(255,255,255,0.14); }
-.btn-email { width:100%; justify-content:center; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.18); color:#fff; }
-.btn-email:hover { background:rgba(255,255,255,0.1); }
+/* --- Email signup / login (Google + Email) --- */
+.login-choices { display:flex; gap:10px; margin-top:6px; }
+.login-choices .btn { flex:1 1 0; min-width:0; justify-content:center; gap:9px; height:50px;
+  border-radius:14px; font-weight:750; font-size:14px; padding:0 12px; line-height:1.1; }
+.login-choices .btn svg { flex:none; }
+.login-choices .btn span, .login-choices .btn { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.btn.btn-google { background:#fff; color:#1f1f24; border:1px solid rgba(0,0,0,0.14); box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+.btn.btn-google:hover { background:#f4f5f7; }
+.btn.btn-email { background:linear-gradient(135deg,#ff2f63,#7c3aed); color:#fff; border:0; box-shadow:0 6px 18px rgba(124,58,237,0.32); }
+.btn.btn-email:hover { filter:brightness(1.06); }
+.btn.btn-email .mlogo { color:#fff; }
+@media (max-width:560px){ .login-choices { flex-direction:column; } .login-choices .btn { height:48px; } }
+
 .email-auth { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
-.email-auth input { width:100%; height:44px; padding:0 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.25); color:#fff; font-size:15px; outline:none; }
-.email-auth input:focus { border-color:var(--accent, #ff2f63); }
-.email-auth #email-code { text-align:center; letter-spacing:8px; font-size:20px; font-weight:700; }
-.email-auth .btn { width:100%; justify-content:center; }
-.email-sent-copy { margin:0; color:rgba(255,255,255,0.72); font-size:13px; line-height:1.5; }
+.email-auth input { width:100%; height:46px; padding:0 14px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.28); color:#fff; font-size:15px; outline:none; }
+.email-auth input:focus { border-color:#ff2f63; box-shadow:0 0 0 3px rgba(255,47,99,0.18); }
+.email-auth #email-code { text-align:center; letter-spacing:10px; font-size:22px; font-weight:800; }
+.email-auth .btn { width:100%; justify-content:center; height:48px; }
+.email-sent-copy { margin:0; color:rgba(255,255,255,0.74); font-size:13px; line-height:1.55; }
 .email-auth-links { display:flex; justify-content:space-between; gap:12px; }
-.link-btn { background:none; border:0; color:rgba(255,255,255,0.7); font-size:13px; cursor:pointer; padding:2px 0; text-decoration:underline; }
+.link-btn { background:none; border:0; color:rgba(255,255,255,0.72); font-size:13px; cursor:pointer; padding:2px 0; text-decoration:underline; }
 .link-btn:hover { color:#fff; }
 .login-error { margin:10px 0 0; color:#ff8095; font-size:13px; font-weight:600; }
