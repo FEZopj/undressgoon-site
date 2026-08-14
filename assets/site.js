@@ -1512,11 +1512,6 @@
         showError('');
         var email = (emailInput.value || '').trim();
         if (!email) return;
-        var gmail = email.toLowerCase().match(/^([^@]+)@(?:gmail\.com|googlemail\.com)$/);
-        if (gmail && /[.+]/.test(gmail[1])) {
-          showError('Gmail ignores dots and “+” tags — enter your address without them, e.g. yourname@gmail.com.');
-          return;
-        }
         var sendBtn = document.getElementById('email-send');
         if (sendBtn) sendBtn.disabled = true;
         fetch(apiUrl('/web/auth/email/start'), { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) })
