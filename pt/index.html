@@ -108,6 +108,22 @@
           <div class="login-box" id="login-box">
             <p>O login prova que uma pessoa real possui o crédito grátis. Depois você gera aqui.</p>
             <a class="btn btn-google" id="google-login" href="#">Continuar com Google</a>
+          <div class="login-or" aria-hidden="true"><span>or</span></div>
+          <button type="button" class="btn btn-email" id="email-login-start">Continue with Email</button>
+          <form class="email-auth" id="email-form" hidden>
+            <input type="email" id="email-input" name="email" autocomplete="email" placeholder="you@email.com" required />
+            <button type="submit" class="btn btn-accent" id="email-send">Send code</button>
+          </form>
+          <form class="email-auth" id="email-code-form" hidden>
+            <p class="email-sent-copy" id="email-sent-copy"></p>
+            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6-digit code" required />
+            <button type="submit" class="btn btn-accent" id="email-verify">Verify &amp; continue</button>
+            <div class="email-auth-links">
+              <button type="button" class="link-btn" id="email-resend">Resend code</button>
+              <button type="button" class="link-btn" id="email-back">Use a different email</button>
+            </div>
+          </form>
+          <p class="login-error" id="login-error" hidden></p>
           </div>
 
           <div class="referral-card" id="referral-card" hidden>

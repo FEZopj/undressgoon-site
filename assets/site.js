@@ -566,6 +566,29 @@
     }
   }
 
+  function deviceFingerprint() {
+    // A stable per-browser id so the free-credit guard works per-device without
+    // punishing shared Wi-Fi / households (each browser gets its own id).
+    try {
+      var fp = localStorage.getItem('ug_fp');
+      if (!fp) {
+        var bytes = new Uint8Array(16);
+        if (window.crypto && window.crypto.getRandomValues) {
+          window.crypto.getRandomValues(bytes);
+          fp = Array.prototype.map.call(bytes, function (b) {
+            return b.toString(16).padStart(2, '0');
+          }).join('');
+        } else {
+          fp = String(Date.now()) + Math.random().toString(16).slice(2);
+        }
+        localStorage.setItem('ug_fp', fp);
+      }
+      return String(fp).slice(0, 96);
+    } catch (e) {
+      return '';
+    }
+  }
+
   function initGoogleLogin() {
     var link = document.getElementById('google-login');
     if (!link) return;
@@ -574,24 +597,8 @@
       params.delete('google_login');
       params.delete('web_login');
       params.set('return_to', location.origin + location.pathname);
-      try {
-        var fp = localStorage.getItem('ug_fp');
-        if (!fp) {
-          var bytes = new Uint8Array(16);
-          if (window.crypto && window.crypto.getRandomValues) {
-            window.crypto.getRandomValues(bytes);
-            fp = Array.prototype.map.call(bytes, function (b) {
-              return b.toString(16).padStart(2, '0');
-            }).join('');
-          } else {
-            fp = String(Date.now()) + Math.random().toString(16).slice(2);
-          }
-          localStorage.setItem('ug_fp', fp);
-        } else {
-          fp = String(fp).slice(0, 96);
-        }
-        params.set('ug_fp', fp);
-      } catch (e) { /* storage can be blocked */ }
+      var fp = deviceFingerprint();
+      if (fp) params.set('ug_fp', fp);
       link.href = apiUrl('/web/auth/google/start') + '?' + params.toString();
     }
     updateHref();
@@ -628,7 +635,9 @@
     if (login) login.hidden = authed;
     if (logout) logout.hidden = !authed;
     if (form) form.classList.toggle('is-locked', !authed);
-    if (submit) submit.disabled = !authed;
+    // Anonymous users can fill the form and click Generate; the submit handler
+    // gates on auth and preserves their work. Only disable while a job is running.
+    if (submit && submit.dataset.busy !== '1') submit.disabled = false;
     if (siteAccount) siteAccount.hidden = !authed;
     if (accountName) accountName.textContent = authed ? userLabel(user) : t('myAccount', 'My account');
     if (accountCredits) accountCredits.textContent = authed ? formatCredits(user.credits) : '';
@@ -1232,13 +1241,15 @@
     var logout = document.getElementById('web-logout');
     var submit = document.getElementById('web-submit');
     var previewUrl = '';
+    var pendingGeneration = null;
 
     if (!CFG.apiBase && location.protocol === 'file:') {
       setStatus(t('apiMissing', 'Set UG_CONFIG.apiBase to your bot backend URL before uploading to cPanel.'), 'error');
     }
 
     initGoogleLogin();
-    refreshWebSession();
+    initEmailLogin();
+    refreshWebSession().then(resumePendingGeneration);
     initPresets();
     loadPacks();
     initAccountControls();
@@ -1366,26 +1377,16 @@
       });
     }
 
-    if (!form) return;
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-      var payloadPromise = buildGenerationPayload();
-      if (!payloadPromise) return;
-      track('website_generation_submit', { mode: selectedModeValue(), logged_in: !!(currentSession && currentSession.user) });
-      if (submit) submit.disabled = true;
+    function runGeneration(payloadPromise) {
+      if (submit) { submit.disabled = true; submit.dataset.busy = '1'; }
       setStatus(t('readingUpload', 'Reading upload...'), 'working');
       paintResults([]);
       updateGenerationLoader('preparing', Date.now());
-
       payloadPromise
         .then(function (payload) {
           updateGenerationLoader('preparing', Date.now());
           setStatus(t('generating', 'Generating... this usually takes under a minute.'), 'working');
-          return fetch(apiUrl('/web/generate'), {
-            method: 'POST',
-            credentials: 'include',
-            body: payload
-          });
+          return fetch(apiUrl('/web/generate'), { method: 'POST', credentials: 'include', body: payload });
         })
         .then(function (res) {
           return res.json().catch(function () { return {}; }).then(function (data) {
@@ -1409,10 +1410,7 @@
           firstGenerationDone = true;
           armExitOffer();
           paintResults(data.images || []);
-          track('website_generation_success', {
-            image_count: (data.images || []).length,
-            balance: data.balance
-          });
+          track('website_generation_success', { image_count: (data.images || []).length, balance: data.balance });
           setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
           return refreshWebSession();
         })
@@ -1425,7 +1423,7 @@
             setStatus(t('outOfCredits', 'You are out of credits. Pick a pack to keep generating.'), 'error');
           } else if (payload.code === 'not_authenticated') {
             track('website_generation_not_authenticated', {});
-            setStatus(t('loginFirst', 'Login with Google first.'), 'error');
+            setStatus(t('loginFirst', 'Sign in to generate.'), 'error');
             updateWebAccount(null);
           } else {
             track('website_generation_error', { code: payload.code || 'unknown' });
@@ -1433,10 +1431,133 @@
           }
         })
         .finally(function () {
-          refreshWebSession().then(function (data) {
-            if (submit) submit.disabled = !(data && data.ok);
-          });
+          if (submit) submit.dataset.busy = '';
+          refreshWebSession().then(function () { if (submit) submit.disabled = false; });
         });
+    }
+
+    function payloadFromSnapshot(snap) {
+      var payload = new FormData();
+      payload.append('prompt', snap.prompt || '');
+      payload.append('mode', snap.mode || 'prompt');
+      payload.append('terms_accepted', '1');
+      payload.append('variations', '1');
+      payload.append('person_name', 'upload.jpg');
+      payload.append('person_b64', snap.dataUrl || '');
+      return payload;
+    }
+
+    function stashPending(payloadPromise) {
+      pendingGeneration = payloadPromise;
+      var prompt = document.getElementById('web-prompt');
+      var mode = document.querySelector('input[name="mode"]:checked');
+      payloadPromise.then(function (p) {
+        var snap = { prompt: prompt ? prompt.value.trim() : '', mode: mode ? mode.value : 'prompt', dataUrl: '' };
+        try { snap.dataUrl = p.get('person_b64') || ''; } catch (e) {}
+        // Best-effort persist so a Google redirect survives; drop the image if the
+        // data URL blows the storage quota (prompt/preset still restored).
+        try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
+        catch (e) { snap.dataUrl = ''; try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); } catch (_) {} }
+      }).catch(function () {});
+    }
+
+    function resumePendingGeneration() {
+      if (!(currentSession && currentSession.user)) return;
+      if (pendingGeneration) {
+        var p = pendingGeneration; pendingGeneration = null;
+        try { sessionStorage.removeItem('ug_pending'); } catch (e) {}
+        runGeneration(p);
+        return;
+      }
+      try {
+        var raw = sessionStorage.getItem('ug_pending');
+        if (!raw) return;
+        sessionStorage.removeItem('ug_pending');
+        var snap = JSON.parse(raw);
+        if (snap && snap.prompt) {
+          var promptEl = document.getElementById('web-prompt');
+          if (promptEl && !promptEl.value) promptEl.value = snap.prompt;
+        }
+        if (snap && snap.dataUrl) runGeneration(Promise.resolve(payloadFromSnapshot(snap)));
+      } catch (e) { /* ignore */ }
+    }
+
+    function revealLoginPrompt() {
+      var box = document.getElementById('login-box');
+      if (box) {
+        box.hidden = false;
+        try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+      }
+      setStatus(t('signInToGenerate', 'Sign in to generate — your photo and prompt are saved.'), 'working');
+    }
+
+    function initEmailLogin() {
+      var startBtn = document.getElementById('email-login-start');
+      var emailForm = document.getElementById('email-form');
+      var codeForm = document.getElementById('email-code-form');
+      var emailInput = document.getElementById('email-input');
+      var codeInput = document.getElementById('email-code');
+      var sentCopy = document.getElementById('email-sent-copy');
+      var errorEl = document.getElementById('login-error');
+      var resendBtn = document.getElementById('email-resend');
+      var backBtn = document.getElementById('email-back');
+      if (!startBtn || !emailForm || !codeForm) return;
+      var currentEmail = '';
+      function showError(msg) { if (errorEl) { errorEl.textContent = msg || ''; errorEl.hidden = !msg; } }
+      startBtn.addEventListener('click', function () {
+        startBtn.hidden = true; emailForm.hidden = false; showError('');
+        if (emailInput) emailInput.focus();
+      });
+      function sendCode() {
+        showError('');
+        var email = (emailInput.value || '').trim();
+        if (!email) return;
+        var sendBtn = document.getElementById('email-send');
+        if (sendBtn) sendBtn.disabled = true;
+        fetch(apiUrl('/web/auth/email/start'), { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (sendBtn) sendBtn.disabled = false;
+            if (!res.ok || !res.d.ok) { showError(res.d.message || 'Could not send the code.'); return; }
+            currentEmail = res.d.email || email;
+            emailForm.hidden = true; codeForm.hidden = false;
+            if (sentCopy) sentCopy.textContent = t('emailCodeSent', 'We emailed a 6-digit code to {email}. It expires in {min} minutes.').replace('{email}', currentEmail).replace('{min}', String(res.d.ttlMinutes || 15));
+            if (codeInput) { codeInput.value = ''; codeInput.focus(); }
+            track('website_email_code_sent', {});
+          })
+          .catch(function () { if (sendBtn) sendBtn.disabled = false; showError('Network error. Try again.'); });
+      }
+      emailForm.addEventListener('submit', function (e) { e.preventDefault(); sendCode(); });
+      if (resendBtn) resendBtn.addEventListener('click', function () { sendCode(); });
+      if (backBtn) backBtn.addEventListener('click', function () { codeForm.hidden = true; emailForm.hidden = false; showError(''); if (emailInput) emailInput.focus(); });
+      codeForm.addEventListener('submit', function (e) {
+        e.preventDefault(); showError('');
+        var code = (codeInput.value || '').trim();
+        if (code.length < 4) return;
+        var verifyBtn = document.getElementById('email-verify');
+        if (verifyBtn) verifyBtn.disabled = true;
+        fetch(apiUrl('/web/auth/email/verify'), { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentEmail, code: code, ug_fp: deviceFingerprint() }) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (verifyBtn) verifyBtn.disabled = false;
+            if (!res.ok || !res.d.ok) { showError(res.d.message || 'Verification failed.'); return; }
+            track('website_email_verified', {});
+            updateWebAccount(res.d);
+            resumePendingGeneration();
+          })
+          .catch(function () { if (verifyBtn) verifyBtn.disabled = false; showError('Network error. Try again.'); });
+      });
+    }
+
+    if (!form) return;
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var payloadPromise = buildGenerationPayload();
+      if (!payloadPromise) return;
+      var authed = !!(currentSession && currentSession.user);
+      track('website_generation_submit', { mode: selectedModeValue(), logged_in: authed });
+      if (!authed) { stashPending(payloadPromise); revealLoginPrompt(); return; }
+      runGeneration(payloadPromise);
     });
   }
 
