@@ -2300,7 +2300,7 @@ html[data-theme="light"] .toast {
 .btn.btn-email { background:linear-gradient(135deg,#ff2f63,#7c3aed); color:#fff; border:0; box-shadow:0 6px 18px rgba(124,58,237,0.32); }
 .btn.btn-email:hover { filter:brightness(1.06); }
 .btn.btn-email .mlogo { color:#fff; }
-@media (max-width:560px){ .login-choices { flex-direction:column; } .login-choices .btn { height:48px; } }
+@media (max-width:560px){ .login-choices { flex-direction:column; } .login-choices .btn { flex:0 0 auto; height:48px; } }
 
 .email-auth { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
 .email-auth input { width:100%; height:46px; padding:0 14px; border-radius:12px;
