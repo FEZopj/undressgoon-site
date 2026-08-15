@@ -53,6 +53,10 @@
     return template.replace('{n}', String(n));
   }
 
+  function pluralizeImage(count) {
+    return Number(count || 1) === 1 ? t('imageSingular', 'image') : t('imagePlural', 'images');
+  }
+
   function cleanDiscountCode(value) {
     return String(value || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 40);
   }
@@ -656,6 +660,7 @@
         telegram_linked: !!(currentSession && currentSession.telegram && currentSession.telegram.linked)
       });
     }
+    document.dispatchEvent(new CustomEvent('ug:session-updated'));
     var linked = !!(currentSession && currentSession.telegram && currentSession.telegram.linked);
     if (accountLinkTelegram) accountLinkTelegram.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
     if (telegramLink) telegramLink.innerHTML = linked ? '<i data-lucide="check"></i> ' + t('telegramLinkedShort', 'Telegram linked') : '<i data-lucide="send"></i> ' + t('linkTelegram', 'Link Telegram');
@@ -1100,6 +1105,23 @@
         '</select></label>';
       if (prompt) prompt.insertAdjacentElement('afterend', advanced);
     }
+    if (!document.getElementById('variation-row')) {
+      var consent = document.getElementById('web-consent');
+      var variation = document.createElement('div');
+      variation.className = 'variation-row';
+      variation.id = 'variation-row';
+      variation.innerHTML =
+        '<label for="variation-count"><span>' + esc(t('imagesLabel', 'Images')) + '</span>' +
+        '<select id="variation-count" name="variations">' +
+          '<option value="1" selected>1 ' + esc(t('imageSingular', 'image')) + '</option>' +
+          '<option value="2">2 ' + esc(t('imagePlural', 'images')) + '</option>' +
+          '<option value="3">3 ' + esc(t('imagePlural', 'images')) + '</option>' +
+          '<option value="4">4 ' + esc(t('imagePlural', 'images')) + '</option>' +
+        '</select></label><small id="variation-cost">1 ' + esc(t('creditWord', 'credit')) + '</small>';
+      var consentLine = consent ? consent.closest('.consent-line') : null;
+      if (consentLine) consentLine.insertAdjacentElement('beforebegin', variation);
+      else form.appendChild(variation);
+    }
   }
 
   function initPresets() {
@@ -1298,6 +1320,8 @@
     var form = document.getElementById('web-generate-form');
     var logout = document.getElementById('web-logout');
     var submit = document.getElementById('web-submit');
+    var variationSelect = document.getElementById('variation-count');
+    var variationCost = document.getElementById('variation-cost');
     var previewUrl = '';
     var garmentPreviewUrl = '';
     var pendingGeneration = null;
@@ -1312,6 +1336,42 @@
     initPresets();
     loadPacks();
     initAccountControls();
+
+    function maxVariations() {
+      var fromSession = currentSession && Number(currentSession.maxVariations || 0);
+      var fromConfig = Number(CFG.maxVariations || 0);
+      var value = fromSession || fromConfig || 4;
+      return Math.max(1, Math.min(4, value));
+    }
+
+    function costPerImage() {
+      var fromSession = currentSession && Number(currentSession.costPerImage || 0);
+      var fromConfig = Number(CFG.costPerImage || 0);
+      return Math.max(1, fromSession || fromConfig || 1);
+    }
+
+    function selectedVariations() {
+      var n = variationSelect ? Number(variationSelect.value || 1) : 1;
+      return Math.max(1, Math.min(maxVariations(), Number.isFinite(n) ? n : 1));
+    }
+
+    function syncVariationControl() {
+      if (!variationSelect) return;
+      var max = maxVariations();
+      Array.prototype.forEach.call(variationSelect.options, function (option) {
+        option.disabled = Number(option.value) > max;
+      });
+      if (Number(variationSelect.value || 1) > max) variationSelect.value = String(max);
+      var count = selectedVariations();
+      var totalCost = count * costPerImage();
+      if (variationCost) {
+        variationCost.textContent = totalCost + ' ' + (totalCost === 1 ? t('creditWord', 'credit') : t('creditsWord', 'credits'));
+      }
+      if (submit && submit.dataset.busy !== '1') {
+        submit.innerHTML = '<i data-lucide="wand-sparkles"></i> ' + t('generateVerb', 'Generate') + ' ' + count + ' ' + pluralizeImage(count);
+        refreshIcons();
+      }
+    }
 
     function clearUploadPreview() {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -1412,6 +1472,7 @@
       var garmentChosen = selectedGarmentFile();
       var breastSize = document.getElementById('breast-size');
       var pubicHair = document.getElementById('pubic-hair');
+      var variations = selectedVariations();
 
       if (!chosen) {
         setStatus(t('missingPhoto', 'Upload a person photo first.'), 'error');
@@ -1447,7 +1508,7 @@
       payload.append('prompt', prompt ? prompt.value.trim() : '');
       payload.append('mode', modeValue);
       payload.append('terms_accepted', '1');
-      payload.append('variations', '1');
+      payload.append('variations', String(variations));
       payload.append('breast_size', breastSize ? breastSize.value : 'natural');
       payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
       payload.append('person_name', chosen.name || 'upload.jpg');
@@ -1489,6 +1550,9 @@
       input.addEventListener('change', syncTryonUpload);
     });
     syncTryonUpload();
+    if (variationSelect) variationSelect.addEventListener('change', syncVariationControl);
+    document.addEventListener('ug:session-updated', syncVariationControl);
+    syncVariationControl();
 
     if (logout) {
       logout.addEventListener('click', function () {
@@ -1583,7 +1647,7 @@
       payload.append('prompt', snap.prompt || '');
       payload.append('mode', snap.mode || 'prompt');
       payload.append('terms_accepted', '1');
-      payload.append('variations', '1');
+      payload.append('variations', String(snap.variations || 1));
       payload.append('breast_size', snap.breastSize || 'natural');
       payload.append('pubic_hair', snap.pubicHair || 'natural');
       payload.append('person_name', 'upload.jpg');
@@ -1601,10 +1665,12 @@
       var mode = document.querySelector('input[name="mode"]:checked');
       var breastSize = document.getElementById('breast-size');
       var pubicHair = document.getElementById('pubic-hair');
+      var variations = document.getElementById('variation-count');
       payloadPromise.then(function (p) {
         var snap = {
           prompt: prompt ? prompt.value.trim() : '',
           mode: mode ? mode.value : 'prompt',
+          variations: variations ? Number(variations.value || 1) : 1,
           breastSize: breastSize ? breastSize.value : 'natural',
           pubicHair: pubicHair ? pubicHair.value : 'natural',
           dataUrl: '',
@@ -1654,8 +1720,13 @@
         }
         var breastEl = document.getElementById('breast-size');
         var pubicEl = document.getElementById('pubic-hair');
+        var variationsEl = document.getElementById('variation-count');
         if (breastEl && snap && snap.breastSize) breastEl.value = snap.breastSize;
         if (pubicEl && snap && snap.pubicHair) pubicEl.value = snap.pubicHair;
+        if (variationsEl && snap && snap.variations) {
+          variationsEl.value = String(snap.variations);
+          variationsEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }
         if (snap && snap.dataUrl) runGeneration(Promise.resolve(payloadFromSnapshot(snap)));
       } catch (e) { /* ignore */ }
     }

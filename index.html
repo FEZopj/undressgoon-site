@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="assets/site.css?v=20260815-routing1" as="style" />
+  <link rel="preload" href="assets/site.css?v=20260815-multi1" as="style" />
   <link rel="preload" href="assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="assets/site.css?v=20260815-routing1" />
+  <link rel="stylesheet" href="assets/site.css?v=20260815-multi1" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -197,6 +197,19 @@
                   <option value="full">Full bush</option>
                 </select>
               </label>
+            </div>
+
+            <div class="variation-row" id="variation-row">
+              <label for="variation-count">
+                <span>Images</span>
+                <select id="variation-count" name="variations">
+                  <option value="1" selected>1 image</option>
+                  <option value="2">2 images</option>
+                  <option value="3">3 images</option>
+                  <option value="4">4 images</option>
+                </select>
+              </label>
+              <small id="variation-cost">1 credit</small>
             </div>
 
             <label class="consent-line">
@@ -466,6 +479,6 @@
     };
   </script>
   <script src="assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="assets/site.js?v=20260815-routing1" defer></script>
+  <script src="assets/site.js?v=20260815-multi1" defer></script>
 </body>
 </html>

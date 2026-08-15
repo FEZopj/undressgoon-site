@@ -1308,6 +1308,54 @@ html[data-theme="light"] .advanced-options select {
   border-color: rgba(255, 45, 85, 0.75);
   box-shadow: 0 0 0 3px rgba(255, 45, 85, 0.14);
 }
+.variation-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface2);
+}
+html[data-theme="light"] .variation-row {
+  background: #eef1f7;
+  border-color: rgba(17, 19, 26, 0.12);
+}
+.variation-row label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.variation-row span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+.variation-row select {
+  min-height: 38px;
+  color: var(--text);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 10px;
+  font: inherit;
+  font-weight: 850;
+  outline: none;
+}
+html[data-theme="light"] .variation-row select {
+  color: #11131a;
+  background: #ffffff;
+  border-color: rgba(17, 19, 26, 0.12);
+}
+.variation-row small {
+  color: var(--green);
+  font-size: 0.82rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
 .consent-line {
   display: flex;
   gap: 10px;
