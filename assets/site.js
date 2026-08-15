@@ -1127,47 +1127,107 @@
     ];
     var sceneCats = [
       { key: 'mirror', label: t('tabMirror', 'Mirror') },
-      { key: 'room', label: t('tabRoom', 'Room') },
+      { key: 'bedroom', label: t('tabBedroom', 'Bedroom') },
+      { key: 'bdsm', label: t('tabBdsm', 'BDSM') },
       { key: 'cinematic', label: t('tabCinematic', 'Cinematic') }
     ];
+    var presetPromptUpgrades = {
+      nude: 'completely naked, fully exposed, no clothing at all, bare breasts with natural visible nipples and areolas, natural skin texture, same pose and same camera framing, clear recognizable face, realistic shadows on the body',
+      oily: 'completely nude body covered in shiny oil, glistening skin, bare breasts with natural visible nipples and areolas, oil highlights on chest stomach hips and thighs, no clothing, clear face, realistic bedroom lighting',
+      bondage: 'completely nude body in a consensual shibari-style rope harness, rope framing the chest waist hips and thighs, bare breasts with natural visible nipples and areolas, no other clothing, clear face, full body visible, dramatic warm light',
+      lingerie: 'tiny sheer black lingerie that barely covers anything, transparent fabric, nipples visible through the fabric, high-cut panties, straps hugging the body, same pose and face, realistic fabric tension and shadows',
+      crotchless: 'crotchless panties and open-cup bra, exposed lingerie look, bare breasts visible through the open cups, straps and lace framing the body, same pose and camera angle, realistic skin and fabric detail',
+      bikini: 'extremely skimpy micro bikini, thin strings only, tiny triangle top and micro bottom, glossy skin, same body proportions, same pose and clear face, realistic fabric tension and shadows',
+      wet: 'soaking wet white t-shirt clinging tightly to the body with no bra, hard nipples visible through transparent wet fabric, tiny soaked panties, wet skin, realistic water droplets and bathroom light',
+      bdsm: 'tight black leather harness, collar, cuffs and straps framing the body, breasts and crotch exposed, consensual dungeon styling, glossy leather highlights, clear face, same pose and realistic shadows',
+      latex: 'shiny tight black latex catsuit unzipped down the front, breasts and crotch exposed through the opening, glossy latex reflections, same face and body proportions, realistic tight fit and folds',
+      tights: 'remove every piece of clothing, then put only sheer black pantyhose on the legs and feet; upper body fully naked with bare breasts and visible nipples, bare torso and arms, nothing on the chest, same pose and framing',
+      stockings: 'remove every piece of clothing, then put only sheer black thigh-high stockings on the legs; upper body fully naked with bare breasts and visible nipples, bare pussy with no panties, same pose and framing',
+      pleated_uniform: 'tiny pleated uniform skirt with no panties, tight white blouse unbuttoned low, cleavage visible, messy teasing cosplay look, same face and body proportions, realistic indoor photo',
+      nurse: 'short tight nurse costume unzipped low, cleavage out, garter belt, no panties, teasing clinical-room fantasy styling, same pose and clear face, realistic fabric and shadows',
+      maid: 'tiny french maid outfit, very short skirt with no panties, stockings, cleavage, apron barely covering the body, playful messy bedroom styling, same identity and camera framing',
+      office: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings, desk fantasy styling, same pose and face, realistic office lighting'
+    };
     var scenePresets = CFG.scenePresets || [
       {
         key: 'scene_mirror',
         category: 'mirror',
-        label: 'Nude Mirror',
-        prompt: 'fully naked bedroom mirror selfie, bare breasts, no clothing, warm bedside lighting, confident pose, clear face, full body visible, realistic phone photo, detailed background'
+        label: 'Nude Mirror Selfie',
+        prompt: 'fully naked bedroom mirror selfie, bare breasts with visible nipples and areolas, no clothing, phone held to the side, hips angled toward mirror, warm bedside lighting, clear recognizable face, full body visible, realistic casual phone photo, detailed messy bedroom background'
       },
       {
         key: 'scene_hotel',
-        category: 'room',
-        label: 'Hotel Nude',
-        prompt: 'fully nude in a luxury hotel suite, bare breasts, standing near the bed, soft evening light, seductive confident pose, clear face, realistic skin texture, full body in frame'
+        category: 'bedroom',
+        label: 'Hotel Suite',
+        prompt: 'fully nude in a luxury hotel suite, bare breasts with visible nipples and areolas, standing beside an unmade bed, soft evening city-window light, one hand on hip, confident seductive pose, clear face, realistic skin texture, full body in frame, crisp hotel details'
       },
       {
         key: 'scene_bathroom',
         category: 'mirror',
         label: 'Shower Mirror',
-        prompt: 'fully naked bathroom mirror selfie after shower, bare breasts, wet skin, bright vanity lights, phone held to the side, clear face, realistic casual photo'
+        prompt: 'fully naked bathroom mirror selfie after shower, bare breasts with visible nipples and areolas, wet skin, damp hair, steam on glass, bright vanity lights, phone held to the side, clear face, full body visible, realistic casual photo'
+      },
+      {
+        key: 'scene_sweaty_bed',
+        category: 'bedroom',
+        label: 'Sweaty Bed',
+        prompt: 'fully nude lying on a messy bed, bare breasts with visible nipples and areolas, body drenched in sweat, wet hair on pillow, tangled sheets, flushed skin, seductive exhausted expression, clear face turned toward camera, full body visible, warm low bedroom light, realistic skin texture'
+      },
+      {
+        key: 'scene_messy_sheets',
+        category: 'bedroom',
+        label: 'Messy Sheets',
+        prompt: 'fully naked on an unmade bed covered in wet glossy fluid stains and tangled sheets, bare breasts with visible nipples and areolas, sweaty skin, legs relaxed, face clearly visible looking at camera, intimate afterglow mood, realistic bedroom photo, full body in frame'
+      },
+      {
+        key: 'scene_all_fours',
+        category: 'bedroom',
+        label: 'All Fours Bed',
+        prompt: 'fully nude on all fours on a bed, bare breasts visible from the side, ass raised, face turned back toward camera and clearly recognizable, messy sheets, warm bedside lamp, realistic phone-photo framing, full body visible, natural skin texture'
+      },
+      {
+        key: 'scene_dungeon_rope',
+        category: 'bdsm',
+        label: 'Dungeon Bound',
+        prompt: 'fully nude in a consensual BDSM dungeon rope scene, wrists tied overhead with rope, bare breasts with visible nipples and areolas, black leather collar, candlelight and red shadows, stone wall background, clear recognizable face, full body visible, dramatic realistic photo'
+      },
+      {
+        key: 'scene_spread_restraint',
+        category: 'bdsm',
+        label: 'Restrained Bed',
+        prompt: 'fully naked restrained on a bed with soft cuffs, arms above head, bare breasts with visible nipples and areolas, messy sheets, sweaty skin, clear face looking at camera, consensual BDSM bedroom scene, warm light, full body in frame, realistic photo detail'
+      },
+      {
+        key: 'scene_chain_collar',
+        category: 'bdsm',
+        label: 'Collar & Chains',
+        prompt: 'fully nude wearing only a black collar and thin chains, bare breasts with visible nipples and areolas, kneeling on a dark rug, moody red dungeon lighting, clear face, full body visible, realistic shadows, intense consensual fetish styling'
       },
       {
         key: 'scene_neon',
         category: 'cinematic',
         label: 'Neon Nude',
-        prompt: 'cinematic fully nude in a neon-lit bedroom, bare breasts, pink and blue light, standing pose, glossy skin, clear recognizable face, full body, high detail'
+        prompt: 'cinematic fully nude in a neon-lit bedroom, bare breasts with visible nipples and areolas, pink and blue light, sweaty glossy skin, standing pose near bed, clear recognizable face, full body visible, high detail, realistic photo not illustration'
       },
       {
         key: 'scene_locker',
-        category: 'room',
+        category: 'cinematic',
         label: 'Locker Nude',
-        prompt: 'fully naked in a private locker room, bare breasts, mirror wall, athletic confident pose, realistic indoor lighting, clear face, full body visible, detailed environment'
+        prompt: 'fully naked in a private locker room, bare breasts with visible nipples and areolas, mirror wall, damp skin, athletic confident pose, realistic indoor fluorescent lighting, clear face, full body visible, detailed environment'
       },
       {
         key: 'scene_sofa',
         category: 'cinematic',
         label: 'Sofa Nude',
-        prompt: 'fully nude sitting on a modern sofa, bare breasts, relaxed seductive pose, warm studio lighting, clear face, full body composition, realistic photo detail'
+        prompt: 'fully nude sitting on a modern sofa, bare breasts with visible nipples and areolas, legs relaxed, sweaty skin, warm studio lighting, clear face, full body composition, realistic photo detail, messy pillows and intimate room mood'
       }
     ];
+    presets = presets.map(function (preset) {
+      if (preset && presetPromptUpgrades[preset.key]) {
+        return Object.assign({}, preset, { prompt: presetPromptUpgrades[preset.key] });
+      }
+      return preset;
+    });
     var active = 'hot';
     var selected = '';
     var sceneHelp = null;
