@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="assets/site.css?v=20260815-gmailnorm" as="style" />
+  <link rel="preload" href="assets/site.css?v=20260815-routing1" as="style" />
   <link rel="preload" href="assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="assets/site.css?v=20260815-gmailnorm" />
+  <link rel="stylesheet" href="assets/site.css?v=20260815-routing1" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -154,8 +154,17 @@
 
             <div class="mode-row" role="group" aria-label="Generation mode">
               <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Outfit edit</label>
+              <label><input type="radio" name="mode" value="tryon" /> <i data-lucide="images"></i> Outfit transfer</label>
               <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Scene</label>
             </div>
+
+            <label class="upload-zone upload-zone-secondary" for="garment-photo" id="garment-upload-zone" hidden>
+              <input id="garment-photo" name="garment" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" />
+              <img class="upload-preview" id="garment-preview" alt="" hidden />
+              <span class="upload-main"><i data-lucide="images"></i> Choose outfit photo</span>
+              <span class="upload-sub" id="garment-name">Upload the outfit reference</span>
+              <span class="upload-tip">The person stays from your first photo.</span>
+            </label>
 
             <div class="preset-picker">
               <div class="preset-top">
@@ -168,6 +177,27 @@
 
             <label class="field-label" for="web-prompt">Prompt</label>
             <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Example: tiny black micro bikini, glossy skin, bedroom mirror selfie"></textarea>
+
+            <div class="advanced-options" id="advanced-options">
+              <label>
+                <span>Breast size</span>
+                <select id="breast-size" name="breast_size">
+                  <option value="natural" selected>Keep natural</option>
+                  <option value="smaller">Slightly smaller</option>
+                  <option value="fuller">Fuller</option>
+                  <option value="larger">Larger curvy</option>
+                </select>
+              </label>
+              <label>
+                <span>Pubic hair</span>
+                <select id="pubic-hair" name="pubic_hair">
+                  <option value="natural" selected>Keep natural</option>
+                  <option value="shaved">Shaved</option>
+                  <option value="trimmed">Trimmed</option>
+                  <option value="full">Full bush</option>
+                </select>
+              </label>
+            </div>
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
@@ -436,6 +466,6 @@
     };
   </script>
   <script src="assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="assets/site.js?v=20260815-gmailnorm" defer></script>
+  <script src="assets/site.js?v=20260815-routing1" defer></script>
 </body>
 </html>

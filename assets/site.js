@@ -1055,6 +1055,53 @@
     if (empty) empty.hidden = !!(images && images.length);
   }
 
+  function ensureGeneratorEnhancements(root) {
+    var form = root ? root.querySelector('#web-generate-form') : document.getElementById('web-generate-form');
+    if (!form) return;
+    var modeRow = form.querySelector('.mode-row');
+    if (modeRow && !form.querySelector('input[name="mode"][value="tryon"]')) {
+      var transfer = document.createElement('label');
+      transfer.innerHTML = '<input type="radio" name="mode" value="tryon" /> <i data-lucide="images"></i> ' + esc(t('tryonMode', 'Outfit transfer'));
+      var portrait = modeRow.querySelector('input[name="mode"][value="portrait"]');
+      if (portrait && portrait.parentElement) modeRow.insertBefore(transfer, portrait.parentElement);
+      else modeRow.appendChild(transfer);
+    }
+    if (modeRow && !document.getElementById('garment-upload-zone')) {
+      var garment = document.createElement('label');
+      garment.className = 'upload-zone upload-zone-secondary';
+      garment.id = 'garment-upload-zone';
+      garment.htmlFor = 'garment-photo';
+      garment.hidden = true;
+      garment.innerHTML =
+        '<input id="garment-photo" name="garment" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" />' +
+        '<img class="upload-preview" id="garment-preview" alt="" hidden />' +
+        '<span class="upload-main"><i data-lucide="images"></i> ' + esc(t('chooseOutfitPhoto', 'Choose outfit photo')) + '</span>' +
+        '<span class="upload-sub" id="garment-name">' + esc(t('garmentUploadHint', 'Upload the outfit reference')) + '</span>' +
+        '<span class="upload-tip">' + esc(t('garmentUploadTip', 'The person stays from your first photo.')) + '</span>';
+      modeRow.insertAdjacentElement('afterend', garment);
+    }
+    if (!document.getElementById('advanced-options')) {
+      var prompt = document.getElementById('web-prompt');
+      var advanced = document.createElement('div');
+      advanced.className = 'advanced-options';
+      advanced.id = 'advanced-options';
+      advanced.innerHTML =
+        '<label><span>' + esc(t('breastSizeLabel', 'Breast size')) + '</span><select id="breast-size" name="breast_size">' +
+          '<option value="natural" selected>' + esc(t('keepNatural', 'Keep natural')) + '</option>' +
+          '<option value="smaller">' + esc(t('breastSmaller', 'Slightly smaller')) + '</option>' +
+          '<option value="fuller">' + esc(t('breastFuller', 'Fuller')) + '</option>' +
+          '<option value="larger">' + esc(t('breastLarger', 'Larger curvy')) + '</option>' +
+        '</select></label>' +
+        '<label><span>' + esc(t('pubicHairLabel', 'Pubic hair')) + '</span><select id="pubic-hair" name="pubic_hair">' +
+          '<option value="natural" selected>' + esc(t('keepNatural', 'Keep natural')) + '</option>' +
+          '<option value="shaved">' + esc(t('pubicShaved', 'Shaved')) + '</option>' +
+          '<option value="trimmed">' + esc(t('pubicTrimmed', 'Trimmed')) + '</option>' +
+          '<option value="full">' + esc(t('pubicFull', 'Full bush')) + '</option>' +
+        '</select></label>';
+      if (prompt) prompt.insertAdjacentElement('afterend', advanced);
+    }
+  }
+
   function initPresets() {
     var tabs = document.getElementById('preset-tabs');
     var grid = document.getElementById('preset-grid');
@@ -1121,7 +1168,7 @@
 
     function activeMode() {
       var checked = document.querySelector('input[name="mode"]:checked');
-      return checked && checked.value === 'portrait' ? 'portrait' : 'prompt';
+      return checked ? checked.value : 'prompt';
     }
 
     function activeCats() {
@@ -1141,21 +1188,27 @@
     }
 
     function syncModeCopy() {
-      var scene = activeMode() === 'portrait';
+      var mode = activeMode();
+      var scene = mode === 'portrait';
+      var transfer = mode === 'tryon';
       modeInputs.forEach(function (input) {
         if (input.parentElement) input.parentElement.classList.toggle('active', input.checked);
       });
+      if (picker) picker.hidden = transfer;
       if (label) label.textContent = t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT');
-      if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
+      if (promptLabel) promptLabel.textContent = transfer ? t('tryonPromptLabel', 'Optional fit notes') : (scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt'));
+      prompt.required = !transfer;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
-        help.hidden = !scene;
+        help.hidden = !scene || transfer;
         help.textContent = t('sceneHelp', 'Scenes work best when you describe the room, lighting, pose, framing, and mood. Use one of these as a starting point.');
       }
-      prompt.placeholder = scene ?
+      prompt.placeholder = transfer ?
+        t('tryonPlaceholder', 'Optional: tighter fit, keep pose, natural folds, same body proportions') :
+        (scene ?
         t('scenePlaceholder', 'Example: fully nude in a luxury hotel suite, bare breasts, warm evening light, confident pose, clear face, full body in frame') :
-        t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
+        t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie'));
     }
 
     function renderTabs() {
@@ -1216,11 +1269,11 @@
       input.addEventListener('change', function () {
         active = activeMode() === 'portrait' ? sceneCats[0].key : outfitCats[0].key;
         selected = '';
-        prompt.value = '';
+        if (activeMode() !== 'tryon') prompt.value = '';
         syncModeCopy();
         renderTabs();
         renderGrid();
-        prompt.focus();
+        if (activeMode() !== 'tryon') prompt.focus();
       });
     });
 
@@ -1232,15 +1285,21 @@
   function initWebGenerator() {
     var root = document.querySelector('[data-web-generator]');
     if (!root) return;
+    ensureGeneratorEnhancements(root);
 
     var file = document.getElementById('person-photo');
+    var garmentFile = document.getElementById('garment-photo');
     var fileName = document.getElementById('upload-name');
+    var garmentName = document.getElementById('garment-name');
     var uploadZone = document.querySelector('.upload-zone');
+    var garmentUploadZone = document.getElementById('garment-upload-zone');
     var uploadPreview = document.getElementById('upload-preview');
+    var garmentPreview = document.getElementById('garment-preview');
     var form = document.getElementById('web-generate-form');
     var logout = document.getElementById('web-logout');
     var submit = document.getElementById('web-submit');
     var previewUrl = '';
+    var garmentPreviewUrl = '';
     var pendingGeneration = null;
 
     if (!CFG.apiBase && location.protocol === 'file:') {
@@ -1265,8 +1324,24 @@
       if (fileName) fileName.textContent = t('uploadHint', 'JPG, PNG, or WebP up to 12 MB');
     }
 
+    function clearGarmentPreview() {
+      if (garmentPreviewUrl) URL.revokeObjectURL(garmentPreviewUrl);
+      garmentPreviewUrl = '';
+      if (garmentPreview) {
+        garmentPreview.hidden = true;
+        garmentPreview.removeAttribute('src');
+      }
+      if (garmentFile) garmentFile.value = '';
+      if (garmentUploadZone) garmentUploadZone.classList.remove('has-preview');
+      if (garmentName) garmentName.textContent = t('garmentUploadHint', 'Upload the outfit reference');
+    }
+
     function selectedPersonFile() {
       return file && file.files && file.files.length ? file.files[0] : null;
+    }
+
+    function selectedGarmentFile() {
+      return garmentFile && garmentFile.files && garmentFile.files.length ? garmentFile.files[0] : null;
     }
 
     function readFileAsDataUrl(chosen) {
@@ -1294,33 +1369,75 @@
       if (fileName) fileName.textContent = chosen.name;
     }
 
+    function updateGarmentPreview() {
+      var chosen = selectedGarmentFile();
+      if (!chosen) {
+        clearGarmentPreview();
+        return;
+      }
+      if (garmentPreviewUrl) URL.revokeObjectURL(garmentPreviewUrl);
+      garmentPreviewUrl = URL.createObjectURL(chosen);
+      if (garmentPreview) {
+        garmentPreview.src = garmentPreviewUrl;
+        garmentPreview.hidden = false;
+      }
+      if (garmentUploadZone) garmentUploadZone.classList.add('has-preview');
+      if (garmentName) garmentName.textContent = chosen.name;
+    }
+
+    function validateImageFile(chosen, label) {
+      if (!chosen) return label + ' is missing.';
+      if (!/image\/(jpeg|png|webp)/i.test(chosen.type || '')) {
+        return t('badPhotoType', 'Upload a valid JPG, PNG, or WebP photo.');
+      }
+      if (chosen.size > 12 * 1024 * 1024) {
+        return t('photoTooLarge', 'Photo is too large. Upload an image up to 12 MB.');
+      }
+      return '';
+    }
+
+    function syncTryonUpload() {
+      var transfer = selectedModeValue() === 'tryon';
+      if (garmentUploadZone) garmentUploadZone.hidden = !transfer;
+      if (garmentFile) garmentFile.required = transfer;
+      if (!transfer) clearGarmentPreview();
+    }
+
     function buildGenerationPayload() {
       var consent = document.getElementById('web-consent');
       var prompt = document.getElementById('web-prompt');
       var mode = document.querySelector('input[name="mode"]:checked');
       var chosen = selectedPersonFile();
+      var modeValue = mode ? mode.value : 'prompt';
+      var garmentChosen = selectedGarmentFile();
+      var breastSize = document.getElementById('breast-size');
+      var pubicHair = document.getElementById('pubic-hair');
 
       if (!chosen) {
         setStatus(t('missingPhoto', 'Upload a person photo first.'), 'error');
         if (file) file.focus();
         return null;
       }
-      if (!/image\/(jpeg|png|webp)/i.test(chosen.type || '')) {
-        setStatus(t('badPhotoType', 'Upload a valid JPG, PNG, or WebP photo.'), 'error');
+      var personError = validateImageFile(chosen, 'Photo');
+      if (personError) {
+        setStatus(personError, 'error');
         if (file) file.focus();
         return null;
       }
-      if (chosen.size > 12 * 1024 * 1024) {
-        setStatus(t('photoTooLarge', 'Photo is too large. Upload an image up to 12 MB.'), 'error');
-        if (file) file.focus();
-        return null;
+      if (modeValue === 'tryon') {
+        var garmentError = validateImageFile(garmentChosen, 'Outfit reference');
+        if (garmentError) {
+          setStatus(garmentError, 'error');
+          if (garmentFile) garmentFile.focus();
+          return null;
+        }
       }
       if (!consent || !consent.checked) {
         setStatus(t('termsRequired', 'Confirm you are 18+ and have rights to this photo.'), 'error');
         if (consent) consent.focus();
         return null;
       }
-      if (prompt && !prompt.value.trim()) {
+      if (prompt && !prompt.value.trim() && modeValue !== 'tryon') {
         setStatus(t('promptRequired', 'Pick a preset or write a prompt first.'), 'error');
         prompt.focus();
         return null;
@@ -1328,13 +1445,24 @@
 
       var payload = new FormData();
       payload.append('prompt', prompt ? prompt.value.trim() : '');
-      payload.append('mode', mode ? mode.value : 'prompt');
+      payload.append('mode', modeValue);
       payload.append('terms_accepted', '1');
       payload.append('variations', '1');
+      payload.append('breast_size', breastSize ? breastSize.value : 'natural');
+      payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
       payload.append('person_name', chosen.name || 'upload.jpg');
       payload.append('person', chosen, chosen.name || 'upload.jpg');
-      return readFileAsDataUrl(chosen).then(function (dataUrl) {
+      var reads = [readFileAsDataUrl(chosen).then(function (dataUrl) {
         payload.append('person_b64', dataUrl);
+      })];
+      if (modeValue === 'tryon' && garmentChosen) {
+        payload.append('garment_name', garmentChosen.name || 'outfit.jpg');
+        payload.append('garment', garmentChosen, garmentChosen.name || 'outfit.jpg');
+        reads.push(readFileAsDataUrl(garmentChosen).then(function (dataUrl) {
+          payload.append('garment_b64', dataUrl);
+        }));
+      }
+      return Promise.all(reads).then(function () {
         return payload;
       });
     }
@@ -1347,6 +1475,20 @@
         }
       });
     }
+
+    if (garmentFile) {
+      garmentFile.addEventListener('change', function () {
+        updateGarmentPreview();
+        if (selectedGarmentFile()) {
+          track('website_outfit_reference_selected', { mode: selectedModeValue() });
+        }
+      });
+    }
+
+    document.querySelectorAll('input[name="mode"]').forEach(function (input) {
+      input.addEventListener('change', syncTryonUpload);
+    });
+    syncTryonUpload();
 
     if (logout) {
       logout.addEventListener('click', function () {
@@ -1442,8 +1584,14 @@
       payload.append('mode', snap.mode || 'prompt');
       payload.append('terms_accepted', '1');
       payload.append('variations', '1');
+      payload.append('breast_size', snap.breastSize || 'natural');
+      payload.append('pubic_hair', snap.pubicHair || 'natural');
       payload.append('person_name', 'upload.jpg');
       payload.append('person_b64', snap.dataUrl || '');
+      if (snap.garmentDataUrl) {
+        payload.append('garment_name', 'outfit.jpg');
+        payload.append('garment_b64', snap.garmentDataUrl);
+      }
       return payload;
     }
 
@@ -1451,13 +1599,32 @@
       pendingGeneration = payloadPromise;
       var prompt = document.getElementById('web-prompt');
       var mode = document.querySelector('input[name="mode"]:checked');
+      var breastSize = document.getElementById('breast-size');
+      var pubicHair = document.getElementById('pubic-hair');
       payloadPromise.then(function (p) {
-        var snap = { prompt: prompt ? prompt.value.trim() : '', mode: mode ? mode.value : 'prompt', dataUrl: '' };
-        try { snap.dataUrl = p.get('person_b64') || ''; } catch (e) {}
+        var snap = {
+          prompt: prompt ? prompt.value.trim() : '',
+          mode: mode ? mode.value : 'prompt',
+          breastSize: breastSize ? breastSize.value : 'natural',
+          pubicHair: pubicHair ? pubicHair.value : 'natural',
+          dataUrl: '',
+          garmentDataUrl: ''
+        };
+        try {
+          snap.dataUrl = p.get('person_b64') || '';
+          snap.garmentDataUrl = p.get('garment_b64') || '';
+        } catch (e) {}
         // Best-effort persist so a Google redirect survives; drop the image if the
         // data URL blows the storage quota (prompt/preset still restored).
         try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
-        catch (e) { snap.dataUrl = ''; try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); } catch (_) {} }
+        catch (e) {
+          snap.garmentDataUrl = '';
+          try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
+          catch (_) {
+            snap.dataUrl = '';
+            try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); } catch (__) {}
+          }
+        }
       }).catch(function () {});
     }
 
@@ -1478,6 +1645,17 @@
           var promptEl = document.getElementById('web-prompt');
           if (promptEl && !promptEl.value) promptEl.value = snap.prompt;
         }
+        if (snap && snap.mode) {
+          var modeInput = document.querySelector('input[name="mode"][value="' + String(snap.mode).replace(/"/g, '') + '"]');
+          if (modeInput) {
+            modeInput.checked = true;
+            modeInput.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+        var breastEl = document.getElementById('breast-size');
+        var pubicEl = document.getElementById('pubic-hair');
+        if (breastEl && snap && snap.breastSize) breastEl.value = snap.breastSize;
+        if (pubicEl && snap && snap.pubicHair) pubicEl.value = snap.pubicHair;
         if (snap && snap.dataUrl) runGeneration(Promise.resolve(payloadFromSnapshot(snap)));
       } catch (e) { /* ignore */ }
     }

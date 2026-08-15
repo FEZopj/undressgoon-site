@@ -1077,6 +1077,13 @@ html[data-theme="light"] .preset-grid button {
   place-items: center;
   text-align: center;
 }
+.upload-zone-secondary {
+  min-height: 110px;
+  border-style: solid;
+  background:
+    linear-gradient(135deg, rgba(42,171,238,0.12), rgba(255,45,85,0.08)),
+    var(--surface2);
+}
 .upload-zone input {
   position: absolute;
   opacity: 0;
@@ -1117,7 +1124,7 @@ html[data-theme="light"] .upload-preview {
 }
 .mode-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 .mode-row label {
@@ -1262,6 +1269,42 @@ html[data-theme="light"] .preset-tabs button.active {
 }
 .web-form textarea:focus {
   outline: none;
+  border-color: rgba(255, 45, 85, 0.75);
+  box-shadow: 0 0 0 3px rgba(255, 45, 85, 0.14);
+}
+.advanced-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.advanced-options label {
+  display: grid;
+  gap: 6px;
+}
+.advanced-options span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+.advanced-options select {
+  width: 100%;
+  min-height: 42px;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 8px 10px;
+  font: inherit;
+  font-weight: 800;
+  outline: none;
+}
+html[data-theme="light"] .advanced-options select {
+  color: #11131a;
+  background: #eef1f7;
+  border-color: rgba(17, 19, 26, 0.12);
+}
+.advanced-options select:focus {
   border-color: rgba(255, 45, 85, 0.75);
   box-shadow: 0 0 0 3px rgba(255, 45, 85, 0.14);
 }
