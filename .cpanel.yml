@@ -16,6 +16,8 @@ deployment:
     - /bin/cp .htaccess $DEPLOYPATH
     - /bin/cp favicon.ico $DEPLOYPATH
     - /bin/cp apple-touch-icon.png $DEPLOYPATH
+    - /bin/cp robots.txt $DEPLOYPATH
+    - /bin/cp sitemap.xml $DEPLOYPATH
     - /bin/cp -R assets $DEPLOYPATH
     - /bin/cp -R results $DEPLOYPATH
     - /bin/cp -R de $DEPLOYPATH

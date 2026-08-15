@@ -1,0 +1,11 @@
+# https://undressgoon.app/
+User-agent: *
+Allow: /
+
+# Internal, paid-landing and mockup pages — keep out of search results.
+Disallow: /go/
+Disallow: /trafficstars/
+Disallow: /_qa/
+Disallow: /hero-example.html
+
+Sitemap: https://undressgoon.app/sitemap.xml
