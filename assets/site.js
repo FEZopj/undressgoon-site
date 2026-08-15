@@ -598,6 +598,26 @@
     }
   }
 
+  // Ad attribution (TrafficStars click_id, campaign, utm_*). Captured on landing
+  // and persisted, so it survives navigation AND reaches the email-signup flow —
+  // not just the Google link. Last ad click wins; organic returns don't clear it.
+  var TRACKING_KEYS = ['click_id', 'clickid', 'campaign', 'campaign_id', 'creative_id',
+    'site_id', 'geo', 'format_id', 'format', 'pricing_model', 'adspot_id', 'adspot_name',
+    'utm_source', 'utm_campaign', 'utm_medium', 'utm_content', 'utm_term'];
+  function captureTracking() {
+    try {
+      var p = new URLSearchParams(location.search || '');
+      var t = {};
+      TRACKING_KEYS.forEach(function (k) { var v = p.get(k); if (v) t[k] = String(v).slice(0, 180); });
+      if (Object.keys(t).length) localStorage.setItem('ug_tracking', JSON.stringify(t));
+    } catch (e) {}
+  }
+  function storedTracking() {
+    try { var t = JSON.parse(localStorage.getItem('ug_tracking') || '{}'); return t && typeof t === 'object' ? t : {}; }
+    catch (e) { return {}; }
+  }
+  captureTracking();
+
   function initGoogleLogin() {
     var link = document.getElementById('google-login');
     if (!link) return;
@@ -605,6 +625,10 @@
       var params = new URLSearchParams(location.search || '');
       params.delete('google_login');
       params.delete('web_login');
+      // Backfill ad attribution from the landing stash so it survives navigating
+      // to another page before logging in (params-less URL would otherwise lose it).
+      var saved = storedTracking();
+      Object.keys(saved).forEach(function (k) { if (!params.get(k)) params.set(k, saved[k]); });
       params.set('return_to', location.origin + location.pathname);
       var fp = deviceFingerprint();
       if (fp) params.set('ug_fp', fp);
@@ -1828,7 +1852,7 @@
         if (code.length < 4) return;
         var verifyBtn = document.getElementById('email-verify');
         if (verifyBtn) verifyBtn.disabled = true;
-        fetch(apiUrl('/web/auth/email/verify'), { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentEmail, code: code, ug_fp: deviceFingerprint() }) })
+        fetch(apiUrl('/web/auth/email/verify'), { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentEmail, code: code, ug_fp: deviceFingerprint(), tracking: storedTracking() }) })
           .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
           .then(function (res) {
             if (verifyBtn) verifyBtn.disabled = false;
