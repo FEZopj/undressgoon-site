@@ -1295,6 +1295,7 @@
     var variationSelect = document.getElementById('variation-count');
     var variationCost = document.getElementById('variation-cost');
     var previewUrl = '';
+    var selectedPersonSnapshot = null;
     var pendingGeneration = null;
 
     if (!CFG.apiBase && location.protocol === 'file:') {
@@ -1349,6 +1350,7 @@
     function clearUploadPreview() {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       previewUrl = '';
+      selectedPersonSnapshot = null;
       if (uploadPreview) {
         uploadPreview.hidden = true;
         uploadPreview.removeAttribute('src');
@@ -1359,6 +1361,13 @@
 
     function selectedPersonFile() {
       return file && file.files && file.files.length ? file.files[0] : null;
+    }
+
+    function estimateDataUrlBytes(dataUrl) {
+      var base64 = String(dataUrl || '').split(',').pop() || '';
+      if (!base64) return 0;
+      var padding = (base64.match(/=+$/) || [''])[0].length;
+      return Math.max(0, Math.floor((base64.length * 3) / 4) - padding);
     }
 
     function readFileAsDataUrl(chosen) {
@@ -1384,6 +1393,16 @@
       }
       if (uploadZone) uploadZone.classList.add('has-preview');
       if (fileName) fileName.textContent = chosen.name;
+      selectedPersonSnapshot = null;
+      readFileAsDataUrl(chosen).then(function (dataUrl) {
+        if (selectedPersonFile() !== chosen) return;
+        selectedPersonSnapshot = {
+          dataUrl: dataUrl,
+          name: chosen.name || 'upload.jpg',
+          type: chosen.type || '',
+          size: chosen.size || estimateDataUrlBytes(dataUrl)
+        };
+      }).catch(function () {});
     }
 
     function validateImageFile(chosen, label) {
@@ -1402,19 +1421,26 @@
       var prompt = document.getElementById('web-prompt');
       var mode = document.querySelector('input[name="mode"]:checked');
       var chosen = selectedPersonFile();
+      var snapshot = selectedPersonSnapshot;
       var modeValue = mode ? mode.value : 'prompt';
       var breastSize = document.getElementById('breast-size');
       var pubicHair = document.getElementById('pubic-hair');
       var variations = selectedVariations();
 
-      if (!chosen) {
+      if (!chosen && !(snapshot && snapshot.dataUrl)) {
         setStatus(t('missingPhoto', 'Upload a person photo first.'), 'error');
         if (file) file.focus();
         return null;
       }
-      var personError = validateImageFile(chosen, 'Photo');
-      if (personError) {
-        setStatus(personError, 'error');
+      if (chosen) {
+        var personError = validateImageFile(chosen, 'Photo');
+        if (personError) {
+          setStatus(personError, 'error');
+          if (file) file.focus();
+          return null;
+        }
+      } else if (snapshot && snapshot.size > 12 * 1024 * 1024) {
+        setStatus(t('photoTooLarge', 'Photo is too large. Upload an image up to 12 MB.'), 'error');
         if (file) file.focus();
         return null;
       }
@@ -1436,8 +1462,24 @@
       payload.append('variations', String(variations));
       payload.append('breast_size', breastSize ? breastSize.value : 'natural');
       payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
-      payload.append('person_name', chosen.name || 'upload.jpg');
-      payload.append('person', chosen, chosen.name || 'upload.jpg');
+      if (chosen) {
+        payload.append('person_name', chosen.name || 'upload.jpg');
+        payload.append('person', chosen, chosen.name || 'upload.jpg');
+        return readFileAsDataUrl(chosen).then(function (dataUrl) {
+          selectedPersonSnapshot = {
+            dataUrl: dataUrl,
+            name: chosen.name || 'upload.jpg',
+            type: chosen.type || '',
+            size: chosen.size || estimateDataUrlBytes(dataUrl)
+          };
+          payload.append('person_b64', dataUrl);
+          return payload;
+        }).catch(function () {
+          return payload;
+        });
+      }
+      payload.append('person_name', snapshot.name || 'upload.jpg');
+      payload.append('person_b64', snapshot.dataUrl || '');
       return Promise.resolve(payload);
     }
 
@@ -1577,6 +1619,8 @@
           reads.push(readFileAsDataUrl(personSnapFile).then(function (dataUrl) {
             snap.dataUrl = dataUrl;
           }));
+        } else if (selectedPersonSnapshot && selectedPersonSnapshot.dataUrl) {
+          snap.dataUrl = selectedPersonSnapshot.dataUrl;
         }
         Promise.all(reads).then(function () {
           // Best-effort persist so a Google redirect survives.
