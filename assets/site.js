@@ -373,6 +373,11 @@
     return !(panel && !panel.hidden);
   }
 
+  function isFirstResultOfferEligible() {
+    var gens = currentSession && currentSession.user && Number(currentSession.user.successfulGenerations);
+    return Number.isFinite(gens) && gens === 0;
+  }
+
   function showExitOffer() {
     if (!shouldShowExitOffer()) return false;
     try { sessionStorage.setItem('ug_exit_offer_seen', '1'); } catch (e) {}
@@ -1555,8 +1560,10 @@
           return data;
         })
         .then(function (data) {
-          firstGenerationDone = true;
-          armExitOffer();
+          if (isFirstResultOfferEligible()) {
+            firstGenerationDone = true;
+            armExitOffer();
+          }
           paintResults(data.images || []);
           track('website_generation_success', { image_count: (data.images || []).length, balance: data.balance });
           setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
