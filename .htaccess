@@ -51,4 +51,6 @@
   RewriteRule ^report-abuse/?$ report-abuse.html [L]
   RewriteRule ^contact/?$ contact.html [L]
   RewriteRule ^age-safety/?$ age-safety.html [L]
+  RewriteRule ^trafficstars/?$ trafficstars/index.html [L]
+  RewriteRule ^goon/?$ trafficstars/index.html [L]
 </IfModule>
