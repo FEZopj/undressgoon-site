@@ -28,11 +28,11 @@
   <link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
-  <link rel="preload" href="assets/site.css?v=20260815-copy1" as="style" />
+  <link rel="preload" href="assets/site.css?v=20260815-notryon1" as="style" />
   <link rel="preload" href="assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="assets/site.css?v=20260815-copy1" />
+  <link rel="stylesheet" href="assets/site.css?v=20260815-notryon1" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -154,17 +154,8 @@
 
             <div class="mode-row" role="group" aria-label="Generation mode">
               <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Outfit edit</label>
-              <label><input type="radio" name="mode" value="tryon" /> <i data-lucide="images"></i> Outfit transfer</label>
               <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Scene</label>
             </div>
-
-            <label class="upload-zone upload-zone-secondary" for="garment-photo" id="garment-upload-zone" hidden>
-              <input id="garment-photo" name="garment" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" />
-              <img class="upload-preview" id="garment-preview" alt="" hidden />
-              <span class="upload-main"><i data-lucide="images"></i> Choose outfit photo</span>
-              <span class="upload-sub" id="garment-name">Upload the outfit reference</span>
-              <span class="upload-tip">The person stays from your first photo.</span>
-            </label>
 
             <div class="preset-picker">
               <div class="preset-top">
@@ -290,14 +281,14 @@
           <p>Harnesses, collars, tight latex catsuits, leather, oil, shiny skin — adult fantasy styling.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon"><i data-lucide="shirt"></i></div>
-          <h3>Garment Swap</h3>
-          <p>Send a photo of any clothing or lingerie and the AI puts it on the person.</p>
+          <div class="feature-icon"><i data-lucide="scan-face"></i></div>
+          <h3>Face & Body Lock</h3>
+          <p>Edits are routed to preserve the same face, build, framing, and photo style from the uploaded image.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon"><i data-lucide="scan-face"></i></div>
-          <h3>Pose & Face Lock</h3>
-          <p>Combine two photos: keep her face, copy the pose or outfit from another image.</p>
+          <div class="feature-icon"><i data-lucide="camera"></i></div>
+          <h3>Scene Generator</h3>
+          <p>Move the same person into mirror selfies, hotel rooms, bathrooms, neon bedrooms, and custom scenes.</p>
         </div>
       </div>
       <div class="tags">
@@ -479,6 +470,6 @@
     };
   </script>
   <script src="assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="assets/site.js?v=20260815-uploadfix1" defer></script>
+  <script src="assets/site.js?v=20260815-notryon1" defer></script>
 </body>
 </html>

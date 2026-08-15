@@ -1064,27 +1064,6 @@
     var form = root ? root.querySelector('#web-generate-form') : document.getElementById('web-generate-form');
     if (!form) return;
     var modeRow = form.querySelector('.mode-row');
-    if (modeRow && !form.querySelector('input[name="mode"][value="tryon"]')) {
-      var transfer = document.createElement('label');
-      transfer.innerHTML = '<input type="radio" name="mode" value="tryon" /> <i data-lucide="images"></i> ' + esc(t('tryonMode', 'Outfit transfer'));
-      var portrait = modeRow.querySelector('input[name="mode"][value="portrait"]');
-      if (portrait && portrait.parentElement) modeRow.insertBefore(transfer, portrait.parentElement);
-      else modeRow.appendChild(transfer);
-    }
-    if (modeRow && !document.getElementById('garment-upload-zone')) {
-      var garment = document.createElement('label');
-      garment.className = 'upload-zone upload-zone-secondary';
-      garment.id = 'garment-upload-zone';
-      garment.htmlFor = 'garment-photo';
-      garment.hidden = true;
-      garment.innerHTML =
-        '<input id="garment-photo" name="garment" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" />' +
-        '<img class="upload-preview" id="garment-preview" alt="" hidden />' +
-        '<span class="upload-main"><i data-lucide="images"></i> ' + esc(t('chooseOutfitPhoto', 'Choose outfit photo')) + '</span>' +
-        '<span class="upload-sub" id="garment-name">' + esc(t('garmentUploadHint', 'Upload the outfit reference')) + '</span>' +
-        '<span class="upload-tip">' + esc(t('garmentUploadTip', 'The person stays from your first photo.')) + '</span>';
-      modeRow.insertAdjacentElement('afterend', garment);
-    }
     if (!document.getElementById('advanced-options')) {
       var prompt = document.getElementById('web-prompt');
       var advanced = document.createElement('div');
@@ -1212,25 +1191,22 @@
     function syncModeCopy() {
       var mode = activeMode();
       var scene = mode === 'portrait';
-      var transfer = mode === 'tryon';
       modeInputs.forEach(function (input) {
         if (input.parentElement) input.parentElement.classList.toggle('active', input.checked);
       });
-      if (picker) picker.hidden = transfer;
+      if (picker) picker.hidden = false;
       if (label) label.textContent = t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT');
-      if (promptLabel) promptLabel.textContent = transfer ? t('tryonPromptLabel', 'Optional fit notes') : (scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt'));
-      prompt.required = !transfer;
+      if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
+      prompt.required = true;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
-        help.hidden = !scene || transfer;
+        help.hidden = !scene;
         help.textContent = t('sceneHelp', 'Scenes work best when you describe the room, lighting, pose, framing, and mood. Use one of these as a starting point.');
       }
-      prompt.placeholder = transfer ?
-        t('tryonPlaceholder', 'Optional: tighter fit, keep pose, natural folds, same body proportions') :
-        (scene ?
+      prompt.placeholder = scene ?
         t('scenePlaceholder', 'Example: fully nude in a luxury hotel suite, bare breasts, warm evening light, confident pose, clear face, full body in frame') :
-        t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie'));
+        t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
     }
 
     function renderTabs() {
@@ -1291,11 +1267,11 @@
       input.addEventListener('change', function () {
         active = activeMode() === 'portrait' ? sceneCats[0].key : outfitCats[0].key;
         selected = '';
-        if (activeMode() !== 'tryon') prompt.value = '';
+        prompt.value = '';
         syncModeCopy();
         renderTabs();
         renderGrid();
-        if (activeMode() !== 'tryon') prompt.focus();
+        prompt.focus();
       });
     });
 
@@ -1310,20 +1286,15 @@
     ensureGeneratorEnhancements(root);
 
     var file = document.getElementById('person-photo');
-    var garmentFile = document.getElementById('garment-photo');
     var fileName = document.getElementById('upload-name');
-    var garmentName = document.getElementById('garment-name');
     var uploadZone = document.querySelector('.upload-zone');
-    var garmentUploadZone = document.getElementById('garment-upload-zone');
     var uploadPreview = document.getElementById('upload-preview');
-    var garmentPreview = document.getElementById('garment-preview');
     var form = document.getElementById('web-generate-form');
     var logout = document.getElementById('web-logout');
     var submit = document.getElementById('web-submit');
     var variationSelect = document.getElementById('variation-count');
     var variationCost = document.getElementById('variation-cost');
     var previewUrl = '';
-    var garmentPreviewUrl = '';
     var pendingGeneration = null;
 
     if (!CFG.apiBase && location.protocol === 'file:') {
@@ -1386,24 +1357,8 @@
       if (fileName) fileName.textContent = t('uploadHint', 'JPG, PNG, or WebP up to 12 MB');
     }
 
-    function clearGarmentPreview() {
-      if (garmentPreviewUrl) URL.revokeObjectURL(garmentPreviewUrl);
-      garmentPreviewUrl = '';
-      if (garmentPreview) {
-        garmentPreview.hidden = true;
-        garmentPreview.removeAttribute('src');
-      }
-      if (garmentFile) garmentFile.value = '';
-      if (garmentUploadZone) garmentUploadZone.classList.remove('has-preview');
-      if (garmentName) garmentName.textContent = t('garmentUploadHint', 'Upload the outfit reference');
-    }
-
     function selectedPersonFile() {
       return file && file.files && file.files.length ? file.files[0] : null;
-    }
-
-    function selectedGarmentFile() {
-      return garmentFile && garmentFile.files && garmentFile.files.length ? garmentFile.files[0] : null;
     }
 
     function readFileAsDataUrl(chosen) {
@@ -1431,22 +1386,6 @@
       if (fileName) fileName.textContent = chosen.name;
     }
 
-    function updateGarmentPreview() {
-      var chosen = selectedGarmentFile();
-      if (!chosen) {
-        clearGarmentPreview();
-        return;
-      }
-      if (garmentPreviewUrl) URL.revokeObjectURL(garmentPreviewUrl);
-      garmentPreviewUrl = URL.createObjectURL(chosen);
-      if (garmentPreview) {
-        garmentPreview.src = garmentPreviewUrl;
-        garmentPreview.hidden = false;
-      }
-      if (garmentUploadZone) garmentUploadZone.classList.add('has-preview');
-      if (garmentName) garmentName.textContent = chosen.name;
-    }
-
     function validateImageFile(chosen, label) {
       if (!chosen) return label + ' is missing.';
       if (!/image\/(jpeg|png|webp)/i.test(chosen.type || '')) {
@@ -1458,20 +1397,12 @@
       return '';
     }
 
-    function syncTryonUpload() {
-      var transfer = selectedModeValue() === 'tryon';
-      if (garmentUploadZone) garmentUploadZone.hidden = !transfer;
-      if (garmentFile) garmentFile.required = transfer;
-      if (!transfer) clearGarmentPreview();
-    }
-
     function buildGenerationPayload() {
       var consent = document.getElementById('web-consent');
       var prompt = document.getElementById('web-prompt');
       var mode = document.querySelector('input[name="mode"]:checked');
       var chosen = selectedPersonFile();
       var modeValue = mode ? mode.value : 'prompt';
-      var garmentChosen = selectedGarmentFile();
       var breastSize = document.getElementById('breast-size');
       var pubicHair = document.getElementById('pubic-hair');
       var variations = selectedVariations();
@@ -1487,20 +1418,12 @@
         if (file) file.focus();
         return null;
       }
-      if (modeValue === 'tryon') {
-        var garmentError = validateImageFile(garmentChosen, 'Outfit reference');
-        if (garmentError) {
-          setStatus(garmentError, 'error');
-          if (garmentFile) garmentFile.focus();
-          return null;
-        }
-      }
       if (!consent || !consent.checked) {
         setStatus(t('termsRequired', 'Confirm you are 18+ and have rights to this photo.'), 'error');
         if (consent) consent.focus();
         return null;
       }
-      if (prompt && !prompt.value.trim() && modeValue !== 'tryon') {
+      if (prompt && !prompt.value.trim()) {
         setStatus(t('promptRequired', 'Pick a preset or write a prompt first.'), 'error');
         prompt.focus();
         return null;
@@ -1515,10 +1438,6 @@
       payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
       payload.append('person_name', chosen.name || 'upload.jpg');
       payload.append('person', chosen, chosen.name || 'upload.jpg');
-      if (modeValue === 'tryon' && garmentChosen) {
-        payload.append('garment_name', garmentChosen.name || 'outfit.jpg');
-        payload.append('garment', garmentChosen, garmentChosen.name || 'outfit.jpg');
-      }
       return Promise.resolve(payload);
     }
 
@@ -1531,19 +1450,6 @@
       });
     }
 
-    if (garmentFile) {
-      garmentFile.addEventListener('change', function () {
-        updateGarmentPreview();
-        if (selectedGarmentFile()) {
-          track('website_outfit_reference_selected', { mode: selectedModeValue() });
-        }
-      });
-    }
-
-    document.querySelectorAll('input[name="mode"]').forEach(function (input) {
-      input.addEventListener('change', syncTryonUpload);
-    });
-    syncTryonUpload();
     if (variationSelect) variationSelect.addEventListener('change', syncVariationControl);
     document.addEventListener('ug:session-updated', syncVariationControl);
     syncVariationControl();
@@ -1646,10 +1552,6 @@
       payload.append('pubic_hair', snap.pubicHair || 'natural');
       payload.append('person_name', 'upload.jpg');
       payload.append('person_b64', snap.dataUrl || '');
-      if (snap.garmentDataUrl) {
-        payload.append('garment_name', 'outfit.jpg');
-        payload.append('garment_b64', snap.garmentDataUrl);
-      }
       return payload;
     }
 
@@ -1661,7 +1563,6 @@
       var pubicHair = document.getElementById('pubic-hair');
       var variations = document.getElementById('variation-count');
       var personSnapFile = selectedPersonFile();
-      var garmentSnapFile = selectedGarmentFile();
       payloadPromise.then(function () {
         var snap = {
           prompt: prompt ? prompt.value.trim() : '',
@@ -1669,8 +1570,7 @@
           variations: variations ? Number(variations.value || 1) : 1,
           breastSize: breastSize ? breastSize.value : 'natural',
           pubicHair: pubicHair ? pubicHair.value : 'natural',
-          dataUrl: '',
-          garmentDataUrl: ''
+          dataUrl: ''
         };
         var reads = [];
         if (personSnapFile) {
@@ -1678,22 +1578,12 @@
             snap.dataUrl = dataUrl;
           }));
         }
-        if (snap.mode === 'tryon' && garmentSnapFile) {
-          reads.push(readFileAsDataUrl(garmentSnapFile).then(function (dataUrl) {
-            snap.garmentDataUrl = dataUrl;
-          }));
-        }
         Promise.all(reads).then(function () {
-          // Best-effort persist so a Google redirect survives; drop the second
-          // image first if storage quota is tight.
+          // Best-effort persist so a Google redirect survives.
           try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
           catch (e) {
-            snap.garmentDataUrl = '';
-            try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
-            catch (_) {
-              snap.dataUrl = '';
-              try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); } catch (__) {}
-            }
+            snap.dataUrl = '';
+            try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); } catch (_) {}
           }
         }).catch(function () {});
       }).catch(function () {});
