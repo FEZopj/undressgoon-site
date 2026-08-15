@@ -1515,19 +1515,11 @@
       payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
       payload.append('person_name', chosen.name || 'upload.jpg');
       payload.append('person', chosen, chosen.name || 'upload.jpg');
-      var reads = [readFileAsDataUrl(chosen).then(function (dataUrl) {
-        payload.append('person_b64', dataUrl);
-      })];
       if (modeValue === 'tryon' && garmentChosen) {
         payload.append('garment_name', garmentChosen.name || 'outfit.jpg');
         payload.append('garment', garmentChosen, garmentChosen.name || 'outfit.jpg');
-        reads.push(readFileAsDataUrl(garmentChosen).then(function (dataUrl) {
-          payload.append('garment_b64', dataUrl);
-        }));
       }
-      return Promise.all(reads).then(function () {
-        return payload;
-      });
+      return Promise.resolve(payload);
     }
 
     if (file) {
@@ -1668,7 +1660,9 @@
       var breastSize = document.getElementById('breast-size');
       var pubicHair = document.getElementById('pubic-hair');
       var variations = document.getElementById('variation-count');
-      payloadPromise.then(function (p) {
+      var personSnapFile = selectedPersonFile();
+      var garmentSnapFile = selectedGarmentFile();
+      payloadPromise.then(function () {
         var snap = {
           prompt: prompt ? prompt.value.trim() : '',
           mode: mode ? mode.value : 'prompt',
@@ -1678,21 +1672,30 @@
           dataUrl: '',
           garmentDataUrl: ''
         };
-        try {
-          snap.dataUrl = p.get('person_b64') || '';
-          snap.garmentDataUrl = p.get('garment_b64') || '';
-        } catch (e) {}
-        // Best-effort persist so a Google redirect survives; drop the image if the
-        // data URL blows the storage quota (prompt/preset still restored).
-        try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
-        catch (e) {
-          snap.garmentDataUrl = '';
-          try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
-          catch (_) {
-            snap.dataUrl = '';
-            try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); } catch (__) {}
-          }
+        var reads = [];
+        if (personSnapFile) {
+          reads.push(readFileAsDataUrl(personSnapFile).then(function (dataUrl) {
+            snap.dataUrl = dataUrl;
+          }));
         }
+        if (snap.mode === 'tryon' && garmentSnapFile) {
+          reads.push(readFileAsDataUrl(garmentSnapFile).then(function (dataUrl) {
+            snap.garmentDataUrl = dataUrl;
+          }));
+        }
+        Promise.all(reads).then(function () {
+          // Best-effort persist so a Google redirect survives; drop the second
+          // image first if storage quota is tight.
+          try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
+          catch (e) {
+            snap.garmentDataUrl = '';
+            try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); }
+            catch (_) {
+              snap.dataUrl = '';
+              try { sessionStorage.setItem('ug_pending', JSON.stringify(snap)); } catch (__) {}
+            }
+          }
+        }).catch(function () {});
       }).catch(function () {});
     }
 
