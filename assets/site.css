@@ -1344,11 +1344,29 @@ html[data-theme="light"] .variation-row {
   font: inherit;
   font-weight: 850;
   outline: none;
+  color-scheme: dark;
+}
+.variation-row select option {
+  color: #f2f2f7;
+  background: #111114;
+}
+.variation-row select option:disabled {
+  color: #6f7280;
+  background: #111114;
 }
 html[data-theme="light"] .variation-row select {
   color: #11131a;
   background: #ffffff;
   border-color: rgba(17, 19, 26, 0.12);
+  color-scheme: light;
+}
+html[data-theme="light"] .variation-row select option {
+  color: #11131a;
+  background: #ffffff;
+}
+html[data-theme="light"] .variation-row select option:disabled {
+  color: #a6adbd;
+  background: #ffffff;
 }
 .variation-row small {
   color: var(--green);

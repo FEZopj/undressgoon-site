@@ -1359,7 +1359,9 @@
       if (!variationSelect) return;
       var max = maxVariations();
       Array.prototype.forEach.call(variationSelect.options, function (option) {
-        option.disabled = Number(option.value) > max;
+        var unavailable = Number(option.value) > max;
+        option.disabled = unavailable;
+        option.hidden = unavailable;
       });
       if (Number(variationSelect.value || 1) > max) variationSelect.value = String(max);
       var count = selectedVariations();
