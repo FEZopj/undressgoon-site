@@ -1128,6 +1128,7 @@
     var sceneCats = [
       { key: 'mirror', label: t('tabMirror', 'Mirror') },
       { key: 'bedroom', label: t('tabBedroom', 'Bedroom') },
+      { key: 'angles', label: t('tabAngles', 'Angles') },
       { key: 'bdsm', label: t('tabBdsm', 'BDSM') },
       { key: 'cinematic', label: t('tabCinematic', 'Cinematic') }
     ];
@@ -1153,13 +1154,13 @@
         key: 'scene_mirror',
         category: 'mirror',
         label: 'Nude Mirror Selfie',
-        prompt: 'fully naked bedroom mirror selfie, bare breasts with visible nipples and areolas, no clothing, phone held to the side, hips angled toward mirror, warm bedside lighting, clear recognizable face, full body visible, realistic casual phone photo, detailed messy bedroom background'
+        prompt: 'fully naked bedroom mirror selfie shot from chest-height phone angle, bare breasts with visible nipples and areolas, no clothing, phone held to the side, hips angled toward mirror, warm bedside lighting, clear recognizable face, full body visible, realistic casual phone photo, detailed messy bedroom background'
       },
       {
         key: 'scene_hotel',
         category: 'bedroom',
         label: 'Hotel Suite',
-        prompt: 'fully nude in a luxury hotel suite, bare breasts with visible nipples and areolas, standing beside an unmade bed, soft evening city-window light, one hand on hip, confident seductive pose, clear face, realistic skin texture, full body in frame, crisp hotel details'
+        prompt: 'fully nude in a luxury hotel suite, three-quarter camera angle from slightly below eye level, bare breasts with visible nipples and areolas, standing beside an unmade bed, soft evening city-window light, one hand on hip, confident seductive pose, clear face, realistic skin texture, full body in frame, crisp hotel details'
       },
       {
         key: 'scene_bathroom',
@@ -1171,55 +1172,91 @@
         key: 'scene_sweaty_bed',
         category: 'bedroom',
         label: 'Sweaty Bed',
-        prompt: 'fully nude lying on a messy bed, bare breasts with visible nipples and areolas, body drenched in sweat, wet hair on pillow, tangled sheets, flushed skin, seductive exhausted expression, clear face turned toward camera, full body visible, warm low bedroom light, realistic skin texture'
+        prompt: 'fully nude lying on a messy bed, overhead camera angle from above the bed, bare breasts with visible nipples and areolas, body drenched in sweat, wet hair on pillow, tangled sheets, flushed skin, seductive exhausted expression, clear face turned toward camera, full body visible, warm low bedroom light, realistic skin texture'
       },
       {
         key: 'scene_messy_sheets',
         category: 'bedroom',
         label: 'Messy Sheets',
-        prompt: 'fully naked on an unmade bed covered in wet glossy fluid stains and tangled sheets, bare breasts with visible nipples and areolas, sweaty skin, legs relaxed, face clearly visible looking at camera, intimate afterglow mood, realistic bedroom photo, full body in frame'
+        prompt: 'fully naked on an unmade bed covered in wet glossy fluid stains and tangled sheets, camera at bed-edge side angle, bare breasts with visible nipples and areolas, sweaty skin, legs relaxed, face clearly visible looking at camera, intimate afterglow mood, realistic bedroom photo, full body in frame'
       },
       {
         key: 'scene_all_fours',
         category: 'bedroom',
         label: 'All Fours Bed',
-        prompt: 'fully nude on all fours on a bed, bare breasts visible from the side, ass raised, face turned back toward camera and clearly recognizable, messy sheets, warm bedside lamp, realistic phone-photo framing, full body visible, natural skin texture'
+        prompt: 'fully nude on all fours on a bed, rear three-quarter camera angle from behind and slightly above, bare breasts visible from the side, ass raised, face turned back toward camera and clearly recognizable, messy sheets, warm bedside lamp, realistic phone-photo framing, full body visible, natural skin texture'
+      },
+      {
+        key: 'scene_overhead_bed',
+        category: 'angles',
+        label: 'Overhead Bed',
+        prompt: 'fully nude lying on a bed shot from directly overhead, top-down camera angle, bare breasts with visible nipples and areolas, arms above head, messy sheets around the body, face clearly visible looking up at camera, full body visible, realistic bedroom lighting and skin texture'
+      },
+      {
+        key: 'scene_low_angle',
+        category: 'angles',
+        label: 'Low Angle',
+        prompt: 'fully nude standing near a bed shot from a low camera angle looking upward, bare breasts with visible nipples and areolas, confident dominant pose, clear face looking down toward camera, full body visible, dramatic warm room light, realistic phone photo'
+      },
+      {
+        key: 'scene_side_profile',
+        category: 'angles',
+        label: 'Side Profile',
+        prompt: 'fully naked side-profile pose beside a mirror, camera at waist height from the side, bare breasts with visible nipples and areolas, arched back, face turned slightly toward camera so identity is recognizable, full body visible, realistic soft bedroom light'
+      },
+      {
+        key: 'scene_from_behind',
+        category: 'angles',
+        label: 'From Behind',
+        prompt: 'fully nude from-behind mirror shot, rear three-quarter angle with face visible in the mirror reflection, bare breasts visible in reflection with nipples and areolas, ass and back in foreground, bedroom mirror selfie, realistic phone-photo lighting, full body visible'
+      },
+      {
+        key: 'scene_pov_bed',
+        category: 'angles',
+        label: 'POV Bed',
+        prompt: 'fully nude on a bed from a POV-style camera angle at the foot of the bed, bare breasts with visible nipples and areolas, legs closer to camera, face clearly visible looking into camera, messy sheets, sweaty skin, warm bedroom lighting, full body composition'
+      },
+      {
+        key: 'scene_floor_angle',
+        category: 'angles',
+        label: 'Floor Angle',
+        prompt: 'fully nude kneeling on a bedroom floor shot from a floor-level camera angle, bare breasts with visible nipples and areolas, face looking into camera, bed and mirror in background, dramatic perspective, full body visible, realistic shadows and skin texture'
       },
       {
         key: 'scene_dungeon_rope',
         category: 'bdsm',
         label: 'Dungeon Bound',
-        prompt: 'fully nude in a consensual BDSM dungeon rope scene, wrists tied overhead with rope, bare breasts with visible nipples and areolas, black leather collar, candlelight and red shadows, stone wall background, clear recognizable face, full body visible, dramatic realistic photo'
+        prompt: 'fully nude in a consensual BDSM dungeon rope scene, low three-quarter camera angle, wrists tied overhead with rope, bare breasts with visible nipples and areolas, black leather collar, candlelight and red shadows, stone wall background, clear recognizable face, full body visible, dramatic realistic photo'
       },
       {
         key: 'scene_spread_restraint',
         category: 'bdsm',
         label: 'Restrained Bed',
-        prompt: 'fully naked restrained on a bed with soft cuffs, arms above head, bare breasts with visible nipples and areolas, messy sheets, sweaty skin, clear face looking at camera, consensual BDSM bedroom scene, warm light, full body in frame, realistic photo detail'
+        prompt: 'fully naked restrained on a bed with soft cuffs, overhead diagonal camera angle, arms above head, bare breasts with visible nipples and areolas, messy sheets, sweaty skin, clear face looking at camera, consensual BDSM bedroom scene, warm light, full body in frame, realistic photo detail'
       },
       {
         key: 'scene_chain_collar',
         category: 'bdsm',
         label: 'Collar & Chains',
-        prompt: 'fully nude wearing only a black collar and thin chains, bare breasts with visible nipples and areolas, kneeling on a dark rug, moody red dungeon lighting, clear face, full body visible, realistic shadows, intense consensual fetish styling'
+        prompt: 'fully nude wearing only a black collar and thin chains, camera at floor-level looking slightly upward, bare breasts with visible nipples and areolas, kneeling on a dark rug, moody red dungeon lighting, clear face, full body visible, realistic shadows, intense consensual fetish styling'
       },
       {
         key: 'scene_neon',
         category: 'cinematic',
         label: 'Neon Nude',
-        prompt: 'cinematic fully nude in a neon-lit bedroom, bare breasts with visible nipples and areolas, pink and blue light, sweaty glossy skin, standing pose near bed, clear recognizable face, full body visible, high detail, realistic photo not illustration'
+        prompt: 'cinematic fully nude in a neon-lit bedroom, Dutch-angle camera tilt, bare breasts with visible nipples and areolas, pink and blue light, sweaty glossy skin, standing pose near bed, clear recognizable face, full body visible, high detail, realistic photo not illustration'
       },
       {
         key: 'scene_locker',
         category: 'cinematic',
         label: 'Locker Nude',
-        prompt: 'fully naked in a private locker room, bare breasts with visible nipples and areolas, mirror wall, damp skin, athletic confident pose, realistic indoor fluorescent lighting, clear face, full body visible, detailed environment'
+        prompt: 'fully naked in a private locker room, wide-angle mirror-wall camera view, bare breasts with visible nipples and areolas, damp skin, athletic confident pose, realistic indoor fluorescent lighting, clear face, full body visible, detailed environment'
       },
       {
         key: 'scene_sofa',
         category: 'cinematic',
         label: 'Sofa Nude',
-        prompt: 'fully nude sitting on a modern sofa, bare breasts with visible nipples and areolas, legs relaxed, sweaty skin, warm studio lighting, clear face, full body composition, realistic photo detail, messy pillows and intimate room mood'
+        prompt: 'fully nude sitting on a modern sofa, side-angle camera view from armrest height, bare breasts with visible nipples and areolas, legs relaxed, sweaty skin, warm studio lighting, clear face, full body composition, realistic photo detail, messy pillows and intimate room mood'
       }
     ];
     presets = presets.map(function (preset) {
