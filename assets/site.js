@@ -696,10 +696,7 @@
       headerSignin.id = 'header-signin';
       headerSignin.className = 'header-signin';
       headerSignin.textContent = t('signIn', 'Sign in');
-      headerSignin.addEventListener('click', function () {
-        var box = document.getElementById('login-box');
-        if (box) { box.hidden = false; try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }
-      });
+      headerSignin.addEventListener('click', goToGoogleLogin);  // Google-only
       var siteAcc = document.getElementById('site-account');
       if (siteAcc) headerRight.insertBefore(headerSignin, siteAcc);
       else headerRight.appendChild(headerSignin);
@@ -1126,25 +1123,18 @@
 
   var MAIL_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg>';
 
-  function signupChoicesHtml(gId, eId) {
+  function goToGoogleLogin() {
+    var link = document.getElementById('google-login');
+    if (link && link.getAttribute('href')) window.location.href = link.getAttribute('href');
+  }
+  function signupChoicesHtml(gId) {
     return '<div class="locked-choices">' +
       '<button type="button" class="btn btn-google locked-cta" id="' + gId + '">' + GOOGLE_SVG + ' ' + esc(t('continueGoogle', 'Continue with Google')) + '</button>' +
-      '<button type="button" class="btn btn-email locked-cta" id="' + eId + '">' + MAIL_SVG + ' ' + esc(t('continueEmail', 'Continue with Email')) + '</button>' +
     '</div>';
   }
-  function wireSignupChoices(gId, eId) {
+  function wireSignupChoices(gId) {
     var g = document.getElementById(gId);
-    if (g) g.addEventListener('click', function () {
-      var link = document.getElementById('google-login');
-      if (link && link.getAttribute('href')) window.location.href = link.getAttribute('href');
-    });
-    var e = document.getElementById(eId);
-    if (e) e.addEventListener('click', function () {
-      var box = document.getElementById('login-box');
-      if (box) { box.hidden = false; try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (x) {} }
-      var start = document.getElementById('email-login-start');
-      if (start) start.click();
-    });
+    if (g) g.addEventListener('click', goToGoogleLogin);
   }
 
   // A message card rendered in the results window (errors, gate prompts, etc.).
@@ -1159,12 +1149,12 @@
     if (opts.icon) html += '<div class="rn-icon">' + opts.icon + '</div>';
     if (opts.title) html += '<p class="rn-title">' + esc(opts.title) + '</p>';
     if (opts.message) html += '<p class="rn-sub">' + esc(opts.message) + '</p>';
-    if (opts.choices) html += signupChoicesHtml('notice-google', 'notice-email');
+    if (opts.choices) html += signupChoicesHtml('notice-google');
     if (opts.actionLabel) html += '<button type="button" class="btn btn-accent rn-cta" id="rn-action">' + esc(opts.actionLabel) + '</button>';
     card.innerHTML = html;
     target.appendChild(card);
     if (empty) empty.hidden = true;
-    if (opts.choices) wireSignupChoices('notice-google', 'notice-email');
+    if (opts.choices) wireSignupChoices('notice-google');
     if (opts.actionLabel && opts.onAction) {
       var a = document.getElementById('rn-action');
       if (a) a.addEventListener('click', opts.onAction);
@@ -1192,11 +1182,11 @@
       '<div class="locked-lock">🔒</div>' +
       '<p class="locked-title">' + esc(t('lockedTitle', 'Your result is ready')) + '</p>' +
       '<p class="locked-sub">' + esc(t('lockedSub', 'Sign up now to reveal — free, no card needed.')) + '</p>' +
-      signupChoicesHtml('reveal-google', 'reveal-email');
+      signupChoicesHtml('reveal-google');
     wrap.appendChild(overlay);
     target.appendChild(wrap);
     if (empty) empty.hidden = true;
-    wireSignupChoices('reveal-google', 'reveal-email');
+    wireSignupChoices('reveal-google');
     try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
   }
 
