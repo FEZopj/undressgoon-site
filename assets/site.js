@@ -673,10 +673,12 @@
     var toast = document.getElementById('reengage-toast');
 
     if (account) account.textContent = authed ? ('@' + (user.username || user.id)) : t('notLoggedIn', 'Not logged in');
-    if (balance) balance.textContent = authed ? formatCredits(user.credits) : t('loginToSeeCredits', 'Login to see credits');
-    if (login) login.hidden = authed;
+    if (balance) balance.textContent = authed ? formatCredits(user.credits) : t('anonFreeCredit', '1 free generation ready');
+    // Reveal-gate: no upfront login wall for anon — they just generate and get a
+    // blurred preview. The login box is shown only when they choose to reveal.
+    if (login) login.hidden = true;
     if (logout) logout.hidden = !authed;
-    if (form) form.classList.toggle('is-locked', !authed);
+    if (form) form.classList.remove('is-locked');  // reveal-gate: anon can generate too
     // Anonymous users can fill the form and click Generate; the submit handler
     // gates on auth and preserves their work. Only disable while a job is running.
     if (submit && submit.dataset.busy !== '1') submit.disabled = false;
@@ -1096,6 +1098,70 @@
       target.appendChild(a);
     });
     if (empty) empty.hidden = !!(images && images.length);
+  }
+
+  var GOOGLE_SVG = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+
+  // Reveal-gate: paint the blurred anon teaser with a "sign in to reveal" overlay.
+  function paintLockedResult(data) {
+    var target = document.getElementById('web-results');
+    var empty = document.getElementById('web-result-empty');
+    if (!target) return;
+    target.innerHTML = '';
+    var wrap = document.createElement('div');
+    wrap.className = 'locked-result';
+    (data.preview || []).forEach(function (img) {
+      var el = document.createElement('img');
+      el.src = 'data:' + (img.mime || 'image/jpeg') + ';base64,' + img.data;
+      el.alt = t('lockedResult', 'Blurred preview');
+      wrap.appendChild(el);
+    });
+    var overlay = document.createElement('div');
+    overlay.className = 'locked-overlay';
+    overlay.innerHTML =
+      '<div class="locked-lock">🔒</div>' +
+      '<p class="locked-title">' + esc(t('lockedTitle', 'Your result is ready')) + '</p>' +
+      '<p class="locked-sub">' + esc(t('lockedSub', 'Sign in with Google to reveal the full, uncensored image. Free — no card needed.')) + '</p>' +
+      '<button type="button" class="btn btn-google locked-cta" id="reveal-google">' + GOOGLE_SVG + ' ' + esc(t('revealWithGoogle', 'Reveal with Google')) + '</button>';
+    wrap.appendChild(overlay);
+    target.appendChild(wrap);
+    if (empty) empty.hidden = true;
+    var btn = document.getElementById('reveal-google');
+    if (btn) btn.addEventListener('click', function () {
+      var g = document.getElementById('google-login');
+      if (g && g.getAttribute('href')) window.location.href = g.getAttribute('href');
+    });
+    try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+  }
+
+  function stashReveal(data) {
+    try {
+      sessionStorage.setItem('ug_reveal', JSON.stringify({
+        jobId: data.jobId, revealToken: data.revealToken, fp: deviceFingerprint()
+      }));
+    } catch (e) {}
+  }
+
+  function doReveal(reveal) {
+    setStatus(t('revealing', 'Revealing your image...'), 'working');
+    return fetch(apiUrl('/web/generate/reveal'), {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobId: reveal.jobId, revealToken: reveal.revealToken, ug_fp: reveal.fp || deviceFingerprint() })
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (!r.ok || !d.ok) {
+          setStatus(d.message || t('revealFailed', 'Could not reveal that preview — generate again.'), 'error');
+          return;
+        }
+        paintResults(d.images || []);
+        track('website_reveal_success', {});
+        setStatus(t('revealed', 'Revealed! Balance: {balance}.').replace('{balance}', formatCredits(d.balance)), 'success');
+        return refreshWebSession();
+      });
+    }).catch(function () {
+      setStatus(t('revealFailed', 'Could not reveal that preview — generate again.'), 'error');
+    });
   }
 
   function ensureGeneratorEnhancements(root) {
@@ -1597,6 +1663,7 @@
       payload.append('variations', String(variations));
       payload.append('breast_size', breastSize ? breastSize.value : 'natural');
       payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
+      payload.append('ug_fp', deviceFingerprint());  // reveal-gate: anon rate limit
       if (chosen) {
         payload.append('person_name', chosen.name || 'upload.jpg');
         payload.append('person', chosen, chosen.name || 'upload.jpg');
@@ -1690,6 +1757,15 @@
           return data;
         })
         .then(function (data) {
+          if (data.locked) {
+            // Anonymous reveal-gate: show the blurred teaser + reveal CTA.
+            firstGenerationDone = true;
+            paintLockedResult(data);
+            stashReveal(data);
+            track('website_anon_preview_ready', {});
+            setStatus(t('previewReady', 'Preview ready — sign in with Google to reveal the full image.'), 'success');
+            return refreshWebSession();
+          }
           if (isFirstResultOfferEligible()) {
             firstGenerationDone = true;
             armExitOffer();
@@ -1706,10 +1782,13 @@
             track('website_generation_out_of_credits', {});
             showCheckout(true, 'empty');
             setStatus(t('outOfCredits', 'You are out of credits. Pick a pack to keep generating.'), 'error');
-          } else if (payload.code === 'not_authenticated') {
-            track('website_generation_not_authenticated', {});
-            setStatus(t('loginFirst', 'Sign in to generate.'), 'error');
-            updateWebAccount(null);
+          } else if (payload.code === 'not_authenticated' || payload.code === 'signin_required' || payload.code === 'at_capacity') {
+            // Anon over their free preview (or capacity) — save their work and
+            // send them to Google; after signin their generation runs for real.
+            track('website_generation_signin_required', { code: payload.code });
+            stashPending(payloadPromise);
+            revealLoginPrompt();  // un-hides the login box for the sign-in
+            setStatus(payload.message || t('signInToGenerate', 'Sign in with Google to keep generating — your photo and prompt are saved.'), 'working');
           } else {
             track('website_generation_error', { code: payload.code || 'unknown' });
             setStatus(err.message || t('genericError', 'Something went wrong.'), 'error');
@@ -1772,6 +1851,17 @@
 
     function resumePendingGeneration() {
       if (!(currentSession && currentSession.user)) return;
+      // Reveal-gate: a stashed anon preview reveals (never regenerates).
+      try {
+        var revealRaw = sessionStorage.getItem('ug_reveal');
+        if (revealRaw) {
+          sessionStorage.removeItem('ug_reveal');
+          sessionStorage.removeItem('ug_pending');  // don't also regenerate
+          pendingGeneration = null;
+          var reveal = JSON.parse(revealRaw);
+          if (reveal && reveal.jobId && reveal.revealToken) { doReveal(reveal); return; }
+        }
+      } catch (e) {}
       if (pendingGeneration) {
         var p = pendingGeneration; pendingGeneration = null;
         try { sessionStorage.removeItem('ug_pending'); } catch (e) {}
@@ -1881,7 +1971,8 @@
       if (!payloadPromise) return;
       var authed = !!(currentSession && currentSession.user);
       track('website_generation_submit', { mode: selectedModeValue(), logged_in: authed });
-      if (!authed) { stashPending(payloadPromise); revealLoginPrompt(); return; }
+      // Reveal-gate: anonymous visitors generate too — they get a blurred
+      // preview and sign in with Google to reveal it. The backend gates abuse.
       runGeneration(payloadPromise);
     });
   }
