@@ -2406,9 +2406,13 @@ html[data-theme="light"] .toast {
 .login-choices .btn span, .login-choices .btn { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .btn.btn-google { background:#fff; color:#1f1f24; border:1px solid rgba(0,0,0,0.14); box-shadow:0 2px 8px rgba(0,0,0,0.12); }
 .btn.btn-google:hover { background:#f4f5f7; }
-.btn.btn-email { background:linear-gradient(135deg,#ff2f63,#7c3aed); color:#fff; border:0; box-shadow:0 6px 18px rgba(124,58,237,0.32); }
-.btn.btn-email:hover { filter:brightness(1.06); }
-.btn.btn-email .mlogo { color:#fff; }
+/* Google is the primary path (no email deliverability dependency); email is
+   demoted to a quiet secondary so users lead with Google. */
+.btn.btn-email { background:transparent; color:var(--text); border:1px solid var(--border); box-shadow:none; font-weight:600; }
+.btn.btn-email:hover { background:rgba(127,127,127,0.10); }
+.btn.btn-email .mlogo { color:var(--muted); }
+.email-hint { margin:2px 0 0; font-size:12.5px; line-height:1.5; color:var(--muted); }
+.email-hint strong { color:var(--text); }
 @media (max-width:560px){ .login-choices { flex-direction:column; } .login-choices .btn { flex:0 0 auto; height:48px; } }
 
 .email-auth { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
