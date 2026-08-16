@@ -686,6 +686,25 @@
     // gates on auth and preserves their work. Only disable while a job is running.
     if (submit && submit.dataset.busy !== '1') submit.disabled = false;
     if (siteAccount) siteAccount.hidden = !authed;
+    // Persistent header "Sign in" for returning users (anon has no account menu).
+    // Opens the login box (Google + Email) without walling the generator.
+    var headerRight = document.querySelector('.header-right');
+    var headerSignin = document.getElementById('header-signin');
+    if (!authed && headerRight && !headerSignin) {
+      headerSignin = document.createElement('button');
+      headerSignin.type = 'button';
+      headerSignin.id = 'header-signin';
+      headerSignin.className = 'header-signin';
+      headerSignin.textContent = t('signIn', 'Sign in');
+      headerSignin.addEventListener('click', function () {
+        var box = document.getElementById('login-box');
+        if (box) { box.hidden = false; try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }
+      });
+      var siteAcc = document.getElementById('site-account');
+      if (siteAcc) headerRight.insertBefore(headerSignin, siteAcc);
+      else headerRight.appendChild(headerSignin);
+    }
+    if (headerSignin) headerSignin.hidden = authed;
     if (accountName) accountName.textContent = authed ? userLabel(user) : t('myAccount', 'My account');
     if (accountCredits) accountCredits.textContent = authed ? formatCredits(user.credits) : '';
     if (accountAvatar) accountAvatar.textContent = authed ? userInitial(user) : 'U';
