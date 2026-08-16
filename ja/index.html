@@ -59,11 +59,11 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260816-i18n" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260816-parity" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260816-i18n" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260816-parity" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -193,6 +193,40 @@
             <label class="field-label" for="web-prompt">プロンプト</label>
             <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="例：極小ブラックマイクロビキニ、艶肌、寝室の鏡セルフィー"></textarea>
 
+            <div class="advanced-options" id="advanced-options">
+              <label>
+                <span>胸のサイズ</span>
+                <select id="breast-size" name="breast_size">
+                  <option value="natural" selected>自然なまま</option>
+                  <option value="smaller">少し小さめ</option>
+                  <option value="fuller">ふっくら</option>
+                  <option value="larger">大きくグラマー</option>
+                </select>
+              </label>
+              <label>
+                <span>アンダーヘア</span>
+                <select id="pubic-hair" name="pubic_hair">
+                  <option value="natural" selected>自然なまま</option>
+                  <option value="shaved">つるつる</option>
+                  <option value="trimmed">整えた</option>
+                  <option value="full">フサフサ</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="variation-row" id="variation-row">
+              <label for="variation-count">
+                <span>画像</span>
+                <select id="variation-count" name="variations">
+                  <option value="1" selected>1枚</option>
+                  <option value="2">2枚</option>
+                  <option value="3">3枚</option>
+                  <option value="4">4枚</option>
+                </select>
+              </label>
+              <small id="variation-cost">1クレジット</small>
+            </div>
+
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
               <span>私は18歳以上であり、この画像を使用するために必要な権利と同意を有していることを確認します。
@@ -304,6 +338,7 @@
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">ここから</span>
+          <i class="plan-icon" data-lucide="ticket"></i>
           <h3>無料トライアル</h3>
           <div class="price">$0 <span>/ お試し</span></div>
           <ul>
@@ -315,6 +350,7 @@
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>無料クレジットを受け取る →</a>
         </div>
         <div class="value-card">
+          <i class="plan-icon" data-lucide="coins"></i>
           <h3>追加クレジット</h3>
           <div class="price">サイト内 <span>/ 準備できたら</span></div>
           <ul>
@@ -330,6 +366,14 @@
         <div class="proof-chip"><strong>支払う前にお試し。</strong> まず無料クレジットで品質を確かめられます。</div>
         <div class="proof-chip"><strong>カスタムプロンプト。</strong> ルールの範囲内で、欲しいアダルト加工を記述できます。</div>
         <div class="proof-chip"><strong>プライベートなアカウント運用。</strong> アップロードして生成し、セッションからダウンロード。</div>
+      </div>
+      <div class="referral-band">
+        <i data-lucide="gift"></i>
+        <div>
+          <strong>友達を招待して、クレジットをもっと獲得。</strong>
+          <span>有効な紹介1件ごとに、支払いなしで生成回数が増えます。</span>
+        </div>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>招待リンクを取得</a>
       </div>
 </div>
   </section>
@@ -497,6 +541,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260816-i18n" defer></script>
+  <script src="../assets/site.js?v=20260816-parity" defer></script>
 </body>
 </html>

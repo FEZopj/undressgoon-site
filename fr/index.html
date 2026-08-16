@@ -59,11 +59,11 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260816-i18n" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260816-parity" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260816-i18n" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260816-parity" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -193,6 +193,40 @@
             <label class="field-label" for="web-prompt">Prompt</label>
             <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Exemple : micro bikini noir minuscule, peau brillante, selfie miroir dans une chambre"></textarea>
 
+            <div class="advanced-options" id="advanced-options">
+              <label>
+                <span>Taille de poitrine</span>
+                <select id="breast-size" name="breast_size">
+                  <option value="natural" selected>Garder naturel</option>
+                  <option value="smaller">Légèrement plus petite</option>
+                  <option value="fuller">Plus pleine</option>
+                  <option value="larger">Plus grande et pulpeuse</option>
+                </select>
+              </label>
+              <label>
+                <span>Poils pubiens</span>
+                <select id="pubic-hair" name="pubic_hair">
+                  <option value="natural" selected>Garder naturel</option>
+                  <option value="shaved">Rasé</option>
+                  <option value="trimmed">Taillé</option>
+                  <option value="full">Touffe complète</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="variation-row" id="variation-row">
+              <label for="variation-count">
+                <span>Images</span>
+                <select id="variation-count" name="variations">
+                  <option value="1" selected>1 image</option>
+                  <option value="2">2 images</option>
+                  <option value="3">3 images</option>
+                  <option value="4">4 images</option>
+                </select>
+              </label>
+              <small id="variation-cost">1 crédit</small>
+            </div>
+
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
               <span>Je confirme avoir 18 ans ou plus et disposer des droits et du consentement nécessaires pour utiliser cette image.
@@ -304,6 +338,7 @@
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">Commence ici</span>
+          <i class="plan-icon" data-lucide="ticket"></i>
           <h3>Essai gratuit</h3>
           <div class="price">$0 <span>/ pour essayer</span></div>
           <ul>
@@ -315,6 +350,7 @@
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Récupérer les crédits gratuits →</a>
         </div>
         <div class="value-card">
+          <i class="plan-icon" data-lucide="coins"></i>
           <h3>Plus de crédits</h3>
           <div class="price">Sur le site <span>/ quand tu veux</span></div>
           <ul>
@@ -330,6 +366,14 @@
         <div class="proof-chip"><strong>Essaie avant de payer.</strong> Utilise le crédit gratuit pour juger la qualité d'abord.</div>
         <div class="proof-chip"><strong>Prompts personnalisés.</strong> Décris le rendu adulte que tu veux, dans le respect des règles.</div>
         <div class="proof-chip"><strong>Compte privé.</strong> Importe, génère, puis télécharge depuis ta session.</div>
+      </div>
+      <div class="referral-band">
+        <i data-lucide="gift"></i>
+        <div>
+          <strong>Invite des amis, gagne plus de crédits.</strong>
+          <span>Chaque parrainage actif te donne plus de générations sans payer.</span>
+        </div>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Obtenir le lien d'invitation</a>
       </div>
 </div>
   </section>
@@ -497,6 +541,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260816-i18n" defer></script>
+  <script src="../assets/site.js?v=20260816-parity" defer></script>
 </body>
 </html>

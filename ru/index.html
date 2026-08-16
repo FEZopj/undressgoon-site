@@ -59,11 +59,11 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260816-i18n" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260816-parity" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260816-i18n" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260816-parity" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -193,6 +193,40 @@
             <label class="field-label" for="web-prompt">Промпт</label>
             <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Пример: крошечное чёрное микро-бикини, блестящая кожа, селфи в зеркале спальни"></textarea>
 
+            <div class="advanced-options" id="advanced-options">
+              <label>
+                <span>Размер груди</span>
+                <select id="breast-size" name="breast_size">
+                  <option value="natural" selected>Оставить как есть</option>
+                  <option value="smaller">Немного меньше</option>
+                  <option value="fuller">Пышнее</option>
+                  <option value="larger">Крупнее, с формами</option>
+                </select>
+              </label>
+              <label>
+                <span>Волосы на лобке</span>
+                <select id="pubic-hair" name="pubic_hair">
+                  <option value="natural" selected>Оставить как есть</option>
+                  <option value="shaved">Выбрито</option>
+                  <option value="trimmed">Подстрижено</option>
+                  <option value="full">Густые</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="variation-row" id="variation-row">
+              <label for="variation-count">
+                <span>Изображения</span>
+                <select id="variation-count" name="variations">
+                  <option value="1" selected>1 изображение</option>
+                  <option value="2">2 изображения</option>
+                  <option value="3">3 изображения</option>
+                  <option value="4">4 изображения</option>
+                </select>
+              </label>
+              <small id="variation-cost">1 кредит</small>
+            </div>
+
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
               <span>Подтверждаю, что мне есть 18 лет и у меня есть необходимые права и согласие на использование этого изображения.
@@ -304,6 +338,7 @@
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">Начни здесь</span>
+          <i class="plan-icon" data-lucide="ticket"></i>
           <h3>Бесплатный тест</h3>
           <div class="price">$0 <span>/ чтобы попробовать</span></div>
           <ul>
@@ -315,6 +350,7 @@
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Забрать бесплатные кредиты →</a>
         </div>
         <div class="value-card">
+          <i class="plan-icon" data-lucide="coins"></i>
           <h3>Больше кредитов</h3>
           <div class="price">На сайте <span>/ когда готов</span></div>
           <ul>
@@ -330,6 +366,14 @@
         <div class="proof-chip"><strong>Попробуй до оплаты.</strong> Сначала оцени качество на бесплатном кредите.</div>
         <div class="proof-chip"><strong>Свои промпты.</strong> Опиши нужную взрослую правку в рамках правил.</div>
         <div class="proof-chip"><strong>Приватный аккаунт.</strong> Загрузи, сгенерируй и скачай из своей сессии.</div>
+      </div>
+      <div class="referral-band">
+        <i data-lucide="gift"></i>
+        <div>
+          <strong>Зови друзей — получай больше кредитов.</strong>
+          <span>Каждый активный реферал даёт тебе больше генераций без оплаты.</span>
+        </div>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Получить ссылку-приглашение</a>
       </div>
 </div>
   </section>
@@ -497,6 +541,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260816-i18n" defer></script>
+  <script src="../assets/site.js?v=20260816-parity" defer></script>
 </body>
 </html>
