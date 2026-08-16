@@ -679,6 +679,9 @@
     if (login) login.hidden = true;
     if (logout) logout.hidden = !authed;
     if (form) form.classList.remove('is-locked');  // reveal-gate: anon can generate too
+    // Anon gets a single free preview — hide the multi-image / credits selector.
+    var variationRow = document.getElementById('variation-row');
+    if (variationRow) variationRow.hidden = !authed;
     // Anonymous users can fill the form and click Generate; the submit handler
     // gates on auth and preserves their work. Only disable while a job is running.
     if (submit && submit.dataset.busy !== '1') submit.disabled = false;
