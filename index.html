@@ -2,6 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script>
+  /* Auto-route a first-time visitor to their language page (once), preserving
+     ad-attribution query params. Manual choice (ug_lang) always wins; runs only
+     on the English root so there are no loops. */
+  (function(){try{
+    var LANGS={es:'/es/',pt:'/pt/',zh:'/zh/',ja:'/ja/',ru:'/ru/',fr:'/fr/',de:'/de/'};
+    if(localStorage.getItem('ug_lang'))return;
+    if(sessionStorage.getItem('ug_lang_redirected'))return;
+    if(/^\/(es|pt|zh|ja|ru|fr|de)\//i.test(location.pathname))return;
+    var nav=(navigator.language||navigator.userLanguage||'').slice(0,2).toLowerCase();
+    var dest=LANGS[nav];
+    if(!dest)return;
+    sessionStorage.setItem('ug_lang_redirected','1');
+    location.replace(dest+location.search+location.hash);
+  }catch(e){}})();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>UndressGoon — AI Undress Generator | Nude, Micro Bikini, BDSM, Latex</title>
   <meta name="description" content="AI adult image generation directly on the website. Upload a photo you have rights to use, choose presets, and generate private adult fantasy edits." />
@@ -63,11 +79,11 @@
   }
   </script>
 
-  <link rel="preload" href="assets/site.css?v=20260815-clickid" as="style" />
+  <link rel="preload" href="assets/site.css?v=20260816-i18n" as="style" />
   <link rel="preload" href="assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="assets/site.css?v=20260815-clickid" />
+  <link rel="stylesheet" href="assets/site.css?v=20260816-i18n" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -505,6 +521,6 @@
     };
   </script>
   <script src="assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="assets/site.js?v=20260815-clickid" defer></script>
+  <script src="assets/site.js?v=20260816-i18n" defer></script>
 </body>
 </html>

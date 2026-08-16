@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon — ИИ Undress генератор | Ню, микро-бикини, BDSM, латекс</title>
-  <meta name="description" content="Загрузи фото, выбери пресет и генерируй прямо на сайте." />
-  <meta name="keywords" content="раздеть ИИ, undress бот, генератор ню, telegram undress, undressgoon" />
+  <title>UndressGoon — ИИ-генератор раздевания | Ню, микро-бикини, BDSM, латекс</title>
+  <meta name="description" content="Взрослая ИИ-генерация изображений прямо на сайте. Загрузи фото, на которое у тебя есть права, выбери пресет и создавай приватные взрослые правки." />
+  <meta name="keywords" content="раздеть ИИ, ИИ раздевание, генератор ню, ИИ ню, микро-бикини ИИ, BDSM ИИ, латекс ИИ, undressgoon" />
   <meta name="theme-color" content="#070709" />
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon — ИИ Undress генератор | Ню, микро-бикини, BDSM, латекс" />
+  <meta property="og:title" content="UndressGoon — ИИ-генератор раздевания" />
   <meta property="og:description" content="Загрузи фото, выбери пресет и генерируй прямо на сайте." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/ru/" />
@@ -29,7 +29,7 @@
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="UndressGoon — ИИ Undress генератор | Ню, микро-бикини, BDSM, латекс" />
+  <meta name="twitter:title" content="UndressGoon — ИИ-генератор раздевания" />
   <meta name="twitter:description" content="Загрузи фото, выбери пресет и генерируй прямо на сайте." />
   <meta name="twitter:image" content="https://undressgoon.app/results/thumbs/1.webp" />
 
@@ -59,21 +59,21 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260815-clickid" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260816-i18n" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260815-clickid" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260816-i18n" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
 
   <header>
     <div class="container header-inner">
-      <a class="logo" href="../index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <a class="logo" href="../index.html" aria-label="UndressGoon — на главную"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
       <div class="header-right">
-        <nav class="lang-switch" aria-label="Language">
-          <select aria-label="Select language">
+        <nav class="lang-switch" aria-label="Язык">
+          <select aria-label="Выбор языка">
           <option value="../index.html">EN</option>
           <option value="../es/index.html">ES</option>
           <option value="../pt/index.html">PT</option>
@@ -85,25 +85,25 @@
           </select>
         </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>Генерировать</a>
-        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить на светлую тему" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
             <span class="account-trigger-text">
-              <strong id="site-account-name">My account</strong>
-              <small id="site-account-credits">0 credits</small>
+              <strong id="site-account-name">Мой аккаунт</strong>
+              <small id="site-account-credits">0 кредитов</small>
             </span>
             <i data-lucide="chevron-down"></i>
           </button>
           <div class="account-menu" id="site-account-menu" hidden>
             <div class="account-menu-head">
-              <strong id="account-email">Signed in</strong>
-              <span id="account-menu-credits">0 credits available</span>
+              <strong id="account-email">Вход выполнен</strong>
+              <span id="account-menu-credits">0 кредитов доступно</span>
             </div>
-            <button type="button" id="account-topup"><i data-lucide="coins"></i> Get credits</button>
-            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Link Telegram</button>
-            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Contact support</a>
-            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> Получить кредиты</button>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Привязать Telegram</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Связаться с поддержкой</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Выйти</button>
           </div>
         </div>
       </div>
@@ -112,8 +112,8 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">AI undress генератор</div>
-<h1>Раздень любое фото с ИИ.</h1>
+      <div class="badge">ИИ-генератор раздевания</div>
+<h1>Раздень любое фото с помощью ИИ.</h1>
       <p class="hero-sub">Загрузи фото, выбери пресет или напиши свой промпт. Бесплатный кредит откроется после входа через Google.</p>
       <div class="cta-group">
         <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Открыть генератор</a>
@@ -121,7 +121,7 @@
       <p class="free-note"><strong>Начни бесплатно</strong> · без карты · 18+</p>
       <div class="trust-row">
         <span><i data-lucide="zap"></i> 15-40с результат</span>
-        <span><i data-lucide="shield-check"></i> Приватная web-сессия</span>
+        <span><i data-lucide="shield-check"></i> Приватная веб-сессия</span>
         <span><i data-lucide="badge-check"></i> Только 18+</span>
       </div>
     </div>
@@ -130,26 +130,26 @@
   <section class="generator-section" id="generate">
     <div class="container">
       <div class="generator-head">
-        <h2>Генерировать сейчас</h2>
+        <h2>Генерируй сейчас</h2>
         <p>Сначала загрузи фото. Пресеты и кастомный промпт ниже.</p>
       </div>
 
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
           <div class="login-box" id="login-box">
-            <p>Логин подтверждает, что бесплатный кредит принадлежит реальному пользователю. После этого можно генерировать здесь.</p>
-            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Продолжить с Google</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Continue with Email</button></div>
+            <p>Войди сейчас, чтобы забрать бесплатный кредит. Карта не нужна.</p>
+            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Продолжить с Google</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Продолжить с Email</button></div>
           <form class="email-auth" id="email-form" hidden>
             <input type="email" id="email-input" name="email" autocomplete="email" placeholder="you@email.com" required />
-            <button type="submit" class="btn btn-accent" id="email-send">Send code</button>
+            <button type="submit" class="btn btn-accent" id="email-send">Отправить код</button>
           </form>
           <form class="email-auth" id="email-code-form" hidden>
             <p class="email-sent-copy" id="email-sent-copy"></p>
-            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6-digit code" required />
-            <button type="submit" class="btn btn-accent" id="email-verify">Verify &amp; continue</button>
+            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6-значный код" required />
+            <button type="submit" class="btn btn-accent" id="email-verify">Подтвердить и продолжить</button>
             <div class="email-auth-links">
-              <button type="button" class="link-btn" id="email-resend">Resend code</button>
-              <button type="button" class="link-btn" id="email-back">Use a different email</button>
+              <button type="button" class="link-btn" id="email-resend">Отправить код заново</button>
+              <button type="button" class="link-btn" id="email-back">Другой email</button>
             </div>
           </form>
           <p class="login-error" id="login-error" hidden></p>
@@ -158,12 +158,12 @@
           <div class="referral-card" id="referral-card" hidden>
             <div>
               <span class="mini-label">Реферальные кредиты</span>
-              <strong>Зови друзей. Собирай бесплатные runs.</strong>
-              <small id="referral-copy">Ты получаешь бонусные кредиты, когда кто-то заходит и генерирует.</small>
+              <strong>Зови друзей. Копи бесплатные генерации.</strong>
+              <small id="referral-copy">Получай бонусные кредиты, когда кто-то регистрируется и генерирует.</small>
             </div>
             <div class="referral-actions">
-              <input id="referral-link" readonly value="" aria-label="Referral link" />
-              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+              <input id="referral-link" readonly value="" aria-label="Реферальная ссылка" />
+              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Копировать</button>
             </div>
           </div>
 
@@ -173,30 +173,30 @@
               <img class="upload-preview" id="upload-preview" alt="" hidden />
               <span class="upload-main"><i data-lucide="image-plus"></i> Выбрать фото</span>
               <span class="upload-sub" id="upload-name">JPG, PNG или WebP до 12 MB</span>
-              <span class="upload-tip">Четкое фото лицом вперед работает лучше всего.</span>
+              <span class="upload-tip">Чёткое фото анфас работает лучше всего.</span>
             </label>
 
-            <div class="mode-row" role="group" aria-label="Generation mode">
-              <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Редактировать outfit</label>
+            <div class="mode-row" role="group" aria-label="Режим генерации">
+              <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Смена наряда</label>
               <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Сцена</label>
             </div>
 
             <div class="preset-picker">
               <div class="preset-top">
-                <span class="field-label">CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT</span>
-                <button type="button" id="preset-clear" hidden>Custom prompt</button>
+                <span class="field-label">ВЫБЕРИ ПРЕСЕТ ИЛИ ПРОСТО НАПИШИ СВОЙ ПРОМПТ</span>
+                <button type="button" id="preset-clear" hidden>Свой промпт</button>
               </div>
-              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Preset categories"></div>
+              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Категории пресетов"></div>
               <div class="preset-grid" id="preset-grid"></div>
             </div>
 
             <label class="field-label" for="web-prompt">Промпт</label>
-            <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Пример: крошечное черное микро-бикини, блестящая кожа, селфи в зеркале спальни"></textarea>
+            <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Пример: крошечное чёрное микро-бикини, блестящая кожа, селфи в зеркале спальни"></textarea>
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>I confirm that I am 18+ and have the necessary rights and consent to use this image.
-                <small class="consent-links"><a href="../terms.html">Terms</a> &middot; <a href="../acceptable-use.html">Acceptable Use</a> &middot; <a href="../consent.html">Consent Policy</a></small>
+              <span>Подтверждаю, что мне есть 18 лет и у меня есть необходимые права и согласие на использование этого изображения.
+                <small class="consent-links"><a href="../terms.html">Условия</a> &middot; <a href="../acceptable-use.html">Правила использования</a> &middot; <a href="../consent.html">Политика согласия</a></small>
               </span>
             </label>
 
@@ -225,73 +225,73 @@
       <div class="stat">
         <i data-lucide="shield-check"></i>
         <div class="stat-num">18+</div>
-        <div class="stat-label">Adults only</div>
+        <div class="stat-label">Только для взрослых</div>
       </div>
       <div class="stat">
         <i data-lucide="ticket"></i>
         <div class="stat-num">1</div>
-        <div class="stat-label">Credit per web image</div>
+        <div class="stat-label">Кредит за изображение</div>
       </div>
       <div class="stat">
         <i data-lucide="timer"></i>
         <div class="stat-num">15-40s</div>
-        <div class="stat-label">Typical generation</div>
+        <div class="stat-label">Обычная генерация</div>
       </div>
       <div class="stat">
         <i data-lucide="pen-line"></i>
         <div class="stat-num">900</div>
-        <div class="stat-label">Prompt characters</div>
+        <div class="stat-label">Символов в промпте</div>
       </div>
     </div>
   </div>
 
   <section class="section">
     <div class="container">
-      <h2 class="section-title">Преврати любой фетиш в реальность</h2>
-      <p class="section-sub">Без лимитов на описание. Кастомные промпты разрешены.</p>
+      <h2 class="section-title">Преврати взрослые фантазии в качественные ИИ-картинки</h2>
+      <p class="section-sub">Опиши, какой взрослый образ ты хочешь. Свои промпты разрешены в рамках правил безопасности.</p>
       <div class="features">
         <div class="feature">
           <div class="feature-icon">✍️</div>
-          <h3>Полностью кастомные промпты</h3>
-          <p>Пиши точно, что хочешь. Любой наряд, поза, фетиш — ИИ слушается.</p>
+          <h3>Полностью свои промпты</h3>
+          <p>Опиши нужный взрослый образ. Наряды, позы, стили и фэнтези-сцены — всё в рамках правил.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">🔥</div>
-          <h3>Снятие одежды ИИ</h3>
-          <p>Один тап. Полностью ню или любой уровень, который опишешь.</p>
+          <h3>ИИ снимает одежду</h3>
+          <p>Раздевание в один тап. Полностью ню, топлес, без низа — любой уровень, который опишешь.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">👙</div>
-          <h3>Микро бикини и бельё</h3>
-          <p>Крошечные бикини, прозрачное бельё, мокрые рубашки и больше.</p>
+          <h3>Микро-бикини и бельё</h3>
+          <p>Крошечные микро-бикини, прозрачное бельё, мокрые белые футболки, плиссированная форма и не только.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">⛓</div>
           <h3>BDSM и латекс</h3>
-          <p>Портупеи, ошейники, латекс, кожа, масло, блестящая кожа.</p>
+          <p>Портупеи, ошейники, облегающие латексные комбинезоны, кожа, масло, блестящая кожа — взрослый фэнтези-стайлинг.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">👕</div>
-          <h3>Смена одежды</h3>
-          <p>Отправь фото любой вещи — ИИ наденет её на человека.</p>
+          <div class="feature-icon">🔒</div>
+          <h3>Фиксация лица и тела</h3>
+          <p>Правки сохраняют то же лицо, телосложение, кадрирование и стиль исходного фото.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">🎭</div>
-          <h3>Поза и фиксация лица</h3>
-          <p>Соедини два фото: сохрани лицо, скопируй позу с другого.</p>
+          <h3>Генератор сцен</h3>
+          <p>Перенеси того же человека в селфи у зеркала, гостиничные номера, ванные, неоновые спальни и любые сцены.</p>
         </div>
       </div>
       <div class="tags">
         <span class="tag">полностью ню</span>
-        <span class="tag">микро бикини</span>
-        <span class="tag">BDSM</span>
+        <span class="tag">микро-бикини</span>
+        <span class="tag">BDSM-портупея</span>
         <span class="tag">латекс</span>
-        <span class="tag">мокрый look</span>
+        <span class="tag">мокрый эффект</span>
         <span class="tag">бельё</span>
-        <span class="tag">школьница</span>
-        <span class="tag">масло</span>
-        <span class="tag">кастомный промпт</span>
-        <span class="tag">любой фетиш</span>
+        <span class="tag">плиссированная форма</span>
+        <span class="tag">масляная кожа</span>
+        <span class="tag">свой промпт</span>
+        <span class="tag">своя фантазия</span>
       </div>
     </div>
   </section>
@@ -299,7 +299,7 @@
 
   <section class="section" style="padding-top:10px;">
     <div class="container">
-      <h2 class="section-title">Начни бесплатно. Усиль, когда втянешься.</h2>
+      <h2 class="section-title">Начни бесплатно. Дай жару, когда затянет.</h2>
       <p class="section-sub">Сначала используй бесплатные кредиты. Когда захочешь больше изображений, пополни баланс за секунды.</p>
       <div class="value-grid">
         <div class="value-card highlight">
@@ -308,8 +308,8 @@
           <div class="price">$0 <span>/ чтобы попробовать</span></div>
           <ul>
             <li>Мгновенные бесплатные кредиты</li>
-            <li>Кастомные промпты</li>
-            <li>No card needed to start</li>
+            <li>Полностью свои промпты</li>
+            <li>Карта для старта не нужна</li>
             <li>Работает прямо на сайте</li>
           </ul>
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Забрать бесплатные кредиты →</a>
@@ -318,18 +318,18 @@
           <h3>Больше кредитов</h3>
           <div class="price">На сайте <span>/ когда готов</span></div>
           <ul>
-            <li>Пакеты, когда free кончится</li>
-            <li>Более длинные сессии</li>
+            <li>Пополняй, когда бесплатные кончатся</li>
+            <li>Быстрые марафонские сессии</li>
             <li>То же качество, больше объёма</li>
-            <li>Плати только если зашло</li>
+            <li>Оплата картой, если нужно</li>
           </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Открыть бота и апгрейд позже</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Сначала генерируй, пополни потом</a>
         </div>
       </div>
       <div class="proof-strip">
-        <div class="proof-chip"><strong>Try before paying.</strong> Use the free credit to judge quality first.</div>
-        <div class="proof-chip"><strong>Custom prompts.</strong> Describe the adult edit you want within the rules.</div>
-        <div class="proof-chip"><strong>Private account flow.</strong> Upload, generate, then download from your session.</div>
+        <div class="proof-chip"><strong>Попробуй до оплаты.</strong> Сначала оцени качество на бесплатном кредите.</div>
+        <div class="proof-chip"><strong>Свои промпты.</strong> Опиши нужную взрослую правку в рамках правил.</div>
+        <div class="proof-chip"><strong>Приватный аккаунт.</strong> Загрузи, сгенерируй и скачай из своей сессии.</div>
       </div>
 </div>
   </section>
@@ -338,8 +338,8 @@
     <div class="container">
       <div class="cta-band">
         <h2>Твой фетиш. Твой промпт. Твоя реальность.</h2>
-        <p>Кастомные промпты разрешены. Опиши точно, что хочешь — UndressGoon превратит это в картинки за секунды.</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Открыть генератор</a>
+        <p>Полностью свои промпты. Опиши наряд, позу или фэнтези-сцену — и UndressGoon превратит это во взрослые ИИ-картинки за секунды.</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Открыть UndressGoon сейчас</a>
         <p class="urgency">Начни бесплатно · без карты · 18+</p>
       </div>
     </div>
@@ -351,25 +351,25 @@
         <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
       </a>
       <p class="footer-seo">
-        UndressGoon is an adult-only AI image generation service for consenting adults and fictional adult fantasy edits.
-        Upload an image you have the right to use, choose a preset or custom prompt, and spend credits for private web generations.
+        UndressGoon — это ИИ-сервис генерации изображений только для взрослых: для совершеннолетних по обоюдному согласию и вымышленных взрослых фэнтези-правок.
+        Загрузи изображение, на которое у тебя есть права, выбери пресет или свой промпт и трать кредиты на приватные генерации на сайте.
       </p>
-      <nav class="footer-links" aria-label="Legal links">
-        <a href="../terms.html">Terms</a>
-        <a href="../privacy.html">Privacy</a>
-        <a href="../acceptable-use.html">Acceptable Use</a>
-        <a href="../consent.html">Consent &amp; Image Rights</a>
-        <a href="../refunds.html">Refunds</a>
-        <a href="../report-abuse.html">Report Abuse</a>
+      <nav class="footer-links" aria-label="Юридические ссылки">
+        <a href="../terms.html">Условия</a>
+        <a href="../privacy.html">Конфиденциальность</a>
+        <a href="../acceptable-use.html">Правила использования</a>
+        <a href="../consent.html">Согласие и права на изображения</a>
+        <a href="../refunds.html">Возвраты</a>
+        <a href="../report-abuse.html">Сообщить о нарушении</a>
         <a href="../dmca.html">DMCA</a>
-        <a href="../contact.html">Contact</a>
-        <a href="../age-safety.html">Age &amp; Safety</a>
+        <a href="../contact.html">Контакты</a>
+        <a href="../age-safety.html">Возраст и безопасность</a>
       </nav>
-      <p class="operator-line">UndressGoon is operated by ZIAYING LLC, a New Mexico, United States limited liability company.</p>
+      <p class="operator-line">Сервис UndressGoon управляется компанией ZIAYING LLC — обществом с ограниченной ответственностью, зарегистрированным в штате Нью-Мексико, США.</p>
       <p class="disclaimer">
-        Adult only (18+). Use only photos you have the lawful right and required consent to use.
-        The website does not publish a public result gallery; uploads, prompts, generated results, and account/session details may be sent to a private moderation or operations channel for abuse prevention, support, fraud review, and service security.
-        Copyright &copy; 2026 ZIAYING LLC. All rights reserved.
+        Только для взрослых (18+). Используй только фото, на которые у тебя есть законные права и необходимое согласие.
+        Сайт не публикует общедоступную галерею результатов; загруженные файлы, промпты, сгенерированные результаты и данные аккаунта/сессии могут передаваться в приватный канал модерации или операций для предотвращения злоупотреблений, поддержки, проверки на мошенничество и обеспечения безопасности сервиса.
+        Copyright &copy; 2026 ZIAYING LLC. Все права защищены.
       </p>
     </div>
   </footer>
@@ -378,7 +378,7 @@
     <div class="sticky-inner">
       <div class="sticky-copy">
         <strong>🎁 Бесплатные кредиты готовы</strong>
-        <span>Upload · preset · generate</span>
+        <span>Загрузи · пресет · генерируй</span>
       </div>
       <a href="#generate" class="btn btn-accent" data-generate-cta>Начать бесплатно →</a>
     </div>
@@ -389,25 +389,25 @@
   </div>
 
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
-    <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
+    <button class="topup-backdrop" type="button" data-close-topup aria-label="Закрыть"></button>
     <div class="topup-dialog">
-      <button class="modal-close" type="button" id="topup-close" aria-label="Close"><i data-lucide="x"></i></button>
-      <span class="mini-label" id="topup-eyebrow">Credits</span>
-      <h3 id="topup-title">Ready for another image?</h3>
-      <p id="topup-copy">Pick a pack and keep generating on the website.</p>
+      <button class="modal-close" type="button" id="topup-close" aria-label="Закрыть"><i data-lucide="x"></i></button>
+      <span class="mini-label" id="topup-eyebrow">Кредиты</span>
+      <h3 id="topup-title">Готов к ещё одному изображению?</h3>
+      <p id="topup-copy">Выбери пакет и продолжай генерировать на сайте.</p>
       <div class="discount-box">
-        <label for="discount-code">Discount code</label>
+        <label for="discount-code">Промокод</label>
         <div class="discount-row">
           <input id="discount-code" name="discount-code" type="text" inputmode="text" autocomplete="off" placeholder="COMEBACK20" />
-          <button type="button" id="discount-apply">Apply</button>
+          <button type="button" id="discount-apply">Применить</button>
         </div>
         <small class="discount-note" id="discount-note"></small>
       </div>
       <div class="pack-grid" id="pack-grid"></div>
       <div class="topup-actions">
-        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Link Telegram</button>
+        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Привязать Telegram</button>
       </div>
-      <small class="topup-note">Discreet billing: your bank statement shows our billing name, not UndressGoon. Card also works in Telegram.</small>
+      <small class="topup-note">Незаметная оплата: в банковской выписке будет указано наше платёжное название, а не UndressGoon. Карта работает и в Telegram.</small>
     </div>
   </div>
   <script>
@@ -422,22 +422,22 @@
         { key: 'nude', category: 'hot', label: 'Полностью ню', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
         { key: 'oily', category: 'hot', label: 'Масляное ню', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
         { key: 'bondage', category: 'hot', label: 'Шибари ню', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
-        { key: 'lingerie', category: 'clothes', label: 'Прозрачное белье', prompt: 'tiny sheer black lingerie that barely covers anything' },
-        { key: 'crotchless', category: 'clothes', label: 'Открытое белье', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
+        { key: 'lingerie', category: 'clothes', label: 'Прозрачное бельё', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'crotchless', category: 'clothes', label: 'Открытое бельё', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
         { key: 'bikini', category: 'clothes', label: 'Микро-бикини', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
         { key: 'wet', category: 'clothes', label: 'Мокрая футболка', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
         { key: 'bdsm', category: 'clothes', label: 'BDSM-портупея', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
         { key: 'latex', category: 'clothes', label: 'Латекс', prompt: 'shiny tight black latex catsuit unzipped down the front' },
         { key: 'tights', category: 'clothes', label: 'Только колготки', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
         { key: 'stockings', category: 'clothes', label: 'Только чулки', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
-        { key: 'pleated_uniform', category: 'fantasy', label: 'Pleated Uniform', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
-        { key: 'nurse', category: 'fantasy', label: 'Секси медсестра', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'pleated_uniform', category: 'fantasy', label: 'Плиссированная форма', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'nurse', category: 'fantasy', label: 'Секси-медсестра', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
         { key: 'maid', category: 'fantasy', label: 'Французская горничная', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
         { key: 'office', category: 'fantasy', label: 'Офисный образ', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
-        notLoggedIn: "Не вошли",
-        loginToSeeCredits: "Войдите, чтобы увидеть кредиты",
+        notLoggedIn: "Вход не выполнен",
+        loginToSeeCredits: "Войди, чтобы увидеть кредиты",
         creditSingular: "{n} кредит доступен",
         creditPlural: "{n} кредитов доступно",
         creditsWord: "кредитов",
@@ -446,47 +446,47 @@
         imagePlural: "изображения",
         imagesLabel: "Изображения",
         generateVerb: "Генерировать",
-        payCrypto: "Оплатить crypto",
-        opening: "Открывается...",
-        creatingCheckout: "Создаем безопасный crypto checkout...",
-        checkoutFail: "Не удалось создать checkout.",
+        payCrypto: "Оплатить криптой",
+        opening: "Открываем...",
+        creatingCheckout: "Создаём безопасную крипто-оплату...",
+        checkoutFail: "Не удалось создать оплату.",
         generatedResult: "Сгенерированный результат",
-        tabHot: "Самое hot",
+        tabHot: "Самое горячее",
         tabClothes: "Одежда",
-        tabFantasy: "Фантазия",
+        tabFantasy: "Фантазии",
         uploadHint: "JPG, PNG или WebP до 12 MB",
         readFail: "Не удалось прочитать выбранное фото.",
         missingPhoto: "Сначала загрузи фото человека.",
-        termsRequired: "Подтверди 18+ и права на это фото.",
+        termsRequired: "Подтверди, что тебе 18+ и у тебя есть права на это фото.",
         promptRequired: "Сначала выбери пресет или напиши промпт.",
         copied: "Скопировано",
         copy: "Копировать",
-        readingUpload: "Читаем upload...",
+        readingUpload: "Читаем файл...",
         generating: "Генерация... обычно меньше минуты.",
         doneBalance: "Готово. Баланс: {balance}.",
         outOfCredits: "Кредиты закончились. Пополни ниже, чтобы продолжить.",
         loginFirst: "Сначала войди через Google.",
         genericError: "Что-то пошло не так.",
-        myAccount: "My account",
-        signedIn: "Signed in",
-        getCredits: "Get credits",
-        contactSupport: "Contact support",
-        logout: "Logout",
-        payCard: "Pay by card",
-        linkTelegram: "Link Telegram",
-        telegramLinkedShort: "Telegram linked",
-        bestValue: "Popular",
-        topupTitle: "Ready for another image?",
-        topupCopy: "Pick a pack and keep generating on the website.",
-        topupEmptyTitle: "You are out of credits",
-        topupEmptyCopy: "Choose a pack and keep generating in seconds.",
-        linkingTelegram: "Opening Telegram link...",
-        telegramLinkFail: "Could not create Telegram link.",
-        telegramLinked: "Telegram is linked.",
-        telegramLinkOpened: "Confirm the link in Telegram, then come back here.",
-        imgAlt: "ИИ undress результат",
-        referralSingular: "Получи {reward} кредитов за активного реферала. {count} активное приглашение сейчас.",
-        referralPlural: "Получи {reward} кредитов за активного реферала. {count} активных приглашений сейчас."
+        myAccount: "Мой аккаунт",
+        signedIn: "Вход выполнен",
+        getCredits: "Получить кредиты",
+        contactSupport: "Связаться с поддержкой",
+        logout: "Выйти",
+        payCard: "Оплатить картой",
+        linkTelegram: "Привязать Telegram",
+        telegramLinkedShort: "Telegram привязан",
+        bestValue: "Популярный",
+        topupTitle: "Готов к ещё одному изображению?",
+        topupCopy: "Выбери пакет и продолжай генерировать на сайте.",
+        topupEmptyTitle: "Кредиты закончились",
+        topupEmptyCopy: "Выбери пакет и продолжай генерировать за секунды.",
+        linkingTelegram: "Открываем ссылку Telegram...",
+        telegramLinkFail: "Не удалось создать ссылку Telegram.",
+        telegramLinked: "Telegram привязан.",
+        telegramLinkOpened: "Подтверди привязку в Telegram и вернись сюда.",
+        imgAlt: "Результат ИИ-раздевания",
+        referralSingular: "Получи {reward} кредитов за активного реферала. Сейчас {count} активное приглашение.",
+        referralPlural: "Получи {reward} кредитов за активного реферала. Сейчас {count} активных приглашений."
       }
     };
   </script>
@@ -497,6 +497,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260815-clickid" defer></script>
+  <script src="../assets/site.js?v=20260816-i18n" defer></script>
 </body>
 </html>

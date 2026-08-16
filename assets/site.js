@@ -428,7 +428,16 @@
       if (select.dataset.bound) return;
       select.dataset.bound = '1';
       select.addEventListener('change', function () {
-        if (select.value) window.location.href = select.value;
+        if (!select.value) return;
+        // Remember the manual choice so auto-detect never overrides it again,
+        // and carry ad-attribution query params across the language switch.
+        try {
+          var m = select.value.match(/\/(es|pt|zh|ja|ru|fr|de)\//i);
+          localStorage.setItem('ug_lang', m ? m[1].toLowerCase() : 'en');
+        } catch (e) {}
+        var join = select.value.indexOf('?') === -1 ? '?' : '&';
+        var qs = (location.search || '').replace(/^\?/, '');
+        window.location.href = qs ? select.value + join + qs : select.value;
       });
     });
   }

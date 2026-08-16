@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon — AI Undress 生成ツール | ヌード・マイクロビキニ・BDSM・ラテックス</title>
-  <meta name="description" content="写真をアップロードし、プリセットを選んでサイト上で直接生成。" />
+  <title>UndressGoon — AI脱衣ジェネレーター | ヌード・マイクロビキニ・BDSM・ラテックス</title>
+  <meta name="description" content="サイト上で直接、AIによるアダルト画像を生成。使用権のある写真をアップロードし、プリセットを選んで、プライベートなアダルト加工を作成できます。" />
   <meta name="keywords" content="AI脱衣, undress AI, ヌード生成, telegram undress, undressgoon" />
   <meta name="theme-color" content="#070709" />
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon — AI Undress 生成ツール | ヌード・マイクロビキニ・BDSM・ラテックス" />
+  <meta property="og:title" content="UndressGoon — AI脱衣ジェネレーター" />
   <meta property="og:description" content="写真をアップロードし、プリセットを選んでサイト上で直接生成。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/ja/" />
@@ -29,7 +29,7 @@
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="UndressGoon — AI Undress 生成ツール | ヌード・マイクロビキニ・BDSM・ラテックス" />
+  <meta name="twitter:title" content="UndressGoon — AI脱衣ジェネレーター" />
   <meta name="twitter:description" content="写真をアップロードし、プリセットを選んでサイト上で直接生成。" />
   <meta name="twitter:image" content="https://undressgoon.app/results/thumbs/1.webp" />
 
@@ -42,7 +42,7 @@
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any (web browser)",
   "inLanguage": "ja",
-  "description": "写真をアップロードし、プリセットを選んでサイト上で直接生成。",
+  "description": "Web上で直接、AIによるアダルト画像を生成。使用権のある写真をアップロードし、プリセットを選んで、プライベートなアダルト加工を作成できます。",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -59,11 +59,11 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260815-clickid" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260816-i18n" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260815-clickid" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260816-i18n" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -90,20 +90,20 @@
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
             <span class="account-trigger-text">
-              <strong id="site-account-name">My account</strong>
-              <small id="site-account-credits">0 credits</small>
+              <strong id="site-account-name">マイアカウント</strong>
+              <small id="site-account-credits">0クレジット</small>
             </span>
             <i data-lucide="chevron-down"></i>
           </button>
           <div class="account-menu" id="site-account-menu" hidden>
             <div class="account-menu-head">
-              <strong id="account-email">Signed in</strong>
-              <span id="account-menu-credits">0 credits available</span>
+              <strong id="account-email">ログイン中</strong>
+              <span id="account-menu-credits">0クレジット利用可能</span>
             </div>
-            <button type="button" id="account-topup"><i data-lucide="coins"></i> Get credits</button>
-            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Link Telegram</button>
-            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Contact support</a>
-            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> クレジットを取得</button>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Telegramを連携</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> サポートに問い合わせ</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> ログアウト</button>
           </div>
         </div>
       </div>
@@ -112,17 +112,17 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">AI undress ジェネレーター</div>
-<h1>どんな写真もAIで加工。</h1>
+      <div class="badge">AI脱衣ジェネレーター</div>
+<h1>どんな写真もAIで脱がす。</h1>
       <p class="hero-sub">写真をアップロードして、プリセットを選ぶか自分のプロンプトを書くだけ。無料クレジットはGoogleログイン後に使えます。</p>
       <div class="cta-group">
         <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>ジェネレーターを開く</a>
       </div>
-      <p class="free-note"><strong>無料クレジット</strong> · Googleログイン · カード不要</p>
+      <p class="free-note"><strong>無料で始める</strong> · カード不要 · 18歳以上限定</p>
       <div class="trust-row">
-        <span><i data-lucide="zap"></i> 15-40秒で結果</span>
+        <span><i data-lucide="zap"></i> 15〜40秒で結果</span>
         <span><i data-lucide="shield-check"></i> プライベートWebセッション</span>
-        <span><i data-lucide="badge-check"></i> 18+のみ</span>
+        <span><i data-lucide="badge-check"></i> 18歳以上限定</span>
       </div>
     </div>
   </section>
@@ -137,19 +137,19 @@
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
           <div class="login-box" id="login-box">
-            <p>ログインにより、無料クレジットが実在ユーザーに紐づきます。その後ここで生成できます。</p>
-            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Googleで続行</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Continue with Email</button></div>
+            <p>今すぐログインして無料クレジットを受け取りましょう。カードは不要です。</p>
+            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Googleで続行</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> メールで続行</button></div>
           <form class="email-auth" id="email-form" hidden>
             <input type="email" id="email-input" name="email" autocomplete="email" placeholder="you@email.com" required />
-            <button type="submit" class="btn btn-accent" id="email-send">Send code</button>
+            <button type="submit" class="btn btn-accent" id="email-send">コードを送信</button>
           </form>
           <form class="email-auth" id="email-code-form" hidden>
             <p class="email-sent-copy" id="email-sent-copy"></p>
-            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6-digit code" required />
-            <button type="submit" class="btn btn-accent" id="email-verify">Verify &amp; continue</button>
+            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6桁のコード" required />
+            <button type="submit" class="btn btn-accent" id="email-verify">確認して続行</button>
             <div class="email-auth-links">
-              <button type="button" class="link-btn" id="email-resend">Resend code</button>
-              <button type="button" class="link-btn" id="email-back">Use a different email</button>
+              <button type="button" class="link-btn" id="email-resend">コードを再送信</button>
+              <button type="button" class="link-btn" id="email-back">別のメールアドレスを使う</button>
             </div>
           </form>
           <p class="login-error" id="login-error" hidden></p>
@@ -158,12 +158,12 @@
           <div class="referral-card" id="referral-card" hidden>
             <div>
               <span class="mini-label">紹介クレジット</span>
-              <strong>友達を招待して無料生成を増やす。</strong>
-              <small id="referral-copy">誰かが参加して生成するとボーナスクレジットを獲得。</small>
+              <strong>友達を招待して、無料生成を増やそう。</strong>
+              <small id="referral-copy">招待した相手が登録して生成すると、ボーナスクレジットがもらえます。</small>
             </div>
             <div class="referral-actions">
-              <input id="referral-link" readonly value="" aria-label="Referral link" />
-              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+              <input id="referral-link" readonly value="" aria-label="紹介リンク" />
+              <button type="button" id="copy-referral"><i data-lucide="copy"></i> コピー</button>
             </div>
           </div>
 
@@ -183,8 +183,8 @@
 
             <div class="preset-picker">
               <div class="preset-top">
-                <span class="field-label">CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT</span>
-                <button type="button" id="preset-clear" hidden>Custom prompt</button>
+                <span class="field-label">プリセットを選ぶか、そのまま自分でプロンプトを入力してください</span>
+                <button type="button" id="preset-clear" hidden>カスタムプロンプト</button>
               </div>
               <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Preset categories"></div>
               <div class="preset-grid" id="preset-grid"></div>
@@ -195,8 +195,8 @@
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>I confirm that I am 18+ and have the necessary rights and consent to use this image.
-                <small class="consent-links"><a href="../terms.html">Terms</a> &middot; <a href="../acceptable-use.html">Acceptable Use</a> &middot; <a href="../consent.html">Consent Policy</a></small>
+              <span>私は18歳以上であり、この画像を使用するために必要な権利と同意を有していることを確認します。
+                <small class="consent-links"><a href="../terms.html">利用規約</a> &middot; <a href="../acceptable-use.html">利用規範</a> &middot; <a href="../consent.html">同意ポリシー</a></small>
               </span>
             </label>
 
@@ -208,7 +208,7 @@
         <div class="result-panel">
           <div class="result-empty" id="web-result-empty">
             <strong>結果はここに表示されます</strong>
-            <span>クレジットは生成開始時のみ予約されます。失敗したジョブは自動返金されます。</span>
+            <span>クレジットは生成開始時にのみ確保されます。失敗したジョブは自動的に返金されます。</span>
           </div>
           <div class="web-results" id="web-results"></div>
         </div>
@@ -225,73 +225,73 @@
       <div class="stat">
         <i data-lucide="shield-check"></i>
         <div class="stat-num">18+</div>
-        <div class="stat-label">Adults only</div>
+        <div class="stat-label">18歳以上限定</div>
       </div>
       <div class="stat">
         <i data-lucide="ticket"></i>
         <div class="stat-num">1</div>
-        <div class="stat-label">Credit per web image</div>
+        <div class="stat-label">Web画像1枚あたりのクレジット</div>
       </div>
       <div class="stat">
         <i data-lucide="timer"></i>
         <div class="stat-num">15-40s</div>
-        <div class="stat-label">Typical generation</div>
+        <div class="stat-label">標準的な生成時間</div>
       </div>
       <div class="stat">
         <i data-lucide="pen-line"></i>
         <div class="stat-num">900</div>
-        <div class="stat-label">Prompt characters</div>
+        <div class="stat-label">プロンプト文字数</div>
       </div>
     </div>
   </div>
 
   <section class="section">
     <div class="container">
-      <h2 class="section-title">どんなフェチも現実に</h2>
-      <p class="section-sub">描写に制限なし。完全カスタムプロンプトOK。</p>
+      <h2 class="section-title">アダルトな妄想を、洗練されたAI加工に。</h2>
+      <p class="section-sub">欲しいアダルトな見た目を書くだけ。カスタムプロンプトは安全ルールの範囲内で利用できます。</p>
       <div class="features">
         <div class="feature">
           <div class="feature-icon">✍️</div>
           <h3>完全カスタムプロンプト</h3>
-          <p>欲しいものをそのまま入力。衣装・ポーズ・フェチ——AIが従う。</p>
+          <p>欲しいアダルトな見た目をそのまま入力。衣装・ポーズ・スタイル・妄想シーンにルールの範囲内で対応します。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">🔥</div>
           <h3>AI脱衣</h3>
-          <p>ワンタップで脱衣。フルヌードや指定の露出レベル。</p>
+          <p>ワンタップで脱衣。フルヌード、トップレス、ボトムレスなど、指定した露出レベルに対応します。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">👙</div>
           <h3>マイクロビキニ＆ランジェリー</h3>
-          <p>極小ビキニ、透けランジェリー、濡れシャツなど。</p>
+          <p>極小マイクロビキニ、透けランジェリー、濡れた白シャツ、プリーツ制服スタイルなど。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">⛓</div>
           <h3>BDSM＆ラテックス</h3>
-          <p>ハーネス、首輪、タイトラテックス、レザー、オイル肌。</p>
+          <p>ハーネス、首輪、タイトなラテックスキャットスーツ、レザー、オイル、艶やかな肌——アダルトな妄想スタイリング。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">👕</div>
-          <h3>衣装スワップ</h3>
-          <p>任意の服の写真を送り、AIが着せ替え。</p>
+          <h3>顔・体型ロック</h3>
+          <p>アップロードした画像と同じ顔・体型・構図・写真のスタイルを保つように加工します。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">🎭</div>
-          <h3>ポーズ＆顔ロック</h3>
-          <p>2枚の写真を合成：顔を維持し、別画像のポーズをコピー。</p>
+          <h3>シーンジェネレーター</h3>
+          <p>同じ人物を、鏡越しのセルフィー、ホテルの一室、バスルーム、ネオンの寝室、カスタムシーンへ。</p>
         </div>
       </div>
       <div class="tags">
         <span class="tag">フルヌード</span>
         <span class="tag">マイクロビキニ</span>
-        <span class="tag">BDSM</span>
+        <span class="tag">BDSMハーネス</span>
         <span class="tag">ラテックス</span>
-        <span class="tag">濡れ</span>
+        <span class="tag">濡れルック</span>
         <span class="tag">ランジェリー</span>
-        <span class="tag">制服</span>
+        <span class="tag">プリーツ制服</span>
         <span class="tag">オイル肌</span>
         <span class="tag">カスタムプロンプト</span>
-        <span class="tag">どんなフェチも</span>
+        <span class="tag">カスタム妄想</span>
       </div>
     </div>
   </section>
@@ -299,17 +299,17 @@
 
   <section class="section" style="padding-top:10px;">
     <div class="container">
-      <h2 class="section-title">無料で始めて。ハマったら強化。</h2>
-      <p class="section-sub">まずは無料クレジットを使用。もっと画像が欲しくなったら数秒でチャージできます。</p>
+      <h2 class="section-title">無料で始めよう。ハマったら、とことん。</h2>
+      <p class="section-sub">まずは無料クレジットから。もっと画像が欲しくなったら、数秒でチャージできます。</p>
       <div class="value-grid">
         <div class="value-card highlight">
           <span class="vc-badge">ここから</span>
           <h3>無料トライアル</h3>
           <div class="price">$0 <span>/ お試し</span></div>
           <ul>
-            <li>即時無料クレジット</li>
-            <li>カスタムプロンプト</li>
-            <li>No card needed to start</li>
+            <li>即時に無料クレジット</li>
+            <li>完全カスタムプロンプト</li>
+            <li>開始にカード不要</li>
             <li>サイト上で直接利用</li>
           </ul>
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>無料クレジットを受け取る →</a>
@@ -318,18 +318,18 @@
           <h3>追加クレジット</h3>
           <div class="price">サイト内 <span>/ 準備できたら</span></div>
           <ul>
-            <li>無料が切れたらパック購入</li>
-            <li>長時間セッション</li>
-            <li>同品質でより多く</li>
-            <li>気に入ったらだけ課金</li>
+            <li>無料分がなくなったらチャージ</li>
+            <li>サクサク連続生成</li>
+            <li>同じ品質でより多く</li>
+            <li>必要ならカード決済も対応</li>
           </ul>
           <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>まず生成、後でチャージ</a>
         </div>
       </div>
       <div class="proof-strip">
-        <div class="proof-chip"><strong>Try before paying.</strong> Use the free credit to judge quality first.</div>
-        <div class="proof-chip"><strong>Custom prompts.</strong> Describe the adult edit you want within the rules.</div>
-        <div class="proof-chip"><strong>Private account flow.</strong> Upload, generate, then download from your session.</div>
+        <div class="proof-chip"><strong>支払う前にお試し。</strong> まず無料クレジットで品質を確かめられます。</div>
+        <div class="proof-chip"><strong>カスタムプロンプト。</strong> ルールの範囲内で、欲しいアダルト加工を記述できます。</div>
+        <div class="proof-chip"><strong>プライベートなアカウント運用。</strong> アップロードして生成し、セッションからダウンロード。</div>
       </div>
 </div>
   </section>
@@ -338,9 +338,9 @@
     <div class="container">
       <div class="cta-band">
         <h2>君のフェチ。君のプロンプト。君の現実。</h2>
-        <p>完全カスタムプロンプトOK。欲しいものを正確に——UndressGoonが数秒で画像に。</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>ジェネレーターを開く</a>
-        <p class="urgency">🎁 無料クレジット · Googleログイン · カード不要 · 18+</p>
+        <p>完全カスタムプロンプトに対応。欲しい衣装・ポーズ・妄想シーンを記述すれば、UndressGoonが数秒でアダルトAI加工に仕上げます。</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>今すぐUndressGoonを開く</a>
+        <p class="urgency">無料で始めよう。カード不要。18歳以上限定。</p>
       </div>
     </div>
   </section>
@@ -351,24 +351,24 @@
         <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
       </a>
       <p class="footer-seo">
-        UndressGoon is an adult-only AI image generation service for consenting adults and fictional adult fantasy edits.
-        Upload an image you have the right to use, choose a preset or custom prompt, and spend credits for private web generations.
+        UndressGoonは、同意した成人向け、およびフィクションの成人ファンタジー加工のための、成人限定のAI画像生成サービスです。
+        使用する権利のある画像をアップロードし、プリセットまたはカスタムプロンプトを選び、クレジットを使ってプライベートにWeb生成できます。
       </p>
       <nav class="footer-links" aria-label="Legal links">
-        <a href="../terms.html">Terms</a>
-        <a href="../privacy.html">Privacy</a>
-        <a href="../acceptable-use.html">Acceptable Use</a>
-        <a href="../consent.html">Consent &amp; Image Rights</a>
-        <a href="../refunds.html">Refunds</a>
-        <a href="../report-abuse.html">Report Abuse</a>
+        <a href="../terms.html">利用規約</a>
+        <a href="../privacy.html">プライバシー</a>
+        <a href="../acceptable-use.html">利用規範</a>
+        <a href="../consent.html">同意と画像の権利</a>
+        <a href="../refunds.html">返金</a>
+        <a href="../report-abuse.html">不正の報告</a>
         <a href="../dmca.html">DMCA</a>
-        <a href="../contact.html">Contact</a>
-        <a href="../age-safety.html">Age &amp; Safety</a>
+        <a href="../contact.html">お問い合わせ</a>
+        <a href="../age-safety.html">年齢と安全</a>
       </nav>
-      <p class="operator-line">UndressGoon is operated by ZIAYING LLC, a New Mexico, United States limited liability company.</p>
+      <p class="operator-line">UndressGoonは、米国ニューメキシコ州の有限責任会社であるZIAYING LLCが運営しています。</p>
       <p class="disclaimer">
-        Adult only (18+). Use only photos you have the lawful right and required consent to use.
-        The website does not publish a public result gallery; uploads, prompts, generated results, and account/session details may be sent to a private moderation or operations channel for abuse prevention, support, fraud review, and service security.
+        成人限定（18歳以上）。法的な使用権と必要な同意を得た写真のみをご利用ください。
+        本サイトは公開の結果ギャラリーを掲載していません。アップロード、プロンプト、生成結果、アカウント／セッションの情報は、不正防止、サポート、不正利用の審査、サービスのセキュリティのために、非公開のモデレーションまたは運用チャンネルへ送信される場合があります。
         Copyright &copy; 2026 ZIAYING LLC. All rights reserved.
       </p>
     </div>
@@ -377,7 +377,7 @@
   <div class="sticky-cta" id="sticky-cta">
     <div class="sticky-inner">
       <div class="sticky-copy">
-        <strong>🎁 無料クレジット準備完了</strong>
+        <strong>無料クレジットの準備完了</strong>
         <span>アップロード · プリセット · 生成</span>
       </div>
       <a href="#generate" class="btn btn-accent" data-generate-cta>無料で始める →</a>
@@ -385,29 +385,29 @@
   </div>
 
   <div class="toast" id="reengage-toast">
-    まだ迷ってる？ <a href="#generate" data-generate-cta>無料クレジットを取る →</a> カード不要。
+    まだ迷ってる？ <a href="#generate" data-generate-cta>無料クレジットを受け取る →</a> カード不要。
   </div>
 
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
     <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
     <div class="topup-dialog">
       <button class="modal-close" type="button" id="topup-close" aria-label="Close"><i data-lucide="x"></i></button>
-      <span class="mini-label" id="topup-eyebrow">Credits</span>
-      <h3 id="topup-title">Ready for another image?</h3>
-      <p id="topup-copy">Pick a pack and keep generating on the website.</p>
+      <span class="mini-label" id="topup-eyebrow">クレジット</span>
+      <h3 id="topup-title">もう1枚生成しますか？</h3>
+      <p id="topup-copy">パックを選んで、サイトで生成を続けましょう。</p>
       <div class="discount-box">
-        <label for="discount-code">Discount code</label>
+        <label for="discount-code">割引コード</label>
         <div class="discount-row">
           <input id="discount-code" name="discount-code" type="text" inputmode="text" autocomplete="off" placeholder="COMEBACK20" />
-          <button type="button" id="discount-apply">Apply</button>
+          <button type="button" id="discount-apply">適用</button>
         </div>
         <small class="discount-note" id="discount-note"></small>
       </div>
       <div class="pack-grid" id="pack-grid"></div>
       <div class="topup-actions">
-        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Link Telegram</button>
+        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Telegramを連携</button>
       </div>
-      <small class="topup-note">Discreet billing: your bank statement shows our billing name, not UndressGoon. Card also works in Telegram.</small>
+      <small class="topup-note">控えめな請求：ご利用明細には「UndressGoon」ではなく当社の請求名が表示されます。カード決済はTelegramでもご利用いただけます。</small>
     </div>
   </div>
   <script>
@@ -430,14 +430,14 @@
         { key: 'latex', category: 'clothes', label: 'ラテックス', prompt: 'shiny tight black latex catsuit unzipped down the front' },
         { key: 'tights', category: 'clothes', label: 'タイツのみ', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
         { key: 'stockings', category: 'clothes', label: 'ストッキングのみ', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
-        { key: 'pleated_uniform', category: 'fantasy', label: 'Pleated Uniform', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'pleated_uniform', category: 'fantasy', label: 'プリーツ制服', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
         { key: 'nurse', category: 'fantasy', label: 'セクシーナース', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
         { key: 'maid', category: 'fantasy', label: 'フレンチメイド', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
         { key: 'office', category: 'fantasy', label: 'オフィス風', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
         notLoggedIn: "未ログイン",
-        loginToSeeCredits: "ログインしてクレジット表示",
+        loginToSeeCredits: "ログインしてクレジットを表示",
         creditSingular: "{n} クレジット利用可能",
         creditPlural: "{n} クレジット利用可能",
         creditsWord: "クレジット",
@@ -446,47 +446,47 @@
         imagePlural: "枚",
         imagesLabel: "枚数",
         generateVerb: "生成",
-        payCrypto: "Cryptoで支払う",
-        opening: "開いています...",
-        creatingCheckout: "安全なcrypto checkoutを作成中...",
-        checkoutFail: "checkoutを作成できませんでした。",
+        payCrypto: "暗号資産で支払う",
+        opening: "開いています…",
+        creatingCheckout: "安全な暗号資産チェックアウトを作成中…",
+        checkoutFail: "チェックアウトを作成できませんでした。",
         generatedResult: "生成結果",
         tabHot: "人気",
         tabClothes: "服装",
-        tabFantasy: "幻想",
+        tabFantasy: "ファンタジー",
         uploadHint: "JPG、PNG、WebP 最大12 MB",
         readFail: "選択した写真を読み取れませんでした。",
         missingPhoto: "先に人物写真をアップロードしてください。",
-        termsRequired: "18歳以上で写真の権利があることを確認してください。",
-        promptRequired: "先にプリセットを選ぶかプロンプトを入力してください。",
-        copied: "コピー済み",
+        termsRequired: "18歳以上であり、写真の使用権があることを確認してください。",
+        promptRequired: "先にプリセットを選ぶか、プロンプトを入力してください。",
+        copied: "コピーしました",
         copy: "コピー",
-        readingUpload: "アップロード読み込み中...",
-        generating: "生成中...通常1分以内です。",
+        readingUpload: "アップロードを読み込み中…",
+        generating: "生成中…通常1分以内で完了します。",
         doneBalance: "完了。残高：{balance}。",
-        outOfCredits: "クレジットがありません。下でチャージして続行。",
+        outOfCredits: "クレジットが不足しています。下でチャージして続けてください。",
         loginFirst: "先にGoogleでログインしてください。",
         genericError: "問題が発生しました。",
-        myAccount: "My account",
-        signedIn: "Signed in",
-        getCredits: "Get credits",
-        contactSupport: "Contact support",
-        logout: "Logout",
-        payCard: "Pay by card",
-        linkTelegram: "Link Telegram",
-        telegramLinkedShort: "Telegram linked",
-        bestValue: "Popular",
-        topupTitle: "Ready for another image?",
-        topupCopy: "Pick a pack and keep generating on the website.",
-        topupEmptyTitle: "You are out of credits",
-        topupEmptyCopy: "Choose a pack and keep generating in seconds.",
-        linkingTelegram: "Opening Telegram link...",
-        telegramLinkFail: "Could not create Telegram link.",
-        telegramLinked: "Telegram is linked.",
-        telegramLinkOpened: "Confirm the link in Telegram, then come back here.",
-        imgAlt: "AI undress結果",
-        referralSingular: "アクティブ紹介ごとに{reward}クレジット。現在{count}件の有効招待。",
-        referralPlural: "アクティブ紹介ごとに{reward}クレジット。現在{count}件の有効招待。"
+        myAccount: "マイアカウント",
+        signedIn: "ログイン中",
+        getCredits: "クレジットを取得",
+        contactSupport: "サポートに問い合わせ",
+        logout: "ログアウト",
+        payCard: "カードで支払う",
+        linkTelegram: "Telegramを連携",
+        telegramLinkedShort: "Telegram連携済み",
+        bestValue: "人気",
+        topupTitle: "もう1枚生成しますか？",
+        topupCopy: "パックを選んで、サイトで生成を続けましょう。",
+        topupEmptyTitle: "クレジットがなくなりました",
+        topupEmptyCopy: "パックを選べば、数秒で生成を再開できます。",
+        linkingTelegram: "Telegram連携を開いています…",
+        telegramLinkFail: "Telegram連携を作成できませんでした。",
+        telegramLinked: "Telegramが連携されました。",
+        telegramLinkOpened: "Telegramで連携を確認してから、こちらに戻ってください。",
+        imgAlt: "AI脱衣の結果",
+        referralSingular: "有効な紹介1件につき{reward}クレジット。現在、有効な招待は{count}件です。",
+        referralPlural: "有効な紹介1件につき{reward}クレジット。現在、有効な招待は{count}件です。"
       }
     };
   </script>
@@ -497,6 +497,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260815-clickid" defer></script>
+  <script src="../assets/site.js?v=20260816-i18n" defer></script>
 </body>
 </html>

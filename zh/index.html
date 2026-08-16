@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon — AI Undress 生成器 | 全裸、微型比基尼、BDSM、乳胶</title>
-  <meta name="description" content="上传照片，选择预设，直接在网站生成。" />
+  <title>UndressGoon — AI 脱衣生成器 | 全裸、微型比基尼、BDSM、乳胶</title>
+  <meta name="description" content="直接在网站上进行 AI 成人图像生成。上传你拥有使用权的照片，选择预设，生成私密的成人幻想图像。" />
   <meta name="keywords" content="AI脱衣, undress AI, 脱衣机器人, telegram脱衣, undressgoon" />
   <meta name="theme-color" content="#070709" />
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon — AI Undress 生成器 | 全裸、微型比基尼、BDSM、乳胶" />
-  <meta property="og:description" content="上传照片，选择预设，直接在网站生成。" />
+  <meta property="og:title" content="UndressGoon — AI 脱衣生成器" />
+  <meta property="og:description" content="上传照片，选择预设，直接在网站上生成。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/zh/" />
   <meta property="og:image" content="https://undressgoon.app/results/thumbs/1.webp" />
@@ -29,8 +29,8 @@
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="UndressGoon — AI Undress 生成器 | 全裸、微型比基尼、BDSM、乳胶" />
-  <meta name="twitter:description" content="上传照片，选择预设，直接在网站生成。" />
+  <meta name="twitter:title" content="UndressGoon — AI 脱衣生成器" />
+  <meta name="twitter:description" content="上传照片，选择预设，直接在网站上生成。" />
   <meta name="twitter:image" content="https://undressgoon.app/results/thumbs/1.webp" />
 
   <script type="application/ld+json">
@@ -42,7 +42,7 @@
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any (web browser)",
   "inLanguage": "zh",
-  "description": "上传照片，选择预设，直接在网站生成。",
+  "description": "在网页上进行 AI 成人图像生成。上传你拥有使用权的照片，选择预设，生成私密的成人图像。",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -59,21 +59,21 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260815-clickid" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260816-i18n" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260815-clickid" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260816-i18n" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
 
   <header>
     <div class="container header-inner">
-      <a class="logo" href="../index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <a class="logo" href="../index.html" aria-label="UndressGoon 首页"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
       <div class="header-right">
-        <nav class="lang-switch" aria-label="Language">
-          <select aria-label="Select language">
+        <nav class="lang-switch" aria-label="语言">
+          <select aria-label="选择语言">
           <option value="../index.html">EN</option>
           <option value="../es/index.html">ES</option>
           <option value="../pt/index.html">PT</option>
@@ -85,25 +85,25 @@
           </select>
         </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>生成</a>
-        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="切换到浅色主题" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
             <span class="account-trigger-text">
-              <strong id="site-account-name">My account</strong>
-              <small id="site-account-credits">0 credits</small>
+              <strong id="site-account-name">我的账户</strong>
+              <small id="site-account-credits">0 额度</small>
             </span>
             <i data-lucide="chevron-down"></i>
           </button>
           <div class="account-menu" id="site-account-menu" hidden>
             <div class="account-menu-head">
-              <strong id="account-email">Signed in</strong>
-              <span id="account-menu-credits">0 credits available</span>
+              <strong id="account-email">已登录</strong>
+              <span id="account-menu-credits">可用 0 额度</span>
             </div>
-            <button type="button" id="account-topup"><i data-lucide="coins"></i> Get credits</button>
-            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Link Telegram</button>
-            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Contact support</a>
-            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> 获取额度</button>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> 关联 Telegram</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> 联系客服</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> 退出登录</button>
           </div>
         </div>
       </div>
@@ -112,13 +112,13 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">AI undress 生成器</div>
-<h1>用 AI 处理任何照片。</h1>
-      <p class="hero-sub">上传照片，选择预设，或直接写自己的提示词。Google 登录后即可领取免费点数。</p>
+      <div class="badge">AI 脱衣生成器</div>
+<h1>用 AI 给任何照片脱衣。</h1>
+      <p class="hero-sub">上传照片，选择预设，或直接写下你自己的提示词。Google 登录后即可领取免费额度。</p>
       <div class="cta-group">
         <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>打开生成器</a>
       </div>
-      <p class="free-note"><strong>免费点数</strong> · Google 登录 · 无需银行卡</p>
+      <p class="free-note"><strong>免费开始</strong> · 无需银行卡 · 仅限 18+</p>
       <div class="trust-row">
         <span><i data-lucide="zap"></i> 15-40 秒出图</span>
         <span><i data-lucide="shield-check"></i> 私密网页会话</span>
@@ -137,19 +137,19 @@
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
           <div class="login-box" id="login-box">
-            <p>登录可证明免费额度属于真实用户。之后你就能在这里生成。</p>
-            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> 继续使用 Google</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Continue with Email</button></div>
+            <p>立即登录，领取你的免费额度。无需银行卡。</p>
+            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> 使用 Google 继续</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> 使用邮箱继续</button></div>
           <form class="email-auth" id="email-form" hidden>
             <input type="email" id="email-input" name="email" autocomplete="email" placeholder="you@email.com" required />
-            <button type="submit" class="btn btn-accent" id="email-send">Send code</button>
+            <button type="submit" class="btn btn-accent" id="email-send">发送验证码</button>
           </form>
           <form class="email-auth" id="email-code-form" hidden>
             <p class="email-sent-copy" id="email-sent-copy"></p>
-            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6-digit code" required />
-            <button type="submit" class="btn btn-accent" id="email-verify">Verify &amp; continue</button>
+            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6 位验证码" required />
+            <button type="submit" class="btn btn-accent" id="email-verify">验证并继续</button>
             <div class="email-auth-links">
-              <button type="button" class="link-btn" id="email-resend">Resend code</button>
-              <button type="button" class="link-btn" id="email-back">Use a different email</button>
+              <button type="button" class="link-btn" id="email-resend">重新发送验证码</button>
+              <button type="button" class="link-btn" id="email-back">换一个邮箱</button>
             </div>
           </form>
           <p class="login-error" id="login-error" hidden></p>
@@ -162,8 +162,8 @@
               <small id="referral-copy">有人加入并生成后，你会获得奖励额度。</small>
             </div>
             <div class="referral-actions">
-              <input id="referral-link" readonly value="" aria-label="Referral link" />
-              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+              <input id="referral-link" readonly value="" aria-label="邀请链接" />
+              <button type="button" id="copy-referral"><i data-lucide="copy"></i> 复制</button>
             </div>
           </div>
 
@@ -176,17 +176,17 @@
               <span class="upload-tip">清晰正脸照片效果最好。</span>
             </label>
 
-            <div class="mode-row" role="group" aria-label="Generation mode">
+            <div class="mode-row" role="group" aria-label="生成模式">
               <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> 服装编辑</label>
               <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> 场景</label>
             </div>
 
             <div class="preset-picker">
               <div class="preset-top">
-                <span class="field-label">CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT</span>
-                <button type="button" id="preset-clear" hidden>Custom prompt</button>
+                <span class="field-label">选择一个预设，或直接写下你自己的提示词</span>
+                <button type="button" id="preset-clear" hidden>自定义提示词</button>
               </div>
-              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Preset categories"></div>
+              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="预设分类"></div>
               <div class="preset-grid" id="preset-grid"></div>
             </div>
 
@@ -195,8 +195,8 @@
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>I confirm that I am 18+ and have the necessary rights and consent to use this image.
-                <small class="consent-links"><a href="../terms.html">Terms</a> &middot; <a href="../acceptable-use.html">Acceptable Use</a> &middot; <a href="../consent.html">Consent Policy</a></small>
+              <span>我确认我已年满 18 岁，并拥有使用这张照片所需的权利和同意。
+                <small class="consent-links"><a href="../terms.html">条款</a> &middot; <a href="../acceptable-use.html">使用规范</a> &middot; <a href="../consent.html">同意政策</a></small>
               </span>
             </label>
 
@@ -225,60 +225,60 @@
       <div class="stat">
         <i data-lucide="shield-check"></i>
         <div class="stat-num">18+</div>
-        <div class="stat-label">Adults only</div>
+        <div class="stat-label">仅限成人</div>
       </div>
       <div class="stat">
         <i data-lucide="ticket"></i>
         <div class="stat-num">1</div>
-        <div class="stat-label">Credit per web image</div>
+        <div class="stat-label">每张网页图片消耗额度</div>
       </div>
       <div class="stat">
         <i data-lucide="timer"></i>
         <div class="stat-num">15-40s</div>
-        <div class="stat-label">Typical generation</div>
+        <div class="stat-label">典型生成时间</div>
       </div>
       <div class="stat">
         <i data-lucide="pen-line"></i>
         <div class="stat-num">900</div>
-        <div class="stat-label">Prompt characters</div>
+        <div class="stat-label">提示词字符数</div>
       </div>
     </div>
   </div>
 
   <section class="section">
     <div class="container">
-      <h2 class="section-title">把任何癖好变成现实</h2>
-      <p class="section-sub">描述无上限。完全自定义提示词已开放。</p>
+      <h2 class="section-title">把成人幻想变成精修 AI 图像</h2>
+      <p class="section-sub">描述你想要的成人风格。在安全规则范围内，支持完全自定义提示词。</p>
       <div class="features">
         <div class="feature">
           <div class="feature-icon">✍️</div>
-          <h3>完全自定义提示</h3>
-          <p>精确描述你想要的。任何服装、姿势、癖好——AI会跟随。</p>
+          <h3>完全自定义提示词</h3>
+          <p>精确描述你想要的成人风格。服装、姿势、造型、幻想场景，在规则范围内都能实现。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">🔥</div>
-          <h3>AI脱衣</h3>
-          <p>一键脱衣。全裸或你描述的任意暴露程度。</p>
+          <h3>AI 一键脱衣</h3>
+          <p>一键脱衣。全裸、露胸、露下身，或你描述的任意暴露程度。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">👙</div>
           <h3>微型比基尼与内衣</h3>
-          <p>极小比基尼、透视内衣、湿衬衫等。</p>
+          <p>超小微型比基尼、透视内衣、湿身白衬衫、百褶制服等等。</p>
         </div>
         <div class="feature">
           <div class="feature-icon">⛓</div>
-          <h3>BDSM与乳胶</h3>
-          <p>束缚带、项圈、紧身乳胶、皮革、油光肌肤。</p>
+          <h3>BDSM 与乳胶</h3>
+          <p>束缚带、项圈、紧身乳胶连体衣、皮革、油光肌肤——成人幻想造型。</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">👕</div>
-          <h3>换装</h3>
-          <p>发送任意服装照片，AI穿到人物身上。</p>
+          <div class="feature-icon">🔒</div>
+          <h3>面部与身材锁定</h3>
+          <p>所有编辑都会保留上传照片中的同一张脸、身材、构图和拍摄风格。</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🎭</div>
-          <h3>姿势与面部锁定</h3>
-          <p>两张图结合：保留面部，复制另一张的姿势或服装。</p>
+          <div class="feature-icon">📷</div>
+          <h3>场景生成器</h3>
+          <p>把同一个人放进镜子自拍、酒店房间、浴室、霓虹卧室以及自定义场景。</p>
         </div>
       </div>
       <div class="tags">
@@ -288,10 +288,10 @@
         <span class="tag">乳胶</span>
         <span class="tag">湿身</span>
         <span class="tag">内衣</span>
-        <span class="tag">制服</span>
-        <span class="tag">油光</span>
-        <span class="tag">自定义提示</span>
-        <span class="tag">任意癖好</span>
+        <span class="tag">百褶制服</span>
+        <span class="tag">油光肌肤</span>
+        <span class="tag">自定义提示词</span>
+        <span class="tag">自定义幻想</span>
       </div>
     </div>
   </section>
@@ -308,28 +308,28 @@
           <div class="price">$0 <span>/ 试用</span></div>
           <ul>
             <li>即时免费额度</li>
-            <li>自定义提示词</li>
-            <li>No card needed to start</li>
-            <li>直接在网站使用</li>
+            <li>完全自定义提示词</li>
+            <li>无需银行卡即可开始</li>
+            <li>直接在网站上使用</li>
           </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>领取免费额度 →</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>领取免费额度</a>
         </div>
         <div class="value-card">
           <h3>更多额度</h3>
-          <div class="price">Pleated Uniform? <span>/ Pleated Uniform??</span></div>
+          <div class="price">站内充值 <span>/ 随时</span></div>
           <ul>
-            <li>免费用完后可购额度包</li>
-            <li>更长连续使用</li>
-            <li>同画质更多数量</li>
-            <li>喜欢再付费</li>
+            <li>免费额度用完后随时充值</li>
+            <li>连刷更畅快</li>
+            <li>同样画质，更多数量</li>
+            <li>需要时也支持银行卡</li>
           </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>登录，稍后升级</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>先生成，稍后充值</a>
         </div>
       </div>
       <div class="proof-strip">
-        <div class="proof-chip"><strong>Try before paying.</strong> Use the free credit to judge quality first.</div>
-        <div class="proof-chip"><strong>Custom prompts.</strong> Describe the adult edit you want within the rules.</div>
-        <div class="proof-chip"><strong>Private account flow.</strong> Upload, generate, then download from your session.</div>
+        <div class="proof-chip"><strong>先试后付。</strong>先用免费额度判断画质。</div>
+        <div class="proof-chip"><strong>自定义提示词。</strong>在规则范围内描述你想要的成人编辑。</div>
+        <div class="proof-chip"><strong>私密账户流程。</strong>上传、生成，然后从你的会话中下载。</div>
       </div>
 </div>
   </section>
@@ -337,39 +337,39 @@
   <section class="section">
     <div class="container">
       <div class="cta-band">
-        <h2>你的癖好。你的提示。你的现实。</h2>
-        <p>允许完全自定义提示。精确描述你想要的——UndressGoon几秒内变成图片。</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>打开生成器</a>
-        <p class="urgency">🎁 免费点数 · Google 登录 · 无需银行卡 · 18+</p>
+        <h2>你的癖好。你的提示词。你的现实。</h2>
+        <p>支持完全自定义提示词。描述你想要的服装、姿势或幻想场景，UndressGoon 几秒内就能生成成人 AI 图像。</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>立即打开 UndressGoon</a>
+        <p class="urgency">免费开始 · 无需银行卡 · 仅限 18+</p>
       </div>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      <a class="logo footer-logo" href="../index.html" aria-label="UndressGoon home">
+      <a class="logo footer-logo" href="../index.html" aria-label="UndressGoon 首页">
         <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
       </a>
       <p class="footer-seo">
-        UndressGoon is an adult-only AI image generation service for consenting adults and fictional adult fantasy edits.
-        Upload an image you have the right to use, choose a preset or custom prompt, and spend credits for private web generations.
+        UndressGoon 是一项仅限成人的 AI 图像生成服务，面向自愿的成年人以及虚构的成人幻想编辑。
+        上传你拥有使用权的图片，选择预设或自定义提示词，用额度进行私密的网页生成。
       </p>
-      <nav class="footer-links" aria-label="Legal links">
-        <a href="../terms.html">Terms</a>
-        <a href="../privacy.html">Privacy</a>
-        <a href="../acceptable-use.html">Acceptable Use</a>
-        <a href="../consent.html">Consent &amp; Image Rights</a>
-        <a href="../refunds.html">Refunds</a>
-        <a href="../report-abuse.html">Report Abuse</a>
+      <nav class="footer-links" aria-label="法律链接">
+        <a href="../terms.html">条款</a>
+        <a href="../privacy.html">隐私政策</a>
+        <a href="../acceptable-use.html">使用规范</a>
+        <a href="../consent.html">同意与图像权利</a>
+        <a href="../refunds.html">退款</a>
+        <a href="../report-abuse.html">举报滥用</a>
         <a href="../dmca.html">DMCA</a>
-        <a href="../contact.html">Contact</a>
-        <a href="../age-safety.html">Age &amp; Safety</a>
+        <a href="../contact.html">联系我们</a>
+        <a href="../age-safety.html">年龄与安全</a>
       </nav>
-      <p class="operator-line">UndressGoon is operated by ZIAYING LLC, a New Mexico, United States limited liability company.</p>
+      <p class="operator-line">UndressGoon 由 ZIAYING LLC 运营，该公司是一家位于美国新墨西哥州的有限责任公司。</p>
       <p class="disclaimer">
-        Adult only (18+). Use only photos you have the lawful right and required consent to use.
-        The website does not publish a public result gallery; uploads, prompts, generated results, and account/session details may be sent to a private moderation or operations channel for abuse prevention, support, fraud review, and service security.
-        Copyright &copy; 2026 ZIAYING LLC. All rights reserved.
+        仅限成人（18+）。请仅使用你拥有合法权利并已获得必要同意的照片。
+        本网站不会公开展示结果图库；上传内容、提示词、生成结果以及账户/会话详情，可能会被发送至私密的审核或运营渠道，用于防止滥用、客户支持、欺诈审查和服务安全。
+        版权所有 &copy; 2026 ZIAYING LLC。保留所有权利。
       </p>
     </div>
   </footer>
@@ -389,25 +389,25 @@
   </div>
 
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
-    <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
+    <button class="topup-backdrop" type="button" data-close-topup aria-label="关闭"></button>
     <div class="topup-dialog">
-      <button class="modal-close" type="button" id="topup-close" aria-label="Close"><i data-lucide="x"></i></button>
-      <span class="mini-label" id="topup-eyebrow">Credits</span>
-      <h3 id="topup-title">Ready for another image?</h3>
-      <p id="topup-copy">Pick a pack and keep generating on the website.</p>
+      <button class="modal-close" type="button" id="topup-close" aria-label="关闭"><i data-lucide="x"></i></button>
+      <span class="mini-label" id="topup-eyebrow">额度</span>
+      <h3 id="topup-title">再来一张？</h3>
+      <p id="topup-copy">选择一个额度包，在网站上继续生成。</p>
       <div class="discount-box">
-        <label for="discount-code">Discount code</label>
+        <label for="discount-code">优惠码</label>
         <div class="discount-row">
           <input id="discount-code" name="discount-code" type="text" inputmode="text" autocomplete="off" placeholder="COMEBACK20" />
-          <button type="button" id="discount-apply">Apply</button>
+          <button type="button" id="discount-apply">应用</button>
         </div>
         <small class="discount-note" id="discount-note"></small>
       </div>
       <div class="pack-grid" id="pack-grid"></div>
       <div class="topup-actions">
-        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Link Telegram</button>
+        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> 关联 Telegram</button>
       </div>
-      <small class="topup-note">Discreet billing: your bank statement shows our billing name, not UndressGoon. Card also works in Telegram.</small>
+      <small class="topup-note">隐私计费：你的银行对账单上显示的是我们的计费名称，而不是 UndressGoon。银行卡也可在 Telegram 中使用。</small>
     </div>
   </div>
   <script>
@@ -430,7 +430,7 @@
         { key: 'latex', category: 'clothes', label: '乳胶', prompt: 'shiny tight black latex catsuit unzipped down the front' },
         { key: 'tights', category: 'clothes', label: '仅连裤袜', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
         { key: 'stockings', category: 'clothes', label: '仅长筒袜', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
-        { key: 'pleated_uniform', category: 'fantasy', label: 'Pleated Uniform', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'pleated_uniform', category: 'fantasy', label: '百褶制服', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
         { key: 'nurse', category: 'fantasy', label: '性感护士', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
         { key: 'maid', category: 'fantasy', label: '法式女仆', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
         { key: 'office', category: 'fantasy', label: '办公室造型', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
@@ -446,10 +446,10 @@
         imagePlural: "张图片",
         imagesLabel: "图片数量",
         generateVerb: "生成",
-        payCrypto: "Crypto 付款",
-        opening: "正在打开...",
-        creatingCheckout: "正在创建安全 crypto checkout...",
-        checkoutFail: "无法创建 checkout。",
+        payCrypto: "加密货币付款",
+        opening: "正在打开…",
+        creatingCheckout: "正在创建安全的加密货币结账…",
+        checkoutFail: "无法创建结账页面。",
         generatedResult: "生成结果",
         tabHot: "最热",
         tabClothes: "服装",
@@ -461,30 +461,30 @@
         promptRequired: "请先选择预设或输入提示词。",
         copied: "已复制",
         copy: "复制",
-        readingUpload: "正在读取上传...",
-        generating: "正在生成...通常不到一分钟。",
+        readingUpload: "正在读取上传的照片…",
+        generating: "正在生成…通常不到一分钟。",
         doneBalance: "完成。余额：{balance}。",
         outOfCredits: "额度已用完。请在下方充值继续生成。",
         loginFirst: "请先使用 Google 登录。",
         genericError: "出了点问题。",
-        myAccount: "My account",
-        signedIn: "Signed in",
-        getCredits: "Get credits",
-        contactSupport: "Contact support",
-        logout: "Logout",
-        payCard: "Pay by card",
-        linkTelegram: "Link Telegram",
-        telegramLinkedShort: "Telegram linked",
-        bestValue: "Popular",
-        topupTitle: "Ready for another image?",
-        topupCopy: "Pick a pack and keep generating on the website.",
-        topupEmptyTitle: "You are out of credits",
-        topupEmptyCopy: "Choose a pack and keep generating in seconds.",
-        linkingTelegram: "Opening Telegram link...",
-        telegramLinkFail: "Could not create Telegram link.",
-        telegramLinked: "Telegram is linked.",
-        telegramLinkOpened: "Confirm the link in Telegram, then come back here.",
-        imgAlt: "AI undress 结果",
+        myAccount: "我的账户",
+        signedIn: "已登录",
+        getCredits: "获取额度",
+        contactSupport: "联系客服",
+        logout: "退出登录",
+        payCard: "银行卡付款",
+        linkTelegram: "关联 Telegram",
+        telegramLinkedShort: "已关联 Telegram",
+        bestValue: "热门",
+        topupTitle: "再来一张？",
+        topupCopy: "选择一个额度包，在网站上继续生成。",
+        topupEmptyTitle: "额度已用完",
+        topupEmptyCopy: "选择一个额度包，几秒内继续生成。",
+        linkingTelegram: "正在打开 Telegram 关联链接…",
+        telegramLinkFail: "无法创建 Telegram 关联链接。",
+        telegramLinked: "Telegram 已关联。",
+        telegramLinkOpened: "请在 Telegram 中确认关联，然后返回这里。",
+        imgAlt: "AI 脱衣结果",
         referralSingular: "每个活跃邀请奖励 {reward} 个额度。目前 {count} 个活跃邀请。",
         referralPlural: "每个活跃邀请奖励 {reward} 个额度。目前 {count} 个活跃邀请。"
       }
@@ -497,6 +497,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260815-clickid" defer></script>
+  <script src="../assets/site.js?v=20260816-i18n" defer></script>
 </body>
 </html>

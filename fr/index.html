@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>UndressGoon — Générateur IA Undress | Nu, Micro Bikini, BDSM, Latex</title>
   <meta name="description" content="Importe une photo, choisis un preset et génère directement sur le site. Nu complet, micro bikini, BDSM, latex et prompts personnalisés." />
-  <meta name="keywords" content="déshabiller IA, undress IA, générateur nude, g?n?rateur undress, web undress, undressgoon" />
+  <meta name="keywords" content="déshabiller IA, undress IA, générateur nude, générateur undress, web undress, undressgoon" />
   <meta name="theme-color" content="#070709" />
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
@@ -59,21 +59,21 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260815-clickid" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260816-i18n" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260815-clickid" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260816-i18n" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
 
   <header>
     <div class="container header-inner">
-      <a class="logo" href="../index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <a class="logo" href="../index.html" aria-label="Accueil UndressGoon"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
       <div class="header-right">
-        <nav class="lang-switch" aria-label="Language">
-          <select aria-label="Select language">
+        <nav class="lang-switch" aria-label="Langue">
+          <select aria-label="Choisir la langue">
           <option value="../index.html">EN</option>
           <option value="../es/index.html">ES</option>
           <option value="../pt/index.html">PT</option>
@@ -85,25 +85,25 @@
           </select>
         </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>Générer</a>
-        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Passer au thème clair" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
             <span class="account-trigger-text">
-              <strong id="site-account-name">My account</strong>
-              <small id="site-account-credits">0 credits</small>
+              <strong id="site-account-name">Mon compte</strong>
+              <small id="site-account-credits">0 crédit</small>
             </span>
             <i data-lucide="chevron-down"></i>
           </button>
           <div class="account-menu" id="site-account-menu" hidden>
             <div class="account-menu-head">
-              <strong id="account-email">Signed in</strong>
-              <span id="account-menu-credits">0 credits available</span>
+              <strong id="account-email">Connecté</strong>
+              <span id="account-menu-credits">0 crédit disponible</span>
             </div>
-            <button type="button" id="account-topup"><i data-lucide="coins"></i> Get credits</button>
-            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Link Telegram</button>
-            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Contact support</a>
-            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> Obtenir des crédits</button>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Lier Telegram</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Contacter le support</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Déconnexion</button>
           </div>
         </div>
       </div>
@@ -112,16 +112,16 @@
 
   <section class="hero">
     <div class="container">
-      <div class="badge">Generateur IA undress</div>
-<h1>Deshabille n importe quelle photo avec l IA.</h1>
-      <p class="hero-sub">Uploade une photo, choisis un preset ou ecris ton propre prompt. Ton credit gratuit se debloque apres la connexion Google.</p>
+      <div class="badge">Générateur IA undress</div>
+<h1>Déshabille n'importe quelle photo avec l'IA.</h1>
+      <p class="hero-sub">Importe une photo, choisis un preset ou écris ton propre prompt. Ton crédit gratuit se débloque après la connexion Google.</p>
       <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Ouvrir le generateur</a>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Ouvrir le générateur</a>
       </div>
-      <p class="free-note"><strong>Commence gratuitement</strong> · sans carte · 18+</p>
+      <p class="free-note"><strong>Commence gratuitement</strong> · sans carte · 18+ uniquement</p>
       <div class="trust-row">
-        <span><i data-lucide="zap"></i> Resultats 15-40s</span>
-        <span><i data-lucide="shield-check"></i> Session web privee</span>
+        <span><i data-lucide="zap"></i> Résultats 15-40s</span>
+        <span><i data-lucide="shield-check"></i> Session web privée</span>
         <span><i data-lucide="badge-check"></i> 18+ uniquement</span>
       </div>
     </div>
@@ -130,26 +130,26 @@
   <section class="generator-section" id="generate">
     <div class="container">
       <div class="generator-head">
-        <h2>Generer maintenant</h2>
-        <p>Uploade d abord. Presets et prompts personnalises sont juste dessous.</p>
+        <h2>Générer maintenant</h2>
+        <p>Importe d'abord. Les presets et les prompts personnalisés sont juste en dessous.</p>
       </div>
 
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
           <div class="login-box" id="login-box">
-            <p>La connexion prouve qu’un vrai utilisateur possède le crédit gratuit. Ensuite tu peux générer ici.</p>
-            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continuer avec Google</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Continue with Email</button></div>
+            <p>Connecte-toi pour récupérer ton crédit gratuit. Sans carte.</p>
+            <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continuer avec Google</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Continuer avec Email</button></div>
           <form class="email-auth" id="email-form" hidden>
-            <input type="email" id="email-input" name="email" autocomplete="email" placeholder="you@email.com" required />
-            <button type="submit" class="btn btn-accent" id="email-send">Send code</button>
+            <input type="email" id="email-input" name="email" autocomplete="email" placeholder="toi@email.com" required />
+            <button type="submit" class="btn btn-accent" id="email-send">Envoyer le code</button>
           </form>
           <form class="email-auth" id="email-code-form" hidden>
             <p class="email-sent-copy" id="email-sent-copy"></p>
-            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6-digit code" required />
-            <button type="submit" class="btn btn-accent" id="email-verify">Verify &amp; continue</button>
+            <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="Code à 6 chiffres" required />
+            <button type="submit" class="btn btn-accent" id="email-verify">Vérifier et continuer</button>
             <div class="email-auth-links">
-              <button type="button" class="link-btn" id="email-resend">Resend code</button>
-              <button type="button" class="link-btn" id="email-back">Use a different email</button>
+              <button type="button" class="link-btn" id="email-resend">Renvoyer le code</button>
+              <button type="button" class="link-btn" id="email-back">Utiliser un autre email</button>
             </div>
           </form>
           <p class="login-error" id="login-error" hidden></p>
@@ -162,8 +162,8 @@
               <small id="referral-copy">Tu gagnes des crédits bonus quand quelqu’un rejoint et génère.</small>
             </div>
             <div class="referral-actions">
-              <input id="referral-link" readonly value="" aria-label="Referral link" />
-              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+              <input id="referral-link" readonly value="" aria-label="Lien de parrainage" />
+              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copier</button>
             </div>
           </div>
 
@@ -176,17 +176,17 @@
               <span class="upload-tip">Une photo nette de face fonctionne mieux.</span>
             </label>
 
-            <div class="mode-row" role="group" aria-label="Generation mode">
-              <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Modifier outfit</label>
+            <div class="mode-row" role="group" aria-label="Mode de génération">
+              <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Modifier la tenue</label>
               <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Scène</label>
             </div>
 
             <div class="preset-picker">
               <div class="preset-top">
-                <span class="field-label">CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT</span>
-                <button type="button" id="preset-clear" hidden>Custom prompt</button>
+                <span class="field-label">CHOISIS UN PRESET OU ÉCRIS DIRECTEMENT TON PROPRE PROMPT</span>
+                <button type="button" id="preset-clear" hidden>Prompt personnalisé</button>
               </div>
-              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Preset categories"></div>
+              <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Catégories de presets"></div>
               <div class="preset-grid" id="preset-grid"></div>
             </div>
 
@@ -195,8 +195,8 @@
 
             <label class="consent-line">
               <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
-              <span>I confirm that I am 18+ and have the necessary rights and consent to use this image.
-                <small class="consent-links"><a href="../terms.html">Terms</a> &middot; <a href="../acceptable-use.html">Acceptable Use</a> &middot; <a href="../consent.html">Consent Policy</a></small>
+              <span>Je confirme avoir 18 ans ou plus et disposer des droits et du consentement nécessaires pour utiliser cette image.
+                <small class="consent-links"><a href="../terms.html">Conditions</a> &middot; <a href="../acceptable-use.html">Utilisation acceptable</a> &middot; <a href="../consent.html">Politique de consentement</a></small>
               </span>
             </label>
 
@@ -225,22 +225,22 @@
       <div class="stat">
         <i data-lucide="shield-check"></i>
         <div class="stat-num">18+</div>
-        <div class="stat-label">Adults only</div>
+        <div class="stat-label">Réservé aux adultes</div>
       </div>
       <div class="stat">
         <i data-lucide="ticket"></i>
         <div class="stat-num">1</div>
-        <div class="stat-label">Credit per web image</div>
+        <div class="stat-label">Crédit par image web</div>
       </div>
       <div class="stat">
         <i data-lucide="timer"></i>
         <div class="stat-num">15-40s</div>
-        <div class="stat-label">Typical generation</div>
+        <div class="stat-label">Génération typique</div>
       </div>
       <div class="stat">
         <i data-lucide="pen-line"></i>
         <div class="stat-num">900</div>
-        <div class="stat-label">Prompt characters</div>
+        <div class="stat-label">Caractères de prompt</div>
       </div>
     </div>
   </div>
@@ -258,12 +258,12 @@
         <div class="feature">
           <div class="feature-icon">🔥</div>
           <h3>Retrait de Vêtements IA</h3>
-          <p>Un tap pour dénuder. Nu complet ou le niveau que tu décris.</p>
+          <p>Un clic pour dénuder. Nu complet ou le niveau que tu décris.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">👙</div>
           <h3>Micro Bikini & Lingerie</h3>
-          <p>Micro bikinis, lingerie transparente, chemises mouillées et plus.</p>
+          <p>Micro bikinis, lingerie transparente, chemises mouillées et bien plus.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">⛓</div>
@@ -272,7 +272,7 @@
         </div>
         <div class="feature">
           <div class="feature-icon">👕</div>
-          <h3>Swap de Vêtements</h3>
+          <h3>Échange de Vêtements</h3>
           <p>Envoie une photo de vêtement et l'IA l'habille sur la personne.</p>
         </div>
         <div class="feature">
@@ -288,7 +288,7 @@
         <span class="tag">latex</span>
         <span class="tag">look mouillé</span>
         <span class="tag">lingerie</span>
-        <span class="tag">uniforme plisse</span>
+        <span class="tag">uniforme plissé</span>
         <span class="tag">peau huilée</span>
         <span class="tag">prompt personnalisé</span>
         <span class="tag">tout fantasme</span>
@@ -309,27 +309,27 @@
           <ul>
             <li>Crédits gratuits instantanés</li>
             <li>Prompts personnalisés</li>
-            <li>No card needed to start</li>
+            <li>Sans carte pour commencer</li>
             <li>Fonctionne directement sur le site</li>
           </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Récupérer crédits gratuits →</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Récupérer les crédits gratuits →</a>
         </div>
         <div class="value-card">
           <h3>Plus de crédits</h3>
           <div class="price">Sur le site <span>/ quand tu veux</span></div>
           <ul>
-            <li>Packs quand les gratuits finissent</li>
+            <li>Recharge quand les crédits gratuits sont épuisés</li>
             <li>Sessions plus longues</li>
             <li>Même qualité, plus de volume</li>
             <li>Paye seulement si tu aimes</li>
           </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>G?n?re d?abord, recharge ensuite</a>
+          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Génère d'abord, recharge ensuite</a>
         </div>
       </div>
       <div class="proof-strip">
-        <div class="proof-chip"><strong>Try before paying.</strong> Use the free credit to judge quality first.</div>
-        <div class="proof-chip"><strong>Custom prompts.</strong> Describe the adult edit you want within the rules.</div>
-        <div class="proof-chip"><strong>Private account flow.</strong> Upload, generate, then download from your session.</div>
+        <div class="proof-chip"><strong>Essaie avant de payer.</strong> Utilise le crédit gratuit pour juger la qualité d'abord.</div>
+        <div class="proof-chip"><strong>Prompts personnalisés.</strong> Décris le rendu adulte que tu veux, dans le respect des règles.</div>
+        <div class="proof-chip"><strong>Compte privé.</strong> Importe, génère, puis télécharge depuis ta session.</div>
       </div>
 </div>
   </section>
@@ -339,37 +339,37 @@
       <div class="cta-band">
         <h2>Ton fantasme. Ton prompt. Ta réalité.</h2>
         <p>Prompts personnalisés autorisés. Décris exactement ce que tu veux — UndressGoon le transforme en images en secondes.</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Ouvrir le generateur</a>
-        <p class="urgency">Commence gratuitement · sans carte · 18+</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Ouvrir le générateur</a>
+        <p class="urgency">Commence gratuitement · sans carte · 18+ uniquement</p>
       </div>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      <a class="logo footer-logo" href="../index.html" aria-label="UndressGoon home">
+      <a class="logo footer-logo" href="../index.html" aria-label="Accueil UndressGoon">
         <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
       </a>
       <p class="footer-seo">
-        UndressGoon is an adult-only AI image generation service for consenting adults and fictional adult fantasy edits.
-        Upload an image you have the right to use, choose a preset or custom prompt, and spend credits for private web generations.
+        UndressGoon est un service de génération d'images par IA réservé aux adultes, pensé pour les adultes consentants et les fantasmes adultes fictifs.
+        Importe une image que tu as le droit d'utiliser, choisis un preset ou un prompt personnalisé, et dépense des crédits pour des générations web privées.
       </p>
-      <nav class="footer-links" aria-label="Legal links">
-        <a href="../terms.html">Terms</a>
-        <a href="../privacy.html">Privacy</a>
-        <a href="../acceptable-use.html">Acceptable Use</a>
-        <a href="../consent.html">Consent &amp; Image Rights</a>
-        <a href="../refunds.html">Refunds</a>
-        <a href="../report-abuse.html">Report Abuse</a>
+      <nav class="footer-links" aria-label="Liens légaux">
+        <a href="../terms.html">Conditions</a>
+        <a href="../privacy.html">Confidentialité</a>
+        <a href="../acceptable-use.html">Utilisation acceptable</a>
+        <a href="../consent.html">Consentement et droits d'image</a>
+        <a href="../refunds.html">Remboursements</a>
+        <a href="../report-abuse.html">Signaler un abus</a>
         <a href="../dmca.html">DMCA</a>
         <a href="../contact.html">Contact</a>
-        <a href="../age-safety.html">Age &amp; Safety</a>
+        <a href="../age-safety.html">Âge et sécurité</a>
       </nav>
-      <p class="operator-line">UndressGoon is operated by ZIAYING LLC, a New Mexico, United States limited liability company.</p>
+      <p class="operator-line">UndressGoon est exploité par ZIAYING LLC, une société à responsabilité limitée du Nouveau-Mexique, États-Unis.</p>
       <p class="disclaimer">
-        Adult only (18+). Use only photos you have the lawful right and required consent to use.
-        The website does not publish a public result gallery; uploads, prompts, generated results, and account/session details may be sent to a private moderation or operations channel for abuse prevention, support, fraud review, and service security.
-        Copyright &copy; 2026 ZIAYING LLC. All rights reserved.
+        Réservé aux adultes (18+). Utilise uniquement des photos pour lesquelles tu disposes du droit légal et du consentement requis.
+        Le site ne publie pas de galerie de résultats publique ; les imports, les prompts, les résultats générés et les informations de compte/session peuvent être transmis à un canal privé de modération ou d'exploitation à des fins de prévention des abus, de support, de contrôle anti-fraude et de sécurité du service.
+        Copyright &copy; 2026 ZIAYING LLC. Tous droits réservés.
       </p>
     </div>
   </footer>
@@ -378,7 +378,7 @@
     <div class="sticky-inner">
       <div class="sticky-copy">
         <strong>🎁 Crédits gratuits prêts</strong>
-        <span>Upload · preset · génère</span>
+        <span>Importe · preset · génère</span>
       </div>
       <a href="#generate" class="btn btn-accent" data-generate-cta>Commencer gratuit →</a>
     </div>
@@ -389,25 +389,25 @@
   </div>
 
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
-    <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
+    <button class="topup-backdrop" type="button" data-close-topup aria-label="Fermer"></button>
     <div class="topup-dialog">
-      <button class="modal-close" type="button" id="topup-close" aria-label="Close"><i data-lucide="x"></i></button>
-      <span class="mini-label" id="topup-eyebrow">Credits</span>
-      <h3 id="topup-title">Ready for another image?</h3>
-      <p id="topup-copy">Pick a pack and keep generating on the website.</p>
+      <button class="modal-close" type="button" id="topup-close" aria-label="Fermer"><i data-lucide="x"></i></button>
+      <span class="mini-label" id="topup-eyebrow">Crédits</span>
+      <h3 id="topup-title">Prêt pour une autre image ?</h3>
+      <p id="topup-copy">Choisis un pack et continue à générer sur le site.</p>
       <div class="discount-box">
-        <label for="discount-code">Discount code</label>
+        <label for="discount-code">Code de réduction</label>
         <div class="discount-row">
           <input id="discount-code" name="discount-code" type="text" inputmode="text" autocomplete="off" placeholder="COMEBACK20" />
-          <button type="button" id="discount-apply">Apply</button>
+          <button type="button" id="discount-apply">Appliquer</button>
         </div>
         <small class="discount-note" id="discount-note"></small>
       </div>
       <div class="pack-grid" id="pack-grid"></div>
       <div class="topup-actions">
-        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Link Telegram</button>
+        <button class="telegram-link" type="button" id="telegram-link"><i data-lucide="send"></i> Lier Telegram</button>
       </div>
-      <small class="topup-note">Facturation discrete : votre releve bancaire affiche notre nom de facturation, pas UndressGoon. Carte aussi disponible dans Telegram.</small>
+      <small class="topup-note">Facturation discrète : ton relevé bancaire affiche notre nom de facturation, pas UndressGoon. La carte fonctionne aussi dans Telegram.</small>
     </div>
   </div>
   <script>
@@ -423,16 +423,16 @@
         { key: 'oily', category: 'hot', label: 'Nue Huilée', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
         { key: 'bondage', category: 'hot', label: 'Shibari Nue', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
         { key: 'lingerie', category: 'clothes', label: 'Lingerie Transparente', prompt: 'tiny sheer black lingerie that barely covers anything' },
-        { key: 'crotchless', category: 'clothes', label: 'Ouverte', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
+        { key: 'crotchless', category: 'clothes', label: 'Culotte ouverte', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
         { key: 'bikini', category: 'clothes', label: 'Micro Bikini', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
         { key: 'wet', category: 'clothes', label: 'T-shirt Mouillé', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
         { key: 'bdsm', category: 'clothes', label: 'Harnais BDSM', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
         { key: 'latex', category: 'clothes', label: 'Latex', prompt: 'shiny tight black latex catsuit unzipped down the front' },
         { key: 'tights', category: 'clothes', label: 'Collants Seuls', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
         { key: 'stockings', category: 'clothes', label: 'Bas Seuls', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
-        { key: 'pleated_uniform', category: 'fantasy', label: 'Pleated Uniform', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'pleated_uniform', category: 'fantasy', label: 'Uniforme Plissé', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
         { key: 'nurse', category: 'fantasy', label: 'Infirmière Sexy', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
-        { key: 'maid', category: 'fantasy', label: 'Maid Française', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'maid', category: 'fantasy', label: 'Soubrette', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
         { key: 'office', category: 'fantasy', label: 'Look Bureau', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
@@ -447,43 +447,43 @@
         imagePlural: "images",
         imagesLabel: "Images",
         generateVerb: "Générer",
-        payCrypto: "Payer crypto",
+        payCrypto: "Payer en crypto",
         opening: "Ouverture...",
-        creatingCheckout: "Création du checkout crypto sécurisé...",
-        checkoutFail: "Impossible de créer le checkout.",
+        creatingCheckout: "Création du paiement crypto sécurisé...",
+        checkoutFail: "Impossible de créer le paiement.",
         generatedResult: "Résultat généré",
         tabHot: "Plus hot",
         tabClothes: "Vêtements",
-        tabFantasy: "Fantaisie",
+        tabFantasy: "Fantasme",
         uploadHint: "JPG, PNG ou WebP jusqu’à 12 MB",
         readFail: "Impossible de lire la photo sélectionnée.",
-        missingPhoto: "Importe d’abord une photo de personne.",
+        missingPhoto: "Importe d’abord une photo.",
         termsRequired: "Confirme avoir 18+ et les droits sur cette photo.",
         promptRequired: "Choisis un preset ou écris un prompt d’abord.",
         copied: "Copié",
         copy: "Copier",
-        readingUpload: "Lecture de l’upload...",
+        readingUpload: "Lecture de la photo...",
         generating: "Génération... cela prend souvent moins d’une minute.",
         doneBalance: "Terminé. Solde : {balance}.",
         outOfCredits: "Plus de crédits. Recharge ci-dessous pour continuer.",
         loginFirst: "Connecte-toi avec Google d’abord.",
-        genericError: "Une erreur est arrivée.",
+        genericError: "Une erreur s’est produite.",
         myAccount: "Mon compte",
-        signedIn: "Connecte",
-        getCredits: "Obtenir credits",
-        contactSupport: "Contacter support",
-        logout: "Deconnexion",
+        signedIn: "Connecté",
+        getCredits: "Obtenir des crédits",
+        contactSupport: "Contacter le support",
+        logout: "Déconnexion",
         payCard: "Payer par carte",
         linkTelegram: "Lier Telegram",
-        telegramLinkedShort: "Telegram lie",
-        bestValue: "Populaire",
-        topupTitle: "Pret pour une autre image ?",
+        telegramLinkedShort: "Telegram lié",
+        bestValue: "Meilleure offre",
+        topupTitle: "Prêt pour une autre image ?",
         topupCopy: "Choisis un pack et continue sur le site.",
-        topupEmptyTitle: "Plus de credits",
+        topupEmptyTitle: "Plus de crédits",
         topupEmptyCopy: "Choisis un pack et relance en quelques secondes.",
         linkingTelegram: "Ouverture du lien Telegram...",
-        telegramLinkFail: "Impossible de creer le lien Telegram.",
-        telegramLinked: "Telegram lie.",
+        telegramLinkFail: "Impossible de créer le lien Telegram.",
+        telegramLinked: "Telegram lié.",
         telegramLinkOpened: "Confirme dans Telegram puis reviens ici.",
         referralSingular: "Gagne {reward} crédits par parrainage actif. {count} invitation active pour l’instant.",
         referralPlural: "Gagne {reward} crédits par parrainage actif. {count} invitations actives pour l’instant."
@@ -497,6 +497,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260815-clickid" defer></script>
+  <script src="../assets/site.js?v=20260816-i18n" defer></script>
 </body>
 </html>
