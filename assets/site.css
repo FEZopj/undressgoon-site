@@ -2427,7 +2427,18 @@ html[data-theme="light"] .toast {
 .locked-lock { font-size:34px; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
 .locked-title { margin:0; font-size:19px; font-weight:900; color:#fff; }
 .locked-sub { margin:0 0 6px; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.88); max-width:320px; }
-.locked-cta { min-width:230px; }
+.locked-choices { display:flex; flex-direction:column; gap:10px; width:100%; max-width:320px; margin-top:4px; }
+.locked-choices .btn { width:100%; justify-content:center; gap:9px; height:48px; }
+.locked-choices .btn-email { background:#26262e; color:#fff; border:1px solid rgba(255,255,255,0.16); box-shadow:none; }
+.locked-choices .btn-email:hover { background:#33333d; filter:none; }
+.locked-choices .btn-email svg, .locked-choices .btn-email .mlogo { color:#fff; }
+
+/* Reveal-gate: message card shown in the results window (errors, gate prompts). */
+.result-notice { display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:30px 22px; }
+.rn-icon { font-size:34px; line-height:1; }
+.rn-title { margin:0; font-size:18px; font-weight:800; color:var(--text); }
+.rn-sub { margin:0 0 6px; font-size:13.5px; line-height:1.5; color:var(--muted); max-width:340px; }
+.rn-cta { min-width:200px; margin-top:4px; }
 @media (max-width:560px){ .login-choices { flex-direction:column; } .login-choices .btn { flex:0 0 auto; height:48px; } }
 
 .email-auth { display:flex; flex-direction:column; gap:10px; margin-top:12px; }

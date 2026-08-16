@@ -1124,7 +1124,55 @@
 
   var GOOGLE_SVG = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
 
-  // Reveal-gate: paint the blurred anon teaser with a "sign in to reveal" overlay.
+  var MAIL_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg>';
+
+  function signupChoicesHtml(gId, eId) {
+    return '<div class="locked-choices">' +
+      '<button type="button" class="btn btn-google locked-cta" id="' + gId + '">' + GOOGLE_SVG + ' ' + esc(t('continueGoogle', 'Continue with Google')) + '</button>' +
+      '<button type="button" class="btn btn-email locked-cta" id="' + eId + '">' + MAIL_SVG + ' ' + esc(t('continueEmail', 'Continue with Email')) + '</button>' +
+    '</div>';
+  }
+  function wireSignupChoices(gId, eId) {
+    var g = document.getElementById(gId);
+    if (g) g.addEventListener('click', function () {
+      var link = document.getElementById('google-login');
+      if (link && link.getAttribute('href')) window.location.href = link.getAttribute('href');
+    });
+    var e = document.getElementById(eId);
+    if (e) e.addEventListener('click', function () {
+      var box = document.getElementById('login-box');
+      if (box) { box.hidden = false; try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (x) {} }
+      var start = document.getElementById('email-login-start');
+      if (start) start.click();
+    });
+  }
+
+  // A message card rendered in the results window (errors, gate prompts, etc.).
+  function paintResultNotice(opts) {
+    var target = document.getElementById('web-results');
+    var empty = document.getElementById('web-result-empty');
+    if (!target) return;
+    target.innerHTML = '';
+    var card = document.createElement('div');
+    card.className = 'result-notice' + (opts.tone ? ' ' + opts.tone : '');
+    var html = '';
+    if (opts.icon) html += '<div class="rn-icon">' + opts.icon + '</div>';
+    if (opts.title) html += '<p class="rn-title">' + esc(opts.title) + '</p>';
+    if (opts.message) html += '<p class="rn-sub">' + esc(opts.message) + '</p>';
+    if (opts.choices) html += signupChoicesHtml('notice-google', 'notice-email');
+    if (opts.actionLabel) html += '<button type="button" class="btn btn-accent rn-cta" id="rn-action">' + esc(opts.actionLabel) + '</button>';
+    card.innerHTML = html;
+    target.appendChild(card);
+    if (empty) empty.hidden = true;
+    if (opts.choices) wireSignupChoices('notice-google', 'notice-email');
+    if (opts.actionLabel && opts.onAction) {
+      var a = document.getElementById('rn-action');
+      if (a) a.addEventListener('click', opts.onAction);
+    }
+    try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+  }
+
+  // Reveal-gate: paint the blurred anon teaser with a "sign up to reveal" overlay.
   function paintLockedResult(data) {
     var target = document.getElementById('web-results');
     var empty = document.getElementById('web-result-empty');
@@ -1143,16 +1191,12 @@
     overlay.innerHTML =
       '<div class="locked-lock">🔒</div>' +
       '<p class="locked-title">' + esc(t('lockedTitle', 'Your result is ready')) + '</p>' +
-      '<p class="locked-sub">' + esc(t('lockedSub', 'Sign in with Google to reveal the full, uncensored image. Free — no card needed.')) + '</p>' +
-      '<button type="button" class="btn btn-google locked-cta" id="reveal-google">' + GOOGLE_SVG + ' ' + esc(t('revealWithGoogle', 'Reveal with Google')) + '</button>';
+      '<p class="locked-sub">' + esc(t('lockedSub', 'Sign up now to reveal — free, no card needed.')) + '</p>' +
+      signupChoicesHtml('reveal-google', 'reveal-email');
     wrap.appendChild(overlay);
     target.appendChild(wrap);
     if (empty) empty.hidden = true;
-    var btn = document.getElementById('reveal-google');
-    if (btn) btn.addEventListener('click', function () {
-      var g = document.getElementById('google-login');
-      if (g && g.getAttribute('href')) window.location.href = g.getAttribute('href');
-    });
+    wireSignupChoices('reveal-google', 'reveal-email');
     try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
   }
 
@@ -1173,7 +1217,8 @@
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (d) {
         if (!r.ok || !d.ok) {
-          setStatus(d.message || t('revealFailed', 'Could not reveal that preview — generate again.'), 'error');
+          setStatus('', '');
+          paintResultNotice({ tone: 'bad', icon: '⚠️', title: t('revealFailedTitle', 'Could not reveal that preview'), message: d.message || t('revealFailed', 'Generate again to get a fresh one.') });
           return;
         }
         paintResults(d.images || []);
@@ -1182,7 +1227,8 @@
         return refreshWebSession();
       });
     }).catch(function () {
-      setStatus(t('revealFailed', 'Could not reveal that preview — generate again.'), 'error');
+      setStatus('', '');
+      paintResultNotice({ tone: 'bad', icon: '⚠️', title: t('revealFailedTitle', 'Could not reveal that preview'), message: t('revealFailed', 'Generate again to get a fresh one.') });
     });
   }
 
@@ -1785,7 +1831,7 @@
             paintLockedResult(data);
             stashReveal(data);
             track('website_anon_preview_ready', {});
-            setStatus(t('previewReady', 'Preview ready — sign in with Google to reveal the full image.'), 'success');
+            setStatus(t('previewReady', 'Preview ready — sign up to reveal your full image.'), 'success');
             return refreshWebSession();
           }
           if (isFirstResultOfferEligible()) {
@@ -1799,21 +1845,35 @@
         })
         .catch(function (err) {
           hideGenerationLoader(true);
+          setStatus('', '');  // errors are shown in the results window instead
           var payload = err.payload || {};
           if (payload.code === 'insufficient_credits') {
             track('website_generation_out_of_credits', {});
-            showCheckout(true, 'empty');
-            setStatus(t('outOfCredits', 'You are out of credits. Pick a pack to keep generating.'), 'error');
+            paintResultNotice({
+              tone: 'warn', icon: '💳',
+              title: t('outOfCreditsTitle', 'You are out of credits'),
+              message: t('outOfCreditsMsg', 'Pick a pack to keep generating.'),
+              actionLabel: t('getCredits', 'Get credits'),
+              onAction: function () { showCheckout(true, 'empty'); }
+            });
           } else if (payload.code === 'not_authenticated' || payload.code === 'signin_required' || payload.code === 'at_capacity') {
-            // Anon over their free preview (or capacity) — save their work and
-            // send them to Google; after signin their generation runs for real.
+            // Anon over their free preview (or capacity) — save their work; after
+            // signin the generation runs for real.
             track('website_generation_signin_required', { code: payload.code });
             stashPending(payloadPromise);
-            revealLoginPrompt();  // un-hides the login box for the sign-in
-            setStatus(payload.message || t('signInToGenerate', 'Sign in with Google to keep generating — your photo and prompt are saved.'), 'working');
+            paintResultNotice({
+              icon: '🔒',
+              title: t('freePreviewUsedTitle', 'Your free preview is used up'),
+              message: t('freePreviewUsedMsg', 'Sign up to keep generating — free, no card needed.'),
+              choices: true
+            });
           } else {
             track('website_generation_error', { code: payload.code || 'unknown' });
-            setStatus(err.message || t('genericError', 'Something went wrong.'), 'error');
+            paintResultNotice({
+              tone: 'bad', icon: '⚠️',
+              title: t('genFailedTitle', 'Something went wrong'),
+              message: err.message || t('genericError', 'Please try again.')
+            });
           }
         })
         .finally(function () {
