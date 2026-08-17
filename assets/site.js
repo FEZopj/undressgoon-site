@@ -1255,10 +1255,6 @@
   function isBuyer() {
     return !!(currentSession && currentSession.user && currentSession.user.hasPurchased);
   }
-  function openUpsell(reason) {
-    setStatus(t('lockedUpsell', 'Top up to unlock all presets and custom prompts.'), 'working');
-    try { showCheckout(true, reason || 'locked_feature'); } catch (e) {}
-  }
 
   function initPresets() {
     var tabs = document.getElementById('preset-tabs');
@@ -1300,7 +1296,7 @@
     if (writeOwn && !writeOwn.dataset.bound) {
       writeOwn.dataset.bound = '1';
       writeOwn.addEventListener('click', function () {
-        if (!isBuyer()) { openUpsell('locked_custom_prompt'); return; }
+        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free credit works with the Fully Nude preset.'), 'working'); return; }
         selected = '';
         prompt.value = '';
         showCustomPrompt(true);
@@ -1553,7 +1549,7 @@
 
     if (clear) {
       clear.addEventListener('click', function () {
-        if (!isBuyer()) { openUpsell('locked_custom_prompt'); return; }
+        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free credit works with the Fully Nude preset.'), 'working'); return; }
         selected = '';
         prompt.value = '';
         showCustomPrompt(true);
