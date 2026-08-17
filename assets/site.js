@@ -805,17 +805,29 @@
       .then(function (data) {
         if (!data || !data.ok) return;
         packOffer = data;
-        grid.innerHTML = (data.packs || []).map(function (pack, idx) {
-          var isBestValue = idx === 2 || /best value/i.test(String(pack.title || ''));
-          var badge = isBestValue ? '<em>' + esc(t('bestValue', 'Best Value')) + '</em>' : '';
-          var baseCredits = Number(pack.baseCredits || pack.credits || 0);
+        var packs = data.packs || [];
+        var baseline = 0;  // most expensive $/image (the smallest pack) = savings baseline
+        packs.forEach(function (p) {
+          var c = Number(p.credits || 0);
+          if (c) baseline = Math.max(baseline, (Number(p.priceCents || 0) / c) / 100);
+        });
+        grid.innerHTML = packs.map(function (pack, idx) {
+          var credits = Number(pack.credits || pack.baseCredits || 0);
+          var perImg = credits ? ((Number(pack.priceCents || 0) / credits) / 100) : 0;
+          var savings = (baseline && perImg) ? Math.round((1 - (perImg / baseline)) * 100) : 0;
+          var isBest = /best value/i.test(String(pack.title || '')) || idx === packs.length - 1;
+          var isPopular = /popular/i.test(String(pack.title || ''));
+          var badge = isBest ? '<em class="pack-badge best">' + esc(t('bestValue', 'Best value')) + '</em>'
+                    : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'Most popular')) + '</em>' : '';
+          var saveBadge = savings >= 5 ? '<span class="pack-save">' + esc(t('saveWord', 'Save')) + ' ' + savings + '%</span>' : '';
+          var baseCredits = Number(pack.baseCredits || credits);
           var bonusCredits = Number(pack.bonusCredits || 0);
           var creditLine = bonusCredits > 0 ?
             baseCredits + ' + ' + bonusCredits + ' ' + esc(t('freeCreditsWord', 'free')) :
-            Number(pack.credits || baseCredits) + ' ' + esc(t('creditsWord', 'credits'));
-          var bonusLine = bonusCredits > 0 ?
-            '<small class="pack-bonus">' + Number(pack.credits || (baseCredits + bonusCredits)) + ' ' + esc(t('creditsTotal', 'credits total')) + '</small>' :
-            '';
+            credits + ' ' + esc(t('creditsWord', 'credits'));
+          var totalLine = bonusCredits > 0 ?
+            '<small class="pack-bonus">' + credits + ' ' + esc(t('creditsTotal', 'credits total')) + '</small>' : '';
+          var perImgLine = perImg ? '<span class="pack-perimg">$' + perImg.toFixed(2) + ' / ' + esc(t('imageWord', 'image')) + '</span>' : '';
           var cryptoButton = data.cryptoEnabled !== false ?
             '<button type="button" data-crypto-pack="' + esc(pack.code) + '"><i data-lucide="wallet"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' :
             '';
@@ -823,12 +835,16 @@
             '<button type="button" class="pay-card-pack" data-card-pack="' + esc(pack.code) + '"><i data-lucide="credit-card"></i> ' + esc(t('payCard', 'Card')) + '</button>' :
             '';
           return (
-            '<div class="pack-card ' + (isBestValue ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '">' +
-              badge +
-              '<i data-lucide="coins"></i>' +
-              '<strong>' + creditLine + '</strong>' +
-              bonusLine +
+            '<div class="pack-card ' + (isBest ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '">' +
+              badge + saveBadge +
+              '<strong class="pack-credits">' + creditLine + '</strong>' +
+              totalLine +
               packPriceHtml(pack) +
+              perImgLine +
+              '<ul class="pack-perks">' +
+                '<li><i data-lucide="check"></i> ' + esc(t('perkUnlock', 'Unlocks all presets + custom prompts')) + '</li>' +
+                '<li><i data-lucide="check"></i> ' + credits + ' ' + esc(t('perkGens', 'generations')) + '</li>' +
+              '</ul>' +
               '<div class="pack-actions">' + cardButton + cryptoButton + '</div>' +
             '</div>'
           );
