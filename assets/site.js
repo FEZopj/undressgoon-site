@@ -416,8 +416,11 @@
   }
 
   function normalizeCtas() {
+    // On the generator page scroll to #generate; on pages without a generator
+    // (e.g. referral.html) send the visitor to the index generator instead.
+    var target = document.getElementById('generate') ? '#generate' : 'index.html#generate';
     document.querySelectorAll('[data-generate-cta]').forEach(function (a) {
-      a.setAttribute('href', '#generate');
+      a.setAttribute('href', target);
       a.removeAttribute('target');
       a.removeAttribute('rel');
     });
@@ -1995,6 +1998,16 @@
     boot();
   }
 
+  // Pages without the generator (e.g. referral.html) still need the session so
+  // the account menu + referral panel render. initWebGenerator() bails early on
+  // those pages (no [data-web-generator]), so drive the session here instead.
+  function initReferralPage() {
+    if (!document.getElementById('ref-panel') && !document.getElementById('ref-anon')) return;
+    if (document.querySelector('[data-web-generator]')) return;  // generator page already loads it
+    initAccountControls();
+    refreshWebSession();  // → updateWebAccount → updateReferral renders the page
+  }
+
   function boot() {
     preloadCritical();
     buildMarquee();
@@ -2003,6 +2016,7 @@
     initTheme();
     initDiscountCode();
     initWebGenerator();
+    initReferralPage();
     initSticky();
     initLiveCounter();
     initToast();
