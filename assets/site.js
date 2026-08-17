@@ -591,9 +591,8 @@
   function initTheme() {
     var saved = '';
     try { saved = localStorage.getItem('ug_theme') || ''; } catch (e) {}
-    if (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-      saved = 'light';
-    }
+    // Dark is the default on arrival regardless of OS preference; only switch
+    // to light if the visitor explicitly chose it via the toggle.
     setTheme(saved === 'light' ? 'light' : 'dark');
     var toggle = document.getElementById('theme-toggle');
     if (toggle) {
