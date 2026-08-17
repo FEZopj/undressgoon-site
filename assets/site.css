@@ -2414,9 +2414,6 @@ html[data-theme="light"] .toast {
 .email-hint { margin:2px 0 0; font-size:12.5px; line-height:1.5; color:var(--muted); }
 .email-hint strong { color:var(--text); }
 
-/* Google-only sign-in: hide the email option (keep the "claim your free credit"
-   copy visible so the sign-up prompt reads clearly). */
-#email-login-start, #email-form, #email-code-form { display:none !important; }
 
 /* Persistent header sign-in for returning users (anon has no account menu). */
 .header-signin { padding:8px 15px; border-radius:10px; font-weight:700; font-size:0.9rem; cursor:pointer;
