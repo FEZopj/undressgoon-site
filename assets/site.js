@@ -1531,7 +1531,12 @@
       refreshIcons();
       grid.querySelectorAll('button').forEach(function (button) {
         button.addEventListener('click', function () {
-          if (button.dataset.locked === '1') { openUpsell('locked_preset'); return; }
+          if (button.dataset.locked === '1') {
+            // Don't ambush free users with the top-up popup on a casual tap —
+            // just explain what their free credit covers.
+            setStatus(t('lockedPresetHint', 'Your free credit works only with the Fully Nude preset. Top up to unlock this look.'), 'working');
+            return;
+          }
           var key = button.getAttribute('data-key');
           var mode = activeMode();
           var preset = activePresets().find(function (p) { return p.key === key; });
@@ -1581,6 +1586,18 @@
     renderTabs();
     renderGrid();
     renderWriteOwn();
+
+    // First load: preselect the free Fully Nude preset so a new visitor lands
+    // on a ready-to-run look — the one their free credit actually covers.
+    if (!selected && activeMode() !== 'portrait') {
+      var freePreset = presets.find(function (p) { return p.key === FREE_PRESET_KEY; });
+      if (freePreset) {
+        selected = freePreset.key;
+        prompt.value = freePreset.prompt;  // applied invisibly (field stays hidden)
+        showCustomPrompt(false);
+        renderGrid();
+      }
+    }
   }
 
   function initWebGenerator() {
@@ -1630,17 +1647,30 @@
       return Math.max(1, Math.min(maxVariations(), Number.isFinite(n) ? n : 1));
     }
 
+    function availableCredits() {
+      var u = currentSession && currentSession.user;
+      return u ? Math.max(0, Number(u.credits || 0)) : 0;
+    }
+
     function syncVariationControl() {
       if (!variationSelect) return;
-      var max = maxVariations();
+      var variationRow = document.getElementById('variation-row');
+      var authed = !!(currentSession && currentSession.user);
+      var perImage = costPerImage();
+      // Only offer as many images as the user can actually pay for right now.
+      var affordable = Math.floor(availableCredits() / perImage);
+      var max = Math.max(1, Math.min(maxVariations(), affordable));
       Array.prototype.forEach.call(variationSelect.options, function (option) {
         var unavailable = Number(option.value) > max;
         option.disabled = unavailable;
         option.hidden = unavailable;
       });
       if (Number(variationSelect.value || 1) > max) variationSelect.value = String(max);
+      // With 0-1 credits there's nothing to choose (it's always a single image),
+      // so hide the whole selector rather than show a pointless "1 image".
+      if (variationRow) variationRow.hidden = !authed || affordable < 2;
       var count = selectedVariations();
-      var totalCost = count * costPerImage();
+      var totalCost = count * perImage;
       if (variationCost) {
         variationCost.textContent = totalCost + ' ' + (totalCost === 1 ? t('creditWord', 'credit') : t('creditsWord', 'credits'));
       }
