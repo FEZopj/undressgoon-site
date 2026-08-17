@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>友達紹介 — UndressGoon</title>
+  <meta name="description" content="友達をUndressGoonに招待しよう。無料クレジットに加え、友達がチャージするたびに20%のキャッシュを永久に獲得できます。" />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#070709" />
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="canonical" href="https://undressgoon.app/ja/referral.html" />
+  <link rel="preload" href="../assets/site.css?v=20260817-referral" as="style" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-referral" />
+  <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="Language">
+          <select aria-label="Select language">
+          <option value="../referral.html">EN</option>
+          <option value="../es/referral.html">ES</option>
+          <option value="../pt/referral.html">PT</option>
+          <option value="../zh/referral.html">ZH</option>
+          <option value="../ja/referral.html" selected>JA</option>
+          <option value="../ru/referral.html">RU</option>
+          <option value="../fr/referral.html">FR</option>
+          <option value="../de/referral.html">DE</option>
+          </select>
+        </nav>
+        <a href="index.html#generate" class="btn btn-accent" data-generate-cta>生成</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <div class="site-account" id="site-account" hidden>
+          <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
+            <span class="account-avatar" id="site-account-avatar">U</span>
+            <span class="account-trigger-text">
+              <strong id="site-account-name">マイアカウント</strong>
+              <small id="site-account-credits">0クレジット</small>
+            </span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="site-account-menu" hidden>
+            <div class="account-menu-head">
+              <strong id="account-email">ログイン中</strong>
+              <span id="account-menu-credits">0クレジット利用可能</span>
+            </div>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> クレジットを取得</button>
+            <a href="referral.html" class="is-active"><i data-lucide="gift"></i> 友達紹介</a>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Telegramを連携</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> サポートに問い合わせ</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> ログアウト</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="referral-page">
+    <div class="container">
+      <div class="referral-hero">
+        <div class="badge">紹介プログラム</div>
+        <h1 id="ref-h1">友達を招待しよう。クレジット＋20%キャッシュを獲得。</h1>
+        <p class="referral-lede" id="ref-lede">
+          リンクをシェアするだけ。友達は1つではなく<strong>2つの無料クレジット</strong>をもらえます。友達が生成すると、あなたは
+          <strong>1クレジット</strong>を獲得——さらに、友達がこの先チャージするたびに、その<strong id="ref-revshare-pct">20%</strong>を
+          キャッシュで受け取れます。
+        </p>
+      </div>
+
+      <!-- Signed-out: sign in to get a link -->
+      <div class="referral-anon" id="ref-anon" hidden>
+        <div class="login-box">
+          <p>ログインして紹介リンクを取得し、報酬を獲得しましょう。</p>
+          <div class="login-choices">
+            <button type="button" class="btn btn-google" id="ref-google">Googleで続行</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signed-in: the referral dashboard -->
+      <div class="referral-panel" id="ref-panel" hidden>
+        <div class="referral-linkcard">
+          <span class="mini-label">あなたの紹介リンク</span>
+          <div class="referral-actions">
+            <input id="ref-link" readonly value="" aria-label="紹介リンク" />
+            <button type="button" class="btn btn-accent" id="ref-copy"><i data-lucide="copy"></i> コピー</button>
+          </div>
+          <small class="referral-share-hint">どこにでもシェアできます——登録はすべて自動的にあなたに紐づけられます。</small>
+        </div>
+
+        <div class="referral-stats">
+          <div class="ref-stat">
+            <strong id="ref-balance">$0.00</strong>
+            <span>紹介キャッシュ残高</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-earned">$0.00</strong>
+            <span>累計獲得キャッシュ</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-referred">0</strong>
+            <span>紹介した人数</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-active">0</strong>
+            <span>アクティブ（生成済み）</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-buyers">0</strong>
+            <span>有料顧客</span>
+          </div>
+        </div>
+
+        <p class="referral-withdraw-note">
+          💸 キャッシュ残高はリクエストに応じて支払われます——出金するには<a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener">サポートに問い合わせ</a>てください。
+        </p>
+
+        <div class="referral-how">
+          <h2>仕組み</h2>
+          <ol>
+            <li><strong>リンクをシェア。</strong>そのリンク経由で登録した人は、生涯にわたってあなたの紹介として記録されます。</li>
+            <li><strong>友達は2つの無料クレジット</strong>を1つではなく獲得——参加する理由が増えます。</li>
+            <li><strong>あなたは1クレジット</strong>を、友達が初めて画像を生成したときに獲得します。</li>
+            <li><strong>あなたは<span class="ref-pct">20%</span>のキャッシュ</strong>を、友達がこの先行うすべてのチャージから獲得——初回だけではありません。サポート経由でいつでも出金できます。</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <a class="logo footer-logo" href="index.html" aria-label="UndressGoon home">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
+      </a>
+      <p class="footer-seo">
+        UndressGoonは、同意した成人向け、およびフィクションの成人ファンタジー加工のための、成人限定のAI画像生成サービスです。
+        使用する権利のある画像をアップロードし、プリセットまたはカスタムプロンプトを選び、クレジットを使ってプライベートにWeb生成できます。
+      </p>
+      <nav class="footer-links" aria-label="Legal links">
+        <a href="../terms.html">利用規約</a>
+        <a href="../privacy.html">プライバシー</a>
+        <a href="../acceptable-use.html">利用規範</a>
+        <a href="../consent.html">同意と画像の権利</a>
+        <a href="../refunds.html">返金</a>
+        <a href="../report-abuse.html">不正の報告</a>
+        <a href="../dmca.html">DMCA</a>
+        <a href="../contact.html">お問い合わせ</a>
+        <a href="../age-safety.html">年齢と安全</a>
+      </nav>
+      <p class="operator-line">UndressGoonは、米国ニューメキシコ州の有限責任会社であるZIAYING LLCが運営しています。</p>
+      <p class="disclaimer">
+        成人限定（18歳以上）。法的な使用権と必要な同意を得た写真のみをご利用ください。
+        本サイトは公開の結果ギャラリーを掲載していません。アップロード、プロンプト、生成結果、アカウント／セッションの情報は、不正防止、サポート、不正利用の審査、サービスのセキュリティのために、非公開のモデレーションまたは運用チャンネルへ送信される場合があります。
+        Copyright &copy; 2026 ZIAYING LLC. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    window.UG_CONFIG = {
+      imageCount: 32,
+      thumbBase: '../results/thumbs/',
+      thumbExt: '.webp',
+      botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      presets: [
+        { key: 'nude', category: 'hot', label: 'フルヌード', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
+        { key: 'oily', category: 'hot', label: 'オイルヌード', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'bondage', category: 'hot', label: '緊縛ヌード', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
+        { key: 'lingerie', category: 'clothes', label: '透けランジェリー', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'crotchless', category: 'clothes', label: 'オープン下着', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
+        { key: 'bikini', category: 'clothes', label: 'マイクロビキニ', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
+        { key: 'wet', category: 'clothes', label: '濡れTシャツ', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
+        { key: 'bdsm', category: 'clothes', label: 'BDSMハーネス', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
+        { key: 'latex', category: 'clothes', label: 'ラテックス', prompt: 'shiny tight black latex catsuit unzipped down the front' },
+        { key: 'tights', category: 'clothes', label: 'タイツのみ', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
+        { key: 'stockings', category: 'clothes', label: 'ストッキングのみ', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
+        { key: 'pleated_uniform', category: 'fantasy', label: 'プリーツ制服', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'nurse', category: 'fantasy', label: 'セクシーナース', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'maid', category: 'fantasy', label: 'フレンチメイド', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'office', category: 'fantasy', label: 'オフィス風', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
+      ],
+      i18n: {
+        notLoggedIn: "未ログイン",
+        loginToSeeCredits: "ログインしてクレジットを表示",
+        creditSingular: "{n} クレジット利用可能",
+        creditPlural: "{n} クレジット利用可能",
+        creditsWord: "クレジット",
+        creditWord: "クレジット",
+        imageSingular: "枚",
+        imagePlural: "枚",
+        imagesLabel: "枚数",
+        generateVerb: "生成",
+        payCrypto: "暗号資産で支払う",
+        opening: "開いています…",
+        creatingCheckout: "安全な暗号資産チェックアウトを作成中…",
+        checkoutFail: "チェックアウトを作成できませんでした。",
+        generatedResult: "生成結果",
+        tabHot: "人気",
+        tabClothes: "服装",
+        tabFantasy: "ファンタジー",
+        uploadHint: "JPG、PNG、WebP 最大12 MB",
+        readFail: "選択した写真を読み取れませんでした。",
+        missingPhoto: "先に人物写真をアップロードしてください。",
+        termsRequired: "18歳以上であり、写真の使用権があることを確認してください。",
+        promptRequired: "先にプリセットを選ぶか、プロンプトを入力してください。",
+        copied: "コピーしました！",
+        copy: "コピー",
+        readingUpload: "アップロードを読み込み中…",
+        generating: "生成中…通常1分以内で完了します。",
+        doneBalance: "完了。残高：{balance}。",
+        outOfCredits: "クレジットが不足しています。下でチャージして続けてください。",
+        loginFirst: "先にGoogleでログインしてください。",
+        genericError: "問題が発生しました。",
+        myAccount: "マイアカウント",
+        signedIn: "ログイン中",
+        getCredits: "クレジットを取得",
+        contactSupport: "サポートに問い合わせ",
+        logout: "ログアウト",
+        payCard: "カードで支払う",
+        linkTelegram: "Telegramを連携",
+        telegramLinkedShort: "Telegram連携済み",
+        bestValue: "人気",
+        topupTitle: "もう1枚生成しますか？",
+        topupCopy: "パックを選んで、サイトで生成を続けましょう。",
+        topupEmptyTitle: "クレジットがなくなりました",
+        topupEmptyCopy: "パックを選べば、数秒で生成を再開できます。",
+        linkingTelegram: "Telegram連携を開いています…",
+        telegramLinkFail: "Telegram連携を作成できませんでした。",
+        telegramLinked: "Telegramが連携されました。",
+        telegramLinkOpened: "Telegramで連携を確認してから、こちらに戻ってください。",
+        imgAlt: "AI脱衣の結果",
+        referralSingular: "有効な紹介1件につき{reward}クレジット。現在、有効な招待は{count}件です。",
+        referralPlural: "有効な紹介1件につき{reward}クレジット。現在、有効な招待は{count}件です。",
+        signupClaim1: "登録して無料クレジットを受け取ろう",
+        signupClaim2: "登録して2つの無料クレジットを受け取ろう",
+        noCardNeeded: "カード不要。",
+        continueGoogle: "Googleで続行",
+        signUpToGenerateTitle: "登録して生成"
+      }
+    };
+  </script>
+  <script>
+    window.UG_ANALYTICS = {
+      posthogToken: 'phc_rKDZDUCJb3JrdxMjL4vNG4LvB4n9qoXUjaU8sXHXTBCJ',
+      posthogHost: 'https://us.i.posthog.com'
+    };
+  </script>
+  <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
+  <script src="../assets/site.js?v=20260817-referral" defer></script>
+</body>
+</html>

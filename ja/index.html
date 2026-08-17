@@ -59,11 +59,11 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260817-google-only" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260817-referral" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260817-google-only" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-referral" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -101,6 +101,7 @@
               <span id="account-menu-credits">0クレジット利用可能</span>
             </div>
             <button type="button" id="account-topup"><i data-lucide="coins"></i> クレジットを取得</button>
+            <a href="referral.html"><i data-lucide="gift"></i> 友達紹介</a>
             <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Telegramを連携</button>
             <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> サポートに問い合わせ</a>
             <button type="button" id="account-logout"><i data-lucide="log-out"></i> ログアウト</button>
@@ -137,7 +138,7 @@
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
           <div class="login-box" id="login-box">
-            <p>今すぐログインして無料クレジットを受け取りましょう。カードは不要です。</p>
+            <p id="login-box-copy">登録して無料クレジットを受け取ろう。カード不要。</p>
             <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Googleで続行</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> メールで続行</button></div>
           <form class="email-auth" id="email-form" hidden>
             <input type="email" id="email-input" name="email" autocomplete="email" placeholder="you@email.com" required />
@@ -371,10 +372,10 @@
       <div class="referral-band">
         <i data-lucide="gift"></i>
         <div>
-          <strong>友達を招待して、クレジットをもっと獲得。</strong>
-          <span>有効な紹介1件ごとに、支払いなしで生成回数が増えます。</span>
+          <strong>友達を招待して、クレジット＋20%キャッシュを獲得。</strong>
+          <span>友達は2つの無料クレジットをもらえ、あなたは1クレジット＋友達がチャージするたびにその20%を獲得できます。</span>
         </div>
-        <a href="#generate" class="btn btn-accent" data-generate-cta>招待リンクを取得</a>
+        <a href="referral.html" class="btn btn-accent">紹介ページを開く</a>
       </div>
 </div>
   </section>
@@ -504,7 +505,7 @@
         missingPhoto: "先に人物写真をアップロードしてください。",
         termsRequired: "18歳以上であり、写真の使用権があることを確認してください。",
         promptRequired: "先にプリセットを選ぶか、プロンプトを入力してください。",
-        copied: "コピーしました",
+        copied: "コピーしました！",
         copy: "コピー",
         readingUpload: "アップロードを読み込み中…",
         generating: "生成中…通常1分以内で完了します。",
@@ -531,7 +532,12 @@
         telegramLinkOpened: "Telegramで連携を確認してから、こちらに戻ってください。",
         imgAlt: "AI脱衣の結果",
         referralSingular: "有効な紹介1件につき{reward}クレジット。現在、有効な招待は{count}件です。",
-        referralPlural: "有効な紹介1件につき{reward}クレジット。現在、有効な招待は{count}件です。"
+        referralPlural: "有効な紹介1件につき{reward}クレジット。現在、有効な招待は{count}件です。",
+        signupClaim1: "登録して無料クレジットを受け取ろう",
+        signupClaim2: "登録して2つの無料クレジットを受け取ろう",
+        noCardNeeded: "カード不要。",
+        continueGoogle: "Googleで続行",
+        signUpToGenerateTitle: "登録して生成"
       }
     };
   </script>
@@ -542,6 +548,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260817-google-only" defer></script>
+  <script src="../assets/site.js?v=20260817-referral" defer></script>
 </body>
 </html>

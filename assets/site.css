@@ -2414,29 +2414,16 @@ html[data-theme="light"] .toast {
 .email-hint { margin:2px 0 0; font-size:12.5px; line-height:1.5; color:var(--muted); }
 .email-hint strong { color:var(--text); }
 
-/* Google-only sign-in: hide the email option + the marketing copy in the box. */
-#login-box > p, #email-login-start, #email-form, #email-code-form { display:none !important; }
+/* Google-only sign-in: hide the email option (keep the "claim your free credit"
+   copy visible so the sign-up prompt reads clearly). */
+#email-login-start, #email-form, #email-code-form { display:none !important; }
 
 /* Persistent header sign-in for returning users (anon has no account menu). */
 .header-signin { padding:8px 15px; border-radius:10px; font-weight:700; font-size:0.9rem; cursor:pointer;
   background:transparent; color:var(--text); border:1px solid var(--border); white-space:nowrap; font-family:inherit; }
 .header-signin:hover { background:rgba(127,127,127,0.10); }
 
-/* Reveal-gate: blurred anon result with a sign-in-to-reveal overlay. */
-.locked-result { position:relative; display:inline-block; max-width:100%; border-radius:14px; overflow:hidden; line-height:0; }
-.locked-result img { display:block; max-width:100%; height:auto; }
-.locked-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; text-align:center; padding:22px; line-height:1.4;
-  background:linear-gradient(180deg, rgba(7,7,9,0.30), rgba(7,7,9,0.74)); }
-.locked-lock { font-size:34px; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
-.locked-title { margin:0; font-size:19px; font-weight:900; color:#fff; }
-.locked-sub { margin:0 0 6px; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.88); max-width:320px; }
-.locked-choices { display:flex; flex-direction:column; gap:10px; width:100%; max-width:320px; margin-top:4px; }
-.locked-choices .btn { width:100%; justify-content:center; gap:9px; height:48px; }
-.locked-choices .btn-email { background:#26262e; color:#fff; border:1px solid rgba(255,255,255,0.16); box-shadow:none; }
-.locked-choices .btn-email:hover { background:#33333d; filter:none; }
-.locked-choices .btn-email svg, .locked-choices .btn-email .mlogo { color:#fff; }
-
-/* Reveal-gate: message card shown in the results window (errors, gate prompts). */
+/* Message card shown in the results window (errors, sign-in prompts). */
 .result-notice { display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:30px 22px; }
 .rn-icon { font-size:34px; line-height:1; }
 .rn-title { margin:0; font-size:18px; font-weight:800; color:var(--text); }
@@ -2455,3 +2442,30 @@ html[data-theme="light"] .toast {
 .link-btn { background:none; border:0; color:rgba(255,255,255,0.72); font-size:13px; cursor:pointer; padding:2px 0; text-decoration:underline; }
 .link-btn:hover { color:#fff; }
 .login-error { margin:10px 0 0; color:#ff8095; font-size:13px; font-weight:600; }
+
+/* ---- Dedicated referral page (referral.html) ---- */
+.referral-page { padding:36px 0 64px; }
+.referral-hero { text-align:center; max-width:680px; margin:0 auto 26px; }
+.referral-hero h1 { font-size:clamp(26px,4vw,40px); margin:12px 0 10px; }
+.referral-lede { color:var(--muted); font-size:16px; line-height:1.6; }
+.referral-lede strong { color:var(--text); }
+.referral-anon { max-width:420px; margin:0 auto; }
+.referral-panel { max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:22px; }
+.referral-linkcard { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; }
+.referral-linkcard .mini-label { display:block; margin-bottom:10px; }
+.referral-share-hint { display:block; margin-top:10px; color:var(--muted); font-size:12.5px; }
+.referral-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; }
+.ref-stat { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; text-align:center; }
+.ref-stat strong { display:block; font-size:24px; font-weight:900; color:var(--text); line-height:1.1; }
+.ref-stat span { display:block; margin-top:6px; font-size:12.5px; color:var(--muted); }
+.ref-stat:first-child strong, .ref-stat:nth-child(2) strong { color:var(--accent); }
+.referral-withdraw-note { text-align:center; color:var(--muted); font-size:14px; margin:0; }
+.referral-withdraw-note a { color:var(--accent); text-decoration:none; font-weight:700; }
+.referral-withdraw-note a:hover { text-decoration:underline; }
+.referral-how { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px 24px; }
+.referral-how h2 { margin:0 0 14px; font-size:19px; }
+.referral-how ol { margin:0; padding-left:20px; display:flex; flex-direction:column; gap:10px; }
+.referral-how li { color:var(--muted); line-height:1.55; }
+.referral-how li strong { color:var(--text); }
+.referral-how .ref-pct, #ref-revshare-pct { color:var(--accent); font-weight:800; }
+#ref-copy.copied { opacity:0.85; }

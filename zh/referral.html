@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>邀请好友 — UndressGoon</title>
+  <meta name="description" content="邀请好友加入 UndressGoon。赚取免费额度，外加好友每次充值 20% 的终身现金奖励。" />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#070709" />
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="canonical" href="https://undressgoon.app/zh/referral.html" />
+  <link rel="preload" href="../assets/site.css?v=20260817-referral" as="style" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-referral" />
+  <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="UndressGoon 首页"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="语言">
+          <select aria-label="选择语言">
+          <option value="../referral.html">EN</option>
+          <option value="../es/referral.html">ES</option>
+          <option value="../pt/referral.html">PT</option>
+          <option value="../zh/referral.html" selected>ZH</option>
+          <option value="../ja/referral.html">JA</option>
+          <option value="../ru/referral.html">RU</option>
+          <option value="../fr/referral.html">FR</option>
+          <option value="../de/referral.html">DE</option>
+          </select>
+        </nav>
+        <a href="index.html#generate" class="btn btn-accent" data-generate-cta>生成</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="切换到浅色主题" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <div class="site-account" id="site-account" hidden>
+          <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
+            <span class="account-avatar" id="site-account-avatar">U</span>
+            <span class="account-trigger-text">
+              <strong id="site-account-name">我的账户</strong>
+              <small id="site-account-credits">0 额度</small>
+            </span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="site-account-menu" hidden>
+            <div class="account-menu-head">
+              <strong id="account-email">已登录</strong>
+              <span id="account-menu-credits">可用 0 额度</span>
+            </div>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> 获取额度</button>
+            <a href="referral.html" class="is-active"><i data-lucide="gift"></i> 邀请好友</a>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> 关联 Telegram</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> 联系客服</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> 退出登录</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="referral-page">
+    <div class="container">
+      <div class="referral-hero">
+        <div class="badge">邀请计划</div>
+        <h1 id="ref-h1">邀请好友，赚取额度 + 20% 现金。</h1>
+        <p class="referral-lede" id="ref-lede">
+          分享你的链接。你的好友将获得<strong>2 个免费额度</strong>，而不是 1 个。当他们生成图像时，你会获得
+          <strong>1 个额度</strong>——外加他们此后每一次充值的<strong id="ref-revshare-pct">20%</strong>，
+          以现金形式支付。
+        </p>
+      </div>
+
+      <!-- Signed-out: sign in to get a link -->
+      <div class="referral-anon" id="ref-anon" hidden>
+        <div class="login-box">
+          <p>登录以获取你的邀请链接，开始赚取奖励。</p>
+          <div class="login-choices">
+            <button type="button" class="btn btn-google" id="ref-google">使用 Google 继续</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signed-in: the referral dashboard -->
+      <div class="referral-panel" id="ref-panel" hidden>
+        <div class="referral-linkcard">
+          <span class="mini-label">你的邀请链接</span>
+          <div class="referral-actions">
+            <input id="ref-link" readonly value="" aria-label="邀请链接" />
+            <button type="button" class="btn btn-accent" id="ref-copy"><i data-lucide="copy"></i> 复制</button>
+          </div>
+          <small class="referral-share-hint">随处分享——每一次注册都会自动记到你的名下。</small>
+        </div>
+
+        <div class="referral-stats">
+          <div class="ref-stat">
+            <strong id="ref-balance">$0.00</strong>
+            <span>现金邀请余额</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-earned">$0.00</strong>
+            <span>累计获得现金</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-referred">0</strong>
+            <span>已邀请人数</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-active">0</strong>
+            <span>活跃（已生成）</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-buyers">0</strong>
+            <span>付费客户</span>
+          </div>
+        </div>
+
+        <p class="referral-withdraw-note">
+          💸 你的现金余额可按需提现——<a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener">联系客服</a>即可提现。
+        </p>
+
+        <div class="referral-how">
+          <h2>运作方式</h2>
+          <ol>
+            <li><strong>分享你的链接。</strong>任何通过它注册的人都会永久记到你的名下。</li>
+            <li><strong>他们获得 2 个免费额度</strong>，而不是 1 个——更有理由加入。</li>
+            <li><strong>你获得 1 个额度</strong>，就在他们第一次生成图像时。</li>
+            <li><strong>你赚取 <span class="ref-pct">20%</span> 现金</strong>，来自他们此后每一次充值——不只是第一次。随时可通过客服提现。</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <a class="logo footer-logo" href="index.html" aria-label="UndressGoon 首页">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
+      </a>
+      <p class="footer-seo">
+        UndressGoon 是一项仅限成人的 AI 图像生成服务，面向自愿的成年人以及虚构的成人幻想编辑。
+        上传你拥有使用权的图片，选择预设或自定义提示词，用额度进行私密的网页生成。
+      </p>
+      <nav class="footer-links" aria-label="法律链接">
+        <a href="../terms.html">条款</a>
+        <a href="../privacy.html">隐私政策</a>
+        <a href="../acceptable-use.html">使用规范</a>
+        <a href="../consent.html">同意与图像权利</a>
+        <a href="../refunds.html">退款</a>
+        <a href="../report-abuse.html">举报滥用</a>
+        <a href="../dmca.html">DMCA</a>
+        <a href="../contact.html">联系我们</a>
+        <a href="../age-safety.html">年龄与安全</a>
+      </nav>
+      <p class="operator-line">UndressGoon 由 ZIAYING LLC 运营，该公司是一家位于美国新墨西哥州的有限责任公司。</p>
+      <p class="disclaimer">
+        仅限成人（18+）。请仅使用你拥有合法权利并已获得必要同意的照片。
+        本网站不会公开展示结果图库；上传内容、提示词、生成结果以及账户/会话详情，可能会被发送至私密的审核或运营渠道，用于防止滥用、客户支持、欺诈审查和服务安全。
+        版权所有 &copy; 2026 ZIAYING LLC。保留所有权利。
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    window.UG_CONFIG = {
+      imageCount: 32,
+      thumbBase: '../results/thumbs/',
+      thumbExt: '.webp',
+      botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      presets: [
+        { key: 'nude', category: 'hot', label: '全裸', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
+        { key: 'oily', category: 'hot', label: '油亮全裸', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'bondage', category: 'hot', label: '绳缚全裸', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
+        { key: 'lingerie', category: 'clothes', label: '透视内衣', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'crotchless', category: 'clothes', label: '开裆款', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
+        { key: 'bikini', category: 'clothes', label: '微型比基尼', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
+        { key: 'wet', category: 'clothes', label: '湿T恤', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
+        { key: 'bdsm', category: 'clothes', label: 'BDSM束带', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
+        { key: 'latex', category: 'clothes', label: '乳胶', prompt: 'shiny tight black latex catsuit unzipped down the front' },
+        { key: 'tights', category: 'clothes', label: '仅连裤袜', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
+        { key: 'stockings', category: 'clothes', label: '仅长筒袜', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
+        { key: 'pleated_uniform', category: 'fantasy', label: '百褶制服', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'nurse', category: 'fantasy', label: '性感护士', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'maid', category: 'fantasy', label: '法式女仆', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'office', category: 'fantasy', label: '办公室造型', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
+      ],
+      i18n: {
+        notLoggedIn: "未登录",
+        loginToSeeCredits: "登录后查看额度",
+        creditSingular: "可用 {n} 个额度",
+        creditPlural: "可用 {n} 个额度",
+        creditsWord: "额度",
+        creditWord: "额度",
+        imageSingular: "张图片",
+        imagePlural: "张图片",
+        imagesLabel: "图片数量",
+        generateVerb: "生成",
+        payCrypto: "加密货币付款",
+        opening: "正在打开…",
+        creatingCheckout: "正在创建安全的加密货币结账…",
+        checkoutFail: "无法创建结账页面。",
+        generatedResult: "生成结果",
+        tabHot: "最热",
+        tabClothes: "服装",
+        tabFantasy: "幻想",
+        uploadHint: "JPG、PNG 或 WebP，最大 12 MB",
+        readFail: "无法读取所选照片。",
+        missingPhoto: "请先上传人物照片。",
+        termsRequired: "请确认你已满 18 岁并拥有这张照片的权利。",
+        promptRequired: "请先选择预设或输入提示词。",
+        copied: "已复制！",
+        copy: "复制",
+        readingUpload: "正在读取上传的照片…",
+        generating: "正在生成…通常不到一分钟。",
+        doneBalance: "完成。余额：{balance}。",
+        outOfCredits: "额度已用完。请在下方充值继续生成。",
+        loginFirst: "请先使用 Google 登录。",
+        genericError: "出了点问题。",
+        myAccount: "我的账户",
+        signedIn: "已登录",
+        getCredits: "获取额度",
+        contactSupport: "联系客服",
+        logout: "退出登录",
+        payCard: "银行卡付款",
+        linkTelegram: "关联 Telegram",
+        telegramLinkedShort: "已关联 Telegram",
+        bestValue: "热门",
+        topupTitle: "再来一张？",
+        topupCopy: "选择一个额度包，在网站上继续生成。",
+        topupEmptyTitle: "额度已用完",
+        topupEmptyCopy: "选择一个额度包，几秒内继续生成。",
+        linkingTelegram: "正在打开 Telegram 关联链接…",
+        telegramLinkFail: "无法创建 Telegram 关联链接。",
+        telegramLinked: "Telegram 已关联。",
+        telegramLinkOpened: "请在 Telegram 中确认关联，然后返回这里。",
+        imgAlt: "AI 脱衣结果",
+        referralSingular: "每个活跃邀请奖励 {reward} 个额度。目前 {count} 个活跃邀请。",
+        referralPlural: "每个活跃邀请奖励 {reward} 个额度。目前 {count} 个活跃邀请。",
+        signupClaim1: "注册领取你的免费额度",
+        signupClaim2: "注册领取你的 2 个免费额度",
+        noCardNeeded: "无需银行卡。",
+        continueGoogle: "使用 Google 继续",
+        signUpToGenerateTitle: "注册以生成"
+      }
+    };
+  </script>
+  <script>
+    window.UG_ANALYTICS = {
+      posthogToken: 'phc_rKDZDUCJb3JrdxMjL4vNG4LvB4n9qoXUjaU8sXHXTBCJ',
+      posthogHost: 'https://us.i.posthog.com'
+    };
+  </script>
+  <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
+  <script src="../assets/site.js?v=20260817-referral" defer></script>
+</body>
+</html>

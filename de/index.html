@@ -59,11 +59,11 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260817-google-only" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260817-referral" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260817-google-only" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-referral" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -101,6 +101,7 @@
               <span id="account-menu-credits">0 Credits verfügbar</span>
             </div>
             <button type="button" id="account-topup"><i data-lucide="coins"></i> Credits holen</button>
+            <a href="referral.html"><i data-lucide="gift"></i> Empfehlungen</a>
             <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Telegram verbinden</button>
             <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Support kontaktieren</a>
             <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
@@ -137,7 +138,7 @@
       <div class="generator-app" data-web-generator>
         <div class="generator-panel">
           <div class="login-box" id="login-box">
-            <p>Logge dich jetzt ein und sichere dir deinen Gratis-Credit. Keine Karte nötig.</p>
+            <p id="login-box-copy">Registriere dich und sichere dir deinen Gratis-Credit. Keine Karte nötig.</p>
             <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Mit Google fortfahren</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Mit E-Mail fortfahren</button></div>
           <form class="email-auth" id="email-form" hidden>
             <input type="email" id="email-input" name="email" autocomplete="email" placeholder="du@email.com" required />
@@ -371,10 +372,10 @@
       <div class="referral-band">
         <i data-lucide="gift"></i>
         <div>
-          <strong>Freunde einladen, mehr Credits verdienen.</strong>
-          <span>Jede aktive Empfehlung bringt dir mehr Generierungen, ohne zu bezahlen.</span>
+          <strong>Freunde einladen, Credits + 20% Cash verdienen.</strong>
+          <span>Deine Freunde bekommen 2 Gratis-Credits, du bekommst 1 Credit + 20% von jeder Aufladung, die sie machen.</span>
         </div>
-        <a href="#generate" class="btn btn-accent" data-generate-cta>Einladungslink holen</a>
+        <a href="referral.html" class="btn btn-accent">Empfehlungsseite öffnen</a>
       </div>
 </div>
   </section>
@@ -504,7 +505,7 @@
         missingPhoto: "Lade zuerst ein Personenfoto hoch.",
         termsRequired: "Bestätige 18+ und die Rechte an diesem Foto.",
         promptRequired: "Wähle zuerst ein Preset oder schreibe einen Prompt.",
-        copied: "Kopiert",
+        copied: "Kopiert!",
         copy: "Kopieren",
         readingUpload: "Upload wird gelesen...",
         generating: "Generiert... dauert meist unter einer Minute.",
@@ -531,7 +532,12 @@
         telegramLinkOpened: "Bestätige den Link in Telegram und komm zurück.",
         imgAlt: "KI-Undress-Ergebnis",
         referralSingular: "Verdiene {reward} Credits pro aktiver Empfehlung. Bisher {count} aktive Empfehlung.",
-        referralPlural: "Verdiene {reward} Credits pro aktiver Empfehlung. Bisher {count} aktive Empfehlungen."
+        referralPlural: "Verdiene {reward} Credits pro aktiver Empfehlung. Bisher {count} aktive Empfehlungen.",
+        signupClaim1: "Registriere dich und sichere dir deinen Gratis-Credit",
+        signupClaim2: "Registriere dich und sichere dir deine 2 Gratis-Credits",
+        noCardNeeded: "Keine Karte nötig.",
+        continueGoogle: "Mit Google fortfahren",
+        signUpToGenerateTitle: "Registrieren zum Generieren"
       }
     };
   </script>
@@ -542,6 +548,6 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
-  <script src="../assets/site.js?v=20260817-google-only" defer></script>
+  <script src="../assets/site.js?v=20260817-referral" defer></script>
 </body>
 </html>

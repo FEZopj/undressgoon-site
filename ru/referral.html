@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Рефералы — UndressGoon</title>
+  <meta name="description" content="Приглашай друзей в UndressGoon. Получай бесплатные кредиты плюс 20% кэшем с каждого их пополнения." />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#070709" />
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="canonical" href="https://undressgoon.app/ru/referral.html" />
+  <link rel="preload" href="../assets/site.css?v=20260817-referral" as="style" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-referral" />
+  <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="UndressGoon — на главную"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="Язык">
+          <select aria-label="Выбор языка">
+          <option value="../referral.html">EN</option>
+          <option value="../es/referral.html">ES</option>
+          <option value="../pt/referral.html">PT</option>
+          <option value="../zh/referral.html">ZH</option>
+          <option value="../ja/referral.html">JA</option>
+          <option value="../ru/referral.html" selected>RU</option>
+          <option value="../fr/referral.html">FR</option>
+          <option value="../de/referral.html">DE</option>
+          </select>
+        </nav>
+        <a href="index.html#generate" class="btn btn-accent" data-generate-cta>Генерировать</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить на светлую тему" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <div class="site-account" id="site-account" hidden>
+          <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
+            <span class="account-avatar" id="site-account-avatar">U</span>
+            <span class="account-trigger-text">
+              <strong id="site-account-name">Мой аккаунт</strong>
+              <small id="site-account-credits">0 кредитов</small>
+            </span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="site-account-menu" hidden>
+            <div class="account-menu-head">
+              <strong id="account-email">Вход выполнен</strong>
+              <span id="account-menu-credits">0 кредитов доступно</span>
+            </div>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> Получить кредиты</button>
+            <a href="referral.html" class="is-active"><i data-lucide="gift"></i> Рефералы</a>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Привязать Telegram</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Связаться с поддержкой</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Выйти</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="referral-page">
+    <div class="container">
+      <div class="referral-hero">
+        <div class="badge">Реферальная программа</div>
+        <h1 id="ref-h1">Приглашай друзей. Получай кредиты + 20% кэшем.</h1>
+        <p class="referral-lede" id="ref-lede">
+          Поделись ссылкой. Твой друг получает <strong>2 бесплатных кредита</strong> вместо 1. Ты получаешь
+          <strong>1 кредит</strong>, когда он генерирует — плюс <strong id="ref-revshare-pct">20%</strong>
+          с каждого его пополнения, выплачивается кэшем.
+        </p>
+      </div>
+
+      <!-- Signed-out: sign in to get a link -->
+      <div class="referral-anon" id="ref-anon" hidden>
+        <div class="login-box">
+          <p>Войди, чтобы получить свою реферальную ссылку и начать зарабатывать.</p>
+          <div class="login-choices">
+            <button type="button" class="btn btn-google" id="ref-google">Продолжить с Google</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signed-in: the referral dashboard -->
+      <div class="referral-panel" id="ref-panel" hidden>
+        <div class="referral-linkcard">
+          <span class="mini-label">Твоя реферальная ссылка</span>
+          <div class="referral-actions">
+            <input id="ref-link" readonly value="" aria-label="Реферальная ссылка" />
+            <button type="button" class="btn btn-accent" id="ref-copy"><i data-lucide="copy"></i> Копировать</button>
+          </div>
+          <small class="referral-share-hint">Делись где угодно — каждая регистрация автоматически засчитывается тебе.</small>
+        </div>
+
+        <div class="referral-stats">
+          <div class="ref-stat">
+            <strong id="ref-balance">$0.00</strong>
+            <span>Реферальный баланс (кэш)</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-earned">$0.00</strong>
+            <span>Всего заработано кэшем</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-referred">0</strong>
+            <span>Приглашено людей</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-active">0</strong>
+            <span>Активные (сгенерировали)</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-buyers">0</strong>
+            <span>Платящие клиенты</span>
+          </div>
+        </div>
+
+        <p class="referral-withdraw-note">
+          💸 Твой баланс кэша выплачивается по запросу — <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener">связаться с поддержкой</a>, чтобы вывести.
+        </p>
+
+        <div class="referral-how">
+          <h2>Как это работает</h2>
+          <ol>
+            <li><strong>Поделись ссылкой.</strong> Каждый, кто регистрируется по ней, закрепляется за тобой навсегда.</li>
+            <li><strong>Они получают 2 бесплатных кредита</strong> вместо 1 — весомее повод присоединиться.</li>
+            <li><strong>Ты получаешь 1 кредит</strong>, когда они впервые генерируют изображение.</li>
+            <li><strong>Ты зарабатываешь <span class="ref-pct">20%</span> кэшем</strong> с каждого их пополнения — не только первого. Вывод в любой момент через поддержку.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <a class="logo footer-logo" href="index.html" aria-label="UndressGoon home">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
+      </a>
+      <p class="footer-seo">
+        UndressGoon — это ИИ-сервис генерации изображений только для взрослых: для совершеннолетних по обоюдному согласию и вымышленных взрослых фэнтези-правок.
+        Загрузи изображение, на которое у тебя есть права, выбери пресет или свой промпт и трать кредиты на приватные генерации на сайте.
+      </p>
+      <nav class="footer-links" aria-label="Юридические ссылки">
+        <a href="../terms.html">Условия</a>
+        <a href="../privacy.html">Конфиденциальность</a>
+        <a href="../acceptable-use.html">Правила использования</a>
+        <a href="../consent.html">Согласие и права на изображения</a>
+        <a href="../refunds.html">Возвраты</a>
+        <a href="../report-abuse.html">Сообщить о нарушении</a>
+        <a href="../dmca.html">DMCA</a>
+        <a href="../contact.html">Контакты</a>
+        <a href="../age-safety.html">Возраст и безопасность</a>
+      </nav>
+      <p class="operator-line">Сервис UndressGoon управляется компанией ZIAYING LLC — обществом с ограниченной ответственностью, зарегистрированным в штате Нью-Мексико, США.</p>
+      <p class="disclaimer">
+        Только для взрослых (18+). Используй только фото, на которые у тебя есть законные права и необходимое согласие.
+        Сайт не публикует общедоступную галерею результатов; загруженные файлы, промпты, сгенерированные результаты и данные аккаунта/сессии могут передаваться в приватный канал модерации или операций для предотвращения злоупотреблений, поддержки, проверки на мошенничество и обеспечения безопасности сервиса.
+        Copyright &copy; 2026 ZIAYING LLC. Все права защищены.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    window.UG_CONFIG = {
+      imageCount: 32,
+      thumbBase: '../results/thumbs/',
+      thumbExt: '.webp',
+      botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      presets: [
+        { key: 'nude', category: 'hot', label: 'Полностью ню', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
+        { key: 'oily', category: 'hot', label: 'Масляное ню', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'bondage', category: 'hot', label: 'Шибари ню', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
+        { key: 'lingerie', category: 'clothes', label: 'Прозрачное бельё', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'crotchless', category: 'clothes', label: 'Открытое бельё', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
+        { key: 'bikini', category: 'clothes', label: 'Микро-бикини', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
+        { key: 'wet', category: 'clothes', label: 'Мокрая футболка', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
+        { key: 'bdsm', category: 'clothes', label: 'BDSM-портупея', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
+        { key: 'latex', category: 'clothes', label: 'Латекс', prompt: 'shiny tight black latex catsuit unzipped down the front' },
+        { key: 'tights', category: 'clothes', label: 'Только колготки', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
+        { key: 'stockings', category: 'clothes', label: 'Только чулки', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
+        { key: 'pleated_uniform', category: 'fantasy', label: 'Плиссированная форма', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'nurse', category: 'fantasy', label: 'Секси-медсестра', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'maid', category: 'fantasy', label: 'Французская горничная', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'office', category: 'fantasy', label: 'Офисный образ', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
+      ],
+      i18n: {
+        notLoggedIn: "Вход не выполнен",
+        loginToSeeCredits: "Войди, чтобы увидеть кредиты",
+        creditSingular: "{n} кредит доступен",
+        creditPlural: "{n} кредитов доступно",
+        creditsWord: "кредитов",
+        creditWord: "кредит",
+        imageSingular: "изображение",
+        imagePlural: "изображения",
+        imagesLabel: "Изображения",
+        generateVerb: "Генерировать",
+        payCrypto: "Оплатить криптой",
+        opening: "Открываем...",
+        creatingCheckout: "Создаём безопасную крипто-оплату...",
+        checkoutFail: "Не удалось создать оплату.",
+        generatedResult: "Сгенерированный результат",
+        tabHot: "Самое горячее",
+        tabClothes: "Одежда",
+        tabFantasy: "Фантазии",
+        uploadHint: "JPG, PNG или WebP до 12 MB",
+        readFail: "Не удалось прочитать выбранное фото.",
+        missingPhoto: "Сначала загрузи фото человека.",
+        termsRequired: "Подтверди, что тебе 18+ и у тебя есть права на это фото.",
+        promptRequired: "Сначала выбери пресет или напиши промпт.",
+        copied: "Скопировано!",
+        copy: "Копировать",
+        readingUpload: "Читаем файл...",
+        generating: "Генерация... обычно меньше минуты.",
+        doneBalance: "Готово. Баланс: {balance}.",
+        outOfCredits: "Кредиты закончились. Пополни ниже, чтобы продолжить.",
+        loginFirst: "Сначала войди через Google.",
+        genericError: "Что-то пошло не так.",
+        myAccount: "Мой аккаунт",
+        signedIn: "Вход выполнен",
+        getCredits: "Получить кредиты",
+        contactSupport: "Связаться с поддержкой",
+        logout: "Выйти",
+        payCard: "Оплатить картой",
+        linkTelegram: "Привязать Telegram",
+        telegramLinkedShort: "Telegram привязан",
+        bestValue: "Популярный",
+        topupTitle: "Готов к ещё одному изображению?",
+        topupCopy: "Выбери пакет и продолжай генерировать на сайте.",
+        topupEmptyTitle: "Кредиты закончились",
+        topupEmptyCopy: "Выбери пакет и продолжай генерировать за секунды.",
+        linkingTelegram: "Открываем ссылку Telegram...",
+        telegramLinkFail: "Не удалось создать ссылку Telegram.",
+        telegramLinked: "Telegram привязан.",
+        telegramLinkOpened: "Подтверди привязку в Telegram и вернись сюда.",
+        imgAlt: "Результат ИИ-раздевания",
+        referralSingular: "Получи {reward} кредитов за активного реферала. Сейчас {count} активное приглашение.",
+        referralPlural: "Получи {reward} кредитов за активного реферала. Сейчас {count} активных приглашений.",
+        signupClaim1: "Зарегистрируйся и забери свой бесплатный кредит",
+        signupClaim2: "Зарегистрируйся и забери свои 2 бесплатных кредита",
+        noCardNeeded: "Карта не нужна.",
+        continueGoogle: "Продолжить с Google",
+        signUpToGenerateTitle: "Зарегистрируйся, чтобы генерировать"
+      }
+    };
+  </script>
+  <script>
+    window.UG_ANALYTICS = {
+      posthogToken: 'phc_rKDZDUCJb3JrdxMjL4vNG4LvB4n9qoXUjaU8sXHXTBCJ',
+      posthogHost: 'https://us.i.posthog.com'
+    };
+  </script>
+  <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
+  <script src="../assets/site.js?v=20260817-referral" defer></script>
+</body>
+</html>

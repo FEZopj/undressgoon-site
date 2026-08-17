@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Parrainage — UndressGoon</title>
+  <meta name="description" content="Invite tes amis sur UndressGoon. Gagne des crédits gratuits plus 20% en cash à vie sur chaque recharge qu'ils font." />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#070709" />
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="canonical" href="https://undressgoon.app/fr/referral.html" />
+  <link rel="preload" href="../assets/site.css?v=20260817-referral" as="style" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-referral" />
+  <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="Accueil UndressGoon"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="Langue">
+          <select aria-label="Choisir la langue">
+          <option value="../referral.html">EN</option>
+          <option value="../es/referral.html">ES</option>
+          <option value="../pt/referral.html">PT</option>
+          <option value="../zh/referral.html">ZH</option>
+          <option value="../ja/referral.html">JA</option>
+          <option value="../ru/referral.html">RU</option>
+          <option value="../fr/referral.html" selected>FR</option>
+          <option value="../de/referral.html">DE</option>
+          </select>
+        </nav>
+        <a href="index.html#generate" class="btn btn-accent" data-generate-cta>Générer</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Passer au thème clair" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <div class="site-account" id="site-account" hidden>
+          <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
+            <span class="account-avatar" id="site-account-avatar">U</span>
+            <span class="account-trigger-text">
+              <strong id="site-account-name">Mon compte</strong>
+              <small id="site-account-credits">0 crédit</small>
+            </span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="site-account-menu" hidden>
+            <div class="account-menu-head">
+              <strong id="account-email">Connecté</strong>
+              <span id="account-menu-credits">0 crédit disponible</span>
+            </div>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> Obtenir des crédits</button>
+            <a href="referral.html" class="is-active"><i data-lucide="gift"></i> Parrainage</a>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Lier Telegram</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Contacter le support</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Déconnexion</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="referral-page">
+    <div class="container">
+      <div class="referral-hero">
+        <div class="badge">Programme de parrainage</div>
+        <h1 id="ref-h1">Invite tes amis. Gagne des crédits + 20% en cash.</h1>
+        <p class="referral-lede" id="ref-lede">
+          Partage ton lien. Ton ami reçoit <strong>2 crédits gratuits</strong> au lieu de 1. Tu reçois
+          <strong>1 crédit</strong> quand il génère — plus <strong id="ref-revshare-pct">20%</strong>
+          de chaque recharge qu'il fait, payé en cash.
+        </p>
+      </div>
+
+      <!-- Signed-out: sign in to get a link -->
+      <div class="referral-anon" id="ref-anon" hidden>
+        <div class="login-box">
+          <p>Connecte-toi pour obtenir ton lien de parrainage et commencer à gagner.</p>
+          <div class="login-choices">
+            <button type="button" class="btn btn-google" id="ref-google">Continuer avec Google</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signed-in: the referral dashboard -->
+      <div class="referral-panel" id="ref-panel" hidden>
+        <div class="referral-linkcard">
+          <span class="mini-label">Ton lien de parrainage</span>
+          <div class="referral-actions">
+            <input id="ref-link" readonly value="" aria-label="Lien de parrainage" />
+            <button type="button" class="btn btn-accent" id="ref-copy"><i data-lucide="copy"></i> Copier</button>
+          </div>
+          <small class="referral-share-hint">Partage-le où tu veux — chaque inscription t'est attribuée automatiquement.</small>
+        </div>
+
+        <div class="referral-stats">
+          <div class="ref-stat">
+            <strong id="ref-balance">$0.00</strong>
+            <span>Solde de parrainage en cash</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-earned">$0.00</strong>
+            <span>Total gagné en cash</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-referred">0</strong>
+            <span>Personnes parrainées</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-active">0</strong>
+            <span>Actifs (ont généré)</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-buyers">0</strong>
+            <span>Clients payants</span>
+          </div>
+        </div>
+
+        <p class="referral-withdraw-note">
+          💸 Ton solde en cash est versé sur demande — <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener">contacte le support</a> pour retirer.
+        </p>
+
+        <div class="referral-how">
+          <h2>Comment ça marche</h2>
+          <ol>
+            <li><strong>Partage ton lien.</strong> Toute personne qui s'inscrit via ce lien t'est attribuée à vie.</li>
+            <li><strong>Ils reçoivent 2 crédits gratuits</strong> au lieu de 1 — une meilleure raison de rejoindre.</li>
+            <li><strong>Tu reçois 1 crédit</strong> la première fois qu'ils génèrent une image.</li>
+            <li><strong>Tu gagnes <span class="ref-pct">20%</span> en cash</strong> de chaque recharge qu'ils font — pas seulement la première. Retire quand tu veux via le support.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <a class="logo footer-logo" href="../index.html" aria-label="Accueil UndressGoon">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
+      </a>
+      <nav class="footer-links" aria-label="Liens légaux">
+        <a href="../terms.html">Conditions</a>
+        <a href="../privacy.html">Confidentialité</a>
+        <a href="../acceptable-use.html">Utilisation acceptable</a>
+        <a href="../consent.html">Consentement et droits d'image</a>
+        <a href="../refunds.html">Remboursements</a>
+        <a href="../report-abuse.html">Signaler un abus</a>
+        <a href="../dmca.html">DMCA</a>
+        <a href="../contact.html">Contact</a>
+        <a href="../age-safety.html">Âge et sécurité</a>
+      </nav>
+      <p class="operator-line">UndressGoon est exploité par ZIAYING LLC, une société à responsabilité limitée du Nouveau-Mexique, États-Unis.</p>
+    </div>
+  </footer>
+
+  <script>
+    window.UG_CONFIG = {
+      botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      i18n: {
+        imgAlt: "Résultat IA undress",
+        creditSingular: "{n} crédit disponible",
+        creditPlural: "{n} crédits disponibles",
+        notLoggedIn: "Non connecté",
+        loginToSeeCredits: "Connecte-toi pour voir les crédits",
+        creditsWord: "crédits",
+        creditWord: "crédit",
+        imageSingular: "image",
+        imagePlural: "images",
+        imagesLabel: "Images",
+        generateVerb: "Générer",
+        payCrypto: "Payer en crypto",
+        opening: "Ouverture...",
+        creatingCheckout: "Création du paiement crypto sécurisé...",
+        checkoutFail: "Impossible de créer le paiement.",
+        generatedResult: "Résultat généré",
+        tabHot: "Plus hot",
+        tabClothes: "Vêtements",
+        tabFantasy: "Fantasme",
+        uploadHint: "JPG, PNG ou WebP jusqu’à 12 MB",
+        readFail: "Impossible de lire la photo sélectionnée.",
+        missingPhoto: "Importe d’abord une photo.",
+        termsRequired: "Confirme avoir 18+ et les droits sur cette photo.",
+        promptRequired: "Choisis un preset ou écris un prompt d’abord.",
+        copied: "Copié !",
+        copy: "Copier",
+        readingUpload: "Lecture de la photo...",
+        generating: "Génération... cela prend souvent moins d’une minute.",
+        doneBalance: "Terminé. Solde : {balance}.",
+        outOfCredits: "Plus de crédits. Recharge ci-dessous pour continuer.",
+        loginFirst: "Connecte-toi avec Google d’abord.",
+        genericError: "Une erreur s’est produite.",
+        myAccount: "Mon compte",
+        signedIn: "Connecté",
+        getCredits: "Obtenir des crédits",
+        contactSupport: "Contacter le support",
+        logout: "Déconnexion",
+        payCard: "Payer par carte",
+        linkTelegram: "Lier Telegram",
+        telegramLinkedShort: "Telegram lié",
+        bestValue: "Meilleure offre",
+        topupTitle: "Prêt pour une autre image ?",
+        topupCopy: "Choisis un pack et continue sur le site.",
+        topupEmptyTitle: "Plus de crédits",
+        topupEmptyCopy: "Choisis un pack et relance en quelques secondes.",
+        linkingTelegram: "Ouverture du lien Telegram...",
+        telegramLinkFail: "Impossible de créer le lien Telegram.",
+        telegramLinked: "Telegram lié.",
+        telegramLinkOpened: "Confirme dans Telegram puis reviens ici.",
+        referralSingular: "Gagne {reward} crédits par parrainage actif. {count} invitation active pour l’instant.",
+        referralPlural: "Gagne {reward} crédits par parrainage actif. {count} invitations actives pour l’instant.",
+        signupClaim1: "Inscris-toi pour récupérer ton crédit gratuit",
+        signupClaim2: "Inscris-toi pour récupérer tes 2 crédits gratuits",
+        noCardNeeded: "Sans carte.",
+        continueGoogle: "Continuer avec Google",
+        signUpToGenerateTitle: "Inscris-toi pour générer"
+      }
+    };
+  </script>
+  <script>
+    window.UG_ANALYTICS = {
+      posthogToken: 'phc_rKDZDUCJb3JrdxMjL4vNG4LvB4n9qoXUjaU8sXHXTBCJ',
+      posthogHost: 'https://us.i.posthog.com'
+    };
+  </script>
+  <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
+  <script src="../assets/site.js?v=20260817-referral" defer></script>
+</body>
+</html>

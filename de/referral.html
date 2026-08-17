@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Empfehlungen — UndressGoon</title>
+  <meta name="description" content="Lade Freunde zu UndressGoon ein. Verdiene Gratis-Credits plus 20% lebenslanges Cash bei jeder Aufladung, die sie machen." />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#070709" />
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="canonical" href="https://undressgoon.app/de/referral.html" />
+  <link rel="preload" href="../assets/site.css?v=20260817-referral" as="style" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-referral" />
+  <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="UndressGoon Startseite"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="Sprache">
+          <select aria-label="Sprache auswählen">
+          <option value="../referral.html">EN</option>
+          <option value="../es/referral.html">ES</option>
+          <option value="../pt/referral.html">PT</option>
+          <option value="../zh/referral.html">ZH</option>
+          <option value="../ja/referral.html">JA</option>
+          <option value="../ru/referral.html">RU</option>
+          <option value="../fr/referral.html">FR</option>
+          <option value="../de/referral.html" selected>DE</option>
+          </select>
+        </nav>
+        <a href="index.html#generate" class="btn btn-accent" data-generate-cta>Generieren</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Zum hellen Design wechseln" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <div class="site-account" id="site-account" hidden>
+          <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
+            <span class="account-avatar" id="site-account-avatar">U</span>
+            <span class="account-trigger-text">
+              <strong id="site-account-name">Mein Konto</strong>
+              <small id="site-account-credits">0 Credits</small>
+            </span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="site-account-menu" hidden>
+            <div class="account-menu-head">
+              <strong id="account-email">Eingeloggt</strong>
+              <span id="account-menu-credits">0 Credits verfügbar</span>
+            </div>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> Credits holen</button>
+            <a href="referral.html" class="is-active"><i data-lucide="gift"></i> Empfehlungen</a>
+            <button type="button" id="account-link-telegram"><i data-lucide="send"></i> Telegram verbinden</button>
+            <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Support kontaktieren</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="referral-page">
+    <div class="container">
+      <div class="referral-hero">
+        <div class="badge">Empfehlungsprogramm</div>
+        <h1 id="ref-h1">Freunde einladen. Credits + 20% Cash verdienen.</h1>
+        <p class="referral-lede" id="ref-lede">
+          Teile deinen Link. Dein Freund bekommt <strong>2 Gratis-Credits</strong> statt 1. Du bekommst
+          <strong>1 Credit</strong>, wenn er generiert — plus <strong id="ref-revshare-pct">20%</strong>
+          von jeder Aufladung, die er je macht, in bar ausgezahlt.
+        </p>
+      </div>
+
+      <!-- Signed-out: sign in to get a link -->
+      <div class="referral-anon" id="ref-anon" hidden>
+        <div class="login-box">
+          <p>Melde dich an, um deinen Empfehlungslink zu erhalten und zu verdienen.</p>
+          <div class="login-choices">
+            <button type="button" class="btn btn-google" id="ref-google">Mit Google fortfahren</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signed-in: the referral dashboard -->
+      <div class="referral-panel" id="ref-panel" hidden>
+        <div class="referral-linkcard">
+          <span class="mini-label">Dein Empfehlungslink</span>
+          <div class="referral-actions">
+            <input id="ref-link" readonly value="" aria-label="Empfehlungslink" />
+            <button type="button" class="btn btn-accent" id="ref-copy"><i data-lucide="copy"></i> Kopieren</button>
+          </div>
+          <small class="referral-share-hint">Teile ihn überall — jede Anmeldung wird dir automatisch zugerechnet.</small>
+        </div>
+
+        <div class="referral-stats">
+          <div class="ref-stat">
+            <strong id="ref-balance">$0.00</strong>
+            <span>Cash-Empfehlungsguthaben</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-earned">$0.00</strong>
+            <span>Gesamt verdientes Cash</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-referred">0</strong>
+            <span>Geworbene Personen</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-active">0</strong>
+            <span>Aktiv (generiert)</span>
+          </div>
+          <div class="ref-stat">
+            <strong id="ref-buyers">0</strong>
+            <span>Zahlende Kunden</span>
+          </div>
+        </div>
+
+        <p class="referral-withdraw-note">
+          💸 Dein Cash-Guthaben wird auf Anfrage ausgezahlt — <a href="https://t.me/goonmasterbotbot?start=support" target="_blank" rel="noopener">Support kontaktieren</a>, um es abzuheben.
+        </p>
+
+        <div class="referral-how">
+          <h2>So funktioniert's</h2>
+          <ol>
+            <li><strong>Teile deinen Link.</strong> Jeder, der sich darüber anmeldet, wird dir dauerhaft zugerechnet.</li>
+            <li><strong>Sie bekommen 2 Gratis-Credits</strong> statt 1 — ein besserer Grund mitzumachen.</li>
+            <li><strong>Du bekommst 1 Credit</strong>, sobald sie zum ersten Mal ein Bild generieren.</li>
+            <li><strong>Du verdienst <span class="ref-pct">20%</span> Cash</strong> von jeder Aufladung, die sie je machen — nicht nur der ersten. Auszahlung jederzeit über den Support.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <a class="logo footer-logo" href="index.html" aria-label="UndressGoon Startseite">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
+      </a>
+      <p class="footer-seo">
+        UndressGoon ist ein Dienst zur KI-Bildgenerierung ausschließlich für Erwachsene — für einvernehmlich handelnde Erwachsene und fiktive Erwachsenen-Fantasy-Edits.
+        Lade ein Bild hoch, für das du die Nutzungsrechte besitzt, wähle ein Preset oder einen eigenen Prompt und setze Credits für private Web-Generierungen ein.
+      </p>
+      <nav class="footer-links" aria-label="Rechtliche Links">
+        <a href="../terms.html">AGB</a>
+        <a href="../privacy.html">Datenschutz</a>
+        <a href="../acceptable-use.html">Zulässige Nutzung</a>
+        <a href="../consent.html">Einwilligung &amp; Bildrechte</a>
+        <a href="../refunds.html">Rückerstattungen</a>
+        <a href="../report-abuse.html">Missbrauch melden</a>
+        <a href="../dmca.html">DMCA</a>
+        <a href="../contact.html">Kontakt</a>
+        <a href="../age-safety.html">Alter &amp; Sicherheit</a>
+      </nav>
+      <p class="operator-line">UndressGoon wird betrieben von ZIAYING LLC, einer Limited Liability Company mit Sitz in New Mexico, USA.</p>
+      <p class="disclaimer">
+        Nur für Erwachsene (18+). Verwende ausschließlich Fotos, für die du das gesetzliche Recht und die erforderliche Einwilligung zur Nutzung besitzt.
+        Die Website veröffentlicht keine öffentliche Ergebnis-Galerie; Uploads, Prompts, generierte Ergebnisse sowie Konto-/Session-Details können zur Missbrauchsprävention, für Support, Betrugsprüfung und Dienstsicherheit an einen privaten Moderations- oder Betriebskanal übermittelt werden.
+        Copyright &copy; 2026 ZIAYING LLC. Alle Rechte vorbehalten.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    window.UG_CONFIG = {
+      imageCount: 32,
+      thumbBase: '../results/thumbs/',
+      thumbExt: '.webp',
+      botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      presets: [
+        { key: 'nude', category: 'hot', label: 'Voll Nackt', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
+        { key: 'oily', category: 'hot', label: 'Ölig Nackt', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'bondage', category: 'hot', label: 'Shibari Nackt', prompt: 'completely nude body with ropes in a shibari-style harness, straps framing the body while keeping the face fully visible, no other clothing' },
+        { key: 'lingerie', category: 'clothes', label: 'Transparente Dessous', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'crotchless', category: 'clothes', label: 'Ouvert', prompt: 'sexy crotchless panties and open-cup bra, exposed lingerie look' },
+        { key: 'bikini', category: 'clothes', label: 'Micro-Bikini', prompt: 'extremely skimpy micro bikini, thin strings only, almost nothing left to the imagination' },
+        { key: 'wet', category: 'clothes', label: 'Nasses Shirt', prompt: 'soaking wet white t-shirt clinging to body with no bra, tiny soaked panties' },
+        { key: 'bdsm', category: 'clothes', label: 'BDSM-Harness', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
+        { key: 'latex', category: 'clothes', label: 'Latex', prompt: 'shiny tight black latex catsuit unzipped down the front' },
+        { key: 'tights', category: 'clothes', label: 'Nur Strumpfhose', prompt: 'remove all clothing, then put only sheer black pantyhose on their legs and feet; upper body naked; the only garment is tights' },
+        { key: 'stockings', category: 'clothes', label: 'Nur Strümpfe', prompt: 'remove all clothing, then put only sheer black thigh-high stockings on their legs; no other clothing' },
+        { key: 'pleated_uniform', category: 'fantasy', label: 'Faltenrock-Uniform', prompt: 'tiny pleated uniform skirt with no panties and a tight white blouse unbuttoned low showing cleavage; cosplay' },
+        { key: 'nurse', category: 'fantasy', label: 'Sexy Krankenschwester', prompt: 'sexy nurse costume, short tight dress unzipped, cleavage out, garter belt, no panties' },
+        { key: 'maid', category: 'fantasy', label: 'French Maid', prompt: 'tiny french maid outfit, short skirt no panties, stockings, cleavage, apron barely covering' },
+        { key: 'office', category: 'fantasy', label: 'Office-Look', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
+      ],
+      i18n: {
+        notLoggedIn: "Nicht eingeloggt",
+        loginToSeeCredits: "Einloggen, um Credits zu sehen",
+        creditSingular: "{n} Credit verfügbar",
+        creditPlural: "{n} Credits verfügbar",
+        creditsWord: "Credits",
+        creditWord: "Credit",
+        imageSingular: "Bild",
+        imagePlural: "Bilder",
+        imagesLabel: "Bilder",
+        generateVerb: "Generieren",
+        payCrypto: "Mit Krypto zahlen",
+        opening: "Öffnet...",
+        creatingCheckout: "Sicherer Krypto-Checkout wird erstellt...",
+        checkoutFail: "Checkout konnte nicht erstellt werden.",
+        generatedResult: "Generiertes Ergebnis",
+        tabHot: "Heißeste",
+        tabClothes: "Kleidung",
+        tabFantasy: "Fantasie",
+        uploadHint: "JPG, PNG oder WebP bis 12 MB",
+        readFail: "Ausgewähltes Foto konnte nicht gelesen werden.",
+        missingPhoto: "Lade zuerst ein Personenfoto hoch.",
+        termsRequired: "Bestätige 18+ und die Rechte an diesem Foto.",
+        promptRequired: "Wähle zuerst ein Preset oder schreibe einen Prompt.",
+        copied: "Kopiert!",
+        copy: "Kopieren",
+        readingUpload: "Upload wird gelesen...",
+        generating: "Generiert... dauert meist unter einer Minute.",
+        doneBalance: "Fertig. Kontostand: {balance}.",
+        outOfCredits: "Keine Credits. Unten aufladen, um weiterzumachen.",
+        loginFirst: "Erst mit Google einloggen.",
+        genericError: "Etwas ist schiefgelaufen.",
+        myAccount: "Mein Konto",
+        signedIn: "Eingeloggt",
+        getCredits: "Credits holen",
+        contactSupport: "Support kontaktieren",
+        logout: "Logout",
+        payCard: "Mit Karte zahlen",
+        linkTelegram: "Telegram verbinden",
+        telegramLinkedShort: "Telegram verbunden",
+        bestValue: "Beliebt",
+        topupTitle: "Bereit für ein weiteres Bild?",
+        topupCopy: "Wähle ein Paket und generiere weiter auf der Website.",
+        topupEmptyTitle: "Keine Credits mehr",
+        topupEmptyCopy: "Wähle ein Paket und mache in Sekunden weiter.",
+        linkingTelegram: "Telegram-Link wird geöffnet...",
+        telegramLinkFail: "Telegram-Link konnte nicht erstellt werden.",
+        telegramLinked: "Telegram verbunden.",
+        telegramLinkOpened: "Bestätige den Link in Telegram und komm zurück.",
+        imgAlt: "KI-Undress-Ergebnis",
+        referralSingular: "Verdiene {reward} Credits pro aktiver Empfehlung. Bisher {count} aktive Empfehlung.",
+        referralPlural: "Verdiene {reward} Credits pro aktiver Empfehlung. Bisher {count} aktive Empfehlungen.",
+        signupClaim1: "Registriere dich und sichere dir deinen Gratis-Credit",
+        signupClaim2: "Registriere dich und sichere dir deine 2 Gratis-Credits",
+        noCardNeeded: "Keine Karte nötig.",
+        continueGoogle: "Mit Google fortfahren",
+        signUpToGenerateTitle: "Registrieren zum Generieren"
+      }
+    };
+  </script>
+  <script>
+    window.UG_ANALYTICS = {
+      posthogToken: 'phc_rKDZDUCJb3JrdxMjL4vNG4LvB4n9qoXUjaU8sXHXTBCJ',
+      posthogHost: 'https://us.i.posthog.com'
+    };
+  </script>
+  <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
+  <script src="../assets/site.js?v=20260817-referral" defer></script>
+</body>
+</html>

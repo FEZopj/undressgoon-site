@@ -673,21 +673,22 @@
     var toast = document.getElementById('reengage-toast');
 
     if (account) account.textContent = authed ? ('@' + (user.username || user.id)) : t('notLoggedIn', 'Not logged in');
-    if (balance) balance.textContent = authed ? formatCredits(user.credits) : t('anonFreeCredit', '1 free generation ready');
-    // Reveal-gate: no upfront login wall for anon — they just generate and get a
-    // blurred preview. The login box is shown only when they choose to reveal.
-    if (login) login.hidden = true;
+    if (balance) balance.textContent = authed ? formatCredits(user.credits) : signupCreditCopy();
+    var loginCopy = document.getElementById('login-box-copy');
+    if (loginCopy && !authed) loginCopy.textContent = signupCreditCopy() + '. ' + t('noCardNeeded', 'No card needed.');
+    // Must be signed in to generate — show the login box when signed out.
+    if (login) login.hidden = authed;
     if (logout) logout.hidden = !authed;
-    if (form) form.classList.remove('is-locked');  // reveal-gate: anon can generate too
-    // Anon gets a single free preview — hide the multi-image / credits selector.
+    if (form) form.classList.toggle('is-locked', !authed);
+    // Multi-image / credits selector is for signed-in users only.
     var variationRow = document.getElementById('variation-row');
     if (variationRow) variationRow.hidden = !authed;
-    // Anonymous users can fill the form and click Generate; the submit handler
-    // gates on auth and preserves their work. Only disable while a job is running.
+    // Signed-out visitors can still click Generate; the submit handler gates on
+    // auth, preserves their work, and prompts them to sign up. Only disable
+    // while a job is running.
     if (submit && submit.dataset.busy !== '1') submit.disabled = false;
     if (siteAccount) siteAccount.hidden = !authed;
-    // Persistent header "Sign in" for returning users (anon has no account menu).
-    // Opens the login box (Google + Email) without walling the generator.
+    // Persistent header "Sign in" button (Google-only) for signed-out visitors.
     var headerRight = document.querySelector('.header-right');
     var headerSignin = document.getElementById('header-signin');
     if (!authed && headerRight && !headerSignin) {
@@ -727,22 +728,50 @@
     refreshIcons();
   }
 
+  function formatMoney(cents) {
+    return '$' + (Math.max(0, Number(cents || 0)) / 100).toFixed(2);
+  }
+
+  // Renders the dedicated referral page (referral.html). No-ops elsewhere.
   function updateReferral(referral, authed) {
-    var card = document.getElementById('referral-card');
-    var input = document.getElementById('referral-link');
-    var copy = document.getElementById('referral-copy');
-    if (!card || !input) return;
-    var active = !!(authed && referral && referral.enabled && referral.link);
-    card.hidden = !active;
-    if (!active) return;
-    input.value = referral.link;
-    if (copy) {
-      var inviteTemplate = Number(referral.count || 0) === 1 ?
-        t('referralSingular', 'Earn {reward} credits per active referral. {count} active invite so far.') :
-        t('referralPlural', 'Earn {reward} credits per active referral. {count} active invites so far.');
-      copy.textContent = inviteTemplate
-        .replace('{reward}', String(referral.rewardCredits))
-        .replace('{count}', String(referral.count));
+    var panel = document.getElementById('ref-panel');
+    var anon = document.getElementById('ref-anon');
+    if (!panel && !anon) return;  // not on the referral page
+    var ready = !!(authed && referral && referral.enabled && referral.link);
+    if (anon) anon.hidden = ready;
+    if (panel) panel.hidden = !ready;
+    var gbtn = document.getElementById('ref-google');
+    if (gbtn && !gbtn.dataset.bound) {
+      gbtn.dataset.bound = '1';
+      gbtn.addEventListener('click', goToGoogleLogin);
+    }
+    if (!ready) return;
+    var set = function (id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+    var link = document.getElementById('ref-link');
+    if (link) link.value = referral.link;
+    set('ref-balance', formatMoney(referral.balanceCents));
+    set('ref-earned', formatMoney(referral.earnedCents));
+    set('ref-referred', String(referral.referred || 0));
+    set('ref-active', String(referral.count || 0));
+    set('ref-buyers', String(referral.buyers || 0));
+    var pct = String(referral.revsharePercent || 20) + '%';
+    document.querySelectorAll('.ref-pct, #ref-revshare-pct').forEach(function (el) { el.textContent = pct; });
+    var copy = document.getElementById('ref-copy');
+    if (copy && !copy.dataset.bound) {
+      copy.dataset.bound = '1';
+      copy.addEventListener('click', function () {
+        if (!link) return;
+        link.select();
+        var done = function () {
+          copy.classList.add('copied');
+          var prev = copy.innerHTML;
+          copy.textContent = t('copied', 'Copied!');
+          setTimeout(function () { copy.innerHTML = prev; copy.classList.remove('copied'); refreshIcons(); }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(link.value).then(done, function () { try { document.execCommand('copy'); done(); } catch (e) {} });
+        } else { try { document.execCommand('copy'); done(); } catch (e) {} }
+      });
     }
   }
 
@@ -1119,25 +1148,23 @@
     if (empty) empty.hidden = !!(images && images.length);
   }
 
-  var GOOGLE_SVG = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
-
-  var MAIL_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg>';
-
   function goToGoogleLogin() {
     var link = document.getElementById('google-login');
     if (link && link.getAttribute('href')) window.location.href = link.getAttribute('href');
   }
-  function signupChoicesHtml(gId) {
-    return '<div class="locked-choices">' +
-      '<button type="button" class="btn btn-google locked-cta" id="' + gId + '">' + GOOGLE_SVG + ' ' + esc(t('continueGoogle', 'Continue with Google')) + '</button>' +
-    '</div>';
+
+  // "Sign up to claim your free credit" — or 2 credits when arriving through a
+  // referral link (base free credit + referral bonus).
+  function arrivedViaReferral() {
+    try { return !!new URLSearchParams(location.search || '').get('ref'); } catch (e) { return false; }
   }
-  function wireSignupChoices(gId) {
-    var g = document.getElementById(gId);
-    if (g) g.addEventListener('click', goToGoogleLogin);
+  function signupCreditCopy() {
+    return arrivedViaReferral()
+      ? t('signupClaim2', 'Sign up to claim your 2 free credits')
+      : t('signupClaim1', 'Sign up to claim your free credit');
   }
 
-  // A message card rendered in the results window (errors, gate prompts, etc.).
+  // A message card rendered in the results window (errors, sign-in prompts, etc.).
   function paintResultNotice(opts) {
     var target = document.getElementById('web-results');
     var empty = document.getElementById('web-result-empty');
@@ -1149,77 +1176,15 @@
     if (opts.icon) html += '<div class="rn-icon">' + opts.icon + '</div>';
     if (opts.title) html += '<p class="rn-title">' + esc(opts.title) + '</p>';
     if (opts.message) html += '<p class="rn-sub">' + esc(opts.message) + '</p>';
-    if (opts.choices) html += signupChoicesHtml('notice-google');
     if (opts.actionLabel) html += '<button type="button" class="btn btn-accent rn-cta" id="rn-action">' + esc(opts.actionLabel) + '</button>';
     card.innerHTML = html;
     target.appendChild(card);
     if (empty) empty.hidden = true;
-    if (opts.choices) wireSignupChoices('notice-google');
     if (opts.actionLabel && opts.onAction) {
       var a = document.getElementById('rn-action');
       if (a) a.addEventListener('click', opts.onAction);
     }
     try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
-  }
-
-  // Reveal-gate: paint the blurred anon teaser with a "sign up to reveal" overlay.
-  function paintLockedResult(data) {
-    var target = document.getElementById('web-results');
-    var empty = document.getElementById('web-result-empty');
-    if (!target) return;
-    target.innerHTML = '';
-    var wrap = document.createElement('div');
-    wrap.className = 'locked-result';
-    (data.preview || []).forEach(function (img) {
-      var el = document.createElement('img');
-      el.src = 'data:' + (img.mime || 'image/jpeg') + ';base64,' + img.data;
-      el.alt = t('lockedResult', 'Blurred preview');
-      wrap.appendChild(el);
-    });
-    var overlay = document.createElement('div');
-    overlay.className = 'locked-overlay';
-    overlay.innerHTML =
-      '<div class="locked-lock">🔒</div>' +
-      '<p class="locked-title">' + esc(t('lockedTitle', 'Your result is ready')) + '</p>' +
-      '<p class="locked-sub">' + esc(t('lockedSub', 'Sign up now to reveal — free, no card needed.')) + '</p>' +
-      signupChoicesHtml('reveal-google');
-    wrap.appendChild(overlay);
-    target.appendChild(wrap);
-    if (empty) empty.hidden = true;
-    wireSignupChoices('reveal-google');
-    try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
-  }
-
-  function stashReveal(data) {
-    try {
-      sessionStorage.setItem('ug_reveal', JSON.stringify({
-        jobId: data.jobId, revealToken: data.revealToken, fp: deviceFingerprint()
-      }));
-    } catch (e) {}
-  }
-
-  function doReveal(reveal) {
-    setStatus(t('revealing', 'Revealing your image...'), 'working');
-    return fetch(apiUrl('/web/generate/reveal'), {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jobId: reveal.jobId, revealToken: reveal.revealToken, ug_fp: reveal.fp || deviceFingerprint() })
-    }).then(function (r) {
-      return r.json().catch(function () { return {}; }).then(function (d) {
-        if (!r.ok || !d.ok) {
-          setStatus('', '');
-          paintResultNotice({ tone: 'bad', icon: '⚠️', title: t('revealFailedTitle', 'Could not reveal that preview'), message: d.message || t('revealFailed', 'Generate again to get a fresh one.') });
-          return;
-        }
-        paintResults(d.images || []);
-        track('website_reveal_success', {});
-        setStatus(t('revealed', 'Revealed! Balance: {balance}.').replace('{balance}', formatCredits(d.balance)), 'success');
-        return refreshWebSession();
-      });
-    }).catch(function () {
-      setStatus('', '');
-      paintResultNotice({ tone: 'bad', icon: '⚠️', title: t('revealFailedTitle', 'Could not reveal that preview'), message: t('revealFailed', 'Generate again to get a fresh one.') });
-    });
   }
 
   function ensureGeneratorEnhancements(root) {
@@ -1721,7 +1686,6 @@
       payload.append('variations', String(variations));
       payload.append('breast_size', breastSize ? breastSize.value : 'natural');
       payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
-      payload.append('ug_fp', deviceFingerprint());  // reveal-gate: anon rate limit
       if (chosen) {
         payload.append('person_name', chosen.name || 'upload.jpg');
         payload.append('person', chosen, chosen.name || 'upload.jpg');
@@ -1766,24 +1730,6 @@
       });
     }
 
-    var copyReferral = document.getElementById('copy-referral');
-    if (copyReferral) {
-      copyReferral.addEventListener('click', function () {
-        var input = document.getElementById('referral-link');
-        if (!input || !input.value) return;
-        navigator.clipboard.writeText(input.value).then(function () {
-          copyReferral.innerHTML = '<i data-lucide="check"></i> ' + t('copied', 'Copied');
-          refreshIcons();
-          setTimeout(function () {
-            copyReferral.innerHTML = '<i data-lucide="copy"></i> ' + t('copy', 'Copy');
-            refreshIcons();
-          }, 1800);
-        }).catch(function () {
-          input.select();
-          document.execCommand('copy');
-        });
-      });
-    }
 
     function runGeneration(payloadPromise) {
       if (submit) { submit.disabled = true; submit.dataset.busy = '1'; }
@@ -1815,15 +1761,6 @@
           return data;
         })
         .then(function (data) {
-          if (data.locked) {
-            // Anonymous reveal-gate: show the blurred teaser + reveal CTA.
-            firstGenerationDone = true;
-            paintLockedResult(data);
-            stashReveal(data);
-            track('website_anon_preview_ready', {});
-            setStatus(t('previewReady', 'Preview ready — sign up to reveal your full image.'), 'success');
-            return refreshWebSession();
-          }
           if (isFirstResultOfferEligible()) {
             firstGenerationDone = true;
             armExitOffer();
@@ -1846,16 +1783,18 @@
               actionLabel: t('getCredits', 'Get credits'),
               onAction: function () { showCheckout(true, 'empty'); }
             });
-          } else if (payload.code === 'not_authenticated' || payload.code === 'signin_required' || payload.code === 'at_capacity') {
-            // Anon over their free preview (or capacity) — save their work; after
-            // signin the generation runs for real.
-            track('website_generation_signin_required', { code: payload.code });
+          } else if (payload.code === 'not_authenticated') {
+            // Signed-out: save their work, prompt sign-up; after signin the
+            // generation runs for real (resumePendingGeneration).
+            track('website_generation_not_authenticated', {});
             stashPending(payloadPromise);
+            revealLoginPrompt();
             paintResultNotice({
               icon: '🔒',
-              title: t('freePreviewUsedTitle', 'Your free preview is used up'),
-              message: t('freePreviewUsedMsg', 'Sign up to keep generating — free, no card needed.'),
-              choices: true
+              title: t('signUpToGenerateTitle', 'Sign up to generate'),
+              message: signupCreditCopy() + ' — ' + t('noCardNeeded', 'no card needed.'),
+              actionLabel: t('continueGoogle', 'Continue with Google'),
+              onAction: goToGoogleLogin
             });
           } else {
             track('website_generation_error', { code: payload.code || 'unknown' });
@@ -1923,17 +1862,6 @@
 
     function resumePendingGeneration() {
       if (!(currentSession && currentSession.user)) return;
-      // Reveal-gate: a stashed anon preview reveals (never regenerates).
-      try {
-        var revealRaw = sessionStorage.getItem('ug_reveal');
-        if (revealRaw) {
-          sessionStorage.removeItem('ug_reveal');
-          sessionStorage.removeItem('ug_pending');  // don't also regenerate
-          pendingGeneration = null;
-          var reveal = JSON.parse(revealRaw);
-          if (reveal && reveal.jobId && reveal.revealToken) { doReveal(reveal); return; }
-        }
-      } catch (e) {}
       if (pendingGeneration) {
         var p = pendingGeneration; pendingGeneration = null;
         try { sessionStorage.removeItem('ug_pending'); } catch (e) {}
@@ -2043,8 +1971,19 @@
       if (!payloadPromise) return;
       var authed = !!(currentSession && currentSession.user);
       track('website_generation_submit', { mode: selectedModeValue(), logged_in: authed });
-      // Reveal-gate: anonymous visitors generate too — they get a blurred
-      // preview and sign in with Google to reveal it. The backend gates abuse.
+      // Must be signed in to generate — save their work and prompt sign-up.
+      if (!authed) {
+        stashPending(payloadPromise);
+        revealLoginPrompt();
+        paintResultNotice({
+          icon: '🔒',
+          title: t('signUpToGenerateTitle', 'Sign up to generate'),
+          message: signupCreditCopy() + ' — ' + t('noCardNeeded', 'no card needed.'),
+          actionLabel: t('continueGoogle', 'Continue with Google'),
+          onAction: goToGoogleLogin
+        });
+        return;
+      }
       runGeneration(payloadPromise);
     });
   }
