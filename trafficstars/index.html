@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>UndressGoon - Free AI Undress Trial</title>
+  <meta name="description" content="Start with a free credit. Upload a photo you have rights to use, choose an adult AI preset, and generate directly on the website." />
+  <meta name="theme-color" content="#070709" />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="preload" href="../assets/site.css?v=20260817-gate" as="style" />
+  <link rel="preload" href="trafficstars.css?v=20260814-a1" as="style" />
+  <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
+  <link rel="preload" href="../results/thumbs/14.webp" as="image" type="image/webp" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260817-gate" />
+  <link rel="stylesheet" href="trafficstars.css?v=20260814-a1" />
+  <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+</head>
+<body class="ts-page">
+  <header class="ts-header">
+    <div class="container header-inner">
+      <a class="logo" href="../index.html" aria-label="UndressGoon home">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" />
+      </a>
+      <div class="header-right">
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Start free</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <div class="site-account" id="site-account" hidden>
+          <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
+            <span class="account-avatar" id="site-account-avatar">U</span>
+            <span class="account-trigger-text">
+              <strong id="site-account-name">My account</strong>
+              <small id="site-account-credits">0 credits</small>
+            </span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="site-account-menu" hidden>
+            <div class="account-menu-head">
+              <strong id="account-email">Signed in</strong>
+              <span id="account-menu-credits">0 credits available</span>
+            </div>
+            <button type="button" id="account-topup"><i data-lucide="coins"></i> Get credits</button>
+            <a href="mailto:support@undressgoon.app"><i data-lucide="message-circle"></i> Contact support</a>
+            <button type="button" id="account-logout"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="ts-hero">
+      <div class="container ts-hero-grid">
+        <div class="ts-hero-copy">
+          <div class="ts-kicker"><span></span> Adult AI editor - 18+ only</div>
+          <h1>Upload once. Get your first adult AI edit free.</h1>
+          <p class="ts-sub">
+            Start with one free credit, test the output quality, then top up only if you want more generations.
+          </p>
+          <div class="ts-actions">
+            <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Upload photo now</a>
+            <a href="#examples" class="btn ts-secondary">See presets</a>
+          </div>
+          <div class="ts-proof">
+            <span><i data-lucide="badge-check"></i> No card to try</span>
+            <span><i data-lucide="timer"></i> Typical 15-40s result</span>
+            <span><i data-lucide="shield-check"></i> Consent required</span>
+          </div>
+        </div>
+        <div class="ts-preview" aria-label="Example adult AI result previews">
+          <div class="ts-phone">
+            <img src="../results/thumbs/14.webp" alt="AI generated adult styling preview" width="360" height="500" />
+            <div class="ts-phone-bar">
+              <span>Preset selected</span>
+              <strong>Micro Bikini</strong>
+            </div>
+          </div>
+          <div class="ts-stack">
+            <img src="../results/thumbs/1.webp" alt="AI generated style preview" width="180" height="240" />
+            <img src="../results/thumbs/20.webp" alt="AI generated style preview" width="180" height="240" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ts-offer-strip" aria-label="Offer">
+      <div class="container">
+        <div class="ts-offer">
+          <strong>Traffic-only bonus</strong>
+          <span>Try free first. If you top up today, choose the pack that gives you the most test runs for the session.</span>
+          <a href="#generate" data-generate-cta>Claim free credit</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="generator-section ts-generator" id="generate">
+      <div class="container">
+        <div class="generator-head">
+          <span class="mini-label">Step 1</span>
+          <h2>Start the edit</h2>
+          <p>Pick a clear adult photo, choose a preset, and generate. Your first credit unlocks after login.</p>
+        </div>
+
+        <div class="generator-app" data-web-generator>
+          <div class="generator-panel">
+            <div class="login-box" id="login-box">
+              <p>Continue to claim your free credit. Your ad click is saved automatically for checkout tracking.</p>
+              <div class="login-choices"><a class="btn btn-google" id="google-login" href="#">Continue with Google</a><button type="button" class="btn btn-email" id="email-login-start"><i data-lucide="mail"></i> Continue with Email</button></div>
+              <form class="email-auth" id="email-form" hidden>
+                <input type="email" id="email-input" name="email" autocomplete="email" placeholder="you@email.com" required />
+                <button type="submit" class="btn btn-accent" id="email-send">Send code</button>
+              </form>
+              <form class="email-auth" id="email-code-form" hidden>
+                <p class="email-sent-copy" id="email-sent-copy"></p>
+                <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="6-digit code" required />
+                <button type="submit" class="btn btn-accent" id="email-verify">Verify &amp; continue</button>
+                <div class="email-auth-links">
+                  <button type="button" class="link-btn" id="email-resend">Resend code</button>
+                  <button type="button" class="link-btn" id="email-back">Use a different email</button>
+                </div>
+              </form>
+              <p class="login-error" id="login-error" hidden></p>
+            </div>
+
+            <div class="referral-card" id="referral-card" hidden>
+              <div>
+                <span class="mini-label">Referral credits</span>
+                <strong>Invite friends. Stack free runs.</strong>
+                <small id="referral-copy">You get bonus credits when someone joins and generates.</small>
+              </div>
+              <div class="referral-actions">
+                <input id="referral-link" readonly value="" aria-label="Referral link" />
+                <button type="button" id="copy-referral"><i data-lucide="copy"></i> Copy</button>
+              </div>
+            </div>
+
+            <form class="web-form" id="web-generate-form">
+              <label class="upload-zone" for="person-photo">
+                <input id="person-photo" name="person" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" required />
+                <img class="upload-preview" id="upload-preview" alt="" hidden />
+                <span class="upload-main"><i data-lucide="image-plus"></i> Choose a photo</span>
+                <span class="upload-sub" id="upload-name">JPG, PNG, or WebP up to 12 MB</span>
+                <span class="upload-tip">Use only adults and images you have rights to use.</span>
+              </label>
+
+              <div class="mode-row" role="group" aria-label="Generation mode">
+                <label><input type="radio" name="mode" value="prompt" checked /> <i data-lucide="shirt"></i> Outfit edit</label>
+                <label><input type="radio" name="mode" value="portrait" /> <i data-lucide="camera"></i> Scene</label>
+              </div>
+
+              <div class="preset-picker" id="examples">
+                <div class="preset-top">
+                  <span class="field-label">Choose a preset or write your own prompt</span>
+                  <button type="button" id="preset-clear" hidden>Custom prompt</button>
+                </div>
+                <div class="preset-tabs" id="preset-tabs" role="tablist" aria-label="Preset categories"></div>
+                <div class="preset-grid" id="preset-grid"></div>
+              </div>
+
+              <label class="field-label" for="web-prompt">Prompt</label>
+              <textarea id="web-prompt" name="prompt" rows="4" maxlength="900" required placeholder="Example: tiny black micro bikini, glossy skin, bedroom mirror selfie"></textarea>
+
+              <label class="consent-line">
+                <input type="checkbox" id="web-consent" name="terms_accepted" value="1" required />
+                <span>I confirm that I am 18+ and have the necessary rights and consent to use this image.
+                  <small class="consent-links"><a href="../terms.html">Terms</a> &middot; <a href="../acceptable-use.html">Acceptable Use</a> &middot; <a href="../consent.html">Consent Policy</a></small>
+                </span>
+              </label>
+
+              <button class="btn btn-accent btn-lg" type="submit" id="web-submit"><i data-lucide="wand-sparkles"></i> Generate free image</button>
+              <p class="form-status" id="web-status" aria-live="polite"></p>
+            </form>
+          </div>
+
+          <div class="result-panel">
+            <div class="ts-result-note">
+              <span>After your first result</span>
+              <strong>Top up only if you want more runs.</strong>
+            </div>
+            <div class="result-empty" id="web-result-empty">
+              <strong>Your result appears here</strong>
+              <span>Failed jobs are refunded automatically. Abuse checks apply.</span>
+            </div>
+            <div class="web-results" id="web-results"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ts-steps">
+      <div class="container">
+        <div class="ts-step-grid">
+          <div><b>1</b><strong>Upload</strong><span>Choose an adult photo you can legally use.</span></div>
+          <div><b>2</b><strong>Preset</strong><span>Pick a high-intent style or type your own prompt.</span></div>
+          <div><b>3</b><strong>Generate</strong><span>Use the free credit and see the quality first.</span></div>
+          <div><b>4</b><strong>Continue</strong><span>Starter and popular packs unlock longer sessions.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee-wrap" aria-hidden="true">
+      <div class="marquee" id="marquee"></div>
+    </div>
+  </main>
+
+  <footer class="ts-footer">
+    <div class="container">
+      <p>Adult only (18+). Use only photos you have the lawful right and required consent to use.</p>
+      <nav class="footer-links" aria-label="Legal links">
+        <a href="../terms.html">Terms</a>
+        <a href="../privacy.html">Privacy</a>
+        <a href="../acceptable-use.html">Acceptable Use</a>
+        <a href="../consent.html">Consent &amp; Image Rights</a>
+        <a href="../report-abuse.html">Report Abuse</a>
+        <a href="../contact.html">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <div class="sticky-cta" id="sticky-cta">
+    <div class="sticky-inner">
+      <div class="sticky-copy">
+        <strong>Free credit ready</strong>
+        <span>Upload, preset, generate.</span>
+      </div>
+      <a href="#generate" class="btn btn-accent" data-generate-cta>Start free</a>
+    </div>
+  </div>
+
+  <div class="toast" id="reengage-toast">
+    Your free credit is waiting. <a href="#generate" data-generate-cta>Start now</a>.
+  </div>
+
+  <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
+    <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
+    <div class="topup-dialog">
+      <button class="modal-close" type="button" id="topup-close" aria-label="Close"><i data-lucide="x"></i></button>
+      <span class="mini-label" id="topup-eyebrow">Credits</span>
+      <h3 id="topup-title">Keep generating?</h3>
+      <p id="topup-copy">Pick a pack and continue your session.</p>
+      <div class="discount-box">
+        <label for="discount-code">Discount code</label>
+        <div class="discount-row">
+          <input id="discount-code" name="discount-code" type="text" inputmode="text" autocomplete="off" placeholder="BONUS" />
+          <button type="button" id="discount-apply">Apply</button>
+        </div>
+        <small class="discount-note" id="discount-note"></small>
+      </div>
+      <div class="pack-grid" id="pack-grid"></div>
+      <div class="topup-actions">
+      </div>
+      <small class="topup-note">Credits are added to this account after successful checkout.</small>
+    </div>
+  </div>
+
+  <script>
+    window.UG_CONFIG = {
+      imageCount: 32,
+      thumbBase: '../results/thumbs/',
+      thumbExt: '.webp',
+      botUrl: 'https://t.me/goonmasterbotbot?start=web',
+      apiBase: 'https://api.undressgoon.app',
+      authProvider: 'google',
+      presets: [
+        { key: 'nude', category: 'hot', label: 'Fully Nude', prompt: 'completely naked, fully exposed, no clothing at all, bare skin' },
+        { key: 'oily', category: 'hot', label: 'Oily Nude', prompt: 'completely nude body covered in shiny oil, glistening skin, no clothing' },
+        { key: 'lingerie', category: 'clothes', label: 'Sheer Lingerie', prompt: 'tiny sheer black lingerie that barely covers anything' },
+        { key: 'bikini', category: 'clothes', label: 'Micro Bikini', prompt: 'extremely skimpy micro bikini, thin strings only, glossy skin' },
+        { key: 'wet', category: 'clothes', label: 'Wet Shirt', prompt: 'soaking wet white t-shirt clinging to body, tiny soaked panties' },
+        { key: 'bdsm', category: 'clothes', label: 'BDSM Harness', prompt: 'tight black leather harness, collar, cuffs and straps framing the body' },
+        { key: 'latex', category: 'clothes', label: 'Latex', prompt: 'shiny tight black latex catsuit unzipped down the front' },
+        { key: 'stockings', category: 'clothes', label: 'Stockings Only', prompt: 'sheer black thigh-high stockings, erotic studio lighting' },
+        { key: 'maid', category: 'fantasy', label: 'French Maid', prompt: 'tiny french maid outfit, short skirt, stockings, cleavage, apron barely covering' },
+        { key: 'office', category: 'fantasy', label: 'Office Look', prompt: 'provocative office look, tight blouse, pencil skirt hiked up, stockings' }
+      ],
+      i18n: {
+        imgAlt: 'AI adult result preview',
+        signInToGenerate: 'Sign in to generate - your photo and prompt are saved.',
+        topupEmptyTitle: 'Your free run is used',
+        topupEmptyCopy: 'Choose a pack and keep generating while your prompt is ready.',
+        topupTitle: 'Keep the session going?',
+        topupCopy: 'Starter is good for testing. Popular is the better binge pack.',
+        exitOfferTitle: 'Do not lose the setup you just made',
+        exitOfferCopy: 'Your prompt is ready. Add credits now and keep generating.'
+      }
+    };
+  </script>
+  <script>
+    window.UG_ANALYTICS = {
+      posthogToken: 'phc_rKDZDUCJb3JrdxMjL4vNG4LvB4n9qoXUjaU8sXHXTBCJ',
+      posthogHost: 'https://us.i.posthog.com'
+    };
+  </script>
+  <script src="../assets/analytics.js?v=20260813-payui1" defer></script>
+  <script src="../assets/site.js?v=20260817-gate" defer></script>
+  <script src="trafficstars.js?v=20260814-a1" defer></script>
+</body>
+</html>

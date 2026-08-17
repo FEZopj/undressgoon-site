@@ -1236,6 +1236,17 @@
     }
   }
 
+  // Free (never-purchased) users may only run the Fully Nude preset; everything
+  // else — other presets + custom prompts — unlocks after any top-up.
+  var FREE_PRESET_KEY = 'nude';
+  function isBuyer() {
+    return !!(currentSession && currentSession.user && currentSession.user.hasPurchased);
+  }
+  function openUpsell(reason) {
+    setStatus(t('lockedUpsell', 'Top up to unlock all presets and custom prompts.'), 'working');
+    try { showCheckout(true, reason || 'locked_feature'); } catch (e) {}
+  }
+
   function initPresets() {
     var tabs = document.getElementById('preset-tabs');
     var grid = document.getElementById('preset-grid');
@@ -1247,6 +1258,44 @@
     var promptLabel = document.querySelector('label[for="web-prompt"]');
     var presets = CFG.presets || [];
     if (!tabs || !grid || !prompt || !presets.length) return;
+
+    // Prompt is hidden by default — presets fill it invisibly (users never see
+    // our prompt text). A "Write my own prompt" button reveals an empty field.
+    prompt.removeAttribute('required');
+    function showCustomPrompt(show) {
+      if (promptLabel) promptLabel.style.display = show ? '' : 'none';
+      prompt.style.display = show ? '' : 'none';
+      prompt.classList.toggle('is-open', !!show);
+    }
+    if (label) label.textContent = t('choosePresetLabel', 'Choose a look');
+    var writeOwn = document.getElementById('write-own-prompt');
+    if (!writeOwn && picker) {
+      writeOwn = document.createElement('button');
+      writeOwn.type = 'button';
+      writeOwn.id = 'write-own-prompt';
+      writeOwn.className = 'write-own-btn';
+      picker.insertAdjacentElement('afterend', writeOwn);
+    }
+    function renderWriteOwn() {
+      if (!writeOwn) return;
+      var locked = !isBuyer();
+      writeOwn.classList.toggle('locked', locked);
+      writeOwn.innerHTML = (locked ? '<i data-lucide="lock"></i> ' : '<i data-lucide="pencil"></i> ')
+        + esc(t('writeOwnPrompt', 'Write my own prompt'));
+      refreshIcons();
+    }
+    if (writeOwn && !writeOwn.dataset.bound) {
+      writeOwn.dataset.bound = '1';
+      writeOwn.addEventListener('click', function () {
+        if (!isBuyer()) { openUpsell('locked_custom_prompt'); return; }
+        selected = '';
+        prompt.value = '';
+        showCustomPrompt(true);
+        renderGrid();
+        prompt.focus();
+      });
+    }
+    showCustomPrompt(false);
 
     var outfitCats = [
       { key: 'hot', label: t('tabHot', 'Hottest') },
@@ -1458,33 +1507,38 @@
 
     function renderGrid() {
       var mode = activeMode();
+      var buyer = isBuyer();
       grid.innerHTML = activePresets().filter(function (p) {
         return p.category === active;
       }).map(function (p) {
         var icon = mode === 'portrait' ? 'camera' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt'));
-        return '<button type="button" class="' + (p.key === selected ? 'active' : '') + '" data-key="' + esc(p.key) + '"><i data-lucide="' + icon + '"></i>' + esc(p.label) + '</button>';
+        var locked = !buyer && p.key !== FREE_PRESET_KEY;
+        return '<button type="button" class="' + (p.key === selected ? 'active' : '') + (locked ? ' locked' : '') + '" data-key="' + esc(p.key) + '"' + (locked ? ' data-locked="1"' : '') + '><i data-lucide="' + icon + '"></i>' + esc(p.label) + (locked ? '<span class="preset-lock"><i data-lucide="lock"></i></span>' : '') + '</button>';
       }).join('');
       refreshIcons();
       grid.querySelectorAll('button').forEach(function (button) {
         button.addEventListener('click', function () {
+          if (button.dataset.locked === '1') { openUpsell('locked_preset'); return; }
           var key = button.getAttribute('data-key');
           var mode = activeMode();
           var preset = activePresets().find(function (p) { return p.key === key; });
           if (!preset) return;
           selected = preset.key;
-          prompt.value = preset.prompt;
+          prompt.value = preset.prompt;      // applied invisibly (field stays hidden)
+          showCustomPrompt(false);
           var modeInput = document.querySelector('input[name="mode"][value="' + (mode === 'portrait' ? 'portrait' : 'prompt') + '"]');
           if (modeInput) modeInput.checked = true;
           renderGrid();
-          prompt.focus();
         });
       });
     }
 
     if (clear) {
       clear.addEventListener('click', function () {
+        if (!isBuyer()) { openUpsell('locked_custom_prompt'); return; }
         selected = '';
         prompt.value = '';
+        showCustomPrompt(true);
         renderGrid();
         prompt.focus();
       });
@@ -1498,16 +1552,22 @@
         active = activeMode() === 'portrait' ? sceneCats[0].key : outfitCats[0].key;
         selected = '';
         prompt.value = '';
+        showCustomPrompt(false);
         syncModeCopy();
         renderTabs();
         renderGrid();
-        prompt.focus();
       });
+    });
+    // Re-render locks when the session loads or the user becomes a buyer.
+    document.addEventListener('ug:session-updated', function () {
+      renderGrid();
+      renderWriteOwn();
     });
 
     syncModeCopy();
     renderTabs();
     renderGrid();
+    renderWriteOwn();
   }
 
   function initWebGenerator() {
@@ -1788,6 +1848,15 @@
               message: t('outOfCreditsMsg', 'Pick a pack to keep generating.'),
               actionLabel: t('getCredits', 'Get credits'),
               onAction: function () { showCheckout(true, 'empty'); }
+            });
+          } else if (payload.code === 'top_up_required') {
+            track('website_generation_top_up_required', {});
+            paintResultNotice({
+              tone: 'warn', icon: '🔓',
+              title: t('topUpUnlockTitle', 'Top up to unlock this'),
+              message: t('topUpUnlockMsg', 'Your free credit only works with the Fully Nude preset. Top up to unlock all presets and custom prompts.'),
+              actionLabel: t('unlockGetCredits', 'Unlock — get credits'),
+              onAction: function () { showCheckout(true, 'locked_feature'); }
             });
           } else if (payload.code === 'not_authenticated') {
             // Signed-out: save their work, prompt sign-up; after signin the

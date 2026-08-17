@@ -1249,6 +1249,25 @@ html[data-theme="light"] .preset-tabs button.active {
   border-color: rgba(255, 45, 85, 0.65);
   transform: translateY(-1px);
 }
+/* Locked presets (free users) — dimmed with a lock badge; click = upsell. */
+.preset-grid button.locked { position: relative; opacity: 0.55; }
+.preset-grid button.locked:hover { transform: none; border-color: var(--border); }
+.preset-grid button.locked .preset-lock {
+  position: absolute; top: 5px; right: 6px; display: inline-flex;
+}
+.preset-grid button.locked .preset-lock svg { width: 13px; height: 13px; color: var(--muted); }
+/* "Write my own prompt" button — full-width, revealed field is a paid feature. */
+.write-own-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; margin: 8px 0 2px; min-height: 42px; padding: 8px 14px;
+  border: 1px dashed var(--border); border-radius: 12px; cursor: pointer;
+  background: transparent; color: var(--text); font-weight: 650; font-size: 0.9rem;
+  font-family: inherit; transition: .15s;
+}
+.write-own-btn:hover { border-color: rgba(255, 45, 85, 0.65); }
+.write-own-btn svg { width: 16px; height: 16px; color: var(--accent2); }
+.write-own-btn.locked { opacity: 0.7; }
+.write-own-btn.locked svg { color: var(--muted); }
 .field-label {
   color: var(--muted);
   font-size: 0.8rem;
