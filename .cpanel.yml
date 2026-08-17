@@ -3,6 +3,7 @@ deployment:
   tasks:
     - export DEPLOYPATH=$HOME/public_html/
     - /bin/cp index.html $DEPLOYPATH
+    - /bin/cp referral.html $DEPLOYPATH
     - /bin/cp terms.html $DEPLOYPATH
     - /bin/cp privacy.html $DEPLOYPATH
     - /bin/cp acceptable-use.html $DEPLOYPATH
