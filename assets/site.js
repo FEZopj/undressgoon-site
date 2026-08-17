@@ -630,7 +630,8 @@
   // not just the Google link. Last ad click wins; organic returns don't clear it.
   var TRACKING_KEYS = ['click_id', 'clickid', 'campaign', 'campaign_id', 'creative_id',
     'site_id', 'geo', 'format_id', 'format', 'pricing_model', 'adspot_id', 'adspot_name',
-    'utm_source', 'utm_campaign', 'utm_medium', 'utm_content', 'utm_term'];
+    'utm_source', 'utm_campaign', 'utm_medium', 'utm_content', 'utm_term',
+    'juicy_s2s', 's2s'];
   function captureTracking() {
     try {
       var p = new URLSearchParams(location.search || '');
