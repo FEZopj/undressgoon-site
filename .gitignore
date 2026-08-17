@@ -4,3 +4,6 @@ _gen_locales.py
 .DS_Store
 Thumbs.db
 _qa/
+
+# cPanel mail-relay secret — never commit
+mailrelay.secret.php
