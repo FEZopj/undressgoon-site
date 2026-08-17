@@ -63,21 +63,25 @@
   }
 
   function initDiscountCode() {
+    // Legacy purge: older builds persisted the code in localStorage, so a
+    // one-time campaign code (e.g. COMEBACK20) stuck to EVERY future checkout
+    // and silently inflated credits. Discount codes are now session-scoped.
+    try { localStorage.removeItem('ug_discount_code'); } catch (e) {}
     var params;
     try { params = new URLSearchParams(location.search || ''); } catch (e) { params = null; }
     var fromUrl = params ? cleanDiscountCode(params.get('discount') || params.get('coupon') || '') : '';
     if (fromUrl) {
       discountCode = fromUrl;
       discountFromUrl = true;
-      try { localStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
+      try { sessionStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
       setTimeout(function () {
         setStatus(t('discountSaved', 'Discount saved. It will apply at checkout if eligible.'), 'success');
         updateDiscountUi();
       }, 600);
       return;
     }
-    // Only URL/campaign codes are persisted, so a stored code is a campaign code.
-    try { discountCode = cleanDiscountCode(localStorage.getItem('ug_discount_code') || ''); } catch (e) {}
+    // A stored code lives only for this browsing session (a campaign visit).
+    try { discountCode = cleanDiscountCode(sessionStorage.getItem('ug_discount_code') || ''); } catch (e) {}
     if (discountCode) discountFromUrl = true;
     updateDiscountUi();
   }
@@ -105,7 +109,7 @@
     if (!clean) {
       discountCode = '';
       discountOffer = null;
-      try { localStorage.removeItem('ug_discount_code'); } catch (e) {}
+      try { sessionStorage.removeItem('ug_discount_code'); } catch (e) {}
       updateDiscountUi(t('discountCleared', 'Discount code cleared.'), '');
       return Promise.resolve(false);
     }
@@ -126,7 +130,7 @@
         if (!payload.valid) {
           discountCode = '';
           discountOffer = null;
-          try { localStorage.removeItem('ug_discount_code'); } catch (e) {}
+          try { sessionStorage.removeItem('ug_discount_code'); } catch (e) {}
           updateDiscountUi(payload.message || t('discountInvalid', 'Invalid code.'), 'error');
           return false;
         }
@@ -153,8 +157,8 @@
     discountCode = cleanDiscountCode(value);
     discountOffer = null;
     try {
-      if (discountCode) localStorage.setItem('ug_discount_code', discountCode);
-      else localStorage.removeItem('ug_discount_code');
+      if (discountCode) sessionStorage.setItem('ug_discount_code', discountCode);
+      else sessionStorage.removeItem('ug_discount_code');
     } catch (e) {}
     updateDiscountUi(
       discountCode ? t('discountReady', 'Code ready for checkout.') : t('discountCleared', 'Discount code cleared.'),
@@ -820,13 +824,8 @@
           var badge = isBest ? '<em class="pack-badge best">' + esc(t('bestValue', 'Best value')) + '</em>'
                     : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'Most popular')) + '</em>' : '';
           var saveBadge = savings >= 5 ? '<span class="pack-save">' + esc(t('saveWord', 'Save')) + ' ' + savings + '%</span>' : '';
-          var baseCredits = Number(pack.baseCredits || credits);
-          var bonusCredits = Number(pack.bonusCredits || 0);
-          var creditLine = bonusCredits > 0 ?
-            baseCredits + ' + ' + bonusCredits + ' ' + esc(t('freeCreditsWord', 'free')) :
-            credits + ' ' + esc(t('creditsWord', 'credits'));
-          var totalLine = bonusCredits > 0 ?
-            '<small class="pack-bonus">' + credits + ' ' + esc(t('creditsTotal', 'credits total')) + '</small>' : '';
+          // Show total generations straight up — no "10 + 2 free" breakdown.
+          var creditLine = credits + ' ' + esc(t('creditsWord', 'credits'));
           var perImgLine = perImg ? '<span class="pack-perimg">$' + perImg.toFixed(2) + ' / ' + esc(t('imageWord', 'image')) + '</span>' : '';
           var cryptoButton = data.cryptoEnabled !== false ?
             '<button type="button" data-crypto-pack="' + esc(pack.code) + '"><i data-lucide="wallet"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' :
@@ -838,12 +837,10 @@
             '<div class="pack-card ' + (isBest ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '">' +
               badge + saveBadge +
               '<strong class="pack-credits">' + creditLine + '</strong>' +
-              totalLine +
               packPriceHtml(pack) +
               perImgLine +
               '<ul class="pack-perks">' +
                 '<li><i data-lucide="check"></i> ' + esc(t('perkUnlock', 'Unlocks all presets + custom prompts')) + '</li>' +
-                '<li><i data-lucide="check"></i> ' + credits + ' ' + esc(t('perkGens', 'generations')) + '</li>' +
               '</ul>' +
               '<div class="pack-actions">' + cardButton + cryptoButton + '</div>' +
             '</div>'

@@ -1226,9 +1226,14 @@ html[data-theme="light"] .upload-preview {
 }
 .preset-tabs button.active,
 .preset-grid button.active {
-  border-color: rgba(255, 45, 85, 0.85);
-  background: rgba(255, 45, 85, 0.16);
+  color: #fff;
+  border-color: rgba(255, 45, 85, 0.95);
+  background:
+    linear-gradient(135deg, rgba(255, 45, 85, 0.95), rgba(180, 76, 255, 0.78));
+  box-shadow: 0 10px 22px rgba(255, 45, 85, 0.22);
 }
+.preset-tabs button.active svg,
+.preset-grid button.active svg { color: #fff; }
 .preset-tabs button.active {
   color: #fff;
   border-color: rgba(255, 45, 85, 0.95);
@@ -1236,13 +1241,16 @@ html[data-theme="light"] .upload-preview {
     linear-gradient(135deg, rgba(255, 45, 85, 0.95), rgba(180, 76, 255, 0.78));
   box-shadow: 0 12px 26px rgba(255, 45, 85, 0.25);
 }
-html[data-theme="light"] .preset-tabs button.active {
+html[data-theme="light"] .preset-tabs button.active,
+html[data-theme="light"] .preset-grid button.active {
   color: #fff;
   border-color: rgba(255, 45, 85, 0.95);
   background:
     linear-gradient(135deg, rgba(255, 45, 85, 0.95), rgba(180, 76, 255, 0.78));
   box-shadow: 0 12px 28px rgba(255, 45, 85, 0.22);
 }
+html[data-theme="light"] .preset-tabs button.active svg,
+html[data-theme="light"] .preset-grid button.active svg { color: #fff; }
 .preset-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
