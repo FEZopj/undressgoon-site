@@ -17,6 +17,7 @@
   var packOffer = null;
   var discountCode = '';
   var discountOffer = null;
+  var discountFromUrl = false;  // URL/campaign codes persist; typed codes are session-only
   var firstGenerationDone = false;
   var exitOfferArmed = false;
 
@@ -67,6 +68,7 @@
     var fromUrl = params ? cleanDiscountCode(params.get('discount') || params.get('coupon') || '') : '';
     if (fromUrl) {
       discountCode = fromUrl;
+      discountFromUrl = true;
       try { localStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
       setTimeout(function () {
         setStatus(t('discountSaved', 'Discount saved. It will apply at checkout if eligible.'), 'success');
@@ -74,7 +76,9 @@
       }, 600);
       return;
     }
+    // Only URL/campaign codes are persisted, so a stored code is a campaign code.
     try { discountCode = cleanDiscountCode(localStorage.getItem('ug_discount_code') || ''); } catch (e) {}
+    if (discountCode) discountFromUrl = true;
     updateDiscountUi();
   }
 
@@ -132,7 +136,8 @@
           percentOff: Number(payload.percentOff || 0),
           bonusPercent: Number(payload.bonusPercent || 0)
         };
-        try { localStorage.setItem('ug_discount_code', discountCode); } catch (e) {}
+        // Typed codes are session-only (not persisted) so the field is empty on
+        // reopen; only URL/campaign codes persist across page loads.
         var label = payload.percentOff ? (payload.percentOff + '% off applied.') :
           (payload.bonusPercent ? ('+' + payload.bonusPercent + '% bonus credits applied.') : (payload.message || 'Discount applied.'));
         updateDiscountUi(label, 'success');
@@ -528,6 +533,16 @@
       } else {
         if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready for another image?');
         if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Pick a pack and keep generating on the website.');
+      }
+      // Start each checkout with an empty discount field — a typed code from a
+      // previous open should not linger (campaign/URL codes are kept).
+      if (!discountFromUrl) {
+        discountCode = '';
+        discountOffer = null;
+        var dEl = document.getElementById('discount-code');
+        if (dEl) dEl.value = '';
+        var dNote = document.getElementById('discount-note');
+        if (dNote) { dNote.textContent = ''; dNote.className = 'discount-note'; }
       }
       updateModalPromo(reason);
       panel.hidden = false;
