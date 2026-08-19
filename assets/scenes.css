@@ -17,3 +17,7 @@
 /* Scene subject-attribute selectors reuse .advanced-options from site.css; this
    just tightens the optional helper line above them. */
 #scene-subject .scene-subject-head { line-height: 1.35; }
+
+/* "Coming soon" state for the Scene generator mode — greyed + unselectable. */
+.mode-row label.scene-coming-soon { opacity: .5; cursor: not-allowed; }
+.mode-row label.scene-coming-soon input { cursor: not-allowed; pointer-events: none; }

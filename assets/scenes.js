@@ -33,12 +33,23 @@
     else document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  // Hide the "Scene" generator mode until the backend reports the feature live
-  // (SCENE_ENABLED=true) — so it never appears before the worker is rebuilt.
+  // Show the "Scene" generator mode as a greyed-out "SOON" that can't be selected
+  // until the backend reports the feature live (SCENE_ENABLED=true). Flip the env
+  // to enable/disable without any redeploy.
   function applySceneAvailability(enabled) {
     var radio = document.querySelector('input[name="mode"][value="scene"]');
-    if (!radio || !radio.parentElement) return;
-    radio.parentElement.style.display = enabled ? "" : "none";
+    var label = document.getElementById("scene-mode-label");
+    var badge = document.getElementById("scene-mode-badge");
+    if (!radio || !label) return;
+    radio.disabled = !enabled;
+    label.classList.toggle("scene-coming-soon", !enabled);
+    label.title = enabled ? "" : "Coming soon";
+    if (badge) {
+      badge.textContent = enabled ? "NEW" : "SOON";
+      badge.style.background = enabled
+        ? "linear-gradient(135deg,var(--accent),var(--accent2))"
+        : "var(--muted,#9b9ba8)";
+    }
     if (!enabled && radio.checked) {
       var prompt = document.querySelector('input[name="mode"][value="prompt"]');
       if (prompt) { prompt.checked = true; prompt.dispatchEvent(new Event("change", { bubbles: true })); }
