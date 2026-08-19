@@ -1365,12 +1365,12 @@
     // Scene categories = the new PonyRealism generate-then-swap catalogue
     // (keys must match scene_presets.py on the backend).
     var sceneCats = [
-      { key: 'sex', label: t('tabSex', '🔥 Sex') },
-      { key: 'oral', label: t('tabOral', '👅 Oral') },
-      { key: 'nasty', label: t('tabNasty', '💦 Nasty') },
-      { key: 'tease', label: t('tabTease', '🦵 Tease') },
-      { key: 'cosplay', label: t('tabCosplay', '🎭 Cosplay') },
-      { key: 'bdsm', label: t('tabBdsm', '⛓ BDSM') }
+      { key: 'sex', label: t('tabSex', 'Sex') },
+      { key: 'oral', label: t('tabOral', 'Oral') },
+      { key: 'nasty', label: t('tabNasty', 'Nasty') },
+      { key: 'tease', label: t('tabTease', 'Tease') },
+      { key: 'cosplay', label: t('tabCosplay', 'Cosplay') },
+      { key: 'bdsm', label: t('tabBdsm', 'BDSM') }
     ];
     var presetPromptUpgrades = {
       nude: 'completely naked, fully exposed, no clothing at all, bare breasts with natural visible nipples and areolas, natural skin texture, same pose and same camera framing, clear recognizable face, realistic shadows on the body',
@@ -1389,43 +1389,43 @@
       maid: 'tiny french maid outfit, very short skirt with no panties, stockings, cleavage, apron barely covering the body, playful messy bedroom styling, same identity and camera framing',
       office: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings, desk fantasy styling, same pose and face, realistic office lighting'
     };
-    // NEW scene catalogue — PonyRealism generate-then-swap. `prompt` holds the
+    // NEW scene catalogue PonyRealism generate-then-swap. `prompt` holds the
     // scene KEY (the invisible-prompt bridge carries it to submit; the backend
     // resolves key -> full Pony prompt server-side). Keys MUST match
-    // scene_presets.py. Subject attributes (skin/body/bust/…) are sent separately.
+    // scene_presets.py. Subject attributes (skin/body/bust/) are sent separately.
     var scenePresets = CFG.scenePresets || [
-      { key: 'missionary', category: 'sex', label: '❤️ Missionary', prompt: 'missionary' },
-      { key: 'cowgirl', category: 'sex', label: '🤠 Cowgirl', prompt: 'cowgirl' },
-      { key: 'doggystyle', category: 'sex', label: '🐾 Doggystyle', prompt: 'doggystyle' },
-      { key: 'reverse_cowgirl', category: 'sex', label: '🔄 Reverse Cowgirl', prompt: 'reverse_cowgirl' },
-      { key: 'standing_sex', category: 'sex', label: '🧍 Standing', prompt: 'standing_sex' },
-      { key: 'lesbian_scissoring', category: 'sex', label: '👭 Girl-on-Girl', prompt: 'lesbian_scissoring' },
-      { key: 'blowjob_pov', category: 'oral', label: '🍆 Blowjob (POV)', prompt: 'blowjob_pov' },
-      { key: 'deepthroat', category: 'oral', label: '🌡️ Deepthroat', prompt: 'deepthroat' },
-      { key: 'cunnilingus', category: 'oral', label: '👅 Licked Out', prompt: 'cunnilingus' },
-      { key: 'sixtynine', category: 'oral', label: '♋ Sixty-Nine', prompt: 'sixtynine' },
-      { key: 'titjob', category: 'oral', label: '🎈 Titjob', prompt: 'titjob' },
-      { key: 'creampie', category: 'nasty', label: '🍦 Creampie', prompt: 'creampie' },
-      { key: 'facial', category: 'nasty', label: '💦 Facial', prompt: 'facial' },
-      { key: 'anal', category: 'nasty', label: '🍑 Anal', prompt: 'anal' },
-      { key: 'ahegao_ride', category: 'nasty', label: '🤪 Ahegao', prompt: 'ahegao_ride' },
-      { key: 'bukkake', category: 'nasty', label: '🌊 Covered', prompt: 'bukkake' },
-      { key: 'white_pantyhose', category: 'tease', label: '🤍 White Pantyhose', prompt: 'white_pantyhose' },
-      { key: 'footjob_pantyhose', category: 'tease', label: '🦶 Footjob (Pantyhose)', prompt: 'footjob_pantyhose' },
-      { key: 'feet_soles', category: 'tease', label: '👣 Feet & Soles', prompt: 'feet_soles' },
-      { key: 'armpit', category: 'tease', label: '🙆 Armpit', prompt: 'armpit' },
-      { key: 'bent_over', category: 'tease', label: '🍑 Bent Over', prompt: 'bent_over' },
-      { key: 'shower_wet', category: 'tease', label: '🚿 Wet Shower', prompt: 'shower_wet' },
-      { key: 'schoolgirl_sex', category: 'cosplay', label: '🎀 Schoolgirl', prompt: 'schoolgirl_sex' },
-      { key: 'nurse', category: 'cosplay', label: '💉 Naughty Nurse', prompt: 'nurse' },
-      { key: 'maid', category: 'cosplay', label: '🧹 French Maid', prompt: 'maid' },
-      { key: 'bunnysuit', category: 'cosplay', label: '🐰 Bunny Suit', prompt: 'bunnysuit' },
-      { key: 'catgirl', category: 'cosplay', label: '🐱 Catgirl', prompt: 'catgirl' },
-      { key: 'shibari', category: 'bdsm', label: '🪢 Shibari', prompt: 'shibari' },
-      { key: 'collar_leash', category: 'bdsm', label: '🐕 Collar & Leash', prompt: 'collar_leash' },
-      { key: 'spanking', category: 'bdsm', label: '✋ Spanking', prompt: 'spanking' },
-      { key: 'latex_domme', category: 'bdsm', label: '🖤 Latex Domme', prompt: 'latex_domme' },
-      { key: 'restrained_bed', category: 'bdsm', label: '🛏️ Tied to Bed', prompt: 'restrained_bed' }
+      { key: 'missionary', category: 'sex', label: 'Missionary', prompt: 'missionary' },
+      { key: 'cowgirl', category: 'sex', label: 'Cowgirl', prompt: 'cowgirl' },
+      { key: 'doggystyle', category: 'sex', label: 'Doggystyle', prompt: 'doggystyle' },
+      { key: 'reverse_cowgirl', category: 'sex', label: 'Reverse Cowgirl', prompt: 'reverse_cowgirl' },
+      { key: 'standing_sex', category: 'sex', label: 'Standing', prompt: 'standing_sex' },
+      { key: 'lesbian_scissoring', category: 'sex', label: 'Girl-on-Girl', prompt: 'lesbian_scissoring' },
+      { key: 'blowjob_pov', category: 'oral', label: 'Blowjob (POV)', prompt: 'blowjob_pov' },
+      { key: 'deepthroat', category: 'oral', label: 'Deepthroat', prompt: 'deepthroat' },
+      { key: 'cunnilingus', category: 'oral', label: 'Licked Out', prompt: 'cunnilingus' },
+      { key: 'sixtynine', category: 'oral', label: 'Sixty-Nine', prompt: 'sixtynine' },
+      { key: 'titjob', category: 'oral', label: 'Titjob', prompt: 'titjob' },
+      { key: 'creampie', category: 'nasty', label: 'Creampie', prompt: 'creampie' },
+      { key: 'facial', category: 'nasty', label: 'Facial', prompt: 'facial' },
+      { key: 'anal', category: 'nasty', label: 'Anal', prompt: 'anal' },
+      { key: 'ahegao_ride', category: 'nasty', label: 'Ahegao', prompt: 'ahegao_ride' },
+      { key: 'bukkake', category: 'nasty', label: 'Covered', prompt: 'bukkake' },
+      { key: 'white_pantyhose', category: 'tease', label: 'White Pantyhose', prompt: 'white_pantyhose' },
+      { key: 'footjob_pantyhose', category: 'tease', label: 'Footjob (Pantyhose)', prompt: 'footjob_pantyhose' },
+      { key: 'feet_soles', category: 'tease', label: 'Feet & Soles', prompt: 'feet_soles' },
+      { key: 'armpit', category: 'tease', label: 'Armpit', prompt: 'armpit' },
+      { key: 'bent_over', category: 'tease', label: 'Bent Over', prompt: 'bent_over' },
+      { key: 'shower_wet', category: 'tease', label: 'Wet Shower', prompt: 'shower_wet' },
+      { key: 'schoolgirl_sex', category: 'cosplay', label: 'Schoolgirl', prompt: 'schoolgirl_sex' },
+      { key: 'nurse', category: 'cosplay', label: 'Naughty Nurse', prompt: 'nurse' },
+      { key: 'maid', category: 'cosplay', label: 'French Maid', prompt: 'maid' },
+      { key: 'bunnysuit', category: 'cosplay', label: 'Bunny Suit', prompt: 'bunnysuit' },
+      { key: 'catgirl', category: 'cosplay', label: 'Catgirl', prompt: 'catgirl' },
+      { key: 'shibari', category: 'bdsm', label: 'Shibari', prompt: 'shibari' },
+      { key: 'collar_leash', category: 'bdsm', label: 'Collar & Leash', prompt: 'collar_leash' },
+      { key: 'spanking', category: 'bdsm', label: 'Spanking', prompt: 'spanking' },
+      { key: 'latex_domme', category: 'bdsm', label: 'Latex Domme', prompt: 'latex_domme' },
+      { key: 'restrained_bed', category: 'bdsm', label: 'Tied to Bed', prompt: 'restrained_bed' }
     ];
 // (legacy Qwen scene presets removed — replaced by the scenePresets catalogue above)
     presets = presets.map(function (preset) {
