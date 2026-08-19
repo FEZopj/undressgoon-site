@@ -84,9 +84,13 @@
   <link rel="preload" href="results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="results/thumbs/2.webp" as="image" type="image/webp" />
   <link rel="stylesheet" href="assets/site.css?v=20260819-topup" />
+  <link rel="stylesheet" href="assets/scenes.css?v=20260819-scenes" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
+
+  <!-- Site announcement banner (populated by scenes.js from /web/scenes) -->
+  <div id="ug-announce-root"></div>
 
   <header>
     <div class="container header-inner">
@@ -143,6 +147,7 @@
       </p>
       <div class="cta-group">
         <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Open generator</a>
+        <a href="#scenes" id="ug-scenes-cta" class="btn btn-lg" style="display:none;border:1px solid var(--border);background:var(--surface);color:var(--text)">🔥 Try Scenes <span style="font-size:.62rem;font-weight:900;letter-spacing:.08em;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle">NEW</span></a>
       </div>
       <p class="free-note"><strong>Start free</strong> · no card needed · 18+ only</p>
       <div class="trust-row">
@@ -264,6 +269,14 @@
           <div class="web-results" id="web-results"></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- NEW: Explicit scenes (PonyRealism generate-then-swap). Self-contained;
+       rendered by assets/scenes.js. Hides itself if the feature is off. -->
+  <section class="section" id="scenes" style="display:none">
+    <div class="container">
+      <div id="ug-scenes-root"></div>
     </div>
   </section>
 
@@ -511,5 +524,6 @@
   </script>
   <script src="assets/analytics.js?v=20260818-utm" defer></script>
   <script src="assets/site.js?v=20260819-topup" defer></script>
+  <script src="assets/scenes.js?v=20260819-scenes" defer></script>
 </body>
 </html>

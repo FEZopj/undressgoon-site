@@ -1,0 +1,95 @@
+/* ==========================================================================
+   UndressGoon — "Scenes" feature styles (explicit PonyRealism generate-then-swap)
+   Namespaced under .ugsc- / #ug-scenes-* so it never collides with site.css.
+   Reuses site.css theme tokens (--accent, --surface, ...) so it matches the
+   site's light AND dark themes automatically.
+   ========================================================================== */
+#ug-scenes-root, #ug-scenes-root * { box-sizing: border-box; }
+#ug-scenes-root { color: var(--text, #f2f2f7); }
+
+.ugsc-head { text-align: center; margin-bottom: 22px; }
+.ugsc-title { display: inline-flex; align-items: center; gap: 12px; justify-content: center; }
+.ugsc-title h2 { margin: 0; font-size: clamp(1.5rem, 4vw, 2.1rem); }
+.ugsc-new {
+  font-size: .62rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase;
+  background: linear-gradient(135deg, var(--accent, #ff2d55), var(--accent2, #ff6b8a));
+  color: #fff; padding: 4px 9px; border-radius: 999px; box-shadow: 0 4px 14px var(--glow, rgba(255,45,85,.35));
+}
+.ugsc-sub { color: var(--muted, #9b9ba8); font-size: .95rem; margin: 8px auto 0; max-width: 560px; }
+
+.ugsc-cats { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 22px 0 16px; }
+.ugsc-cat {
+  border: 1px solid var(--border, #2c2c35); background: var(--surface, #111114);
+  color: var(--text, #f2f2f7); padding: 8px 15px; border-radius: 999px; cursor: pointer;
+  font-size: .86rem; font-weight: 600; transition: .15s; user-select: none;
+}
+.ugsc-cat:hover { border-color: var(--accent2, #ff6b8a); }
+.ugsc-cat.active {
+  background: linear-gradient(135deg, var(--accent, #ff2d55), var(--accent2, #ff6b8a));
+  border-color: transparent; color: #fff;
+}
+
+.ugsc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 12px; }
+.ugsc-card {
+  border: 1px solid var(--border, #2c2c35); background: var(--surface, #111114);
+  border-radius: 16px; padding: 16px 13px; cursor: pointer; transition: .15s;
+  position: relative; overflow: hidden;
+}
+.ugsc-card:hover { transform: translateY(-3px); border-color: var(--accent2, #ff6b8a); box-shadow: 0 10px 26px rgba(0,0,0,.35); }
+.ugsc-card.sel { border-color: var(--accent, #ff2d55); box-shadow: 0 0 0 1px var(--accent, #ff2d55) inset, 0 8px 22px var(--glow, rgba(255,45,85,.35)); }
+.ugsc-card.sel::after { content: "✓"; position: absolute; top: 9px; right: 11px; color: var(--accent, #ff2d55); font-weight: 900; }
+.ugsc-emoji { font-size: 1.8rem; line-height: 1; }
+.ugsc-label { font-weight: 800; margin-top: 9px; font-size: .96rem; }
+.ugsc-teaser { color: var(--muted, #9b9ba8); font-size: .76rem; margin-top: 4px; line-height: 1.35; }
+
+.ugsc-panel {
+  background: var(--surface, #111114); border: 1px solid var(--border, #2c2c35);
+  border-radius: 20px; padding: 20px; margin-top: 22px;
+}
+.ugsc-panel h3 { margin: 0 0 4px; font-size: 1.05rem; }
+.ugsc-panel .ugsc-step { color: var(--muted, #9b9ba8); font-size: .82rem; margin: 0 0 14px; }
+.ugsc-attrs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.ugsc-field { display: block; }
+.ugsc-field > span { display: block; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--muted, #9b9ba8); margin-bottom: 6px; font-weight: 700; }
+.ugsc-field select, .ugsc-upload, .ugsc-vars {
+  width: 100%; background: var(--bg, #070709); color: var(--text, #f2f2f7);
+  border: 1px solid var(--border, #2c2c35); border-radius: 12px; padding: 11px 12px; font-size: .88rem;
+}
+.ugsc-upload-zone {
+  border: 1.5px dashed var(--border, #2c2c35); border-radius: 14px; padding: 18px; text-align: center;
+  cursor: pointer; transition: .15s; display: block; background: var(--bg, #070709);
+}
+.ugsc-upload-zone:hover { border-color: var(--accent2, #ff6b8a); }
+.ugsc-upload-zone input { display: none; }
+.ugsc-upload-main { font-weight: 700; }
+.ugsc-upload-sub { display: block; color: var(--muted, #9b9ba8); font-size: .78rem; margin-top: 4px; }
+.ugsc-thumb { width: 76px; height: 76px; object-fit: cover; border-radius: 12px; margin-top: 12px; border: 1px solid var(--border, #2c2c35); }
+
+.ugsc-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; margin-top: 16px; }
+.ugsc-row > .ugsc-field { flex: 1 1 150px; }
+.ugsc-consent { display: flex; align-items: flex-start; gap: 9px; font-size: .82rem; color: var(--muted, #9b9ba8); margin-top: 16px; line-height: 1.4; }
+.ugsc-consent input { margin-top: 3px; }
+.ugsc-go {
+  width: 100%; margin-top: 18px; border: none; border-radius: 14px; padding: 15px;
+  font-size: 1.02rem; font-weight: 800; color: #fff; cursor: pointer;
+  background: linear-gradient(135deg, var(--accent, #ff2d55), var(--accent2, #ff6b8a));
+  box-shadow: 0 8px 22px var(--glow, rgba(255,45,85,.35));
+}
+.ugsc-go:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.ugsc-status { text-align: center; margin-top: 14px; color: var(--muted, #9b9ba8); font-size: .88rem; min-height: 20px; }
+.ugsc-status a { color: var(--accent2, #ff6b8a); }
+.ugsc-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-top: 18px; }
+.ugsc-results img { width: 100%; border-radius: 14px; border: 1px solid var(--border, #2c2c35); }
+
+/* ---- Site announcement banner (injected at top of <body>) --------------- */
+.ugsc-announce {
+  background: linear-gradient(90deg, var(--accent, #ff2d55), var(--accent2, #ff6b8a));
+  color: #fff; text-align: center; padding: 10px 42px; font-size: .92rem; font-weight: 700;
+  position: relative; z-index: 60;
+}
+.ugsc-announce a { color: #fff; text-decoration: underline; }
+.ugsc-announce .ugsc-x {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  cursor: pointer; opacity: .9; font-weight: 900; font-size: 1.1rem; line-height: 1;
+}
