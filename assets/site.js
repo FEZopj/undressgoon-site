@@ -605,27 +605,71 @@
     }
   }
 
+  var deviceFpCache = null;
   function deviceFingerprint() {
-    // A stable per-browser id so the free-credit guard works per-device without
-    // punishing shared Wi-Fi / households (each browser gets its own id).
+    // A device fingerprint DERIVED from stable browser/hardware signals, so it
+    // survives incognito, cleared storage and reinstalls (unlike the old random
+    // localStorage id, which reset in one click). With the server-side IP guard
+    // this makes farming free credits across throwaway accounts far harder — not
+    // bulletproof (a different device or a canvas-randomising browser still gets
+    // a fresh id), but casual abuse goes from trivial to annoying.
+    if (deviceFpCache) return deviceFpCache;
+    var parts = [];
     try {
-      var fp = localStorage.getItem('ug_fp');
-      if (!fp) {
-        var bytes = new Uint8Array(16);
-        if (window.crypto && window.crypto.getRandomValues) {
-          window.crypto.getRandomValues(bytes);
-          fp = Array.prototype.map.call(bytes, function (b) {
-            return b.toString(16).padStart(2, '0');
-          }).join('');
-        } else {
-          fp = String(Date.now()) + Math.random().toString(16).slice(2);
-        }
-        localStorage.setItem('ug_fp', fp);
-      }
-      return String(fp).slice(0, 96);
-    } catch (e) {
-      return '';
+      var n = navigator || {};
+      parts.push(n.userAgent || '');
+      parts.push((n.language || '') + '|' + ((n.languages || []).join(',')));
+      parts.push(n.platform || '');
+      parts.push((n.hardwareConcurrency || '') + '|' + (n.deviceMemory || '') + '|' + (n.maxTouchPoints || ''));
+      var sc = window.screen || {};
+      parts.push(sc.width + 'x' + sc.height + 'x' + (sc.colorDepth || '') + '@' + (window.devicePixelRatio || 1));
+      parts.push(String(new Date().getTimezoneOffset()));
+      try { parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (e) {}
+      parts.push(fpCanvas());
+      parts.push(fpWebgl());
+    } catch (e) {}
+    var strong = parts.filter(function (p) { return p; }).length >= 4;
+    var fp = 'd' + fpHash(parts.join('~~'));
+    if (!strong) {
+      // Too few signals (headless / locked-down browser) — keep a random
+      // per-browser id rather than return empty (empty disables the guard).
+      try {
+        var stored = localStorage.getItem('ug_fp');
+        if (stored) { fp = stored; } else { localStorage.setItem('ug_fp', fp); }
+      } catch (e) {}
     }
+    deviceFpCache = String(fp).slice(0, 96);
+    return deviceFpCache;
+  }
+  function fpHash(str) {
+    var h = 5381, i = str.length;
+    while (i) { h = ((h * 33) ^ str.charCodeAt(--i)) >>> 0; }
+    return h.toString(16);
+  }
+  function fpCanvas() {
+    try {
+      var c = document.createElement('canvas');
+      c.width = 240; c.height = 60;
+      var ctx = c.getContext('2d');
+      if (!ctx) return '';
+      ctx.textBaseline = 'top';
+      ctx.font = '16px Arial';
+      ctx.fillStyle = '#f60'; ctx.fillRect(8, 8, 120, 28);
+      ctx.fillStyle = '#069'; ctx.fillText('ug-fp ✨©', 12, 12);
+      ctx.fillStyle = 'rgba(102,204,0,0.7)'; ctx.fillText('ug-fp ✨©', 14, 14);
+      return fpHash(c.toDataURL());
+    } catch (e) { return ''; }
+  }
+  function fpWebgl() {
+    try {
+      var c = document.createElement('canvas');
+      var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+      if (!gl) return '';
+      var d = gl.getExtension('WEBGL_debug_renderer_info');
+      var v = d ? gl.getParameter(d.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+      var r = d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+      return fpHash(String(v) + '|' + String(r));
+    } catch (e) { return ''; }
   }
 
   // Ad attribution (TrafficStars click_id, campaign, utm_*). Captured on landing
