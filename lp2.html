@@ -19,8 +19,12 @@
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
   <style>
     /* lp2-only additions — everything else reuses site.css */
-    .lp2-hero { padding: 42px 0 10px; text-align: center; }
-    .lp2-hero h1 { margin: 14px 0 10px; }
+    .lp2-hero { padding: 22px 0 4px; text-align: center; }
+    .lp2-hero h1 { margin: 12px 0 6px; font-size: clamp(1.7rem, 4.6vw, 2.5rem); }
+    .lp2-hero .badge { margin-bottom: 0; }
+    /* the generator sits right under the strip — no second heading, no gap */
+    .generator-section { padding-top: 14px; }
+    .generator-section .generator-head { display: none; }
     .lp2-cats { color: var(--muted); font-size: .95rem; margin: 0 0 18px; }
     .lp2-cats strong { color: var(--text); font-weight: 700; }
     .lp2-proof { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center;
@@ -84,21 +88,19 @@
     </div>
   </header>
 
-  <!-- 1 · HERO — what it is, what's free, what to click. Nothing else. -->
+  <!-- 1 · HERO — one line + proof, then straight into the product. The
+       generator IS the hero on this variant. -->
   <section class="hero lp2-hero">
     <div class="container">
       <div class="badge">AI undress generator · 18+</div>
       <h1>Undress your photos with AI.</h1>
       <p class="lp2-cats"><strong>Fully Nude</strong> · Micro Bikini · Lingerie · Latex · BDSM · Custom prompts</p>
-      <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Generate free</a>
-      </div>
       <div class="lp2-proof">
         <span><i data-lucide="ticket"></i> 1 free generation</span>
         <span><i data-lucide="credit-card"></i> No card required</span>
         <span><i data-lucide="timer"></i> Results in 15–40s</span>
       </div>
-      <p class="free-note">Adults only. Use photos you have the rights and consent to edit.</p>
+      <p class="free-note" style="margin-top:10px">Adults only. Use photos you have the rights and consent to edit.</p>
     </div>
   </section>
 
@@ -313,7 +315,7 @@
         </details>
         <details>
           <summary>Are my generations public?</summary>
-          <p>No — there is no public gallery, and results appear only inside your own session. For abuse prevention and support, uploads and results may be reviewed internally, as described in our <a href="privacy.html">Privacy Policy</a>.</p>
+          <p>No — there is no public gallery. Your generations appear only inside your own account session, never posted anywhere public.</p>
         </details>
         <details>
           <summary>What if a generation fails?</summary>
