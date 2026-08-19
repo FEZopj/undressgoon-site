@@ -819,14 +819,20 @@
           var credits = Number(pack.credits || pack.baseCredits || 0);
           var perImg = credits ? ((Number(pack.priceCents || 0) / credits) / 100) : 0;
           var savings = (baseline && perImg) ? Math.round((1 - (perImg / baseline)) * 100) : 0;
-          var isBest = /best value/i.test(String(pack.title || '')) || idx === packs.length - 1;
-          var isPopular = /popular/i.test(String(pack.title || ''));
-          var badge = isBest ? '<em class="pack-badge best">' + esc(t('bestValue', 'Best value')) + '</em>'
-                    : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'Most popular')) + '</em>' : '';
-          var saveBadge = savings >= 5 ? '<span class="pack-save">' + esc(t('saveWord', 'Save')) + ' ' + savings + '%</span>' : '';
-          // Show total generations straight up — no "10 + 2 free" breakdown.
+          // Badges from the numbers, not the title: biggest pack = best $/credit,
+          // the one below it is the "popular" anchor that pulls buyers up.
+          var isBest = idx === packs.length - 1;
+          var isPopular = !isBest && idx === packs.length - 2;
+          var ribbon = isBest ? '<em class="pack-badge best">' + esc(t('bestValue', 'BEST VALUE')) + '</em>'
+                    : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'MOST POPULAR')) + '</em>' : '';
+          var saveBadge = savings >= 5 ? '<span class="pack-save">−' + savings + '%</span>' : '';
           var creditLine = credits + ' ' + esc(t('creditsWord', 'credits'));
-          var perImgLine = perImg ? '<span class="pack-perimg">$' + perImg.toFixed(2) + ' / ' + esc(t('imageWord', 'image')) + '</span>' : '';
+          var gensLine = '<span class="pack-gens">= ' + credits + ' ' + esc(t('perkGens', 'generations')) + '</span>';
+          // Per-image price, with the smallest pack's rate struck through so the
+          // saving is visible ("$0.62 ~~$0.83~~ / image").
+          var perImgLine = perImg ?
+            ('<span class="pack-perimg">$' + perImg.toFixed(2) + ' / ' + esc(t('imageWord', 'image')) +
+              (savings >= 5 ? ' <s>$' + baseline.toFixed(2) + '</s>' : '') + '</span>') : '';
           var cryptoButton = data.cryptoEnabled !== false ?
             '<button type="button" data-crypto-pack="' + esc(pack.code) + '"><i data-lucide="wallet"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' :
             '';
@@ -834,9 +840,10 @@
             '<button type="button" class="pay-card-pack" data-card-pack="' + esc(pack.code) + '"><i data-lucide="credit-card"></i> ' + esc(t('payCard', 'Card')) + '</button>' :
             '';
           return (
-            '<div class="pack-card ' + (isBest ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '">' +
-              badge + saveBadge +
+            '<div class="pack-card ' + (isBest ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '" style="--i:' + idx + '">' +
+              ribbon + saveBadge +
               '<strong class="pack-credits">' + creditLine + '</strong>' +
+              gensLine +
               packPriceHtml(pack) +
               perImgLine +
               '<ul class="pack-perks">' +

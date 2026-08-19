@@ -823,20 +823,49 @@ html[data-theme="light"] .discount-box {
 }
 .pack-card em {
   position: absolute;
-  top: -9px;
-  right: 8px;
-  padding: 3px 7px;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 12px;
   border-radius: 999px;
   color: #fff;
-  background: var(--accent);
+  background: linear-gradient(135deg, #ff2d55, #b44cff);
+  box-shadow: 0 4px 14px rgba(255, 45, 85, 0.4);
   font-style: normal;
-  font-size: 0.68rem;
+  font-size: 0.63rem;
   font-weight: 950;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  z-index: 3;
 }
 .pack-card.featured {
-  border-color: rgba(255, 45, 85, 0.75);
-  box-shadow: 0 0 28px rgba(255,45,85,0.12);
+  border: 1.5px solid rgba(255, 45, 85, 0.9);
+  box-shadow: 0 12px 38px rgba(255, 45, 85, 0.22);
 }
+.pack-card.featured::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  z-index: -1;
+  background: linear-gradient(135deg, rgba(255, 45, 85, 0.55), rgba(180, 76, 255, 0.55));
+  filter: blur(12px);
+  opacity: 0.45;
+  animation: pack-glow 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.pack-card.featured::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.13) 50%, transparent 62%);
+  background-size: 250% 100%;
+  animation: pack-shine 3.6s ease-in-out infinite;
+}
+@keyframes pack-glow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+@keyframes pack-shine { 0% { background-position: 160% 0; } 55%, 100% { background-position: -60% 0; } }
 .pack-card strong {
   font-size: 0.95rem;
 }
@@ -855,6 +884,27 @@ html[data-theme="light"] .discount-box {
 }
 .pack-card .pack-perimg {
   color: var(--muted); font-size: 0.74rem; font-weight: 700; margin-top: -2px;
+}
+.pack-card .pack-perimg s { color: var(--muted); opacity: 0.7; margin-left: 3px; }
+.pack-card .pack-gens {
+  color: var(--accent2); font-size: 0.72rem; font-weight: 900; margin-top: -3px;
+}
+/* Save pill top-right so it never collides with the now-centered ribbon. */
+.pack-card .pack-save { left: auto; right: 8px; }
+.pack-card { transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease; }
+.pack-card:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3); }
+/* Cards stagger in each time the checkout modal opens. */
+#checkout-panel.is-open .pack-card {
+  animation: pack-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes pack-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pack-card, .pack-card.featured::before, .pack-card.featured::after,
+  #checkout-panel.is-open .pack-card { animation: none !important; }
 }
 .pack-card .pack-perks {
   list-style: none; margin: 4px 0 2px; padding: 0; display: grid; gap: 3px;
