@@ -832,7 +832,7 @@
           // saving is visible ("$0.62 ~~$0.83~~ / image").
           var perImgLine = perImg ?
             ('<span class="pack-perimg">$' + perImg.toFixed(2) + ' / ' + esc(t('imageWord', 'image')) +
-              (savings >= 5 ? ' <s>$' + baseline.toFixed(2) + '</s>' : '') + '</span>') : '';
+              (savings >= 10 ? ' <s>$' + baseline.toFixed(2) + '</s>' : '') + '</span>') : '';
           var cryptoButton = data.cryptoEnabled !== false ?
             '<button type="button" data-crypto-pack="' + esc(pack.code) + '"><i data-lucide="wallet"></i> ' + esc(t('payCrypto', 'Crypto')) + '</button>' :
             '';
