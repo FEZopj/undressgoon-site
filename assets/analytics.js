@@ -75,7 +75,11 @@
       path: location.pathname || '/',
       title: document.title || '',
       referrer: document.referrer || '',
-      language: document.documentElement.lang || navigator.language || ''
+      language: document.documentElement.lang || navigator.language || '',
+      // A/B landing identifier: pages set window.UG_VARIANT ('variant_b' on
+      // lp2.html); everything else is the control. Attached to EVERY event so
+      // the whole funnel (signup -> generation -> purchase) segments by variant.
+      landing_variant: window.UG_VARIANT || 'control'
     };
     // Attach campaign attribution to every event so email-driven visits and the
     // conversions that follow can be segmented by utm_campaign in PostHog.
@@ -143,6 +147,9 @@
       pv.$set_once = once;  // first-touch, never overwritten
     }
     send('$pageview', pv);
+    // Explicit funnel entry event (same data as $pageview, but named so the
+    // A/B funnel "landing_view -> ... -> purchase" is easy to build in PostHog).
+    send('landing_view', { url: location.href.split('#')[0] });
     document.addEventListener('click', function (event) {
       var target = event.target && event.target.closest && event.target.closest(
         '[data-generate-cta], #google-login, #account-topup, #account-link-telegram, #telegram-link, #copy-referral'

@@ -325,6 +325,21 @@
   }
 
   // Sticky bottom CTA after scroll
+  function initPricingViewEvent() {
+    var section = document.getElementById('lp-pricing');
+    if (!section || !('IntersectionObserver' in window)) return;
+    var seen = false;
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting || seen) return;
+        seen = true;
+        obs.disconnect();
+        track('website_pricing_viewed', { surface: 'inline' });
+      });
+    }, { threshold: 0.3 });
+    obs.observe(section);
+  }
+
   function initSticky() {
     var bar = document.getElementById('sticky-cta');
     if (!bar) return;
@@ -529,6 +544,8 @@
     var panel = document.getElementById('checkout-panel');
     if (!panel) return;
     if (show) {
+      track('website_topup_opened', { reason: reason || 'manual' });
+      track('website_pricing_viewed', { surface: 'modal' });
       var title = document.getElementById('topup-title');
       var copy = document.getElementById('topup-copy');
       if (reason === 'exit_post_gen') {
@@ -845,6 +862,71 @@
       });
   }
 
+  // Surface REAL pricing on the landing page (control: the "More credits" value
+  // card; lp2: an inline pack grid). Numbers come from /web/packs — never
+  // hardcoded — so promos/price changes stay truthful automatically.
+  function packStats(data) {
+    var packs = (data && data.packs) || [];
+    if (!packs.length) return null;
+    var minCents = Infinity, bestPer = Infinity;
+    packs.forEach(function (p) {
+      var cents = Number(p.priceCents || 0), credits = Number(p.credits || 0);
+      if (cents) minCents = Math.min(minCents, cents);
+      if (cents && credits) bestPer = Math.min(bestPer, cents / credits / 100);
+    });
+    if (!isFinite(minCents)) return null;
+    return { minDollars: (minCents / 100), bestPer: isFinite(bestPer) ? bestPer : 0, packs: packs };
+  }
+
+  function updatePricingTeaser(data) {
+    var el = document.getElementById('more-credits-price');
+    var stats = packStats(data);
+    if (!el || !stats) return;
+    el.innerHTML = esc(t('packsFrom', 'From')) + ' $' + (stats.minDollars % 1 ? stats.minDollars.toFixed(2) : stats.minDollars.toFixed(0)) +
+      ' <span>' + (stats.bestPer ? esc(t('asLowAs', 'as low as')) + ' $' + stats.bestPer.toFixed(2) + ' / ' + esc(t('imageWord', 'image')) : '') + '</span>';
+  }
+
+  function renderInlinePacks(data) {
+    var grid = document.getElementById('pack-grid-inline');
+    if (!grid || !data || !data.packs) return;
+    var packs = data.packs;
+    var baseline = 0;
+    packs.forEach(function (p) {
+      var c = Number(p.credits || 0);
+      if (c) baseline = Math.max(baseline, (Number(p.priceCents || 0) / c) / 100);
+    });
+    grid.innerHTML = packs.map(function (pack, idx) {
+      var credits = Number(pack.credits || pack.baseCredits || 0);
+      var perImg = credits ? ((Number(pack.priceCents || 0) / credits) / 100) : 0;
+      var isBest = idx === packs.length - 1;
+      var isPopular = !isBest && idx === packs.length - 2;
+      var ribbon = isBest ? '<em class="pack-badge best">' + esc(t('bestValue', 'BEST VALUE')) + '</em>'
+                : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'MOST POPULAR')) + '</em>' : '';
+      return (
+        '<div class="pack-card ' + (isBest ? 'featured' : '') + '" style="--i:' + idx + '">' +
+          ribbon +
+          '<strong class="pack-credits">' + credits + ' ' + esc(t('creditsWord', 'credits')) + '</strong>' +
+          '<span class="pack-gens">= ' + credits + ' ' + esc(t('perkGens', 'generations')) + '</span>' +
+          packPriceHtml(pack) +
+          (perImg ? '<span class="pack-perimg">$' + perImg.toFixed(2) + ' / ' + esc(t('imageWord', 'image')) + '</span>' : '') +
+          '<div class="pack-actions"><button type="button" class="pay-card-pack" data-inline-pack="' + esc(pack.code) + '">' + esc(t('getThisPack', 'Get this pack')) + '</button></div>' +
+        '</div>'
+      );
+    }).join('');
+    refreshIcons();
+    grid.querySelectorAll('button[data-inline-pack]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        // One-time packs, one funnel: the inline card opens the SAME checkout
+        // modal (discounts, card + crypto) — no duplicate payment logic.
+        track('website_click', { action: 'inline_pack', code: button.getAttribute('data-inline-pack') });
+        if (currentSession && currentSession.user) { showCheckout(true, 'inline_pricing'); return; }
+        var gen = document.getElementById('generate');
+        if (gen) gen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setStatus(t('signupFirstPack', 'Sign up first — your first generation is free, then packs unlock everything.'), 'working');
+      });
+    });
+  }
+
   function loadPacks() {
     var grid = document.getElementById('pack-grid');
     if (!grid) return;
@@ -898,9 +980,12 @@
           );
         }).join('');
         refreshIcons();
+        updatePricingTeaser(data);
+        renderInlinePacks(data);
         grid.querySelectorAll('button[data-crypto-pack]').forEach(function (button) {
           button.addEventListener('click', function () {
             var code = button.getAttribute('data-crypto-pack');
+            track('website_checkout_started', { method: 'crypto', code: code });
             var original = button.innerHTML;
             button.disabled = true;
             button.textContent = t('opening', 'Opening...');
@@ -988,6 +1073,7 @@
       checkoutWindow.document.close();
     } catch (e) {}
     setStatus(t('creatingCardCheckout', 'Opening secure card checkout...'), 'working');
+    track('website_checkout_started', { method: 'card', code: code });
     return fetch(apiUrl('/web/card/create'), {
       method: 'POST',
       credentials: 'include',
@@ -1230,8 +1316,8 @@
   }
   function signupCreditCopy() {
     return arrivedViaReferral()
-      ? t('signupClaim2', 'Sign up to claim your 2 free credits')
-      : t('signupClaim1', 'Sign up to claim your free credit');
+      ? t('signupClaim2', 'Sign up to claim your 2 free generations')
+      : t('signupClaim1', 'Sign up — your first generation is free');
   }
 
   // A message card rendered in the results window (errors, sign-in prompts, etc.).
@@ -1347,7 +1433,7 @@
     if (writeOwn && !writeOwn.dataset.bound) {
       writeOwn.dataset.bound = '1';
       writeOwn.addEventListener('click', function () {
-        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free credit works with the Fully Nude preset.'), 'working'); return; }
+        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.'), 'working'); return; }
         selected = '';
         prompt.value = '';
         showCustomPrompt(true);
@@ -1551,7 +1637,7 @@
           if (button.dataset.locked === '1') {
             // Don't ambush free users with the top-up popup on a casual tap —
             // just explain what their free credit covers.
-            setStatus(t('lockedPresetHint', 'Your free credit works only with the Fully Nude preset. Top up to unlock this look.'), 'working');
+            setStatus(t('lockedPresetHint', 'Your free generation runs the Fully Nude preset. Top up to unlock this look.'), 'working');
             return;
           }
           var key = button.getAttribute('data-key');
@@ -1570,7 +1656,7 @@
 
     if (clear) {
       clear.addEventListener('click', function () {
-        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free credit works with the Fully Nude preset.'), 'working'); return; }
+        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.'), 'working'); return; }
         selected = '';
         prompt.value = '';
         showCustomPrompt(true);
@@ -1925,7 +2011,7 @@
             paintResultNotice({
               tone: 'warn', icon: '🔓',
               title: t('topUpUnlockTitle', 'Top up to unlock this'),
-              message: t('topUpUnlockMsg', 'Your free credit only works with the Fully Nude preset. Top up to unlock all presets and custom prompts.'),
+              message: t('topUpUnlockMsg', 'Your free generation runs the Fully Nude preset. Top up to unlock all presets and custom prompts.'),
               actionLabel: t('unlockGetCredits', 'Unlock — get credits'),
               onAction: function () { showCheckout(true, 'locked_feature'); }
             });
@@ -2156,6 +2242,7 @@
     buildMarquee();
     normalizeCtas();
     initLanguageSwitch();
+    initPricingViewEvent();
     initTheme();
     initDiscountCode();
     initWebGenerator();
