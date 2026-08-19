@@ -1362,12 +1362,15 @@
       { key: 'clothes', label: t('tabClothes', 'Clothes') },
       { key: 'fantasy', label: t('tabFantasy', 'Fantasy') }
     ];
+    // Scene categories = the new PonyRealism generate-then-swap catalogue
+    // (keys must match scene_presets.py on the backend).
     var sceneCats = [
-      { key: 'mirror', label: t('tabMirror', 'Mirror') },
-      { key: 'bedroom', label: t('tabBedroom', 'Bedroom') },
-      { key: 'angles', label: t('tabAngles', 'Angles') },
-      { key: 'bdsm', label: t('tabBdsm', 'BDSM') },
-      { key: 'cinematic', label: t('tabCinematic', 'Cinematic') }
+      { key: 'sex', label: t('tabSex', '🔥 Sex') },
+      { key: 'oral', label: t('tabOral', '👅 Oral') },
+      { key: 'nasty', label: t('tabNasty', '💦 Nasty') },
+      { key: 'tease', label: t('tabTease', '🦵 Tease') },
+      { key: 'cosplay', label: t('tabCosplay', '🎭 Cosplay') },
+      { key: 'bdsm', label: t('tabBdsm', '⛓ BDSM') }
     ];
     var presetPromptUpgrades = {
       nude: 'completely naked, fully exposed, no clothing at all, bare breasts with natural visible nipples and areolas, natural skin texture, same pose and same camera framing, clear recognizable face, realistic shadows on the body',
@@ -1386,116 +1389,45 @@
       maid: 'tiny french maid outfit, very short skirt with no panties, stockings, cleavage, apron barely covering the body, playful messy bedroom styling, same identity and camera framing',
       office: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings, desk fantasy styling, same pose and face, realistic office lighting'
     };
+    // NEW scene catalogue — PonyRealism generate-then-swap. `prompt` holds the
+    // scene KEY (the invisible-prompt bridge carries it to submit; the backend
+    // resolves key -> full Pony prompt server-side). Keys MUST match
+    // scene_presets.py. Subject attributes (skin/body/bust/…) are sent separately.
     var scenePresets = CFG.scenePresets || [
-      {
-        key: 'scene_mirror',
-        category: 'mirror',
-        label: 'Nude Mirror Selfie',
-        prompt: 'fully naked bedroom mirror selfie shot from chest-height phone angle, bare breasts with visible nipples and areolas, no clothing, phone held to the side, hips angled toward mirror, warm bedside lighting, clear recognizable face, full body visible, realistic casual phone photo, detailed messy bedroom background'
-      },
-      {
-        key: 'scene_hotel',
-        category: 'bedroom',
-        label: 'Hotel Suite',
-        prompt: 'fully nude in a luxury hotel suite, three-quarter camera angle from slightly below eye level, bare breasts with visible nipples and areolas, standing beside an unmade bed, soft evening city-window light, one hand on hip, confident seductive pose, clear face, realistic skin texture, full body in frame, crisp hotel details'
-      },
-      {
-        key: 'scene_bathroom',
-        category: 'mirror',
-        label: 'Shower Mirror',
-        prompt: 'fully naked bathroom mirror selfie after shower, bare breasts with visible nipples and areolas, wet skin, damp hair, steam on glass, bright vanity lights, phone held to the side, clear face, full body visible, realistic casual photo'
-      },
-      {
-        key: 'scene_sweaty_bed',
-        category: 'bedroom',
-        label: 'Sweaty Bed',
-        prompt: 'fully nude lying on a messy bed, overhead camera angle from above the bed, bare breasts with visible nipples and areolas, body drenched in sweat, wet hair on pillow, tangled sheets, flushed skin, seductive exhausted expression, clear face turned toward camera, full body visible, warm low bedroom light, realistic skin texture'
-      },
-      {
-        key: 'scene_messy_sheets',
-        category: 'bedroom',
-        label: 'Messy Sheets',
-        prompt: 'fully naked on an unmade bed covered in wet glossy fluid stains and tangled sheets, camera at bed-edge side angle, bare breasts with visible nipples and areolas, sweaty skin, legs relaxed, face clearly visible looking at camera, intimate afterglow mood, realistic bedroom photo, full body in frame'
-      },
-      {
-        key: 'scene_all_fours',
-        category: 'bedroom',
-        label: 'All Fours Bed',
-        prompt: 'fully nude on all fours on a bed, rear three-quarter camera angle from behind and slightly above, bare breasts visible from the side, ass raised, face turned back toward camera and clearly recognizable, messy sheets, warm bedside lamp, realistic phone-photo framing, full body visible, natural skin texture'
-      },
-      {
-        key: 'scene_overhead_bed',
-        category: 'angles',
-        label: 'Overhead Bed',
-        prompt: 'fully nude lying on a bed shot from directly overhead, top-down camera angle, bare breasts with visible nipples and areolas, arms above head, messy sheets around the body, face clearly visible looking up at camera, full body visible, realistic bedroom lighting and skin texture'
-      },
-      {
-        key: 'scene_low_angle',
-        category: 'angles',
-        label: 'Low Angle',
-        prompt: 'fully nude standing near a bed shot from a low camera angle looking upward, bare breasts with visible nipples and areolas, confident dominant pose, clear face looking down toward camera, full body visible, dramatic warm room light, realistic phone photo'
-      },
-      {
-        key: 'scene_side_profile',
-        category: 'angles',
-        label: 'Side Profile',
-        prompt: 'fully naked side-profile pose beside a mirror, camera at waist height from the side, bare breasts with visible nipples and areolas, arched back, face turned slightly toward camera so identity is recognizable, full body visible, realistic soft bedroom light'
-      },
-      {
-        key: 'scene_from_behind',
-        category: 'angles',
-        label: 'From Behind',
-        prompt: 'fully nude from-behind mirror shot, rear three-quarter angle with face visible in the mirror reflection, bare breasts visible in reflection with nipples and areolas, ass and back in foreground, bedroom mirror selfie, realistic phone-photo lighting, full body visible'
-      },
-      {
-        key: 'scene_pov_bed',
-        category: 'angles',
-        label: 'POV Bed',
-        prompt: 'fully nude on a bed from a POV-style camera angle at the foot of the bed, bare breasts with visible nipples and areolas, legs closer to camera, face clearly visible looking into camera, messy sheets, sweaty skin, warm bedroom lighting, full body composition'
-      },
-      {
-        key: 'scene_floor_angle',
-        category: 'angles',
-        label: 'Floor Angle',
-        prompt: 'fully nude kneeling on a bedroom floor shot from a floor-level camera angle, bare breasts with visible nipples and areolas, face looking into camera, bed and mirror in background, dramatic perspective, full body visible, realistic shadows and skin texture'
-      },
-      {
-        key: 'scene_dungeon_rope',
-        category: 'bdsm',
-        label: 'Dungeon Bound',
-        prompt: 'fully nude in a consensual BDSM dungeon rope scene, low three-quarter camera angle, wrists tied overhead with rope, bare breasts with visible nipples and areolas, black leather collar, candlelight and red shadows, stone wall background, clear recognizable face, full body visible, dramatic realistic photo'
-      },
-      {
-        key: 'scene_spread_restraint',
-        category: 'bdsm',
-        label: 'Restrained Bed',
-        prompt: 'fully naked restrained on a bed with soft cuffs, overhead diagonal camera angle, arms above head, bare breasts with visible nipples and areolas, messy sheets, sweaty skin, clear face looking at camera, consensual BDSM bedroom scene, warm light, full body in frame, realistic photo detail'
-      },
-      {
-        key: 'scene_chain_collar',
-        category: 'bdsm',
-        label: 'Collar & Chains',
-        prompt: 'fully nude wearing only a black collar and thin chains, camera at floor-level looking slightly upward, bare breasts with visible nipples and areolas, kneeling on a dark rug, moody red dungeon lighting, clear face, full body visible, realistic shadows, intense consensual fetish styling'
-      },
-      {
-        key: 'scene_neon',
-        category: 'cinematic',
-        label: 'Neon Nude',
-        prompt: 'cinematic fully nude in a neon-lit bedroom, Dutch-angle camera tilt, bare breasts with visible nipples and areolas, pink and blue light, sweaty glossy skin, standing pose near bed, clear recognizable face, full body visible, high detail, realistic photo not illustration'
-      },
-      {
-        key: 'scene_locker',
-        category: 'cinematic',
-        label: 'Locker Nude',
-        prompt: 'fully naked in a private locker room, wide-angle mirror-wall camera view, bare breasts with visible nipples and areolas, damp skin, athletic confident pose, realistic indoor fluorescent lighting, clear face, full body visible, detailed environment'
-      },
-      {
-        key: 'scene_sofa',
-        category: 'cinematic',
-        label: 'Sofa Nude',
-        prompt: 'fully nude sitting on a modern sofa, side-angle camera view from armrest height, bare breasts with visible nipples and areolas, legs relaxed, sweaty skin, warm studio lighting, clear face, full body composition, realistic photo detail, messy pillows and intimate room mood'
-      }
+      { key: 'missionary', category: 'sex', label: '❤️ Missionary', prompt: 'missionary' },
+      { key: 'cowgirl', category: 'sex', label: '🤠 Cowgirl', prompt: 'cowgirl' },
+      { key: 'doggystyle', category: 'sex', label: '🐾 Doggystyle', prompt: 'doggystyle' },
+      { key: 'reverse_cowgirl', category: 'sex', label: '🔄 Reverse Cowgirl', prompt: 'reverse_cowgirl' },
+      { key: 'standing_sex', category: 'sex', label: '🧍 Standing', prompt: 'standing_sex' },
+      { key: 'lesbian_scissoring', category: 'sex', label: '👭 Girl-on-Girl', prompt: 'lesbian_scissoring' },
+      { key: 'blowjob_pov', category: 'oral', label: '🍆 Blowjob (POV)', prompt: 'blowjob_pov' },
+      { key: 'deepthroat', category: 'oral', label: '🌡️ Deepthroat', prompt: 'deepthroat' },
+      { key: 'cunnilingus', category: 'oral', label: '👅 Licked Out', prompt: 'cunnilingus' },
+      { key: 'sixtynine', category: 'oral', label: '♋ Sixty-Nine', prompt: 'sixtynine' },
+      { key: 'titjob', category: 'oral', label: '🎈 Titjob', prompt: 'titjob' },
+      { key: 'creampie', category: 'nasty', label: '🍦 Creampie', prompt: 'creampie' },
+      { key: 'facial', category: 'nasty', label: '💦 Facial', prompt: 'facial' },
+      { key: 'anal', category: 'nasty', label: '🍑 Anal', prompt: 'anal' },
+      { key: 'ahegao_ride', category: 'nasty', label: '🤪 Ahegao', prompt: 'ahegao_ride' },
+      { key: 'bukkake', category: 'nasty', label: '🌊 Covered', prompt: 'bukkake' },
+      { key: 'white_pantyhose', category: 'tease', label: '🤍 White Pantyhose', prompt: 'white_pantyhose' },
+      { key: 'footjob_pantyhose', category: 'tease', label: '🦶 Footjob (Pantyhose)', prompt: 'footjob_pantyhose' },
+      { key: 'feet_soles', category: 'tease', label: '👣 Feet & Soles', prompt: 'feet_soles' },
+      { key: 'armpit', category: 'tease', label: '🙆 Armpit', prompt: 'armpit' },
+      { key: 'bent_over', category: 'tease', label: '🍑 Bent Over', prompt: 'bent_over' },
+      { key: 'shower_wet', category: 'tease', label: '🚿 Wet Shower', prompt: 'shower_wet' },
+      { key: 'schoolgirl_sex', category: 'cosplay', label: '🎀 Schoolgirl', prompt: 'schoolgirl_sex' },
+      { key: 'nurse', category: 'cosplay', label: '💉 Naughty Nurse', prompt: 'nurse' },
+      { key: 'maid', category: 'cosplay', label: '🧹 French Maid', prompt: 'maid' },
+      { key: 'bunnysuit', category: 'cosplay', label: '🐰 Bunny Suit', prompt: 'bunnysuit' },
+      { key: 'catgirl', category: 'cosplay', label: '🐱 Catgirl', prompt: 'catgirl' },
+      { key: 'shibari', category: 'bdsm', label: '🪢 Shibari', prompt: 'shibari' },
+      { key: 'collar_leash', category: 'bdsm', label: '🐕 Collar & Leash', prompt: 'collar_leash' },
+      { key: 'spanking', category: 'bdsm', label: '✋ Spanking', prompt: 'spanking' },
+      { key: 'latex_domme', category: 'bdsm', label: '🖤 Latex Domme', prompt: 'latex_domme' },
+      { key: 'restrained_bed', category: 'bdsm', label: '🛏️ Tied to Bed', prompt: 'restrained_bed' }
     ];
+// (legacy Qwen scene presets removed — replaced by the scenePresets catalogue above)
     presets = presets.map(function (preset) {
       if (preset && presetPromptUpgrades[preset.key]) {
         return Object.assign({}, preset, { prompt: presetPromptUpgrades[preset.key] });
@@ -1506,17 +1438,46 @@
     var selected = '';
     var sceneHelp = null;
 
+    // Subject attributes (scene mode only): the generated body would otherwise be
+    // random, so the user picks skin tone / build / bust / hair to keep it on
+    // identity. Values MUST match scene_presets.SUBJECT_ATTRIBUTES on the backend.
+    var subjectAttrs = [
+      { key: 'skin_tone', label: t('subjSkin', 'Skin tone'), options: [['auto', 'Auto (match my photo)'], ['pale', 'Pale'], ['fair', 'Fair'], ['light', 'Light'], ['olive', 'Olive'], ['tan', 'Tan'], ['brown', 'Brown'], ['dark', 'Dark'], ['ebony', 'Deep ebony']] },
+      { key: 'body_type', label: t('subjBody', 'Body type'), options: [['auto', 'Auto'], ['petite', 'Petite'], ['slim', 'Slim'], ['athletic', 'Athletic'], ['curvy', 'Curvy'], ['thick', 'Thick'], ['bbw', 'Plus-size']] },
+      { key: 'breast_size', label: t('subjBust', 'Breast size'), options: [['auto', 'Auto'], ['flat', 'Flat'], ['small', 'Small'], ['medium', 'Medium'], ['large', 'Large'], ['huge', 'Huge']] },
+      { key: 'butt_size', label: t('subjButt', 'Butt'), options: [['auto', 'Auto'], ['small', 'Small'], ['average', 'Average'], ['big', 'Big'], ['huge', 'Huge']] },
+      { key: 'hair', label: t('subjHair', 'Hair'), options: [['auto', 'Auto'], ['black', 'Black'], ['brown', 'Brown'], ['blonde', 'Blonde'], ['red', 'Red'], ['dark_long', 'Long dark'], ['blonde_long', 'Long blonde']] },
+      { key: 'height', label: t('subjHeight', 'Height'), options: [['auto', 'Auto'], ['short', 'Short'], ['average', 'Average'], ['tall', 'Tall']] }
+    ];
+    var subjectBox = document.getElementById('scene-subject');
+    if (!subjectBox && picker) {
+      subjectBox = document.createElement('div');
+      subjectBox.id = 'scene-subject';
+      subjectBox.className = 'advanced-options';
+      subjectBox.style.display = 'none';
+      subjectBox.innerHTML =
+        '<div class="scene-subject-head" style="grid-column:1/-1;font-size:.78rem;color:var(--muted);margin-bottom:2px">' +
+        esc(t('subjHead', 'Match your look — keep the body true to you (optional).')) + '</div>' +
+        subjectAttrs.map(function (a) {
+          return '<label><span>' + esc(a.label) + '</span><select id="subj-' + a.key + '">' +
+            a.options.map(function (o) { return '<option value="' + esc(o[0]) + '">' + esc(o[1]) + '</option>'; }).join('') +
+            '</select></label>';
+        }).join('');
+      picker.insertAdjacentElement('afterend', subjectBox);
+    }
+    function showSubject(on) { if (subjectBox) subjectBox.style.display = on ? '' : 'none'; }
+
     function activeMode() {
       var checked = document.querySelector('input[name="mode"]:checked');
       return checked ? checked.value : 'prompt';
     }
 
     function activeCats() {
-      return activeMode() === 'portrait' ? sceneCats : outfitCats;
+      return activeMode() === 'scene' ? sceneCats : outfitCats;
     }
 
     function activePresets() {
-      return activeMode() === 'portrait' ? scenePresets : presets;
+      return activeMode() === 'scene' ? scenePresets : presets;
     }
 
     function ensureSceneHelp() {
@@ -1529,23 +1490,32 @@
 
     function syncModeCopy() {
       var mode = activeMode();
-      var scene = mode === 'portrait';
+      var scene = mode === 'scene';
       modeInputs.forEach(function (input) {
         if (input.parentElement) input.parentElement.classList.toggle('active', input.checked);
       });
       if (picker) picker.hidden = false;
-      if (label) label.textContent = t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT');
+      if (label) label.textContent = scene
+        ? t('chooseSceneLabel', 'PICK A SCENE')
+        : t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT');
       if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
       prompt.required = true;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
         help.hidden = !scene;
-        help.textContent = t('sceneHelp', 'Scenes work best when you describe the room, lighting, pose, framing, and mood. Use one of these as a starting point.');
+        help.textContent = t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
       prompt.placeholder = scene ?
-        t('scenePlaceholder', 'Example: fully nude in a luxury hotel suite, bare breasts, warm evening light, confident pose, clear face, full body in frame') :
+        '' :
         t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
+      // Scene mode is preset-only (no free-text prompt, no custom-prompt button)
+      // and shows the subject selectors instead of the undress body options.
+      var adv = document.getElementById('advanced-options');
+      if (adv) adv.style.display = scene ? 'none' : '';
+      showSubject(scene);
+      if (writeOwn) writeOwn.style.display = scene ? 'none' : '';
+      if (scene) showCustomPrompt(false);
     }
 
     function renderTabs() {
@@ -1571,7 +1541,7 @@
       grid.innerHTML = activePresets().filter(function (p) {
         return p.category === active;
       }).map(function (p) {
-        var icon = mode === 'portrait' ? 'camera' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt'));
+        var icon = mode === 'scene' ? '' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt'));
         var locked = !buyer && p.key !== FREE_PRESET_KEY;
         return '<button type="button" class="' + (p.key === selected ? 'active' : '') + (locked ? ' locked' : '') + '" data-key="' + esc(p.key) + '"' + (locked ? ' data-locked="1"' : '') + '><i data-lucide="' + icon + '"></i>' + esc(p.label) + (locked ? '<span class="preset-lock"><i data-lucide="lock"></i></span>' : '') + '</button>';
       }).join('');
@@ -1591,7 +1561,7 @@
           selected = preset.key;
           prompt.value = preset.prompt;      // applied invisibly (field stays hidden)
           showCustomPrompt(false);
-          var modeInput = document.querySelector('input[name="mode"][value="' + (mode === 'portrait' ? 'portrait' : 'prompt') + '"]');
+          var modeInput = document.querySelector('input[name="mode"][value="' + (mode === 'scene' ? 'scene' : 'prompt') + '"]');
           if (modeInput) modeInput.checked = true;
           renderGrid();
         });
@@ -1614,7 +1584,7 @@
     });
     modeInputs.forEach(function (input) {
       input.addEventListener('change', function () {
-        active = activeMode() === 'portrait' ? sceneCats[0].key : outfitCats[0].key;
+        active = activeMode() === 'scene' ? sceneCats[0].key : outfitCats[0].key;
         selected = '';
         prompt.value = '';
         showCustomPrompt(false);
@@ -1636,7 +1606,7 @@
 
     // First load: preselect the free Fully Nude preset so a new visitor lands
     // on a ready-to-run look — the one their free credit actually covers.
-    if (!selected && activeMode() !== 'portrait') {
+    if (!selected && activeMode() !== 'scene') {
       var freePreset = presets.find(function (p) { return p.key === FREE_PRESET_KEY; });
       if (freePreset) {
         selected = freePreset.key;
@@ -1840,8 +1810,19 @@
       payload.append('mode', modeValue);
       payload.append('terms_accepted', '1');
       payload.append('variations', String(variations));
-      payload.append('breast_size', breastSize ? breastSize.value : 'natural');
-      payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
+      if (modeValue === 'scene') {
+        // The invisible-prompt bridge holds the chosen scene KEY; send it as
+        // `scene` and attach the subject attribute picks (skip the undress body
+        // options — the subject selectors replace them here).
+        payload.append('scene', prompt ? prompt.value.trim() : '');
+        ['skin_tone', 'body_type', 'breast_size', 'butt_size', 'hair', 'height'].forEach(function (k) {
+          var s = document.getElementById('subj-' + k);
+          if (s && s.value && s.value !== 'auto') payload.append(k, s.value);
+        });
+      } else {
+        payload.append('breast_size', breastSize ? breastSize.value : 'natural');
+        payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
+      }
       if (chosen) {
         payload.append('person_name', chosen.name || 'upload.jpg');
         payload.append('person', chosen, chosen.name || 'upload.jpg');
