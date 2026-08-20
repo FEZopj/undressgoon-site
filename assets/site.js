@@ -922,7 +922,7 @@
         if (currentSession && currentSession.user) { showCheckout(true, 'inline_pricing'); return; }
         var gen = document.getElementById('generate');
         if (gen) gen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setStatus(t('signupFirstPack', 'Sign up first — your first generation is free, then packs unlock everything.'), 'working');
+        setStatus(t('signupFirstPack', 'Sign up first, your first generation is free, then packs unlock everything.'), 'working');
       });
     });
   }
@@ -1317,7 +1317,7 @@
   function signupCreditCopy() {
     return arrivedViaReferral()
       ? t('signupClaim2', 'Sign up to claim your 2 free generations')
-      : t('signupClaim1', 'Sign up — your first generation is free');
+      : t('signupClaim1', 'Sign up, your first generation is free');
   }
 
   // A message card rendered in the results window (errors, sign-in prompts, etc.).
@@ -1543,7 +1543,7 @@
       subjectBox.style.display = 'none';
       subjectBox.innerHTML =
         '<div class="scene-subject-head" style="grid-column:1/-1;font-size:.78rem;color:var(--muted);margin-bottom:2px">' +
-        esc(t('subjHead', 'Match your look — keep the body true to you (optional).')) + '</div>' +
+        esc(t('subjHead', 'Match your look, keep the body true to you (optional).')) + '</div>' +
         subjectAttrs.map(function (a) {
           return '<label><span>' + esc(a.label) + '</span><select id="subj-' + a.key + '">' +
             a.options.map(function (o) { return '<option value="' + esc(o[0]) + '">' + esc(o[1]) + '</option>'; }).join('') +
@@ -2012,7 +2012,7 @@
               tone: 'warn', icon: '🔓',
               title: t('topUpUnlockTitle', 'Top up to unlock this'),
               message: t('topUpUnlockMsg', 'Your free generation runs the Fully Nude preset. Top up to unlock all presets and custom prompts.'),
-              actionLabel: t('unlockGetCredits', 'Unlock — get credits'),
+              actionLabel: t('unlockGetCredits', 'Unlock, get credits'),
               onAction: function () { showCheckout(true, 'locked_feature'); }
             });
           } else if (payload.code === 'not_authenticated') {
@@ -2024,7 +2024,7 @@
             paintResultNotice({
               icon: '🔒',
               title: t('signUpToGenerateTitle', 'Sign up to generate'),
-              message: signupCreditCopy() + ' — ' + t('noCardNeeded', 'no card needed.'),
+              message: signupCreditCopy() + ' ,  ' + t('noCardNeeded', 'no card needed.'),
               actionLabel: t('continueGoogle', 'Continue with Google'),
               onAction: goToGoogleLogin
             });
@@ -2135,7 +2135,7 @@
         box.hidden = false;
         try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
       }
-      setStatus(t('signInToGenerate', 'Sign in to generate — your photo and prompt are saved.'), 'working');
+      setStatus(t('signInToGenerate', 'Sign in to generate, your photo and prompt are saved.'), 'working');
     }
 
     function initEmailLogin() {
@@ -2210,7 +2210,7 @@
         paintResultNotice({
           icon: '🔒',
           title: t('signUpToGenerateTitle', 'Sign up to generate'),
-          message: signupCreditCopy() + ' — ' + t('noCardNeeded', 'no card needed.'),
+          message: signupCreditCopy() + ' ,  ' + t('noCardNeeded', 'no card needed.'),
           actionLabel: t('continueGoogle', 'Continue with Google'),
           onAction: goToGoogleLogin
         });

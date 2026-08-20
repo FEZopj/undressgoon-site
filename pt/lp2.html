@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon — Gerador IA Undress</title>
-  <meta name="description" content="Gerador IA undress para adultos. Envie uma foto que você tem o direito de usar, escolha um preset e ganhe sua primeira geração grátis — sem cartão." />
+  <title>UndressGoon | Gerador IA Undress</title>
+  <meta name="description" content="Gerador IA undress para adultos. Envie uma foto que você tem o direito de usar, escolha um preset e ganhe sua primeira geração grátis, sem cartão." />
   <!-- A/B variant page for paid traffic — keep it out of search so it never
        competes with the canonical landing page. -->
   <meta name="robots" content="noindex, nofollow" />
@@ -13,12 +13,12 @@
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="preload" href="../assets/site.css?v=20260820-m7" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-m8" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-m7" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-m7" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-m8" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-m8" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-m7" />
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-m8" />
 </head>
 <body>
 
@@ -31,6 +31,18 @@
         <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" />
       </a>
       <div class="header-right">
+        <nav class="lang-switch" aria-label="Idioma">
+          <select aria-label="Selecionar idioma">
+          <option value="../lp2.html">EN</option>
+          <option value="../es/lp2.html">ES</option>
+          <option value="../pt/lp2.html" selected>PT</option>
+          <option value="../zh/lp2.html">中文</option>
+          <option value="../ja/lp2.html">日本語</option>
+          <option value="../ru/lp2.html">RU</option>
+          <option value="../fr/lp2.html">FR</option>
+          <option value="../de/lp2.html">DE</option>
+          </select>
+        </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>Gerar grátis</a>
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
@@ -70,7 +82,7 @@
 <div class="generator-panel">
 
           <div class="login-box" id="login-box">
-            <p id="login-box-copy">Cadastre-se — sua primeira geração é grátis. Sem cartão.</p>
+            <p id="login-box-copy">Cadastre-se, sua primeira geração é grátis. Sem cartão.</p>
             <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continuar com Google</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Continuar com Email</button></div>
           <form class="email-auth" id="email-form" hidden>
             <input type="email" id="email-input" name="email" autocomplete="email" placeholder="voce@email.com" required />
@@ -78,7 +90,7 @@
           </form>
           <form class="email-auth" id="email-code-form" hidden>
             <p class="email-sent-copy" id="email-sent-copy"></p>
-            <p class="email-hint">Não recebeu o código? Veja o spam — ou continue com o <strong>Google</strong> acima (instantâneo, sem e-mail).</p>
+            <p class="email-hint">Não recebeu o código? Veja o spam, ou continue com o <strong>Google</strong> acima (instantâneo, sem e-mail).</p>
             <input type="text" id="email-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="código de 6 dígitos" required />
             <button type="submit" class="btn btn-accent" id="email-verify">Verificar e continuar</button>
             <div class="email-auth-links">
@@ -193,7 +205,7 @@
   <section class="section" style="padding-bottom:0">
     <div class="container">
       <h2 class="section-title">Como ficam seus resultados</h2>
-      <p class="section-sub">Gerações reais dos presets acima — nu, biquíni, látex, lingerie e prompts personalizados.</p>
+      <p class="section-sub">Gerações reais dos presets acima, nu, biquíni, látex, lingerie e prompts personalizados.</p>
     </div>
   </section>
   <div class="marquee-wrap" aria-hidden="true">
@@ -206,7 +218,7 @@
   <section class="section" id="lp-pricing" style="padding-top:10px">
     <div class="container">
       <h2 class="section-title">Preços simples. 1 crédito = 1 imagem.</h2>
-      <p class="section-sub">Sua primeira geração é grátis. Depois, pacotes de créditos avulsos — sem assinatura, sem expiração, com desconto nos pacotes maiores.</p>
+      <p class="section-sub">Sua primeira geração é grátis. Depois, pacotes de créditos avulsos, sem assinatura, sem expiração, com desconto nos pacotes maiores.</p>
       <div class="pack-grid" id="pack-grid-inline"></div>
     </div>
   </section>
@@ -224,12 +236,12 @@
         <div class="feature">
           <div class="feature-icon"><i data-lucide="pen-line"></i></div>
           <h3>Você no controle</h3>
-          <p>Presets com um toque ou prompts totalmente personalizados — até 900 caracteres de exatamente o que você quer.</p>
+          <p>Presets com um toque ou prompts totalmente personalizados, até 900 caracteres de exatamente o que você quer.</p>
         </div>
         <div class="feature">
           <div class="feature-icon"><i data-lucide="flame"></i></div>
           <h3>Feito para edições adultas</h3>
-          <p>Undress, lingerie, látex, BDSM e fantasias são o produto inteiro — não um modo escondido.</p>
+          <p>Undress, lingerie, látex, BDSM e fantasias são o produto inteiro, não um modo escondido.</p>
         </div>
       </div>
     </div>
@@ -242,7 +254,7 @@
       <div class="lp2-faq">
         <details>
           <summary>A primeira geração é mesmo grátis?</summary>
-          <p>Sim. Cadastre-se e você ganha 1 geração grátis — ela roda o preset Totalmente Nua. Sem cartão. Todos os outros presets e os prompts personalizados são liberados com qualquer pacote de créditos.</p>
+          <p>Sim. Cadastre-se e você ganha 1 geração grátis, ela roda o preset Totalmente Nua. Sem cartão. Todos os outros presets e os prompts personalizados são liberados com qualquer pacote de créditos.</p>
         </details>
         <details>
           <summary>Preciso de cartão de crédito para testar?</summary>
@@ -250,7 +262,7 @@
         </details>
         <details>
           <summary>Preciso de uma conta?</summary>
-          <p>Sim — um login rápido com Google ou código por e-mail. É o que mantém seus créditos e resultados vinculados a você.</p>
+          <p>Sim, um login rápido com Google ou código por e-mail. É o que mantém seus créditos e resultados vinculados a você.</p>
         </details>
         <details>
           <summary>Quanto tempo leva uma geração?</summary>
@@ -258,11 +270,11 @@
         </details>
         <details>
           <summary>Quais imagens posso enviar?</summary>
-          <p>JPG, PNG ou WebP até 12 MB. Uma foto nítida e de frente dá os melhores resultados. Envie apenas fotos de adultos para as quais você tem os direitos e o consentimento para editar — veja nosso <a href="../acceptable-use.html">Uso Aceitável</a> e a <a href="../consent.html">Política de Consentimento</a>.</p>
+          <p>JPG, PNG ou WebP até 12 MB. Uma foto nítida e de frente dá os melhores resultados. Envie apenas fotos de adultos para as quais você tem os direitos e o consentimento para editar, veja nosso <a href="../acceptable-use.html">Uso Aceitável</a> e a <a href="../consent.html">Política de Consentimento</a>.</p>
         </details>
         <details>
           <summary>Como funcionam os créditos?</summary>
-          <p>1 crédito = 1 imagem gerada. Você os compra em pacotes avulsos — pacotes maiores custam menos por imagem.</p>
+          <p>1 crédito = 1 imagem gerada. Você os compra em pacotes avulsos, pacotes maiores custam menos por imagem.</p>
         </details>
         <details>
           <summary>Isto é uma assinatura?</summary>
@@ -274,7 +286,7 @@
         </details>
         <details>
           <summary>Minhas gerações são públicas?</summary>
-          <p>Não — não existe galeria pública. Suas gerações aparecem apenas dentro da sua própria sessão de conta, nunca publicadas em nenhum lugar público.</p>
+          <p>Não, não existe galeria pública. Suas gerações aparecem apenas dentro da sua própria sessão de conta, nunca publicadas em nenhum lugar público.</p>
         </details>
         <details>
           <summary>E se uma geração falhar?</summary>
@@ -429,8 +441,8 @@
         telegramLinkOpened: "Confirme o link no Telegram e volte aqui.",
         referralSingular: "Ganhe {reward} créditos por indicação ativa. {count} convite ativo até agora.",
         referralPlural: "Ganhe {reward} créditos por indicação ativa. {count} convites ativos até agora.",
-        signupClaim1: "Cadastre-se — sua primeira geração é grátis",
-        signupClaim2: "Cadastre-se — você tem 2 gerações grátis",
+        signupClaim1: "Cadastre-se, sua primeira geração é grátis",
+        signupClaim2: "Cadastre-se, você tem 2 gerações grátis",
         noCardNeeded: "Sem cartão.",
         continueGoogle: "Continuar com Google",
         signUpToGenerateTitle: "Cadastre-se para gerar"
@@ -446,10 +458,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-m7" defer></script>
-  <script src="../assets/site.js?v=20260820-m7" defer></script>
-  <script src="../assets/scenes.js?v=20260820-m7" defer></script>
-  <script src="../assets/lp2.js?v=20260820-m7" defer></script>
+  <script src="../assets/analytics.js?v=20260820-m8" defer></script>
+  <script src="../assets/site.js?v=20260820-m8" defer></script>
+  <script src="../assets/scenes.js?v=20260820-m8" defer></script>
+  <script src="../assets/lp2.js?v=20260820-m8" defer></script>
   <!-- Result popup — holds the live result panel that site.js writes
        into. Opened by assets/lp2.js when a generation starts. -->
   <div class="lp2-result-modal" id="lp2-result-modal" hidden>
