@@ -1788,15 +1788,20 @@
         help.textContent = t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
       prompt.placeholder = scene ?
-        '' :
+        t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below') :
         t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
       // Scene mode is preset-only (no free-text prompt, no custom-prompt button)
       // and shows the subject selectors instead of the undress body options.
       var adv = document.getElementById('advanced-options');
       if (adv) adv.style.display = scene ? 'none' : '';
       showSubject(scene);
-      if (writeOwn) writeOwn.style.display = scene ? 'none' : '';
-      if (scene) showCustomPrompt(false);
+      // Scenes used to be catalogue-only. A written scene is allowed now, so the
+      // button stays; the backend runs user text through moderation, which the
+      // vetted catalogue prompts skip.
+      if (writeOwn) writeOwn.style.display = '';
+      // Only close the box when a catalogue scene is selected — closing it on
+      // every mode sync would wipe a scene someone is mid-way through typing.
+      if (scene && selected) showCustomPrompt(false);
     }
 
     function renderTabs() {

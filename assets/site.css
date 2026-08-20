@@ -1255,11 +1255,20 @@ html[data-theme="light"] .upload-preview {
 .scene-help[hidden] {
   display: none;
 }
+/* Category row: a segmented tray, deliberately NOT card-shaped. Categories and
+   presets used to be the same pill, so in Scene mode (whose presets carry no
+   icon) "Sex" and "Missionary" looked like peers rather than a filter and a
+   choice. */
 .preset-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
 }
+html[data-theme="light"] .preset-tabs { background: rgba(17, 19, 26, 0.05); }
 .preset-tabs button,
 .preset-grid button {
   color: var(--text);
@@ -1271,9 +1280,21 @@ html[data-theme="light"] .upload-preview {
   transition: border-color 0.18s, background 0.18s, transform 0.18s;
 }
 .preset-tabs button {
-  min-height: 38px;
-  font-size: 0.82rem;
+  min-height: 34px;
+  padding: 6px 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  border-radius: 9px;
+  background: transparent;      /* the tray is the surface, not each tab */
+  border-color: transparent;
 }
+.preset-tabs button:hover {
+  background: var(--surface2);
+  border-color: transparent;
+  transform: none;              /* tabs do not lift; presets do */
+}
+/* the presets are the choice, so they get the breathing room */
+.preset-grid { margin-top: 4px; }
 .preset-tabs button.active,
 .preset-grid button.active {
   color: #fff;
@@ -1320,8 +1341,7 @@ html[data-theme="light"] .preset-grid button.active svg { color: #fff; }
   color: var(--accent2);
   flex-shrink: 0;
 }
-.preset-grid button:hover,
-.preset-tabs button:hover {
+.preset-grid button:hover {
   border-color: rgba(255, 45, 85, 0.65);
   transform: translateY(-1px);
 }
