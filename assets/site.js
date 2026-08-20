@@ -560,6 +560,30 @@
     _pvRaf = window.setTimeout(tickPreview, 250);
   }
 
+  // On a stacked (phone) layout the result panel sits below the whole form, so
+  // tapping Generate looks like nothing happened. Bring the preview on screen,
+  // but only when it is not already there, and never on lp2: that page moves
+  // its own stage and scrolls itself.
+  function scrollResultIntoView(el) {
+    if (!el) return;
+    if (document.getElementById('lp2-stage-result')) return;
+    var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+    var rect = el.getBoundingClientRect();
+    if (rect.top >= 0 && rect.top < vh * 0.6) return;   // already in sight
+    // instant, not smooth: a smooth scroll silently does nothing where the
+    // compositor is not animating, and this has to land every time
+    try {
+      el.scrollIntoView({ block: 'center' });
+    } catch (e) {
+      el.scrollIntoView();
+    }
+    // and if that did not move the page, drive the window itself
+    var moved = el.getBoundingClientRect().top;
+    if (moved === rect.top) {
+      window.scrollTo(0, Math.max(0, rect.top + window.pageYOffset - vh * 0.25));
+    }
+  }
+
   function startWorkingPreview(file) {
     var el = ensurePreview();
     if (!el || !file) return;
@@ -574,6 +598,7 @@
       var oldLoader = document.getElementById('generation-loader');
       if (oldLoader) oldLoader.hidden = true;
       drawPreviewFrame();
+      scrollResultIntoView(el);
       _pvStarted = Date.now();
       window.clearInterval(_pvTimer);
       _pvTimer = window.setInterval(function () {
@@ -2468,6 +2493,10 @@
       event.preventDefault();
       var payloadPromise = buildGenerationPayload();
       if (!payloadPromise) return;
+      // Phones stack the panel below the whole form, so whatever answers this
+      // tap (the working preview, or the sign-up card) is off screen and the
+      // tap reads as dead. Both branches below write into this panel.
+      scrollResultIntoView(document.querySelector('.result-panel'));
       var authed = !!(currentSession && currentSession.user);
       track('website_generation_submit', { mode: selectedModeValue(), logged_in: authed });
       // Must be signed in to generate — save their work and prompt sign-up.
