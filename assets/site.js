@@ -2404,6 +2404,130 @@
     });
   }
 
+  // ===== "Example of result": one before / after pair ==================
+  // Pairs are dropped into examples/ as a1 + a2, b1 + b2, ... where 1 is the
+  // original and 2 is the result. Static hosting cannot list a directory, so
+  // the letters are walked in order until one is missing. If nothing is there
+  // the sliding marquee stays exactly as it was, so the section is never
+  // empty while the folder is still being filled.
+  var EX_BASE = THUMB_BASE.replace(/results\/thumbs\/$/, 'examples/');
+  var EX_EXTS = ['.jpg', '.jpeg', '.png', '.webp'];
+  var EX_ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+
+  function exTryLoad(src, cb) {
+    var img = new Image();
+    img.onload = function () { cb(img.naturalWidth ? src : null); };
+    img.onerror = function () { cb(null); };
+    img.src = src;
+  }
+
+  // resolve one slot ("a1") against the candidate extensions, in order
+  function exResolve(name, exts, cb) {
+    var i = 0;
+    (function next() {
+      if (i >= exts.length) { cb(null); return; }
+      exTryLoad(EX_BASE + name + exts[i++], function (src) {
+        if (src) cb(src); else next();
+      });
+    })();
+  }
+
+  function exDiscover(cb) {
+    var pairs = [];
+    var exts = EX_EXTS.slice();
+    var idx = 0;
+    (function step() {
+      if (idx >= EX_ALPHABET.length) { cb(pairs); return; }
+      var letter = EX_ALPHABET.charAt(idx++);
+      exResolve(letter + '1', exts, function (before) {
+        if (!before) { cb(pairs); return; }   // first gap ends the walk
+        // whichever extension answered is the likely one for the rest, so try
+        // it first from now on and keep the others as fallbacks
+        var hit = before.slice(before.lastIndexOf('.'));
+        exts = [hit].concat(EX_EXTS.filter(function (e) { return e !== hit; }));
+        exResolve(letter + '2', exts, function (after) {
+          // a lone "before" is a half-uploaded pair: skip it, do not stop
+          if (after) pairs.push({ before: before, after: after });
+          step();
+        });
+      });
+    })();
+  }
+
+  function initExamplePair() {
+    var marquee = document.querySelector('.marquee-wrap');
+    if (!marquee) return;
+
+    exDiscover(function (pairs) {
+      if (!pairs.length) return;   // nothing uploaded yet: keep the marquee
+
+      var alt = i18n.imgAlt || 'AI undress result';
+      var section = document.createElement('section');
+      section.className = 'ex-wrap';
+      section.innerHTML =
+        '<div class="container">' +
+          '<p class="ex-kicker">' + esc(t('exKicker', 'Example of result')) + '</p>' +
+          '<div class="ex-card">' +
+            '<figure class="ex-pane">' +
+              '<img id="ex-before" alt="' + esc(alt) + '" decoding="async" />' +
+              '<figcaption class="ex-tag">' + esc(t('exBefore', 'Before')) + '</figcaption>' +
+            '</figure>' +
+            '<figure class="ex-pane">' +
+              '<img id="ex-after" alt="' + esc(alt) + '" decoding="async" />' +
+              '<figcaption class="ex-tag ex-tag-after">' + esc(t('exAfter', 'After')) + '</figcaption>' +
+            '</figure>' +
+          '</div>' +
+          '<button type="button" class="btn ex-more" id="ex-more">' +
+            esc(t('exMore', 'Show me another')) + '</button>' +
+        '</div>';
+
+      marquee.hidden = true;
+      marquee.parentNode.insertBefore(section, marquee);
+
+      var beforeEl = section.querySelector('#ex-before');
+      var afterEl = section.querySelector('#ex-after');
+      var moreBtn = section.querySelector('#ex-more');
+      if (pairs.length < 2) moreBtn.hidden = true;
+
+      var current = Math.floor(Math.random() * pairs.length);
+      var busy = false;
+
+      function paint(idx) {
+        var pair = pairs[idx];
+        busy = true;
+        moreBtn.disabled = true;
+        beforeEl.classList.remove('is-in');
+        afterEl.classList.remove('is-in');
+        // both halves are swapped together: a comparison showing one new and
+        // one old image would be a lie
+        var left = 2;
+        function armed() {
+          if (--left) return;
+          beforeEl.src = pair.before;
+          afterEl.src = pair.after;
+          beforeEl.classList.add('is-in');
+          afterEl.classList.add('is-in');
+          busy = false;
+          moreBtn.disabled = false;
+        }
+        exTryLoad(pair.before, armed);
+        exTryLoad(pair.after, armed);
+      }
+
+      moreBtn.addEventListener('click', function () {
+        if (busy || pairs.length < 2) return;
+        var next = current;
+        while (next === current) next = Math.floor(Math.random() * pairs.length);
+        current = next;
+        track('example_shuffle', { index: current, total: pairs.length });
+        paint(current);
+      });
+
+      paint(current);
+      track('example_shown', { total: pairs.length });
+    });
+  }
+
   // Boot ASAP
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
@@ -2425,6 +2549,7 @@
     loadPresetCatalogue();
     preloadCritical();
     buildMarquee();
+    initExamplePair();
     normalizeCtas();
     initLanguageSwitch();
     initTheme();
