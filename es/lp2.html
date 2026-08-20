@@ -13,12 +13,12 @@
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="preload" href="../assets/site.css?v=20260820-p3" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-r3" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-p3" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-p3" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-r3" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r3" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-p3" />
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r3" />
 </head>
 <body>
 
@@ -176,7 +176,8 @@
         </div>
       </div>
 
-      <aside class="lp2-col-pitch">
+            <aside class="lp2-col-right">
+        <div class="lp2-pitch">
 
       <div class="badge">Generador IA undress · +18</div>
       <h1>Desnuda tus fotos con IA.</h1>
@@ -192,6 +193,24 @@
         <div><i data-lucide="lock"></i><span><strong>Pago seguro.</strong></span></div>
         <div><i data-lucide="shield-check"></i><span><strong>Solo +18.</strong></span></div>
       </div>
+      </div>
+        <!-- The result takes this spot once a generation starts; the
+             pitch above slides out of the way. site.js writes into the
+             same ids it always has. -->
+        <div class="lp2-stage-result" id="lp2-stage-result" hidden>
+          <div class="lp2-preview" id="lp2-preview" hidden>
+            <canvas id="lp2-preview-canvas"></canvas>
+            <div class="lp2-preview-scan" aria-hidden="true"></div>
+            <p class="lp2-preview-label" id="lp2-preview-label"></p>
+          </div>
+<div class="result-panel">
+          <div class="result-empty" id="web-result-empty">
+            <strong>Tu resultado aparece aquí</strong>
+            <span>El crédito solo se reserva cuando empieza la generación. Los fallos se reembolsan automáticamente.</span>
+          </div>
+          <div class="web-results" id="web-results"></div>
+        </div>
+        </div>
       </aside>
 
     </div>
@@ -381,10 +400,11 @@
         { key: 'office', category: 'fantasy', label: 'Look de Oficina', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
-        lockedPresetTitle: "Este look necesita créditos",
-        lockedPresetHint: "Tu generación gratis usa el preset Desnudo Total. Recarga para desbloquear este look.",
-        lockedCustomTitle: "Los prompts personalizados necesitan créditos",
-        lockedCustomHint: "Los prompts personalizados se desbloquean al recargar. Tu generación gratis usa el preset Desnudo Total.",
+        noticeOk: "Entendido",
+        lockedPresetTitle: "Tu generación gratis",
+        lockedPresetHint: "Tu generación gratis cubre el preset Desnudo Total. Los demás looks se desbloquean cuando recargues.",
+        lockedCustomTitle: "Tu generación gratis",
+        lockedCustomHint: "Tu generación gratis cubre el preset Desnudo Total. Los prompts personalizados se desbloquean cuando recargues.",
         mostPopular: "MÁS POPULAR",
         perkGens: "generaciones",
         imageWord: "imagen",
@@ -469,25 +489,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-p3" defer></script>
-  <script src="../assets/site.js?v=20260820-p3" defer></script>
-  <script src="../assets/scenes.js?v=20260820-p3" defer></script>
-  <script src="../assets/lp2.js?v=20260820-p3" defer></script>
-  <!-- Result popup — holds the live result panel that site.js writes
-       into. Opened by assets/lp2.js when a generation starts. -->
-  <div class="lp2-result-modal" id="lp2-result-modal" hidden>
-    <div class="lp2-rm-backdrop" data-close-result></div>
-    <div class="lp2-rm-dialog" role="dialog" aria-modal="true">
-      <button type="button" class="lp2-rm-close" data-close-result aria-label="Close">&times;</button>
-<div class="result-panel">
-          <div class="result-empty" id="web-result-empty">
-            <strong>Tu resultado aparece aquí</strong>
-            <span>El crédito solo se reserva cuando empieza la generación. Los fallos se reembolsan automáticamente.</span>
-          </div>
-          <div class="web-results" id="web-results"></div>
-        </div>
-    </div>
-  </div>
+  <script src="../assets/analytics.js?v=20260820-r3" defer></script>
+  <script src="../assets/site.js?v=20260820-r3" defer></script>
+  <script src="../assets/scenes.js?v=20260820-r3" defer></script>
+  <script src="../assets/lp2.js?v=20260820-r3" defer></script>
 
 </body>
 </html>

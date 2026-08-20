@@ -18,9 +18,9 @@
     .lp2-col-gen .generator-app { display: block; padding: 10px; }
     .lp2-col-gen .generator-panel { margin: 0; }
 
-    .lp2-col-pitch { align-self: center; }
-    .lp2-col-pitch .badge { margin-bottom: 14px; }
-    .lp2-col-pitch h1 {
+    .lp2-col-right { align-self: center; }
+    .lp2-col-right .badge { margin-bottom: 14px; }
+    .lp2-col-right h1 {
       margin: 0 0 10px;
       font-size: clamp(1.9rem, 3.2vw, 2.9rem);
       line-height: 1.08;
@@ -40,10 +40,10 @@
       color: var(--accent2); flex: 0 0 auto; width: 22px; height: 22px;
     }
 
-    .lp2-col-pitch .free-note { font-size: .82rem; color: var(--muted); margin: 0 0 18px; }
+    .lp2-col-right .free-note { font-size: .82rem; color: var(--muted); margin: 0 0 18px; }
 
     /* trust strip, relocated into the pitch column */
-    .lp2-col-pitch .lp2-trust { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .lp2-col-right .lp2-trust { grid-template-columns: 1fr 1fr; gap: 8px; }
     .lp2-trust {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px; margin: 0;
@@ -106,14 +106,14 @@
     /* --- mobile: pitch first, then the generator --------------------- */
     @media (max-width: 980px) {
       .lp2-split { grid-template-columns: 1fr; gap: 18px; }
-      .lp2-col-pitch { position: static; order: -1; text-align: center; }
+      .lp2-col-right { position: static; order: -1; text-align: center; }
       .lp2-proof { align-items: center; }
-      .lp2-col-pitch .lp2-trust { grid-template-columns: 1fr 1fr; }
+      .lp2-col-right .lp2-trust { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 560px) {
       .lp2-stage { padding-top: 16px; }
-      .lp2-col-pitch h1 { font-size: clamp(1.6rem, 7vw, 2.1rem); }
-      .lp2-col-pitch .lp2-trust { grid-template-columns: 1fr; }
+      .lp2-col-right h1 { font-size: clamp(1.6rem, 7vw, 2.1rem); }
+      .lp2-col-right .lp2-trust { grid-template-columns: 1fr; }
       .lp2-rm-dialog { padding: 12px; border-radius: 16px; }
     }
 
@@ -137,8 +137,8 @@
    Tighten the pitch so the upload zone is reachable with one short
    scroll; the trust strip is relocated below the generator by lp2.js. */
 @media (max-width: 980px) {
-  .lp2-col-pitch .badge { margin-bottom: 10px; }
-  .lp2-col-pitch h1 { margin-bottom: 8px; }
+  .lp2-col-right .badge { margin-bottom: 10px; }
+  .lp2-col-right h1 { margin-bottom: 8px; }
   .lp2-cats { margin-bottom: 12px; font-size: .9rem; }
   /* proof points become wrapping chips instead of a tall vertical list */
   .lp2-proof {
@@ -146,7 +146,7 @@
     gap: 9px 15px; margin-bottom: 12px; font-size: .95rem;
   }
   .lp2-proof i, .lp2-proof svg { width: 18px; height: 18px; }
-  .lp2-col-pitch .free-note { margin-bottom: 6px; }
+  .lp2-col-right .free-note { margin-bottom: 6px; }
   /* trust strip sits under the generator on small screens */
   .lp2-trust-mobile { margin-top: 16px; }
   .lp2-trust-mobile .lp2-trust { grid-template-columns: 1fr 1fr; }
@@ -160,3 +160,87 @@
      tap a bit more height */
   .lp2-faq p a { display: inline-block; padding: 4px 1px; }
 }
+
+
+/* ===== Result takes the stage =====================================
+   On generate the pitch slides down out of the way and the result rises
+   into the same spot, so the eye never leaves where it was looking. */
+.lp2-col-right { position: relative; }
+
+.lp2-pitch {
+  transition: opacity .28s ease, transform .28s ease;
+  will-change: opacity, transform;
+}
+.lp2-stage.is-generating .lp2-pitch {
+  opacity: 0;
+  transform: translateY(26px);
+  pointer-events: none;
+}
+/* collapsed after the fade so it stops taking up space */
+.lp2-stage.is-generating .lp2-pitch.is-gone { display: none; }
+
+.lp2-stage-result[hidden] { display: none; }
+.lp2-stage-result {
+  animation: lp2-result-in .38s cubic-bezier(.2, .7, .3, 1) both;
+}
+@keyframes lp2-result-in {
+  from { opacity: 0; transform: translateY(28px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+.lp2-stage-result .result-panel {
+  min-height: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+}
+/* the empty "your result appears here" copy is redundant once the panel only
+   shows up during/after a generation */
+.lp2-stage-result #web-result-empty { display: none; }
+
+/* ===== Working preview =============================================
+   The uploaded photo, heavily pixelated, resolving as the job runs. It
+   tells the user their image is the one being worked on, and the detail
+   stays hidden while it is on screen. */
+.lp2-preview { position: relative; margin-bottom: 12px; }
+.lp2-preview[hidden] { display: none; }
+.lp2-preview canvas {
+  display: block; width: 100%; height: auto; border-radius: 14px;
+  image-rendering: pixelated;             /* keep the blocks crisp */
+  background: var(--surface2, #18181d);
+}
+/* a light sweep travelling down the image */
+.lp2-preview-scan {
+  position: absolute; inset: 0; border-radius: 14px; overflow: hidden;
+  pointer-events: none;
+}
+.lp2-preview-scan::before {
+  content: ""; position: absolute; left: 0; right: 0; height: 38%;
+  background: linear-gradient(180deg, transparent,
+              rgba(255,255,255,.16) 45%, rgba(255,45,85,.20) 55%, transparent);
+  animation: lp2-scan 1.9s ease-in-out infinite;
+}
+@keyframes lp2-scan {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(320%); }
+}
+.lp2-preview-label {
+  margin: 10px 0 0; text-align: center; font-size: .88rem; font-weight: 600;
+  color: var(--muted);
+}
+.lp2-preview-label b { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp2-pitch, .lp2-stage-result { transition: none; animation: none; }
+  .lp2-preview-scan::before { animation: none; }
+}
+
+@media (max-width: 980px) {
+  /* stacked: the result appears under the generator, pitch drops below it */
+  .lp2-stage.is-generating .lp2-col-right { order: 1; }
+}
+
+/* site.js also injects its own orbit loader into .result-panel. The pixelated
+   preview above already shows progress and elapsed time, so two spinners would
+   just be noise here. */
+.lp2-stage-result #generation-loader { display: none; }

@@ -13,12 +13,12 @@
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="preload" href="../assets/site.css?v=20260820-p3" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-r3" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-p3" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-p3" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-r3" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r3" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-p3" />
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r3" />
 </head>
 <body>
 
@@ -176,7 +176,8 @@
         </div>
       </div>
 
-      <aside class="lp2-col-pitch">
+            <aside class="lp2-col-right">
+        <div class="lp2-pitch">
 
       <div class="badge">AI 脱衣生成器 · 18+</div>
       <h1>用 AI 给你的照片脱衣。</h1>
@@ -192,6 +193,24 @@
         <div><i data-lucide="lock"></i><span><strong>安全结账。</strong></span></div>
         <div><i data-lucide="shield-check"></i><span><strong>仅限 18+。</strong></span></div>
       </div>
+      </div>
+        <!-- The result takes this spot once a generation starts; the
+             pitch above slides out of the way. site.js writes into the
+             same ids it always has. -->
+        <div class="lp2-stage-result" id="lp2-stage-result" hidden>
+          <div class="lp2-preview" id="lp2-preview" hidden>
+            <canvas id="lp2-preview-canvas"></canvas>
+            <div class="lp2-preview-scan" aria-hidden="true"></div>
+            <p class="lp2-preview-label" id="lp2-preview-label"></p>
+          </div>
+<div class="result-panel">
+          <div class="result-empty" id="web-result-empty">
+            <strong>你的结果会显示在这里</strong>
+            <span>只有生成开始时才会扣留额度。失败任务会自动退款。</span>
+          </div>
+          <div class="web-results" id="web-results"></div>
+        </div>
+        </div>
       </aside>
 
     </div>
@@ -381,10 +400,11 @@
         { key: 'office', category: 'fantasy', label: '办公室造型', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
-        lockedPresetTitle: "此造型需要额度",
-        lockedPresetHint: "免费生成使用「全裸」预设。充值后即可解锁此造型。",
-        lockedCustomTitle: "自定义提示词需要额度",
-        lockedCustomHint: "自定义提示词充值后解锁。免费生成使用「全裸」预设。",
+        noticeOk: "知道了",
+        lockedPresetTitle: "你的免费生成",
+        lockedPresetHint: "免费生成可用于「全裸」预设。其他造型在充值后解锁。",
+        lockedCustomTitle: "你的免费生成",
+        lockedCustomHint: "免费生成可用于「全裸」预设。自定义提示词在充值后解锁。",
         mostPopular: "最受欢迎",
         perkGens: "次生成",
         imageWord: "张",
@@ -469,25 +489,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-p3" defer></script>
-  <script src="../assets/site.js?v=20260820-p3" defer></script>
-  <script src="../assets/scenes.js?v=20260820-p3" defer></script>
-  <script src="../assets/lp2.js?v=20260820-p3" defer></script>
-  <!-- Result popup — holds the live result panel that site.js writes
-       into. Opened by assets/lp2.js when a generation starts. -->
-  <div class="lp2-result-modal" id="lp2-result-modal" hidden>
-    <div class="lp2-rm-backdrop" data-close-result></div>
-    <div class="lp2-rm-dialog" role="dialog" aria-modal="true">
-      <button type="button" class="lp2-rm-close" data-close-result aria-label="Close">&times;</button>
-<div class="result-panel">
-          <div class="result-empty" id="web-result-empty">
-            <strong>你的结果会显示在这里</strong>
-            <span>只有生成开始时才会扣留额度。失败任务会自动退款。</span>
-          </div>
-          <div class="web-results" id="web-results"></div>
-        </div>
-    </div>
-  </div>
+  <script src="../assets/analytics.js?v=20260820-r3" defer></script>
+  <script src="../assets/site.js?v=20260820-r3" defer></script>
+  <script src="../assets/scenes.js?v=20260820-r3" defer></script>
+  <script src="../assets/lp2.js?v=20260820-r3" defer></script>
 
 </body>
 </html>

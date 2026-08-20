@@ -533,6 +533,44 @@
 
   function updateModalPromo() {}
 
+  // A plain explanation popup. Deliberately NOT the top-up modal: tapping a
+  // gated preset is a moment to explain what the free generation covers, not
+  // to push packs at someone who has not tried the product yet.
+  function showNotice(title, message) {
+    var el = document.getElementById('ug-notice');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'ug-notice';
+      el.id = 'ug-notice';
+      el.innerHTML =
+        '<div class="ug-notice-backdrop" data-close-notice></div>' +
+        '<div class="ug-notice-box" role="dialog" aria-modal="true">' +
+          '<strong class="ug-notice-title"></strong>' +
+          '<p class="ug-notice-msg"></p>' +
+          '<button type="button" class="btn btn-accent ug-notice-ok" data-close-notice></button>' +
+        '</div>';
+      document.body.appendChild(el);
+      el.addEventListener('click', function (ev) {
+        if (ev.target.hasAttribute('data-close-notice')) hideNotice();
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape') hideNotice();
+      });
+    }
+    el.querySelector('.ug-notice-title').textContent = title || '';
+    el.querySelector('.ug-notice-msg').textContent = message || '';
+    el.querySelector('.ug-notice-ok').textContent = t('noticeOk', 'Got it');
+    el.hidden = false;
+    setTimeout(function () { el.classList.add('is-open'); }, 20);
+  }
+
+  function hideNotice() {
+    var el = document.getElementById('ug-notice');
+    if (!el || el.hidden) return;
+    el.classList.remove('is-open');
+    setTimeout(function () { el.hidden = true; }, 180);
+  }
+
   function showCheckout(show, reason) {
     var panel = document.getElementById('checkout-panel');
     if (!panel) return;
@@ -544,12 +582,6 @@
       if (reason === 'exit_post_gen') {
         if (title) title.textContent = t('exitOfferTitle', 'Wait - your first result unlocked a private deal');
         if (copy) copy.textContent = t('exitOfferCopy', 'Keep going now and get bonus credits added automatically to every pack.');
-      } else if (reason === 'locked_preset') {
-        if (title) title.textContent = t('lockedPresetTitle', 'This look needs credits');
-        if (copy) copy.textContent = t('lockedPresetHint', 'Your free generation runs the Fully Nude preset. Top up to unlock this look.');
-      } else if (reason === 'locked_custom') {
-        if (title) title.textContent = t('lockedCustomTitle', 'Custom prompts need credits');
-        if (copy) copy.textContent = t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.');
       } else {
         if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready for another image?');
         if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Pick a pack and keep generating on the website.');
@@ -1405,7 +1437,7 @@
     if (writeOwn && !writeOwn.dataset.bound) {
       writeOwn.dataset.bound = '1';
       writeOwn.addEventListener('click', function () {
-        if (!isBuyer()) { showCheckout(true, 'locked_custom'); return; }
+        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers the Fully Nude preset. Custom prompts unlock whenever you top up.')); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';
@@ -1610,8 +1642,11 @@
         button.addEventListener('click', function () {
           if (button.dataset.locked === '1') {
             // The status line sits below the fold, so the explanation was
-            // invisible. Show it in the popup, which also offers the packs.
-            showCheckout(true, 'locked_preset');
+            // invisible. Say it in a popup instead, without pushing packs.
+            showNotice(
+              t('lockedPresetTitle', 'Your free generation'),
+              t('lockedPresetHint', 'Your free generation covers the Fully Nude preset. The other looks unlock whenever you top up.')
+            );
             return;
           }
           var key = button.getAttribute('data-key');
@@ -1633,7 +1668,7 @@
 
     if (clear) {
       clear.addEventListener('click', function () {
-        if (!isBuyer()) { showCheckout(true, 'locked_custom'); return; }
+        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers the Fully Nude preset. Custom prompts unlock whenever you top up.')); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';

@@ -1,99 +1,198 @@
 /* ==========================================================================
    UndressGoon — landing variant B (lp2) behaviour.
 
-   One job, purely presentational — no product/auth/payment logic here,
-   site.js still owns the whole funnel:
+   Purely presentational. site.js still owns the whole funnel (auth, credits,
+   the RunPod job, painting results); this only decides what the stage looks
+   like while that happens.
 
-   Turn the result panel into a POPUP. The panel still lives in the DOM
-   (site.js needs .result-panel / #web-results / #web-result-empty), it's just
-   parked inside a modal that opens when a generation starts and when results
-   land — so the page itself never shows a big empty result box.
+   Two jobs:
+
+   1. Result takes the stage. When a generation starts, the pitch column slides
+      down out of the way and the result panel rises into the same spot, so the
+      user's eye stays where it already was. The pitch is moved below the stage
+      rather than destroyed, so the selling copy is still on the page.
+
+   2. A working preview. The uploaded photo is drawn heavily pixelated and
+      resolves a little as the job runs, so it is obvious the worker is chewing
+      on *their* image. The detail stays hidden the whole time it is on screen.
 
    The page arrives on the black theme because that is the CSS default (:root)
-   and site.js only switches to light when the visitor picked it before — the
-   theme toggle stays functional.
+   and site.js only switches to light when the visitor picked it before, so the
+   theme toggle keeps working.
    ========================================================================== */
 (function () {
   'use strict';
 
-  // ---- Result popup ----------------------------------------------------
   function ready(fn) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
     else fn();
   }
 
   ready(function () {
-    var modal = document.getElementById('lp2-result-modal');
+    var stage = document.querySelector('.lp2-stage');
+    var pitch = document.querySelector('.lp2-pitch');
+    var resultWrap = document.getElementById('lp2-stage-result');
     var form = document.getElementById('web-generate-form');
-    if (!modal) return;
+    if (!stage || !resultWrap) return;
 
-    function open() {
-      if (!modal.hidden) return;
-      modal.hidden = false;
-      document.body.classList.add('modal-open');
-      // setTimeout, not requestAnimationFrame: rAF is throttled to a stop in a
-      // backgrounded tab, which would leave the overlay at opacity 0 while it
-      // still swallows clicks. Matches site.js's own modal timing.
-      window.setTimeout(function () { modal.classList.add('is-open'); }, 20);
+    var preview = document.getElementById('lp2-preview');
+    var canvas = document.getElementById('lp2-preview-canvas');
+    var label = document.getElementById('lp2-preview-label');
+    var previewTimer = 0;
+    var pitchTimer = 0;
+
+    // ---- 1. hand the stage over to the result ---------------------------
+    function showResultStage() {
+      if (!resultWrap.hidden) return;
+      resultWrap.hidden = false;
+      stage.classList.add('is-generating');
+      // collapse the pitch only after its fade finishes, so the result does
+      // not jump up mid-animation
+      if (pitch) {
+        window.clearTimeout(pitchTimer);
+        pitchTimer = window.setTimeout(function () {
+          pitch.classList.add('is-gone');
+        }, 300);
+      }
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
     }
-    function close() {
-      if (modal.hidden) return;
-      modal.classList.remove('is-open');
-      document.body.classList.remove('modal-open');
-      window.setTimeout(function () { modal.hidden = true; }, 180);
+
+    // ---- 2. the pixelated "working on it" preview ------------------------
+    // Start coarse and resolve slightly over time: enough to read as progress,
+    // never enough to actually show the picture.
+    var START_BLOCKS = 14;   // image is drawn this many blocks wide, then upscaled
+    var MAX_BLOCKS = 46;
+
+    function drawPixelated(img, blocks) {
+      if (!canvas) return;
+      var ratio = img.naturalHeight / img.naturalWidth || 1;
+      var w = Math.max(4, Math.round(blocks));
+      var h = Math.max(4, Math.round(blocks * ratio));
+      // draw tiny...
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(img, 0, 0, w, h);
+      // ...and let CSS scale it back up with image-rendering: pixelated
+      canvas.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
     }
 
-    modal.querySelectorAll('[data-close-result]').forEach(function (el) {
-      el.addEventListener('click', close);
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') close();
-    });
+    function startPreview(file) {
+      if (!preview || !canvas || !file) return;
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        preview.hidden = false;
+        var blocks = START_BLOCKS;
+        drawPixelated(img, blocks);
+        var started = Date.now();
+        window.clearInterval(previewTimer);
+        previewTimer = window.setInterval(function () {
+          // ease towards MAX_BLOCKS so it slows down rather than finishing early
+          blocks += Math.max(0.6, (MAX_BLOCKS - blocks) * 0.08);
+          if (blocks > MAX_BLOCKS) blocks = MAX_BLOCKS;
+          drawPixelated(img, blocks);
+          if (label) {
+            var secs = Math.round((Date.now() - started) / 1000);
+            label.innerHTML = '<b>' + secs + 's</b> ' + (label.dataset.suffix || '');
+          }
+        }, 1200);
+        if (label) {
+          label.dataset.suffix = label.dataset.suffix || 'working on your photo';
+          label.innerHTML = '<b>0s</b> ' + label.dataset.suffix;
+        }
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); };
+      img.src = url;
+    }
 
-    // Open as soon as a generation is actually submitted. Use the capture
-    // phase so we run before site.js's own submit handler, and only open when
-    // the form is really going to run (photo + consent present) — otherwise a
-    // validation error would pop an empty modal.
+    function stopPreview() {
+      window.clearInterval(previewTimer);
+      previewTimer = 0;
+      if (preview) preview.hidden = true;
+    }
+
+    // ---- wire it to the real generation ---------------------------------
     if (form) {
+      // capture phase: run before site.js's own submit handler, and only when
+      // the form is actually going to run, so a validation error does not
+      // wipe the pitch away for nothing
       form.addEventListener('submit', function () {
         var consent = document.getElementById('web-consent');
         var file = document.getElementById('person-photo');
-        var hasPhoto = !!(file && file.files && file.files.length);
-        if (hasPhoto && consent && consent.checked) open();
+        var chosen = file && file.files && file.files[0];
+        if (!chosen || !consent || !consent.checked) return;
+        showResultStage();
+        startPreview(chosen);
+        // On mobile the stage is stacked, so the result can sit well below the
+        // fold and tapping Generate would look like nothing happened. Scroll to
+        // it, and verify afterwards: smooth scrolling is ignored in some
+        // contexts, so fall back to a hard jump rather than leaving the user
+        // staring at the form.
+        scrollToResult();
       }, true);
     }
 
-    // ---- Mobile: move the trust strip below the generator so the upload
-    // zone is reachable with one short scroll. Pure DOM relocation of an
-    // already-translated block; moved back on desktop.
-    var trust = document.querySelector('.lp2-col-pitch .lp2-trust');
-    var pitch = document.querySelector('.lp2-col-pitch');
+    function scrollToResult() {
+      var top = function () {
+        return resultWrap.getBoundingClientRect().top + window.pageYOffset - 72;
+      };
+      try {
+        window.scrollTo({ top: top(), behavior: 'smooth' });
+      } catch (e) {
+        window.scrollTo(0, top());
+      }
+      // if the smooth scroll never ran, jump
+      window.setTimeout(function () {
+        var r = resultWrap.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.9 || r.bottom < 0) {
+          window.scrollTo(0, top());
+        }
+      }, 450);
+    }
+
+    // Results arriving (or the panel being cleared on failure) end the preview.
+    var results = document.getElementById('web-results');
+    if (results) {
+      try {
+        new MutationObserver(function () {
+          if (results.children.length) {
+            stopPreview();
+            showResultStage();  // safety net for any path that skips submit
+          }
+        }).observe(results, { childList: true });
+      } catch (e) { /* no-op */ }
+    }
+    // A failure clears #web-results and writes an error to the status line;
+    // watch that too so the preview cannot spin forever.
+    var status = document.getElementById('web-status');
+    if (status) {
+      try {
+        new MutationObserver(function () {
+          if (status.dataset.tone === 'error') stopPreview();
+        }).observe(status, { childList: true, attributes: true, characterData: true });
+      } catch (e) { /* no-op */ }
+    }
+
+    // ---- mobile: trust strip sits under the generator ---------------------
+    var trust = document.querySelector('.lp2-pitch .lp2-trust');
     var genCol = document.querySelector('.lp2-col-gen');
-    if (trust && pitch && genCol && window.matchMedia) {
+    var pitchHost = document.querySelector('.lp2-pitch');
+    if (trust && pitchHost && genCol && window.matchMedia) {
       var slot = document.createElement('div');
       slot.className = 'lp2-trust-mobile';
       genCol.appendChild(slot);
       var mq = window.matchMedia('(max-width: 980px)');
       var place = function () {
         if (mq.matches) { if (trust.parentNode !== slot) slot.appendChild(trust); }
-        else if (trust.parentNode !== pitch) pitch.appendChild(trust);
+        else if (trust.parentNode !== pitchHost) pitchHost.appendChild(trust);
       };
       place();
       if (mq.addEventListener) mq.addEventListener('change', place);
       else if (mq.addListener) mq.addListener(place);
-      window.addEventListener('resize', place);  // belt-and-braces
-    }
-
-    // Safety net: if results or the loader appear by any other path (e.g. a
-    // restored session), surface the popup too.
-    var results = document.getElementById('web-results');
-    if (results) {
-      try {
-        new MutationObserver(function () {
-          if (results.children.length) open();
-        }).observe(results, { childList: true });
-      } catch (e) { /* no-op */ }
+      window.addEventListener('resize', place);
     }
   });
 })();

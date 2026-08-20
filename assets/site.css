@@ -2624,3 +2624,27 @@ html[data-theme="light"] .toast {
      content instead, with a cap so it can never crowd out the header. */
   .lang-switch select { width: auto; min-width: 58px; max-width: 104px; }
 }
+
+
+/* ===== Plain notice popup ==========================================
+   Used when a free user taps a gated preset: explains what the free
+   generation covers. Deliberately has no pack grid. */
+.ug-notice {
+  position: fixed; inset: 0; z-index: 160;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; transition: opacity .18s ease;
+}
+.ug-notice.is-open { opacity: 1; }
+.ug-notice[hidden] { display: none; }
+.ug-notice-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.6); }
+.ug-notice-box {
+  position: relative; width: min(420px, 100%);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; padding: 22px 20px; text-align: center;
+  box-shadow: 0 26px 70px rgba(0,0,0,.45);
+  transform: translateY(8px); transition: transform .18s ease;
+}
+.ug-notice.is-open .ug-notice-box { transform: none; }
+.ug-notice-title { display: block; font-size: 1.05rem; margin-bottom: 8px; }
+.ug-notice-msg { color: var(--muted); margin: 0 0 18px; line-height: 1.5; font-size: .93rem; }
+.ug-notice-ok { width: 100%; min-height: 44px; }
