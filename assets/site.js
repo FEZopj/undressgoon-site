@@ -1307,6 +1307,45 @@
   // Free (never-purchased) users may only run the Fully Nude preset; everything
   // else — other presets + custom prompts — unlocks after any top-up.
   var FREE_PRESET_KEY = 'nude';
+  // Catalogue served by the backend from presets.py (GET /web/presets). It is
+  // the authoritative KEY LIST, so the bot and the site can never drift; the
+  // prompt text stays server-side and is resolved from the key at generation
+  // time. Labels stay local because each locale page ships translated ones.
+  var remoteCatalogue = null;
+  var rerenderPresets = null;   // set by initPresets so a late fetch can repaint
+  var selectedPresetKey = '';   // sent as `preset` on submit
+
+  function loadPresetCatalogue() {
+    return fetch(apiUrl('/web/presets'), { credentials: 'include' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (!data || !data.ok || !data.presets || !data.presets.length) return;
+        remoteCatalogue = data;
+        if (data.freePresetKey) FREE_PRESET_KEY = data.freePresetKey;
+        if (rerenderPresets) rerenderPresets();
+      })
+      .catch(function () { /* keep the built-in list as a fallback */ });
+  }
+
+  // Backend key list + local (translated) labels. Falls back to the hardcoded
+  // UG_CONFIG catalogue, which still carries its own prompts, so a failed or
+  // slow request degrades to the previous behaviour rather than an empty picker.
+  function cataloguePresets(localPresets) {
+    if (!remoteCatalogue || !remoteCatalogue.presets) return localPresets;
+    var byKey = {};
+    (localPresets || []).forEach(function (p) { byKey[p.key] = p; });
+    return remoteCatalogue.presets.map(function (rp) {
+      var local = byKey[rp.key];
+      return {
+        key: rp.key,
+        category: rp.category,
+        // a preset added server-side shows up immediately, in English, until
+        // the locale page gets a translated label for it
+        label: (local && local.label) || rp.label,
+        prompt: local ? local.prompt : ''
+      };
+    });
+  }
   function isBuyer() {
     return !!(currentSession && currentSession.user && currentSession.user.hasPurchased);
   }
@@ -1320,7 +1359,8 @@
     var modeInputs = document.querySelectorAll('input[name="mode"]');
     var label = document.querySelector('.preset-top .field-label');
     var promptLabel = document.querySelector('label[for="web-prompt"]');
-    var presets = CFG.presets || [];
+    var localPresets = CFG.presets || [];
+    var presets = localPresets;
     if (!tabs || !grid || !prompt || !presets.length) return;
 
     // Prompt is hidden by default — presets fill it invisibly (users never see
@@ -1353,6 +1393,7 @@
       writeOwn.addEventListener('click', function () {
         if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.'), 'working'); return; }
         selected = '';
+        selectedPresetKey = '';
         prompt.value = '';
         showCustomPrompt(true);
         renderGrid();
@@ -1481,7 +1522,8 @@
     }
 
     function activePresets() {
-      return activeMode() === 'scene' ? scenePresets : presets;
+      if (activeMode() === 'scene') return scenePresets;
+      return cataloguePresets(presets);
     }
 
     function ensureSceneHelp() {
@@ -1563,7 +1605,10 @@
           var preset = activePresets().find(function (p) { return p.key === key; });
           if (!preset) return;
           selected = preset.key;
-          prompt.value = preset.prompt;      // applied invisibly (field stays hidden)
+          selectedPresetKey = mode === 'scene' ? '' : preset.key;
+          // Invisible bridge: the backend resolves the key, so when the remote
+          // catalogue is in use there is no prompt text to carry here.
+          prompt.value = preset.prompt || preset.key;
           showCustomPrompt(false);
           var modeInput = document.querySelector('input[name="mode"][value="' + (mode === 'scene' ? 'scene' : 'prompt') + '"]');
           if (modeInput) modeInput.checked = true;
@@ -1576,6 +1621,7 @@
       clear.addEventListener('click', function () {
         if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.'), 'working'); return; }
         selected = '';
+        selectedPresetKey = '';
         prompt.value = '';
         showCustomPrompt(true);
         renderGrid();
@@ -1584,6 +1630,7 @@
     }
     prompt.addEventListener('input', function () {
       selected = '';
+      selectedPresetKey = '';
       renderGrid();
     });
     modeInputs.forEach(function (input) {
@@ -1607,6 +1654,7 @@
     renderTabs();
     renderGrid();
     renderWriteOwn();
+    rerenderPresets = function () { renderTabs(); renderGrid(); };
 
     // First load: preselect the free Fully Nude preset so a new visitor lands
     // on a ready-to-run look — the one their free credit actually covers.
@@ -1824,6 +1872,10 @@
           if (s && s.value && s.value !== 'auto') payload.append(k, s.value);
         });
       } else {
+        // Preset key, resolved to its prompt server-side (presets.py). Omitted
+        // for custom prompts, and harmless for older backends which just fall
+        // back to reading the prompt text.
+        if (selectedPresetKey) payload.append('preset', selectedPresetKey);
         payload.append('breast_size', breastSize ? breastSize.value : 'natural');
         payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
       }
@@ -2156,6 +2208,7 @@
   }
 
   function boot() {
+    loadPresetCatalogue();
     preloadCritical();
     buildMarquee();
     normalizeCtas();
