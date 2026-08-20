@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -17,39 +17,7 @@
   <link rel="stylesheet" href="assets/site.css?v=20260820-lp2" />
   <link rel="stylesheet" href="assets/scenes.css?v=20260820-lp2" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <style>
-    /* lp2-only additions — everything else reuses site.css */
-    .lp2-hero { padding: 22px 0 4px; text-align: center; }
-    .lp2-hero h1 { margin: 12px 0 6px; font-size: clamp(1.7rem, 4.6vw, 2.5rem); }
-    .lp2-hero .badge { margin-bottom: 0; }
-    /* the generator sits right under the strip — no second heading, no gap */
-    .generator-section { padding-top: 14px; }
-    .generator-section .generator-head { display: none; }
-    .lp2-cats { color: var(--muted); font-size: .95rem; margin: 0 0 18px; }
-    .lp2-cats strong { color: var(--text); font-weight: 700; }
-    .lp2-proof { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center;
-      color: var(--muted); font-size: .85rem; margin-top: 12px; }
-    .lp2-proof span { display: inline-flex; align-items: center; gap: 6px; }
-    .lp2-trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px; margin: 8px 0 0; }
-    .lp2-trust div { background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 12px 14px; font-size: .85rem; color: var(--muted);
-      display: flex; align-items: center; gap: 9px; }
-    .lp2-trust svg, .lp2-trust i { color: var(--accent2); flex: 0 0 auto; }
-    .lp2-trust strong { color: var(--text); }
-    .lp2-faq { max-width: 760px; margin: 0 auto; }
-    .lp2-faq details { background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 0 16px; margin-bottom: 10px; }
-    .lp2-faq summary { cursor: pointer; font-weight: 700; padding: 14px 0; list-style: none;
-      display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .lp2-faq summary::-webkit-details-marker { display: none; }
-    .lp2-faq summary::after { content: "+"; color: var(--accent2); font-weight: 900; }
-    .lp2-faq details[open] summary::after { content: "–"; }
-    .lp2-faq p { color: var(--muted); margin: 0 0 14px; line-height: 1.55; }
-    .lp2-faq a { color: var(--accent2); }
-    #pack-grid-inline .pack-card { text-align: center; }
-    @media (max-width: 640px) { .lp2-hero { padding-top: 26px; } }
-  </style>
+  <link rel="stylesheet" href="assets/lp2.css?v=20260820-lp2" />
 </head>
 <body>
 
@@ -63,7 +31,6 @@
       </a>
       <div class="header-right">
         <a href="#generate" class="btn btn-accent" data-generate-cta>Generate free</a>
-        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
@@ -90,31 +57,15 @@
 
   <!-- 1 · HERO — one line + proof, then straight into the product. The
        generator IS the hero on this variant. -->
-  <section class="hero lp2-hero">
-    <div class="container">
-      <div class="badge">AI undress generator · 18+</div>
-      <h1>Undress your photos with AI.</h1>
-      <p class="lp2-cats"><strong>Fully Nude</strong> · Micro Bikini · Lingerie · Latex · BDSM · Custom prompts</p>
-      <div class="lp2-proof">
-        <span><i data-lucide="ticket"></i> 1 free generation</span>
-        <span><i data-lucide="credit-card"></i> No card required</span>
-        <span><i data-lucide="timer"></i> Results in 15–40s</span>
-      </div>
-      <p class="free-note" style="margin-top:10px">Adults only. Use photos you have the rights and consent to edit.</p>
-    </div>
-  </section>
+    <!-- STAGE — the product IS the hero: generator on the left, the
+       pitch on the right. Results open in a popup (assets/lp2.js), so
+       the page never shows an empty result box. -->
+  <section class="lp2-stage" id="generate">
+    <div class="container lp2-split">
 
-  <!-- 2 · GENERATOR — identical block to the control page: same IDs, same
-       auth/credits/payment funnel. site.js binds everything. -->
-  <section class="generator-section" id="generate">
-    <div class="container">
-      <div class="generator-head">
-        <h2>Generate now</h2>
-        <p>Upload first. Presets and custom prompts are below.</p>
-      </div>
-
-      <div class="generator-app" data-web-generator>
-        <div class="generator-panel">
+      <div class="lp2-col-gen">
+        <div class="generator-app" data-web-generator>
+<div class="generator-panel">
 
           <div class="login-box" id="login-box">
             <p id="login-box-copy">Sign up — your first generation is free. No card required.</p>
@@ -208,17 +159,34 @@
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
         </div>
-
-        <div class="result-panel">
-          <div class="result-empty" id="web-result-empty">
-            <strong>Your result appears here</strong>
-            <span>One credit is reserved only when generation starts. Failed jobs are refunded automatically.</span>
-          </div>
-          <div class="web-results" id="web-results"></div>
         </div>
       </div>
+
+      <aside class="lp2-col-pitch">
+
+      <div class="badge">AI undress generator · 18+</div>
+      <h1>Undress your photos with AI.</h1>
+      <p class="lp2-cats"><strong>Fully Nude</strong> · Micro Bikini · Lingerie · Latex · BDSM · Custom prompts</p>
+      <div class="lp2-proof">
+        <span><i data-lucide="ticket"></i> 1 free generation</span>
+        <span><i data-lucide="credit-card"></i> No card required</span>
+        <span><i data-lucide="timer"></i> Results in 15–40s</span>
+      </div>
+      <p class="free-note" style="margin-top:10px">Adults only. Use photos you have the rights and consent to edit.</p>
+<div class="lp2-trust">
+        <div><i data-lucide="eye-off"></i><span><strong>No public gallery.</strong> Your results stay in your account.</span></div>
+        <div><i data-lucide="package"></i><span><strong>One-time packs.</strong> No subscription, credits never expire.</span></div>
+        <div><i data-lucide="lock"></i><span><strong>Secure checkout.</strong> Card or crypto, discreet billing name.</span></div>
+        <div><i data-lucide="shield-check"></i><span><strong>18+ only.</strong> Consent and image rights required.</span></div>
+      </div>
+      </aside>
+
     </div>
   </section>
+
+  <!-- 2 · GENERATOR — identical block to the control page: same IDs, same
+       auth/credits/payment funnel. site.js binds everything. -->
+  
 
   <!-- 3 · VISUAL PROOF — real result thumbnails already shipped with the site. -->
   <section class="section" style="padding-bottom:0">
@@ -232,16 +200,6 @@
   </div>
 
   <!-- 4 · TRUST STRIP — only claims backed by the product. -->
-  <section class="section" style="padding-top:26px">
-    <div class="container">
-      <div class="lp2-trust">
-        <div><i data-lucide="eye-off"></i><span><strong>No public gallery.</strong> Your results stay in your account.</span></div>
-        <div><i data-lucide="package"></i><span><strong>One-time packs.</strong> No subscription, credits never expire.</span></div>
-        <div><i data-lucide="lock"></i><span><strong>Secure checkout.</strong> Card or crypto, discreet billing name.</span></div>
-        <div><i data-lucide="shield-check"></i><span><strong>18+ only.</strong> Consent and image rights required.</span></div>
-      </div>
-    </div>
-  </section>
 
   <!-- 5 · PRICING — real packs from the API (renderInlinePacks in site.js). -->
   <section class="section" id="lp-pricing" style="padding-top:10px">
@@ -435,5 +393,22 @@
   <script src="assets/analytics.js?v=20260820-lp2" defer></script>
   <script src="assets/site.js?v=20260820-lp2" defer></script>
   <script src="assets/scenes.js?v=20260820-lp2" defer></script>
+  <script src="assets/lp2.js?v=20260820-lp2" defer></script>
+  <!-- Result popup — holds the live result panel that site.js writes
+       into. Opened by assets/lp2.js when a generation starts. -->
+  <div class="lp2-result-modal" id="lp2-result-modal" hidden>
+    <div class="lp2-rm-backdrop" data-close-result></div>
+    <div class="lp2-rm-dialog" role="dialog" aria-modal="true">
+      <button type="button" class="lp2-rm-close" data-close-result aria-label="Close">&times;</button>
+<div class="result-panel">
+          <div class="result-empty" id="web-result-empty">
+            <strong>Your result appears here</strong>
+            <span>One credit is reserved only when generation starts. Failed jobs are refunded automatically.</span>
+          </div>
+          <div class="web-results" id="web-results"></div>
+        </div>
+    </div>
+  </div>
+
 </body>
 </html>
