@@ -1252,8 +1252,11 @@
       });
   }
 
-  function waitForGeneration(jobId, startedAt) {
-    var started = startedAt || Date.now();
+  // One dropped poll must not lose a generation the user has already paid for.
+  // Mobile connections blip, and a finished batch is a multi-megabyte response,
+  // so a single "Failed to fetch" is retried rather than surfaced. Errors the
+  // API actually returned carry .payload and are never retried.
+  function pollGeneration(jobId, attempt) {
     return fetch(apiUrl('/web/generation/' + encodeURIComponent(jobId)), {
       credentials: 'include'
     })
@@ -1267,6 +1270,18 @@
           return payload;
         });
       })
+      .catch(function (err) {
+        if (err && err.payload) throw err;
+        if ((attempt || 0) >= 5) throw err;
+        track('website_poll_retry', { attempt: (attempt || 0) + 1 });
+        return new Promise(function (resolve) { setTimeout(resolve, 2000); })
+          .then(function () { return pollGeneration(jobId, (attempt || 0) + 1); });
+      });
+  }
+
+  function waitForGeneration(jobId, startedAt) {
+    var started = startedAt || Date.now();
+    return pollGeneration(jobId, 0)
       .then(function (payload) {
         if (payload.status === 'done') {
           hideGenerationLoader(false);
@@ -1385,12 +1400,77 @@
     }
   }
 
+  // A batch is a carousel, not a row of thumbnails: every image gets the full
+  // frame and the user pages through them. Arrows drive a snapping scroller,
+  // so a swipe on touch and a click on desktop end up in the same place.
+  function buildGalleryNav(gallery, track, total) {
+    var prev = document.createElement('button');
+    prev.type = 'button';
+    prev.className = 'ug-nav ug-nav-prev';
+    prev.setAttribute('aria-label', t('prevImage', 'Previous image'));
+    prev.innerHTML = '<i data-lucide="chevron-left"></i>';
+
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'ug-nav ug-nav-next';
+    next.setAttribute('aria-label', t('nextImage', 'Next image'));
+    next.innerHTML = '<i data-lucide="chevron-right"></i>';
+
+    var count = document.createElement('p');
+    count.className = 'ug-count';
+
+    gallery.appendChild(prev);
+    gallery.appendChild(next);
+    gallery.appendChild(count);
+
+    function index() {
+      var w = track.clientWidth || 1;
+      return Math.min(total - 1, Math.max(0, Math.round(track.scrollLeft / w)));
+    }
+
+    function sync() {
+      var i = index();
+      count.textContent = (i + 1) + ' / ' + total;
+      prev.disabled = i <= 0;
+      next.disabled = i >= total - 1;
+    }
+
+    function go(delta) {
+      var w = track.clientWidth || 1;
+      // plain scrollLeft, with the easing left to CSS scroll-behavior: a
+      // scrollTo({behavior:'smooth'}) silently does nothing where the
+      // compositor is not animating, which strands the arrows
+      track.scrollLeft = Math.min(total - 1, Math.max(0, index() + delta)) * w;
+      sync();
+    }
+
+    prev.addEventListener('click', function () { go(-1); });
+    next.addEventListener('click', function () { go(1); });
+
+    // the scroller is the source of truth: a swipe has to move the counter too
+    var settle = 0;
+    track.addEventListener('scroll', function () {
+      window.clearTimeout(settle);
+      settle = window.setTimeout(sync, 80);
+    });
+    window.addEventListener('resize', sync);
+    sync();
+  }
+
   function paintResults(images) {
     var empty = document.getElementById('web-result-empty');
     var target = document.getElementById('web-results');
     if (!target) return;
     target.innerHTML = '';
-    (images || []).forEach(function (img, idx) {
+    var list = images || [];
+
+    var gallery = document.createElement('div');
+    gallery.className = 'ug-gallery';
+    var track = document.createElement('div');
+    track.className = 'ug-track';
+    gallery.appendChild(track);
+
+    list.forEach(function (img, idx) {
       var url = 'data:' + (img.mime || 'image/jpeg') + ';base64,' + img.data;
       var name = 'undressgoon-' + (idx + 1) + '.jpg';
       // NOT 'result-card': that is the marquee's class, and its img rule
@@ -1413,13 +1493,12 @@
       dl.innerHTML = '<i data-lucide="download"></i> ' + esc(t('downloadImage', 'Download'));
       card.appendChild(a);
       card.appendChild(dl);
-      target.appendChild(card);
+      track.appendChild(card);
     });
-    // A single result should fill the frame the way the upload preview does.
-    // The auto-fit columns are sized for a batch, so one image was landing in
-    // the first of two tracks and rendering at half width.
-    target.style.gridTemplateColumns = images && images.length > 1 ? '' : '1fr';
-    if (images && images.length) {
+
+    if (list.length) {
+      target.appendChild(gallery);
+      if (list.length > 1) buildGalleryNav(gallery, track, list.length);
       // results live in this response only; nothing is stored server-side
       var note = document.createElement('p');
       note.className = 'result-save-note';
@@ -1430,7 +1509,7 @@
       target.appendChild(note);
     }
     refreshIcons();
-    if (empty) empty.hidden = !!(images && images.length);
+    if (empty) empty.hidden = !!list.length;
   }
 
   function goToGoogleLogin() {
