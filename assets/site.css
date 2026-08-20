@@ -2693,10 +2693,15 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
 }
 
 /* ===== Results: download + save reminder =========================== */
-.result-card { display: flex; flex-direction: column; gap: 8px; }
+/* Plain block, NOT flex: as a flex column the image link became a flex item
+   and got compressed (a 200x300 photo rendered 155x171). The picture must keep
+   its natural aspect exactly as it did before the button existed. */
+.result-card { display: block; }
 .result-card > a:first-child { display: block; }
+.result-card > a:first-child img { width: 100%; height: auto; display: block; }
 .result-download {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 8px;
   min-height: 44px; padding: 10px 14px; border-radius: 12px;
   background: var(--surface2, #18181d); border: 1px solid var(--border);
   color: var(--text); font-weight: 700; font-size: .88rem; text-decoration: none;

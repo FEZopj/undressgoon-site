@@ -207,8 +207,3 @@
   /* stacked: the result appears under the generator, pitch drops below it */
   .lp2-stage.is-generating .lp2-col-right { order: 1; }
 }
-
-/* site.js also injects its own orbit loader into .result-panel. The pixelated
-   preview above already shows progress and elapsed time, so two spinners would
-   just be noise here. */
-.lp2-stage-result #generation-loader { display: none; }

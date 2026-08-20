@@ -540,6 +540,10 @@
       _pvImg = img;
       _pvBlocks = PV_START_BLOCKS;
       el.hidden = false;
+      // the old orbit loader may already be on screen from the 'preparing'
+      // call before this ran; hide it now rather than on the next poll
+      var oldLoader = document.getElementById('generation-loader');
+      if (oldLoader) oldLoader.hidden = true;
       drawPreviewFrame();
       _pvStarted = Date.now();
       window.clearInterval(_pvTimer);
@@ -593,6 +597,15 @@
     var loader = ensureGenerationLoader();
     var empty = document.getElementById('web-result-empty');
     if (!loader) return;
+    // The pixelated preview replaces this loader: it shows the same elapsed
+    // time and its own filling bar. Showing both was two spinners stacked.
+    // (This runs on every poll, so the check has to live here, not in CSS.)
+    var pv = document.getElementById('ug-preview');
+    if (pv && !pv.hidden) {
+      loader.hidden = true;
+      if (empty) empty.hidden = true;
+      return;
+    }
     var elapsed = Math.max(0, Math.round((Date.now() - (startedAt || Date.now())) / 1000));
     var title = document.getElementById('gen-loader-title');
     var sub = document.getElementById('gen-loader-sub');

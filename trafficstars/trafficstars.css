@@ -1,0 +1,377 @@
+.ts-page {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(255, 45, 85, 0.18), transparent 34%),
+    radial-gradient(circle at 12% 44%, rgba(42, 171, 238, 0.12), transparent 30%),
+    var(--bg);
+}
+
+.ts-header {
+  position: sticky;
+}
+
+.ts-hero {
+  padding: clamp(34px, 7vw, 78px) 0 24px;
+}
+
+.ts-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+  gap: clamp(24px, 5vw, 54px);
+  align-items: center;
+}
+
+.ts-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  color: var(--green);
+  font-weight: 900;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ts-kicker span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 7px rgba(74, 222, 128, 0.12);
+}
+
+.ts-hero h1 {
+  max-width: 760px;
+  font-size: clamp(2.55rem, 7vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+  margin-bottom: 18px;
+}
+
+.ts-sub {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: clamp(1rem, 2vw, 1.22rem);
+  margin-bottom: 24px;
+}
+
+.ts-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.ts-secondary {
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.07);
+  color: var(--text);
+}
+
+html[data-theme="light"] .ts-secondary {
+  border-color: rgba(17,19,26,0.14);
+  background: rgba(255,255,255,0.82);
+}
+
+.ts-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.ts-proof span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+}
+
+.ts-proof svg {
+  width: 17px;
+  height: 17px;
+  color: var(--accent2);
+}
+
+.ts-preview {
+  position: relative;
+  min-height: 520px;
+}
+
+.ts-phone {
+  position: absolute;
+  right: 12%;
+  top: 0;
+  width: min(360px, 74vw);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 28px;
+  background: #0e0e12;
+  box-shadow: 0 34px 90px rgba(0,0,0,0.5);
+}
+
+.ts-phone img,
+.ts-stack img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ts-phone img {
+  aspect-ratio: 0.72;
+}
+
+.ts-phone-bar {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  background: rgba(7,7,9,0.72);
+  backdrop-filter: blur(14px);
+}
+
+.ts-phone-bar span {
+  color: rgba(255,255,255,0.72);
+  font-size: 0.78rem;
+}
+
+.ts-phone-bar strong {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.ts-stack {
+  position: absolute;
+  left: 0;
+  bottom: 24px;
+  display: grid;
+  gap: 14px;
+  width: 180px;
+}
+
+.ts-stack img {
+  aspect-ratio: 0.75;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.38);
+}
+
+.ts-offer-strip {
+  padding: 4px 0 24px;
+}
+
+.ts-offer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 16px;
+  border: 1px solid rgba(255,45,85,0.3);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,45,85,0.16), rgba(42,171,238,0.08));
+}
+
+.ts-offer strong {
+  white-space: nowrap;
+  color: var(--accent2);
+}
+
+.ts-offer span {
+  flex: 1;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.ts-offer a {
+  color: #fff;
+  font-weight: 950;
+}
+
+.ts-generator {
+  padding-top: 18px;
+}
+
+.ts-generator .generator-head {
+  margin-bottom: 18px;
+}
+
+.ts-generator .generator-head h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.ts-generator .generator-app {
+  grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+}
+
+.ts-result-note {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 14px;
+  padding: 13px 14px;
+  border: 1px solid rgba(74,222,128,0.24);
+  border-radius: 14px;
+  background: rgba(74,222,128,0.08);
+}
+
+.ts-result-note span {
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.ts-result-note strong {
+  font-size: 0.98rem;
+}
+
+.ts-steps {
+  padding: 32px 0 18px;
+}
+
+.ts-step-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ts-step-grid > div {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.045);
+}
+
+.ts-step-grid b {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #2AABEE);
+}
+
+.ts-step-grid strong {
+  font-size: 1.02rem;
+}
+
+.ts-step-grid span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.ts-footer {
+  padding: 30px 0 130px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.ts-footer p {
+  margin-bottom: 12px;
+}
+
+.ts-page .marquee-wrap {
+  margin-top: 20px;
+}
+
+.ts-page .login-box {
+  border-color: rgba(74,222,128,0.22);
+  background: linear-gradient(135deg, rgba(74,222,128,0.08), rgba(255,45,85,0.08));
+}
+
+.ts-page .topup-dialog::before {
+  content: "Most buyers continue after the first result";
+  display: block;
+  width: fit-content;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--green);
+  background: rgba(74,222,128,0.1);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+@media (max-width: 960px) {
+  .ts-hero-grid,
+  .ts-generator .generator-app {
+    grid-template-columns: 1fr;
+  }
+
+  .ts-preview {
+    min-height: 420px;
+    max-width: 620px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .ts-phone {
+    right: 5%;
+    width: min(330px, 68vw);
+  }
+
+  .ts-step-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .ts-hero {
+    padding-top: 26px;
+  }
+
+  .ts-hero h1 {
+    font-size: clamp(2.4rem, 13vw, 4rem);
+  }
+
+  .ts-actions .btn,
+  .ts-secondary {
+    width: 100%;
+    max-width: none;
+  }
+
+  .ts-proof span {
+    width: 100%;
+  }
+
+  .ts-preview {
+    min-height: 330px;
+  }
+
+  .ts-phone {
+    right: 0;
+    width: min(280px, 76vw);
+  }
+
+  .ts-stack {
+    width: 128px;
+    bottom: 12px;
+  }
+
+  .ts-offer {
+    display: grid;
+  }
+
+  .ts-offer strong {
+    white-space: normal;
+  }
+
+  .ts-step-grid {
+    grid-template-columns: 1fr;
+  }
+}
