@@ -66,6 +66,7 @@
   <link rel="stylesheet" href="../assets/site.css?v=20260820-r15" />
   <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r15" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r15" />
 </head>
 <body>
 
@@ -74,7 +75,9 @@
 
   <header>
     <div class="container header-inner">
-      <a class="logo" href="../index.html" aria-label="UndressGoon home"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <a class="logo" href="index.html" aria-label="UndressGoon home">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" />
+      </a>
       <div class="header-right">
         <nav class="lang-switch" aria-label="Language">
           <select aria-label="Select language">
@@ -114,32 +117,18 @@
     </div>
   </header>
 
-  <section class="hero">
-    <div class="container">
-      <div class="badge">AI脱衣ジェネレーター</div>
-<h1>あなたの写真をAIで脱がす。</h1>
-      <p class="hero-sub">使用する権利のある写真をアップロードして、プリセットを選ぶか自分のプロンプトを入力。登録後、初回生成は無料です。</p>
-      <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>無料で生成</a>
-      </div>
-      <p class="free-note"><strong>無料生成1回</strong> · カード不要</p>
-      <div class="trust-row">
-        <span><i data-lucide="zap"></i> 60秒で結果</span>
-        <span><i data-lucide="shield-check"></i> 公開ギャラリーなし</span>
-        <span><i data-lucide="badge-check"></i> 18歳以上限定</span>
-      </div>
-    </div>
-  </section>
+  <!-- 1 · HERO — one line + proof, then straight into the product. The
+       generator IS the hero on this variant. -->
+    <!-- STAGE — the product IS the hero: generator on the left, the
+       pitch on the right. Results open in a popup (assets/lp2.js), so
+       the page never shows an empty result box. -->
+  <section class="lp2-stage" id="generate">
+    <div class="container lp2-split">
 
-  <section class="generator-section" id="generate">
-    <div class="container">
-      <div class="generator-head">
-        <h2>今すぐ生成</h2>
-        <p>まず写真をアップロード。プリセットとカスタムプロンプトは下にあります。</p>
-      </div>
+      <div class="lp2-col-gen">
+        <div class="generator-app" data-web-generator>
+<div class="generator-panel">
 
-      <div class="generator-app" data-web-generator>
-        <div class="generator-panel">
           <div class="login-box" id="login-box">
             <p id="login-box-copy">登録すると初回生成は無料です。カード不要。</p>
             <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Googleで続行</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> メールで続行</button></div>
@@ -160,17 +149,6 @@
           <p class="login-error" id="login-error" hidden></p>
           </div>
 
-          <div class="referral-card" id="referral-card" hidden>
-            <div>
-              <span class="mini-label">紹介クレジット</span>
-              <strong>友達を招待して、無料生成を増やそう。</strong>
-              <small id="referral-copy">招待した相手が登録して生成すると、ボーナスクレジットがもらえます。</small>
-            </div>
-            <div class="referral-actions">
-              <input id="referral-link" readonly value="" aria-label="紹介リンク" />
-              <button type="button" id="copy-referral"><i data-lucide="copy"></i> コピー</button>
-            </div>
-          </div>
 
           <form class="web-form" id="web-generate-form">
             <label class="upload-zone" for="person-photo">
@@ -243,163 +221,144 @@
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
         </div>
+        </div>
+      </div>
 
-        <div class="result-panel">
+            <aside class="lp2-col-right">
+        <div class="lp2-pitch">
+
+      <div class="badge">AI脱衣ジェネレーター · 18+</div>
+      <h1>あなたの写真をAIで脱がす。</h1>
+      <p class="lp2-cats"><strong>フルヌード</strong> · マイクロビキニ · ランジェリー · ラテックス · BDSM · カスタムプロンプト</p>
+      <div class="lp2-proof">
+        <span><i data-lucide="ticket"></i> 無料生成1回</span>
+        <span><i data-lucide="credit-card"></i> カード不要</span>
+        <span><i data-lucide="timer"></i> 60秒で結果</span>
+      </div>
+<div class="lp2-trust">
+        <div><i data-lucide="eye-off"></i><span><strong>公開ギャラリーなし。</strong></span></div>
+        <div><i data-lucide="sparkles"></i><span><strong>高品質な仕上がり。</strong></span></div>
+        <div><i data-lucide="lock"></i><span><strong>安全なチェックアウト。</strong></span></div>
+        <div><i data-lucide="shield-check"></i><span><strong>18歳以上限定。</strong></span></div>
+      </div>
+      </div>
+        <!-- The result takes this spot once a generation starts; the
+             pitch above slides out of the way. site.js writes into the
+             same ids it always has. -->
+        <div class="lp2-stage-result" id="lp2-stage-result" hidden>
+<div class="result-panel">
           <div class="result-empty" id="web-result-empty">
             <strong>結果はここに表示されます</strong>
           </div>
           <div class="web-results" id="web-results"></div>
         </div>
-      </div>
+        </div>
+      </aside>
+
     </div>
   </section>
 
+  <!-- 2 · GENERATOR — identical block to the control page: same IDs, same
+       auth/credits/payment funnel. site.js binds everything. -->
+  
+
+  <!-- 3 · VISUAL PROOF — real result thumbnails already shipped with the site. -->
+  <section class="section" style="padding-bottom:0">
+    <div class="container">
+      <h2 class="section-title">生成結果はこんな感じになります 👀</h2>
+    </div>
+  </section>
   <div id="ex-mount"></div>
 
-  <div class="container">
-    <div class="stats">
-      <div class="stat">
-        <i data-lucide="shield-check"></i>
-        <div class="stat-num">18+</div>
-        <div class="stat-label">18歳以上限定</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="ticket"></i>
-        <div class="stat-num">1</div>
-        <div class="stat-label">画像1枚あたりのクレジット</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="timer"></i>
-        <div class="stat-num">60s</div>
-        <div class="stat-label">標準的な生成時間</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="pen-line"></i>
-        <div class="stat-num">900</div>
-        <div class="stat-label">プロンプト文字数</div>
-      </div>
-    </div>
-  </div>
+  <!-- 4 · TRUST STRIP — only claims backed by the product. -->
 
-  <section class="section">
+  <!-- 6 · WHY — three real differentiators, short. -->
+  <section class="section" style="padding-top:10px">
     <div class="container">
-      <h2 class="section-title">アダルトな妄想を、洗練されたAI加工に。</h2>
-      <p class="section-sub">欲しいアダルトな見た目を書くだけ。カスタムプロンプトは安全ルールの範囲内で利用できます。</p>
+      <h2 class="section-title">UndressGoonが選ばれる理由</h2>
       <div class="features">
         <div class="feature">
-          <div class="feature-icon">✍️</div>
-          <h3>完全カスタムプロンプト</h3>
-          <p>欲しいアダルトな見た目をそのまま入力。衣装・ポーズ・スタイル・妄想シーンにルールの範囲内で対応します。</p>
+          <div class="feature-icon"><i data-lucide="zap"></i></div>
+          <h3>高速</h3>
+          <p>ほとんどの画像は60秒で、ブラウザのタブにそのまま届きます。</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🔥</div>
-          <h3>AI脱衣</h3>
-          <p>ワンタップで脱衣。フルヌード、トップレス、ボトムレスなど、指定した露出レベルに対応します。</p>
+          <div class="feature-icon"><i data-lucide="pen-line"></i></div>
+          <h3>思いのままにコントロール</h3>
+          <p>ワンタップのプリセットか、最大900文字の完全カスタムプロンプト、欲しいものをそのまま。</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">👙</div>
-          <h3>マイクロビキニ＆ランジェリー</h3>
-          <p>極小マイクロビキニ、透けランジェリー、濡れた白シャツ、プリーツ制服スタイルなど。</p>
+          <div class="feature-icon"><i data-lucide="flame"></i></div>
+          <h3>アダルト加工のための設計</h3>
+          <p>脱衣、ランジェリー、ラテックス、BDSM、妄想スタイルがプロダクトそのもの、隠しモードではありません。</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon">⛓</div>
-          <h3>BDSM＆ラテックス</h3>
-          <p>ハーネス、首輪、タイトなラテックスキャットスーツ、レザー、オイル、艶やかな肌、アダルトな妄想スタイリング。</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">👕</div>
-          <h3>顔・体型ロック</h3>
-          <p>アップロードした画像と同じ顔・体型・構図・写真のスタイルを保つように加工します。</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🎭</div>
-          <h3>シーンジェネレーター</h3>
-          <p>同じ人物を、鏡越しのセルフィー、ホテルの一室、バスルーム、ネオンの寝室、カスタムシーンへ。</p>
-        </div>
-      </div>
-      <div class="tags">
-        <span class="tag">フルヌード</span>
-        <span class="tag">マイクロビキニ</span>
-        <span class="tag">BDSMハーネス</span>
-        <span class="tag">ラテックス</span>
-        <span class="tag">濡れルック</span>
-        <span class="tag">ランジェリー</span>
-        <span class="tag">プリーツ制服</span>
-        <span class="tag">オイル肌</span>
-        <span class="tag">カスタムプロンプト</span>
-        <span class="tag">カスタム妄想</span>
       </div>
     </div>
   </section>
 
-
-  <section class="section" style="padding-top:10px;">
+  <!-- 7 · FAQ — purchase objections, answered from actual product behavior. -->
+  <section class="section" style="padding-top:10px">
     <div class="container">
-      <h2 class="section-title">無料で始めよう。ハマったら、とことん。</h2>
-      <p class="section-sub">初回生成は無料。もっと欲しくなったら、買い切りのクレジットパックを。サブスクなし、クレジットは無期限です。</p>
-      <div class="value-grid">
-        <div class="value-card highlight">
-          <span class="vc-badge">ここから</span>
-          <i class="plan-icon" data-lucide="ticket"></i>
-          <h3>無料トライアル</h3>
-          <div class="price">$0 <span>/ お試し</span></div>
-          <ul>
-            <li>無料生成1回、カード不要</li>
-            <li>「フルヌード」プリセットで実行</li>
-            <li>Googleまたはメールでログイン</li>
-            <li>サイト上で直接利用</li>
-          </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>無料生成を受け取る</a>
-        </div>
-        <div class="value-card">
-          <i class="plan-icon" data-lucide="coins"></i>
-          <h3>追加クレジット</h3>
-          <div class="price">サイト内 <span>/ 準備できたら</span></div>
-          <ul>
-            <li>買い切りパック、サブスクなし</li>
-            <li>全プリセット＋カスタムプロンプトを解放</li>
-            <li>カードまたは暗号資産で支払い</li>
-            <li>クレジットは無期限</li>
-          </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>まず生成、後でチャージ</a>
-        </div>
+      <h2 class="section-title">よくある質問</h2>
+      <div class="lp2-faq">
+        <details>
+          <summary>初回の生成は本当に無料ですか？</summary>
+          <p>はい。登録すると無料生成が1回付与され、「フルヌード」プリセットで実行されます。カードの登録は不要です。その他すべてのプリセットとカスタムプロンプトは、いずれかのクレジットパックで解放されます。</p>
+        </details>
+        <details>
+          <summary>試すのにクレジットカードは必要ですか？</summary>
+          <p>いいえ。支払い方法を追加するのは、後でクレジットを購入すると決めたときだけです。パックはカードまたは暗号資産で支払えます。</p>
+        </details>
+        <details>
+          <summary>アカウントは必要ですか？</summary>
+          <p>はい、Googleまたはメールコードによる簡単なログインです。クレジットと生成結果をあなたのアカウントに紐づけて保持するために必要です。</p>
+        </details>
+        <details>
+          <summary>生成にはどれくらい時間がかかりますか？</summary>
+          <p>通常60秒です。失敗した生成は自動的に返金されます。</p>
+        </details>
+        <details>
+          <summary>どんな画像をアップロードできますか？</summary>
+          <p>JPG、PNG、WebPで最大12 MBまで。顔が正面ではっきり写った写真が最良の結果になります。使用する権利と同意のある成人の写真のみをアップロードしてください、<a href="../acceptable-use.html">利用規範</a>と<a href="../consent.html">同意ポリシー</a>をご覧ください。</p>
+        </details>
+        <details>
+          <summary>クレジットの仕組みは？</summary>
+          <p>1クレジット＝生成画像1枚。買い切りパックで購入でき、大きいパックほど1枚あたりの価格が安くなります。</p>
+        </details>
+        <details>
+          <summary>これはサブスクリプションですか？</summary>
+          <p>いいえ。クレジットパックは買い切りです。自動更新も追加請求もありません。</p>
+        </details>
+        <details>
+          <summary>クレジットに有効期限はありますか？</summary>
+          <p>いいえ。使うまでアカウントに残り続けます。</p>
+        </details>
+        <details>
+          <summary>生成結果は公開されますか？</summary>
+          <p>いいえ、公開ギャラリーはありません。生成結果はあなた自身のアカウントセッション内にのみ表示され、公開の場に投稿されることは一切ありません。</p>
+        </details>
+        <details>
+          <summary>生成に失敗したらどうなりますか？</summary>
+          <p>クレジットは自動的に残高へ返金され、もう一度お試しいただけます。</p>
+        </details>
       </div>
-      <div class="proof-strip">
-        <div class="proof-chip"><strong>支払う前にお試し。</strong> 初回生成は無料、品質をご自身で確かめてください。</div>
-        <div class="proof-chip"><strong>カスタムプロンプト。</strong> ルールの範囲内で、欲しいアダルト加工を記述できます。</div>
-        <div class="proof-chip"><strong>公開ギャラリーなし。</strong> 自分のアカウント内で生成してダウンロードできます。</div>
-      </div>
-      <div class="referral-band">
-        <i data-lucide="gift"></i>
-        <div>
-          <strong>友達を招待して、クレジット＋20%キャッシュを獲得。</strong>
-          <span>友達は無料生成2回をもらえ、あなたは1クレジット＋友達がチャージするたびにその20%を獲得できます。</span>
-        </div>
-        <a href="referral.html" class="btn btn-accent">紹介ページを開く</a>
-      </div>
-</div>
+    </div>
   </section>
 
+  <!-- 8 · FINAL CTA -->
   <section class="section">
     <div class="container">
       <div class="cta-band">
-        <h2>君のフェチ。君のプロンプト。君の現実。</h2>
-        <p>完全カスタムプロンプトに対応。欲しい衣装・ポーズ・妄想シーンを記述すれば、UndressGoonが数秒でアダルトAI加工に仕上げます。</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>今すぐUndressGoonを開く</a>
-        <p class="urgency">初回生成は無料。カード不要。18歳以上限定。</p>
+        <h2>UndressGoonを無料で試す</h2>
+        <p>登録して写真をアップロードすれば、初回生成は無料。カード不要。</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>無料で生成</a>
+        <p class="urgency">無料生成1回 · カード不要 · 18歳以上限定</p>
       </div>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      <a class="logo footer-logo" href="../index.html" aria-label="UndressGoon home">
-        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
-      </a>
-      <p class="footer-seo">
-        UndressGoonは、同意した成人向け、およびフィクションの成人ファンタジー加工のための、成人限定のAI画像生成サービスです。
-        使用する権利のある画像をアップロードし、プリセットまたはカスタムプロンプトを選び、クレジットを使ってプライベートにWeb生成できます。
-      </p>
       <nav class="footer-links" aria-label="Legal links">
         <a href="../terms.html">利用規約</a>
         <a href="../privacy.html">プライバシー</a>
@@ -430,10 +389,6 @@
     </div>
   </div>
 
-  <div class="toast" id="reengage-toast">
-    まだ迷ってる？ <a href="#generate" data-generate-cta>初回生成は無料</a>、カード不要。
-  </div>
-
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
     <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
     <div class="topup-dialog">
@@ -455,6 +410,9 @@
       <small class="topup-note">控えめな請求：ご利用明細には「UndressGoon」ではなく当社の請求名が表示されます。</small>
     </div>
   </div>
+      <div class="topup-actions">
+      </div>
+
   <script>
     window.UG_CONFIG = {
       imageCount: 32,
@@ -585,5 +543,7 @@
   <script src="../assets/analytics.js?v=20260820-r15" defer></script>
   <script src="../assets/site.js?v=20260820-r15" defer></script>
   <script src="../assets/scenes.js?v=20260820-r15" defer></script>
+  <script src="../assets/lp2.js?v=20260820-r15" defer></script>
+
 </body>
 </html>

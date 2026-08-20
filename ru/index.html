@@ -66,6 +66,7 @@
   <link rel="stylesheet" href="../assets/site.css?v=20260820-r15" />
   <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r15" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r15" />
 </head>
 <body>
 
@@ -74,7 +75,9 @@
 
   <header>
     <div class="container header-inner">
-      <a class="logo" href="../index.html" aria-label="UndressGoon, на главную"><img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" /></a>
+      <a class="logo" href="index.html" aria-label="UndressGoon, на главную">
+        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" />
+      </a>
       <div class="header-right">
         <nav class="lang-switch" aria-label="Язык">
           <select aria-label="Выбор языка">
@@ -89,7 +92,7 @@
           </select>
         </nav>
         <a href="#generate" class="btn btn-accent" data-generate-cta>Генерировать бесплатно</a>
-        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить на светлую тему" aria-pressed="false"><i data-lucide="sun"></i></button>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
@@ -114,32 +117,18 @@
     </div>
   </header>
 
-  <section class="hero">
-    <div class="container">
-      <div class="badge">ИИ-генератор раздевания</div>
-<h1>Раздень свои фото с помощью ИИ.</h1>
-      <p class="hero-sub">Загрузи фото, на которое у тебя есть права, выбери пресет или напиши свой промпт. Зарегистрируйся, первая генерация бесплатно.</p>
-      <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Генерировать бесплатно</a>
-      </div>
-      <p class="free-note"><strong>1 бесплатная генерация</strong> · без карты</p>
-      <div class="trust-row">
-        <span><i data-lucide="zap"></i> 60с результат</span>
-        <span><i data-lucide="shield-check"></i> Без публичной галереи</span>
-        <span><i data-lucide="badge-check"></i> Только 18+</span>
-      </div>
-    </div>
-  </section>
+  <!-- 1 · HERO — one line + proof, then straight into the product. The
+       generator IS the hero on this variant. -->
+    <!-- STAGE — the product IS the hero: generator on the left, the
+       pitch on the right. Results open in a popup (assets/lp2.js), so
+       the page never shows an empty result box. -->
+  <section class="lp2-stage" id="generate">
+    <div class="container lp2-split">
 
-  <section class="generator-section" id="generate">
-    <div class="container">
-      <div class="generator-head">
-        <h2>Генерируй сейчас</h2>
-        <p>Сначала загрузи фото. Пресеты и кастомный промпт ниже.</p>
-      </div>
+      <div class="lp2-col-gen">
+        <div class="generator-app" data-web-generator>
+<div class="generator-panel">
 
-      <div class="generator-app" data-web-generator>
-        <div class="generator-panel">
           <div class="login-box" id="login-box">
             <p id="login-box-copy">Зарегистрируйся, первая генерация бесплатно. Карта не нужна.</p>
             <div class="login-choices"><a class="btn btn-google" id="google-login" href="#"><svg class="glogo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Продолжить с Google</a><button type="button" class="btn btn-email" id="email-login-start"><svg class="mlogo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M22 6l-10 7L2 6"/></svg> Продолжить с Email</button></div>
@@ -160,17 +149,6 @@
           <p class="login-error" id="login-error" hidden></p>
           </div>
 
-          <div class="referral-card" id="referral-card" hidden>
-            <div>
-              <span class="mini-label">Реферальные кредиты</span>
-              <strong>Зови друзей. Копи бесплатные генерации.</strong>
-              <small id="referral-copy">Получай бонусные кредиты, когда кто-то регистрируется и генерирует.</small>
-            </div>
-            <div class="referral-actions">
-              <input id="referral-link" readonly value="" aria-label="Реферальная ссылка" />
-              <button type="button" id="copy-referral"><i data-lucide="copy"></i> Копировать</button>
-            </div>
-          </div>
 
           <form class="web-form" id="web-generate-form">
             <label class="upload-zone" for="person-photo">
@@ -243,163 +221,144 @@
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
         </div>
+        </div>
+      </div>
 
-        <div class="result-panel">
+            <aside class="lp2-col-right">
+        <div class="lp2-pitch">
+
+      <div class="badge">ИИ-генератор раздевания · 18+</div>
+      <h1>Раздень свои фото с помощью ИИ.</h1>
+      <p class="lp2-cats"><strong>Полностью ню</strong> · Микро-бикини · Бельё · Латекс · BDSM · Свои промпты</p>
+      <div class="lp2-proof">
+        <span><i data-lucide="ticket"></i> 1 бесплатная генерация</span>
+        <span><i data-lucide="credit-card"></i> Карта не нужна</span>
+        <span><i data-lucide="timer"></i> Результат за 60с</span>
+      </div>
+<div class="lp2-trust">
+        <div><i data-lucide="eye-off"></i><span><strong>Без публичной галереи.</strong></span></div>
+        <div><i data-lucide="sparkles"></i><span><strong>Результаты высокого качества.</strong></span></div>
+        <div><i data-lucide="lock"></i><span><strong>Безопасная оплата.</strong></span></div>
+        <div><i data-lucide="shield-check"></i><span><strong>Только 18+.</strong></span></div>
+      </div>
+      </div>
+        <!-- The result takes this spot once a generation starts; the
+             pitch above slides out of the way. site.js writes into the
+             same ids it always has. -->
+        <div class="lp2-stage-result" id="lp2-stage-result" hidden>
+<div class="result-panel">
           <div class="result-empty" id="web-result-empty">
             <strong>Твой результат появится здесь</strong>
           </div>
           <div class="web-results" id="web-results"></div>
         </div>
-      </div>
+        </div>
+      </aside>
+
     </div>
   </section>
 
+  <!-- 2 · GENERATOR — identical block to the control page: same IDs, same
+       auth/credits/payment funnel. site.js binds everything. -->
+  
+
+  <!-- 3 · VISUAL PROOF — real result thumbnails already shipped with the site. -->
+  <section class="section" style="padding-bottom:0">
+    <div class="container">
+      <h2 class="section-title">Как выглядели бы твои результаты 👀</h2>
+    </div>
+  </section>
   <div id="ex-mount"></div>
 
-  <div class="container">
-    <div class="stats">
-      <div class="stat">
-        <i data-lucide="shield-check"></i>
-        <div class="stat-num">18+</div>
-        <div class="stat-label">Только для взрослых</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="ticket"></i>
-        <div class="stat-num">1</div>
-        <div class="stat-label">Кредит за изображение</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="timer"></i>
-        <div class="stat-num">60s</div>
-        <div class="stat-label">Обычная генерация</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="pen-line"></i>
-        <div class="stat-num">900</div>
-        <div class="stat-label">Символов в промпте</div>
-      </div>
-    </div>
-  </div>
+  <!-- 4 · TRUST STRIP — only claims backed by the product. -->
 
-  <section class="section">
+  <!-- 6 · WHY — three real differentiators, short. -->
+  <section class="section" style="padding-top:10px">
     <div class="container">
-      <h2 class="section-title">Преврати взрослые фантазии в качественные ИИ-картинки</h2>
-      <p class="section-sub">Опиши, какой взрослый образ ты хочешь. Свои промпты разрешены в рамках правил безопасности.</p>
+      <h2 class="section-title">Почему UndressGoon</h2>
       <div class="features">
         <div class="feature">
-          <div class="feature-icon">✍️</div>
-          <h3>Полностью свои промпты</h3>
-          <p>Опиши нужный взрослый образ. Наряды, позы, стили и фэнтези-сцены, всё в рамках правил.</p>
+          <div class="feature-icon"><i data-lucide="zap"></i></div>
+          <h3>Быстро</h3>
+          <p>Большинство изображений готовы за 60 секунд прямо во вкладке браузера.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🔥</div>
-          <h3>ИИ снимает одежду</h3>
-          <p>Раздевание в один тап. Полностью ню, топлес, без низа, любой уровень, который опишешь.</p>
+          <div class="feature-icon"><i data-lucide="pen-line"></i></div>
+          <h3>Полный контроль</h3>
+          <p>Пресеты в один тап или полностью свои промпты, до 900 символов именно того, что ты хочешь.</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">👙</div>
-          <h3>Микро-бикини и бельё</h3>
-          <p>Крошечные микро-бикини, прозрачное бельё, мокрые белые футболки, плиссированная форма и не только.</p>
+          <div class="feature-icon"><i data-lucide="flame"></i></div>
+          <h3>Создан для взрослых правок</h3>
+          <p>Раздевание, бельё, латекс, BDSM и фэнтези-образы, это весь продукт, а не скрытый режим.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon">⛓</div>
-          <h3>BDSM и латекс</h3>
-          <p>Портупеи, ошейники, облегающие латексные комбинезоны, кожа, масло, блестящая кожа, взрослый фэнтези-стайлинг.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🔒</div>
-          <h3>Фиксация лица и тела</h3>
-          <p>Правки сохраняют то же лицо, телосложение, кадрирование и стиль исходного фото.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🎭</div>
-          <h3>Генератор сцен</h3>
-          <p>Перенеси того же человека в селфи у зеркала, гостиничные номера, ванные, неоновые спальни и любые сцены.</p>
-        </div>
-      </div>
-      <div class="tags">
-        <span class="tag">полностью ню</span>
-        <span class="tag">микро-бикини</span>
-        <span class="tag">BDSM-портупея</span>
-        <span class="tag">латекс</span>
-        <span class="tag">мокрый эффект</span>
-        <span class="tag">бельё</span>
-        <span class="tag">плиссированная форма</span>
-        <span class="tag">масляная кожа</span>
-        <span class="tag">свой промпт</span>
-        <span class="tag">своя фантазия</span>
       </div>
     </div>
   </section>
 
-
-  <section class="section" style="padding-top:10px;">
+  <!-- 7 · FAQ — purchase objections, answered from actual product behavior. -->
+  <section class="section" style="padding-top:10px">
     <div class="container">
-      <h2 class="section-title">Начни бесплатно. Дай жару, когда затянет.</h2>
-      <p class="section-sub">Первая генерация бесплатно. Хочешь больше? Разовые пакеты кредитов, без подписки, кредиты не сгорают.</p>
-      <div class="value-grid">
-        <div class="value-card highlight">
-          <span class="vc-badge">Начни здесь</span>
-          <i class="plan-icon" data-lucide="ticket"></i>
-          <h3>Бесплатный тест</h3>
-          <div class="price">$0 <span>/ чтобы попробовать</span></div>
-          <ul>
-            <li>1 бесплатная генерация, карта не нужна</li>
-            <li>Запускает пресет «Полностью ню»</li>
-            <li>Вход через Google или email</li>
-            <li>Работает прямо на сайте</li>
-          </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Забрать бесплатную генерацию</a>
-        </div>
-        <div class="value-card">
-          <i class="plan-icon" data-lucide="coins"></i>
-          <h3>Больше кредитов</h3>
-          <div class="price">На сайте <span>/ когда готов</span></div>
-          <ul>
-            <li>Разовые пакеты, без подписки</li>
-            <li>Открывает все пресеты + свои промпты</li>
-            <li>Оплата картой или криптой</li>
-            <li>Кредиты не сгорают</li>
-          </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Сначала генерируй, пополни потом</a>
-        </div>
+      <h2 class="section-title">Ответы на вопросы</h2>
+      <div class="lp2-faq">
+        <details>
+          <summary>Первая генерация правда бесплатная?</summary>
+          <p>Да. Зарегистрируйся, и получишь 1 бесплатную генерацию, она запускает пресет «Полностью ню». Карта не нужна. Все остальные пресеты и свои промпты открываются с любым пакетом кредитов.</p>
+        </details>
+        <details>
+          <summary>Нужна ли карта, чтобы попробовать?</summary>
+          <p>Нет. Способ оплаты добавляется, только если позже решишь купить кредиты. Пакеты можно оплатить картой или криптой.</p>
+        </details>
+        <details>
+          <summary>Нужен ли аккаунт?</summary>
+          <p>Да, быстрый вход через Google или код на email. Так твои кредиты и результаты привязываются к тебе.</p>
+        </details>
+        <details>
+          <summary>Сколько занимает генерация?</summary>
+          <p>Обычно 60 секунд. Неудачные генерации возвращаются автоматически.</p>
+        </details>
+        <details>
+          <summary>Какие изображения можно загружать?</summary>
+          <p>JPG, PNG или WebP до 12 MB. Чёткое фото анфас даёт лучший результат. Загружай только фото взрослых, на которые у тебя есть права и согласие, см. наши <a href="../acceptable-use.html">Правила использования</a> и <a href="../consent.html">Политику согласия</a>.</p>
+        </details>
+        <details>
+          <summary>Как работают кредиты?</summary>
+          <p>1 кредит = 1 сгенерированное изображение. Кредиты покупаются разовыми пакетами, большие пакеты дешевле в расчёте на изображение.</p>
+        </details>
+        <details>
+          <summary>Это подписка?</summary>
+          <p>Нет. Пакеты кредитов, разовые покупки. Ничего не продлевается и не списывается повторно.</p>
+        </details>
+        <details>
+          <summary>Кредиты сгорают?</summary>
+          <p>Нет. Кредиты остаются на аккаунте, пока ты их не используешь.</p>
+        </details>
+        <details>
+          <summary>Мои генерации публичны?</summary>
+          <p>Нет, публичной галереи не существует. Твои генерации видны только внутри твоего аккаунта и нигде публично не размещаются.</p>
+        </details>
+        <details>
+          <summary>Что, если генерация не удалась?</summary>
+          <p>Кредит автоматически возвращается на баланс, и можно попробовать снова.</p>
+        </details>
       </div>
-      <div class="proof-strip">
-        <div class="proof-chip"><strong>Попробуй до оплаты.</strong> Первая генерация бесплатно, оцени качество сам.</div>
-        <div class="proof-chip"><strong>Свои промпты.</strong> Опиши нужную взрослую правку в рамках правил.</div>
-        <div class="proof-chip"><strong>Без публичной галереи.</strong> Генерируй и скачивай внутри своего аккаунта.</div>
-      </div>
-      <div class="referral-band">
-        <i data-lucide="gift"></i>
-        <div>
-          <strong>Зови друзей, получай кредиты + 20% кэшем.</strong>
-          <span>Твои друзья получают 2 бесплатные генерации, ты получаешь 1 кредит + 20% с каждого их пополнения.</span>
-        </div>
-        <a href="referral.html" class="btn btn-accent">Открыть реферальную страницу</a>
-      </div>
-</div>
+    </div>
   </section>
 
+  <!-- 8 · FINAL CTA -->
   <section class="section">
     <div class="container">
       <div class="cta-band">
-        <h2>Твой фетиш. Твой промпт. Твоя реальность.</h2>
-        <p>Полностью свои промпты. Опиши наряд, позу или фэнтези-сцену, и UndressGoon превратит это во взрослые ИИ-картинки за секунды.</p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Открыть UndressGoon сейчас</a>
-        <p class="urgency">Первая генерация бесплатно. Карта не нужна. Только 18+.</p>
+        <h2>Попробуй UndressGoon бесплатно</h2>
+        <p>Зарегистрируйся, загрузи фото, и первая генерация будет бесплатной. Карта не нужна.</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Генерировать бесплатно</a>
+        <p class="urgency">1 бесплатная генерация · Карта не нужна · Только 18+</p>
       </div>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      <a class="logo footer-logo" href="../index.html" aria-label="UndressGoon home">
-        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
-      </a>
-      <p class="footer-seo">
-        UndressGoon, это ИИ-сервис генерации изображений только для взрослых: для совершеннолетних по обоюдному согласию и вымышленных взрослых фэнтези-правок.
-        Загрузи изображение, на которое у тебя есть права, выбери пресет или свой промпт и трать кредиты на приватные генерации на сайте.
-      </p>
       <nav class="footer-links" aria-label="Юридические ссылки">
         <a href="../terms.html">Условия</a>
         <a href="../privacy.html">Конфиденциальность</a>
@@ -430,10 +389,6 @@
     </div>
   </div>
 
-  <div class="toast" id="reengage-toast">
-    Ещё думаешь? <a href="#generate" data-generate-cta>Первая генерация бесплатно</a>, карта не нужна.
-  </div>
-
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
     <button class="topup-backdrop" type="button" data-close-topup aria-label="Закрыть"></button>
     <div class="topup-dialog">
@@ -455,6 +410,9 @@
       <small class="topup-note">Незаметная оплата: в банковской выписке будет указано наше платёжное название, а не UndressGoon.</small>
     </div>
   </div>
+      <div class="topup-actions">
+      </div>
+
   <script>
     window.UG_CONFIG = {
       imageCount: 32,
@@ -585,5 +543,7 @@
   <script src="../assets/analytics.js?v=20260820-r15" defer></script>
   <script src="../assets/site.js?v=20260820-r15" defer></script>
   <script src="../assets/scenes.js?v=20260820-r15" defer></script>
+  <script src="../assets/lp2.js?v=20260820-r15" defer></script>
+
 </body>
 </html>

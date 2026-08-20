@@ -51,6 +51,9 @@
   RewriteRule ^report-abuse/?$ report-abuse.html [L]
   RewriteRule ^contact/?$ contact.html [L]
   RewriteRule ^age-safety/?$ age-safety.html [L]
+  # lp2 became the index; keep any live ad or bookmark pointing at it working
+  RewriteRule ^lp2\.html$ / [R=301,L]
+  RewriteRule ^(es|pt|fr|de|ru|zh|ja)/lp2\.html$ /$1/ [R=301,L]
   RewriteRule ^trafficstars/?$ trafficstars/index.html [L]
   RewriteRule ^goon/?$ trafficstars/index.html [L]
 </IfModule>

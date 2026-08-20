@@ -76,9 +76,9 @@
       title: document.title || '',
       referrer: document.referrer || '',
       language: document.documentElement.lang || navigator.language || '',
-      // A/B landing identifier: pages set window.UG_VARIANT ('variant_b' on
-      // lp2.html); everything else is the control. Attached to EVERY event so
-      // the whole funnel (signup -> generation -> purchase) segments by variant.
+      // Landing identifier, kept so historical variant_b data still lines up
+      // with today's. The lp2 design won and became the index, so nothing sets
+      // UG_VARIANT any more; a page can still set it for the next test.
       landing_variant: window.UG_VARIANT || 'control'
     };
     // Attach campaign attribution to every event so email-driven visits and the

@@ -86,6 +86,7 @@
   <link rel="stylesheet" href="assets/site.css?v=20260820-r15" />
   <link rel="stylesheet" href="assets/scenes.css?v=20260820-r15" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
+  <link rel="stylesheet" href="assets/lp2.css?v=20260820-r15" />
 </head>
 <body>
 
@@ -110,7 +111,7 @@
           <option value="de/index.html">DE</option>
           </select>
         </nav>
-        <a href="#generate" class="btn btn-accent" data-generate-cta>Generate</a>
+        <a href="#generate" class="btn btn-accent" data-generate-cta>Generate free</a>
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
@@ -136,36 +137,17 @@
     </div>
   </header>
 
-  <section class="hero">
-    <div class="container">
-      <div class="badge">AI undress generator</div>
-      <h1>
-        Undress your photos with AI.
-      </h1>
-      <p class="hero-sub">
-        Upload a photo you have the rights to use, pick a preset, or write your own prompt. Sign up and your first generation is free.
-      </p>
-      <div class="cta-group">
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Generate free</a>
-      </div>
-      <p class="free-note"><strong>1 free generation</strong> · no card required</p>
-      <div class="trust-row">
-        <span><i data-lucide="zap"></i> 60s results</span>
-        <span><i data-lucide="shield-check"></i> No public gallery</span>
-        <span><i data-lucide="badge-check"></i> 18+ only</span>
-      </div>
-    </div>
-  </section>
+  <!-- 1 · HERO — one line + proof, then straight into the product. The
+       generator IS the hero on this variant. -->
+    <!-- STAGE — the product IS the hero: generator on the left, the
+       pitch on the right. Results open in a popup (assets/lp2.js), so
+       the page never shows an empty result box. -->
+  <section class="lp2-stage" id="generate">
+    <div class="container lp2-split">
 
-  <section class="generator-section" id="generate">
-    <div class="container">
-      <div class="generator-head">
-        <h2>Generate now</h2>
-        <p>Upload first. Presets and custom prompts are below.</p>
-      </div>
-
-      <div class="generator-app" data-web-generator>
-        <div class="generator-panel">
+      <div class="lp2-col-gen">
+        <div class="generator-app" data-web-generator>
+<div class="generator-panel">
 
           <div class="login-box" id="login-box">
             <p id="login-box-copy">Sign up and your first generation is free. No card required.</p>
@@ -259,165 +241,144 @@
             <p class="form-status" id="web-status" aria-live="polite"></p>
           </form>
         </div>
+        </div>
+      </div>
 
-        <div class="result-panel">
+            <aside class="lp2-col-right">
+        <div class="lp2-pitch">
+
+      <div class="badge">AI undress generator · 18+</div>
+      <h1>Undress your photos with AI.</h1>
+      <p class="lp2-cats"><strong>Fully Nude</strong> · Micro Bikini · Lingerie · Latex · BDSM · Custom prompts</p>
+      <div class="lp2-proof">
+        <span><i data-lucide="ticket"></i> 1 free generation</span>
+        <span><i data-lucide="credit-card"></i> No card required</span>
+        <span><i data-lucide="timer"></i> Results in 60s</span>
+      </div>
+<div class="lp2-trust">
+        <div><i data-lucide="eye-off"></i><span><strong>No public gallery.</strong></span></div>
+        <div><i data-lucide="sparkles"></i><span><strong>High quality results.</strong></span></div>
+        <div><i data-lucide="lock"></i><span><strong>Secure checkout.</strong></span></div>
+        <div><i data-lucide="shield-check"></i><span><strong>18+ only.</strong></span></div>
+      </div>
+      </div>
+        <!-- The result takes this spot once a generation starts; the
+             pitch above slides out of the way. site.js writes into the
+             same ids it always has. -->
+        <div class="lp2-stage-result" id="lp2-stage-result" hidden>
+<div class="result-panel">
           <div class="result-empty" id="web-result-empty">
             <strong>Your result appears here</strong>
           </div>
           <div class="web-results" id="web-results"></div>
         </div>
-      </div>
+        </div>
+      </aside>
+
     </div>
   </section>
 
+  <!-- 2 · GENERATOR — identical block to the control page: same IDs, same
+       auth/credits/payment funnel. site.js binds everything. -->
+  
+
+  <!-- 3 · VISUAL PROOF — real result thumbnails already shipped with the site. -->
+  <section class="section" style="padding-bottom:0">
+    <div class="container">
+      <h2 class="section-title">What your results would look like 👀</h2>
+    </div>
+  </section>
   <div id="ex-mount"></div>
 
-  <div class="container">
-    <div class="stats">
-      <div class="stat">
-        <i data-lucide="shield-check"></i>
-        <div class="stat-num">18+</div>
-        <div class="stat-label">Adults only</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="ticket"></i>
-        <div class="stat-num">1</div>
-        <div class="stat-label">Credit per image</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="timer"></i>
-        <div class="stat-num">60s</div>
-        <div class="stat-label">Typical generation</div>
-      </div>
-      <div class="stat">
-        <i data-lucide="pen-line"></i>
-        <div class="stat-num">900</div>
-        <div class="stat-label">Prompt characters</div>
-      </div>
-    </div>
-  </div>
+  <!-- 4 · TRUST STRIP — only claims backed by the product. -->
 
-  <section class="section">
+  <!-- 6 · WHY — three real differentiators, short. -->
+  <section class="section" style="padding-top:10px">
     <div class="container">
-      <h2 class="section-title">Turn adult fantasies into polished AI edits</h2>
-      <p class="section-sub">Describe the adult look you want. Custom prompts are allowed within safety rules.</p>
+      <h2 class="section-title">Why UndressGoon</h2>
       <div class="features">
         <div class="feature">
+          <div class="feature-icon"><i data-lucide="zap"></i></div>
+          <h3>Fast</h3>
+          <p>Most images land in 60 seconds, right in your browser tab.</p>
+        </div>
+        <div class="feature">
           <div class="feature-icon"><i data-lucide="pen-line"></i></div>
-          <h3>Fully Custom Prompts</h3>
-          <p>Type the adult look you want. Outfits, poses, styles, and fantasy scenes are supported within the rules.</p>
+          <h3>Yours to control</h3>
+          <p>One-tap presets or fully custom prompts, up to 900 characters of exactly what you want.</p>
         </div>
         <div class="feature">
           <div class="feature-icon"><i data-lucide="flame"></i></div>
-          <h3>AI Clothes Remover</h3>
-          <p>One-tap undress. Fully nude, topless, bottomless or any level of exposure you describe.</p>
+          <h3>Built for adult edits</h3>
+          <p>Undress, lingerie, latex, BDSM and fantasy looks are the whole product, not a hidden mode.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon"><i data-lucide="sparkles"></i></div>
-          <h3>Micro Bikini & Lingerie</h3>
-          <p>Tiny micro bikinis, sheer lingerie, wet white shirts, pleated uniform looks and more.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon"><i data-lucide="link"></i></div>
-          <h3>BDSM & Latex</h3>
-          <p>Harnesses, collars, tight latex catsuits, leather, oil, shiny skin, adult fantasy styling.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon"><i data-lucide="scan-face"></i></div>
-          <h3>Face & Body Lock</h3>
-          <p>Edits are routed to preserve the same face, build, framing, and photo style from the uploaded image.</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon"><i data-lucide="camera"></i></div>
-          <h3>Scene Generator</h3>
-          <p>Move the same person into mirror selfies, hotel rooms, bathrooms, neon bedrooms, and custom scenes.</p>
-        </div>
-      </div>
-      <div class="tags">
-        <span class="tag">fully nude</span>
-        <span class="tag">micro bikini</span>
-        <span class="tag">BDSM harness</span>
-        <span class="tag">latex</span>
-        <span class="tag">wet look</span>
-        <span class="tag">lingerie</span>
-        <span class="tag">pleated uniform</span>
-        <span class="tag">oily skin</span>
-        <span class="tag">custom prompt</span>
-        <span class="tag">custom fantasy</span>
       </div>
     </div>
   </section>
 
-  <section class="section" style="padding-top:10px;">
+  <!-- 7 · FAQ — purchase objections, answered from actual product behavior. -->
+  <section class="section" style="padding-top:10px">
     <div class="container">
-      <h2 class="section-title">Start free. Go harder when you're hooked.</h2>
-      <p class="section-sub">Your first generation is free. Want more? One-time credit packs, no subscription, credits never expire.</p>
-      <div class="value-grid">
-        <div class="value-card highlight">
-          <span class="vc-badge">Start here</span>
-          <i class="plan-icon" data-lucide="ticket"></i>
-          <h3>Free trial</h3>
-          <div class="price">$0 <span>/ to try</span></div>
-          <ul>
-            <li>1 free generation, no card required</li>
-            <li>Runs the Fully Nude preset</li>
-            <li>Google or email sign-in</li>
-            <li>Works directly on the website</li>
-          </ul>
-          <a href="#generate" class="btn btn-accent" style="width:100%;" data-generate-cta>Claim your free generation</a>
-        </div>
-        <div class="value-card">
-          <i class="plan-icon" data-lucide="coins"></i>
-          <h3>More credits</h3>
-          <div class="price">On-site <span>/ when ready</span></div>
-          <ul>
-            <li>One-time packs, no subscription</li>
-            <li>Unlocks all presets + custom prompts</li>
-            <li>Pay by card or crypto</li>
-            <li>Credits never expire</li>
-          </ul>
-          <a href="#generate" class="btn btn-tg" style="width:100%;" data-generate-cta>Generate first, top up later</a>
-        </div>
-      </div>
-      <div class="proof-strip">
-        <div class="proof-chip"><strong>Try before paying.</strong> Your first generation is free, judge the quality yourself.</div>
-        <div class="proof-chip"><strong>Custom prompts.</strong> Describe the adult edit you want within the rules.</div>
-        <div class="proof-chip"><strong>No public gallery.</strong> Generate and download inside your own account.</div>
-      </div>
-      <div class="referral-band">
-        <i data-lucide="gift"></i>
-        <div>
-          <strong>Bring friends, earn credits + 20% cash.</strong>
-          <span>Your friends get 2 free generations, you earn 1 credit + 20% of every top-up they make.</span>
-        </div>
-        <a href="referral.html" class="btn btn-accent">Open referral page</a>
+      <h2 class="section-title">Questions, answered</h2>
+      <div class="lp2-faq">
+        <details>
+          <summary>Is the first generation really free?</summary>
+          <p>Yes. Sign up and you get 1 free generation. It runs the Fully Nude preset. No card required. Every other preset and custom prompts unlock with any credit pack.</p>
+        </details>
+        <details>
+          <summary>Do I need a credit card to try it?</summary>
+          <p>No. You only add a payment method if you decide to buy credits later. Packs can be paid by card or crypto.</p>
+        </details>
+        <details>
+          <summary>Do I need an account?</summary>
+          <p>Yes, a quick Google or email-code sign-in. It's what keeps your credits and results attached to you.</p>
+        </details>
+        <details>
+          <summary>How long does a generation take?</summary>
+          <p>Usually 60 seconds. Failed generations are refunded automatically.</p>
+        </details>
+        <details>
+          <summary>What images can I upload?</summary>
+          <p>JPG, PNG or WebP up to 12 MB. A clear, face-forward photo gives the best results. Only upload photos of adults you have the rights and consent to edit, see our <a href="acceptable-use.html">Acceptable Use</a> and <a href="consent.html">Consent Policy</a>.</p>
+        </details>
+        <details>
+          <summary>How do credits work?</summary>
+          <p>1 credit = 1 generated image. You buy them in one-time packs, and bigger packs cost less per image.</p>
+        </details>
+        <details>
+          <summary>Is this a subscription?</summary>
+          <p>No. Credit packs are one-time purchases. Nothing renews, nothing charges you again.</p>
+        </details>
+        <details>
+          <summary>Do credits expire?</summary>
+          <p>No. Credits stay on your account until you use them.</p>
+        </details>
+        <details>
+          <summary>Are my generations public?</summary>
+          <p>No, there is no public gallery. Your generations appear only inside your own account session, never posted anywhere public.</p>
+        </details>
+        <details>
+          <summary>What if a generation fails?</summary>
+          <p>The credit is refunded to your balance automatically and you can try again.</p>
+        </details>
       </div>
     </div>
   </section>
 
+  <!-- 8 · FINAL CTA -->
   <section class="section">
     <div class="container">
       <div class="cta-band">
-        <h2>Your fetish. Your prompt. Your reality.</h2>
-        <p>
-          Fully customized prompts. Describe the outfit, pose, or fantasy scene you want,
-          and UndressGoon turns it into adult AI edits in seconds.
-        </p>
-        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Open UndressGoon now</a>
-        <p class="urgency">First generation free. No card required. 18+ only.</p>
+        <h2>Try UndressGoon free</h2>
+        <p>Sign up, upload a photo, and get your first generation free. No card required.</p>
+        <a href="#generate" class="btn btn-accent btn-lg btn-pulse" data-generate-cta>Generate free</a>
+        <p class="urgency">1 free generation · No card required · 18+ only</p>
       </div>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      <a class="logo footer-logo" href="index.html" aria-label="UndressGoon home">
-        <img src="assets/brand-logo-fast.png" alt="UndressGoon" width="270" height="77" loading="lazy" />
-      </a>
-      <p class="footer-seo">
-        UndressGoon is an adult-only AI image generation service for consenting adults and fictional adult fantasy edits.
-        Upload an image you have the right to use, choose a preset or custom prompt, and spend credits for private web generations.
-      </p>
       <nav class="footer-links" aria-label="Legal links">
         <a href="terms.html">Terms</a>
         <a href="privacy.html">Privacy</a>
@@ -448,10 +409,6 @@
     </div>
   </div>
 
-  <div class="toast" id="reengage-toast">
-    Still deciding? <a href="#generate" data-generate-cta>Your first generation is free</a>, no card required.
-  </div>
-
   <div class="topup-modal" id="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="topup-title" hidden>
     <button class="topup-backdrop" type="button" data-close-topup aria-label="Close"></button>
     <div class="topup-dialog">
@@ -473,6 +430,8 @@
       <small class="topup-note">Discreet billing: your bank statement shows our billing name, not UndressGoon.</small>
     </div>
   </div>
+      <div class="topup-actions">
+      </div>
 
   <script>
     window.UG_CONFIG = {
@@ -513,5 +472,7 @@
   <script src="assets/analytics.js?v=20260820-r15" defer></script>
   <script src="assets/site.js?v=20260820-r15" defer></script>
   <script src="assets/scenes.js?v=20260820-r15" defer></script>
+  <script src="assets/lp2.js?v=20260820-r15" defer></script>
+
 </body>
 </html>
