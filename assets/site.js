@@ -2515,15 +2515,47 @@
     });
   }
 
+  var EX_FIRST_BATCH = 8;   // letters considered for the opening pick
+
+  // Which pair to open on. Lazy discovery resolves 'a' first, so opening on
+  // whatever resolved first meant every visitor always saw a1/a2. The letters
+  // after it are checked in one parallel burst (headers only, one extension
+  // now that we know it) purely so the opening pair can be random.
+  function exOpening(cb) {
+    exPairAt(0, true, function (first) {
+      if (!first) { cb(null); return; }
+      if (!EX_HINT) { cb({ pair: first, index: 0 }); return; }
+      var found = [];
+      var left = EX_FIRST_BATCH - 1;
+      if (left < 1) { cb({ pair: first, index: 0 }); return; }
+      for (var i = 1; i < EX_FIRST_BATCH; i++) {
+        (function (idx) {
+          exHead(EX_BASE + EX_ALPHABET.charAt(idx) + '1' + EX_HINT, function (hit) {
+            if (hit) found.push(idx);
+            if (--left) return;
+            var pool = [0].concat(found);
+            var pick = pool[Math.floor(Math.random() * pool.length)];
+            if (!pick) { cb({ pair: first, index: 0 }); return; }
+            exPairAt(pick, true, function (pair) {
+              // a half-uploaded pair falls back to the one already in hand
+              cb(pair ? { pair: pair, index: pick } : { pair: first, index: 0 });
+            });
+          });
+        })(i);
+      }
+    });
+  }
+
   function initExamplePair() {
     var mount = document.getElementById('ex-mount');
     if (!mount) return;
 
-    // Paint as soon as the FIRST pair is known. Waiting for the whole walk is
-    // what made the section (and the link to it) show up late.
-    exPairAt(0, true, function (first) {
-      if (!first) return;   // nothing uploaded yet: leave the slot empty
-      var pairs = [first];
+    // Paint as soon as the opening pair is known. Waiting for the whole walk
+    // is what made the section (and the link to it) show up late.
+    exOpening(function (opening) {
+      if (!opening) return;   // nothing uploaded yet: leave the slot empty
+      var pairs = [opening.pair];
+      var openedAt = opening.index;
 
       var alt = i18n.imgAlt || 'AI undress result';
       var section = document.createElement('section');
@@ -2639,6 +2671,7 @@
         if (idx >= EX_ALPHABET.length) return;
         // a hole right after a hit is worth a full sweep; deeper into the
         // gap it is just the end of the folder
+        if (idx === openedAt) { walk(idx + 1); return; }   // already showing
         exPairAt(idx, gaps === 0, function (pair) {
           if (!pair) {
             // step over a couple of holes so one deleted pair does not hide
@@ -2653,7 +2686,7 @@
         });
       };
       // off the critical path: the visible pair is already loading
-      window.setTimeout(function () { walk(1); }, 400);
+      window.setTimeout(function () { walk(0); }, 400);
     });
   }
 
