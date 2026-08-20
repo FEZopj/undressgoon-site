@@ -837,8 +837,17 @@
     }
   }
 
+  var lastSceneCheckUser = null;
+
   function updateWebAccount(session) {
     currentSession = session && session.ok ? session : null;
+    // Scene mode is unlocked per account during the beta, and scenes.js asked
+    // before anyone was signed in, so re-ask whenever the user changes.
+    var uid = currentSession && currentSession.user ? String(currentSession.user.id) : '';
+    if (uid !== lastSceneCheckUser) {
+      lastSceneCheckUser = uid;
+      if (uid && window.UG_RECHECK_SCENES) window.UG_RECHECK_SCENES();
+    }
     var account = document.getElementById('web-account');
     var balance = document.getElementById('web-balance');
     var login = document.getElementById('login-box');
