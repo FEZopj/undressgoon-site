@@ -198,38 +198,6 @@
    shows up during/after a generation */
 .lp2-stage-result #web-result-empty { display: none; }
 
-/* ===== Working preview =============================================
-   The uploaded photo, heavily pixelated, resolving as the job runs. It
-   tells the user their image is the one being worked on, and the detail
-   stays hidden while it is on screen. */
-.lp2-preview { position: relative; margin-bottom: 12px; }
-.lp2-preview[hidden] { display: none; }
-.lp2-preview canvas {
-  display: block; width: 100%; height: auto; border-radius: 14px;
-  image-rendering: pixelated;             /* keep the blocks crisp */
-  background: var(--surface2, #18181d);
-}
-/* a light sweep travelling down the image */
-.lp2-preview-scan {
-  position: absolute; inset: 0; border-radius: 14px; overflow: hidden;
-  pointer-events: none;
-}
-.lp2-preview-scan::before {
-  content: ""; position: absolute; left: 0; right: 0; height: 38%;
-  background: linear-gradient(180deg, transparent,
-              rgba(255,255,255,.16) 45%, rgba(255,45,85,.20) 55%, transparent);
-  animation: lp2-scan 1.9s ease-in-out infinite;
-}
-@keyframes lp2-scan {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(320%); }
-}
-.lp2-preview-label {
-  margin: 10px 0 0; text-align: center; font-size: .88rem; font-weight: 600;
-  color: var(--muted);
-}
-.lp2-preview-label b { color: var(--text); }
-
 @media (prefers-reduced-motion: reduce) {
   .lp2-pitch, .lp2-stage-result { transition: none; animation: none; }
   .lp2-preview-scan::before { animation: none; }

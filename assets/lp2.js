@@ -5,16 +5,15 @@
    the RunPod job, painting results); this only decides what the stage looks
    like while that happens.
 
-   Two jobs:
+   Its job:
 
    1. Result takes the stage. When a generation starts, the pitch column slides
       down out of the way and the result panel rises into the same spot, so the
       user's eye stays where it already was. The pitch is moved below the stage
       rather than destroyed, so the selling copy is still on the page.
 
-   2. A working preview. The uploaded photo is drawn heavily pixelated and
-      resolves a little as the job runs, so it is obvious the worker is chewing
-      on *their* image. The detail stays hidden the whole time it is on screen.
+   The "working on your photo" preview lives in site.js, so the control page
+   gets it too.
 
    The page arrives on the black theme because that is the CSS default (:root)
    and site.js only switches to light when the visitor picked it before, so the
@@ -57,63 +56,6 @@
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
     }
 
-    // ---- 2. the pixelated "working on it" preview ------------------------
-    // Start coarse and resolve slightly over time: enough to read as progress,
-    // never enough to actually show the picture.
-    var START_BLOCKS = 14;   // image is drawn this many blocks wide, then upscaled
-    var MAX_BLOCKS = 46;
-
-    function drawPixelated(img, blocks) {
-      if (!canvas) return;
-      var ratio = img.naturalHeight / img.naturalWidth || 1;
-      var w = Math.max(4, Math.round(blocks));
-      var h = Math.max(4, Math.round(blocks * ratio));
-      // draw tiny...
-      canvas.width = w;
-      canvas.height = h;
-      var ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      ctx.imageSmoothingEnabled = true;
-      ctx.drawImage(img, 0, 0, w, h);
-      // ...and let CSS scale it back up with image-rendering: pixelated
-      canvas.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
-    }
-
-    function startPreview(file) {
-      if (!preview || !canvas || !file) return;
-      var url = URL.createObjectURL(file);
-      var img = new Image();
-      img.onload = function () {
-        preview.hidden = false;
-        var blocks = START_BLOCKS;
-        drawPixelated(img, blocks);
-        var started = Date.now();
-        window.clearInterval(previewTimer);
-        previewTimer = window.setInterval(function () {
-          // ease towards MAX_BLOCKS so it slows down rather than finishing early
-          blocks += Math.max(0.6, (MAX_BLOCKS - blocks) * 0.08);
-          if (blocks > MAX_BLOCKS) blocks = MAX_BLOCKS;
-          drawPixelated(img, blocks);
-          if (label) {
-            var secs = Math.round((Date.now() - started) / 1000);
-            label.innerHTML = '<b>' + secs + 's</b> ' + (label.dataset.suffix || '');
-          }
-        }, 1200);
-        if (label) {
-          label.dataset.suffix = label.dataset.suffix || 'working on your photo';
-          label.innerHTML = '<b>0s</b> ' + label.dataset.suffix;
-        }
-      };
-      img.onerror = function () { URL.revokeObjectURL(url); };
-      img.src = url;
-    }
-
-    function stopPreview() {
-      window.clearInterval(previewTimer);
-      previewTimer = 0;
-      if (preview) preview.hidden = true;
-    }
-
     // ---- wire it to the real generation ---------------------------------
     if (form) {
       // capture phase: run before site.js's own submit handler, and only when
@@ -125,7 +67,6 @@
         var chosen = file && file.files && file.files[0];
         if (!chosen || !consent || !consent.checked) return;
         showResultStage();
-        startPreview(chosen);
         // On mobile the stage is stacked, so the result can sit well below the
         // fold and tapping Generate would look like nothing happened. Scroll to
         // it, and verify afterwards: smooth scrolling is ignored in some
@@ -159,20 +100,9 @@
       try {
         new MutationObserver(function () {
           if (results.children.length) {
-            stopPreview();
             showResultStage();  // safety net for any path that skips submit
           }
         }).observe(results, { childList: true });
-      } catch (e) { /* no-op */ }
-    }
-    // A failure clears #web-results and writes an error to the status line;
-    // watch that too so the preview cannot spin forever.
-    var status = document.getElementById('web-status');
-    if (status) {
-      try {
-        new MutationObserver(function () {
-          if (status.dataset.tone === 'error') stopPreview();
-        }).observe(status, { childList: true, attributes: true, characterData: true });
       } catch (e) { /* no-op */ }
     }
 

@@ -13,12 +13,12 @@
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="preload" href="../assets/site.css?v=20260820-r3" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-r4" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-r3" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r3" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-r4" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r4" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r3" />
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r4" />
 </head>
 <body>
 
@@ -185,7 +185,7 @@
       <div class="lp2-proof">
         <span><i data-lucide="ticket"></i> 1 次免费生成</span>
         <span><i data-lucide="credit-card"></i> 无需银行卡</span>
-        <span><i data-lucide="timer"></i> 15-40 秒出图</span>
+        <span><i data-lucide="timer"></i> 30–60 秒出图</span>
       </div>
 <div class="lp2-trust">
         <div><i data-lucide="eye-off"></i><span><strong>无公开图库。</strong></span></div>
@@ -198,11 +198,6 @@
              pitch above slides out of the way. site.js writes into the
              same ids it always has. -->
         <div class="lp2-stage-result" id="lp2-stage-result" hidden>
-          <div class="lp2-preview" id="lp2-preview" hidden>
-            <canvas id="lp2-preview-canvas"></canvas>
-            <div class="lp2-preview-scan" aria-hidden="true"></div>
-            <p class="lp2-preview-label" id="lp2-preview-label"></p>
-          </div>
 <div class="result-panel">
           <div class="result-empty" id="web-result-empty">
             <strong>你的结果会显示在这里</strong>
@@ -241,7 +236,7 @@
         <div class="feature">
           <div class="feature-icon"><i data-lucide="zap"></i></div>
           <h3>快</h3>
-          <p>大多数图片在 15-40 秒内出图，就在你的浏览器标签页里。</p>
+          <p>大多数图片在 30–60 秒内出图，就在你的浏览器标签页里。</p>
         </div>
         <div class="feature">
           <div class="feature-icon"><i data-lucide="pen-line"></i></div>
@@ -276,7 +271,7 @@
         </details>
         <details>
           <summary>生成一张图需要多久？</summary>
-          <p>通常 15-40 秒。失败的生成会自动退回额度。</p>
+          <p>通常 30–60 秒。失败的生成会自动退回额度。</p>
         </details>
         <details>
           <summary>可以上传什么样的图片？</summary>
@@ -400,6 +395,9 @@
         { key: 'office', category: 'fantasy', label: '办公室造型', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
+        workingOnPhoto: "正在处理你的照片",
+        downloadImage: "下载",
+        saveNote: "我们不会保存你的图片。想留存请立即下载。",
         noticeOk: "知道了",
         lockedPresetTitle: "你的免费生成",
         lockedPresetHint: "免费生成可用于「全裸」预设。其他造型在充值后解锁。",
@@ -489,10 +487,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-r3" defer></script>
-  <script src="../assets/site.js?v=20260820-r3" defer></script>
-  <script src="../assets/scenes.js?v=20260820-r3" defer></script>
-  <script src="../assets/lp2.js?v=20260820-r3" defer></script>
+  <script src="../assets/analytics.js?v=20260820-r4" defer></script>
+  <script src="../assets/site.js?v=20260820-r4" defer></script>
+  <script src="../assets/scenes.js?v=20260820-r4" defer></script>
+  <script src="../assets/lp2.js?v=20260820-r4" defer></script>
 
 </body>
 </html>

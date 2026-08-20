@@ -2648,3 +2648,67 @@ html[data-theme="light"] .toast {
 .ug-notice-title { display: block; font-size: 1.05rem; margin-bottom: 8px; }
 .ug-notice-msg { color: var(--muted); margin: 0 0 18px; line-height: 1.5; font-size: .93rem; }
 .ug-notice-ok { width: 100%; min-height: 44px; }
+
+/* ===== "Working on your photo" preview =============================
+   Shown in the result panel on BOTH landing pages while a job runs.
+   The uploaded photo, heavily pixelated and slowly resolving, under a
+   scanning sweep, with a bar that fills towards the expected wait. */
+.ug-preview { position: relative; margin-bottom: 14px; }
+.ug-preview[hidden] { display: none; }
+.ug-preview canvas {
+  display: block; width: 100%; height: auto; border-radius: 14px;
+  image-rendering: pixelated;          /* keep the blocks crisp */
+  background: var(--surface2, #18181d);
+}
+.ug-preview-scan {
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 100%; border-radius: 14px; overflow: hidden; pointer-events: none;
+}
+.ug-preview-scan::before {
+  content: ""; position: absolute; left: 0; right: 0; height: 38%;
+  background: linear-gradient(180deg, transparent,
+              rgba(255,255,255,.16) 45%, rgba(255,45,85,.20) 55%, transparent);
+  animation: ug-scan 1.9s ease-in-out infinite;
+}
+@keyframes ug-scan {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(320%); }
+}
+.ug-preview-label {
+  margin: 12px 0 8px; text-align: center;
+  font-size: .9rem; font-weight: 600; color: var(--muted);
+}
+.ug-preview-label b { color: var(--text); }
+/* the bar genuinely fills; width is set from elapsed time in site.js */
+.ug-preview-bar {
+  width: 100%; height: 9px; border-radius: 999px; overflow: hidden;
+  background: rgba(255,255,255,.08); border: 1px solid var(--border);
+}
+html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
+.ug-preview-bar span {
+  display: block; width: 2%; height: 100%; border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 18px rgba(255,45,85,.42);
+  transition: width .3s linear;
+}
+
+/* ===== Results: download + save reminder =========================== */
+.result-card { display: flex; flex-direction: column; gap: 8px; }
+.result-card > a:first-child { display: block; }
+.result-download {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 14px; border-radius: 12px;
+  background: var(--surface2, #18181d); border: 1px solid var(--border);
+  color: var(--text); font-weight: 700; font-size: .88rem; text-decoration: none;
+}
+.result-download:hover { border-color: var(--accent2); }
+.result-download i, .result-download svg { width: 17px; height: 17px; }
+.result-save-note {
+  grid-column: 1 / -1; margin: 4px 0 0; text-align: center;
+  font-size: .84rem; line-height: 1.45; color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ug-preview-scan::before { animation: none; }
+  .ug-preview-bar span { transition: none; }
+}

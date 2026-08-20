@@ -9,7 +9,7 @@
   var IMAGE_COUNT = CFG.imageCount || 22;
   var THUMB_EXT = CFG.thumbExt || '.webp';
   var BOT_URL = CFG.botUrl || 'https://t.me/goonmasterbotbot?start=web';
-  var ETA_SECONDS = Number(CFG.etaSeconds || 30);
+  var ETA_SECONDS = Number(CFG.etaSeconds || 45);
   var i18n = CFG.i18n || {};
   var currentSession = null;
   var telegramLinkPoll = 0;
@@ -472,6 +472,100 @@
     }
     el.textContent = text || '';
     el.dataset.tone = tone || '';
+  }
+
+  // ---- "working on your photo" preview -------------------------------
+  // The uploaded photo, drawn heavily pixelated and resolving slowly while the
+  // job runs, with a bar that fills towards the expected wait. It shows the
+  // worker is chewing on THEIR image, and the detail never becomes visible.
+  var _pvTimer = 0, _pvRaf = 0, _pvStarted = 0, _pvImg = null, _pvBlocks = 0;
+  var PV_START_BLOCKS = 14, PV_MAX_BLOCKS = 46;
+
+  function ensurePreview() {
+    var panel = document.querySelector('.result-panel');
+    if (!panel) return null;
+    var el = document.getElementById('ug-preview');
+    if (el) return el;
+    el = document.createElement('div');
+    el.className = 'ug-preview';
+    el.id = 'ug-preview';
+    el.hidden = true;
+    el.innerHTML =
+      '<canvas id="ug-preview-canvas"></canvas>' +
+      '<div class="ug-preview-scan" aria-hidden="true"></div>' +
+      '<p class="ug-preview-label" id="ug-preview-label"></p>' +
+      '<div class="ug-preview-bar" aria-hidden="true"><span id="ug-preview-fill"></span></div>';
+    panel.insertBefore(el, panel.firstChild);
+    return el;
+  }
+
+  function drawPreviewFrame() {
+    var canvas = document.getElementById('ug-preview-canvas');
+    if (!canvas || !_pvImg) return;
+    var ratio = _pvImg.naturalHeight / _pvImg.naturalWidth || 1;
+    var w = Math.max(4, Math.round(_pvBlocks));
+    var h = Math.max(4, Math.round(_pvBlocks * ratio));
+    canvas.width = w;
+    canvas.height = h;              // tiny canvas...
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.drawImage(_pvImg, 0, 0, w, h);
+    // ...upscaled by CSS with image-rendering: pixelated
+    canvas.style.aspectRatio = _pvImg.naturalWidth + ' / ' + _pvImg.naturalHeight;
+  }
+
+  function tickPreview() {
+    var elapsed = (Date.now() - _pvStarted) / 1000;
+    // fill towards 92% over the expected wait, then creep, so it never sits
+    // still and never claims to be finished early
+    var pct = elapsed <= ETA_SECONDS
+      ? (elapsed / ETA_SECONDS) * 92
+      : 92 + Math.min(6, (elapsed - ETA_SECONDS) * 0.25);
+    var fill = document.getElementById('ug-preview-fill');
+    if (fill) fill.style.width = Math.min(98, Math.max(2, pct)).toFixed(1) + '%';
+    var label = document.getElementById('ug-preview-label');
+    if (label) {
+      label.innerHTML = '<b>' + Math.round(elapsed) + 's</b> ' +
+        esc(t('workingOnPhoto', 'working on your photo'));
+    }
+    _pvRaf = window.setTimeout(tickPreview, 250);
+  }
+
+  function startWorkingPreview(file) {
+    var el = ensurePreview();
+    if (!el || !file) return;
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      _pvImg = img;
+      _pvBlocks = PV_START_BLOCKS;
+      el.hidden = false;
+      drawPreviewFrame();
+      _pvStarted = Date.now();
+      window.clearInterval(_pvTimer);
+      _pvTimer = window.setInterval(function () {
+        // ease towards the cap so it decelerates instead of resolving early
+        _pvBlocks += Math.max(0.6, (PV_MAX_BLOCKS - _pvBlocks) * 0.08);
+        if (_pvBlocks > PV_MAX_BLOCKS) _pvBlocks = PV_MAX_BLOCKS;
+        drawPreviewFrame();
+      }, 1200);
+      window.clearTimeout(_pvRaf);
+      tickPreview();
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); };
+    img.src = url;
+  }
+
+  function stopWorkingPreview(complete) {
+    window.clearInterval(_pvTimer); _pvTimer = 0;
+    window.clearTimeout(_pvRaf); _pvRaf = 0;
+    var fill = document.getElementById('ug-preview-fill');
+    if (fill && complete) fill.style.width = '100%';
+    var el = document.getElementById('ug-preview');
+    if (!el) return;
+    // let the bar visibly reach the end before the preview disappears
+    window.setTimeout(function () { el.hidden = true; }, complete ? 260 : 0);
+    _pvImg = null;
   }
 
   function ensureGenerationLoader() {
@@ -1256,15 +1350,37 @@
     target.innerHTML = '';
     (images || []).forEach(function (img, idx) {
       var url = 'data:' + (img.mime || 'image/jpeg') + ';base64,' + img.data;
+      var name = 'undressgoon-' + (idx + 1) + '.jpg';
+      var card = document.createElement('div');
+      card.className = 'result-card';
       var a = document.createElement('a');
       a.href = url;
-      a.download = 'undressgoon-web-' + (idx + 1) + '.jpg';
+      a.download = name;
       var el = document.createElement('img');
       el.src = url;
       el.alt = t('generatedResult', 'Generated result') + ' ' + (idx + 1);
       a.appendChild(el);
-      target.appendChild(a);
+      // an explicit button: tapping the picture to save it is not discoverable
+      var dl = document.createElement('a');
+      dl.className = 'result-download';
+      dl.href = url;
+      dl.download = name;
+      dl.innerHTML = '<i data-lucide="download"></i> ' + esc(t('downloadImage', 'Download'));
+      card.appendChild(a);
+      card.appendChild(dl);
+      target.appendChild(card);
     });
+    if (images && images.length) {
+      // results live in this response only; nothing is stored server-side
+      var note = document.createElement('p');
+      note.className = 'result-save-note';
+      note.textContent = t(
+        'saveNote',
+        'We do not store your images. Download them now if you want to keep them.'
+      );
+      target.appendChild(note);
+    }
+    refreshIcons();
     if (empty) empty.hidden = !!(images && images.length);
   }
 
@@ -1978,6 +2094,8 @@
       setStatus(t('readingUpload', 'Reading upload...'), 'working');
       paintResults([]);
       updateGenerationLoader('preparing', Date.now());
+      // site.js owns the generation, so it owns the preview lifecycle too
+      startWorkingPreview(selectedPersonFile());
       payloadPromise
         .then(function (payload) {
           updateGenerationLoader('preparing', Date.now());
@@ -2007,12 +2125,14 @@
             firstGenerationDone = true;
             armExitOffer();
           }
+          stopWorkingPreview(true);
           paintResults(data.images || []);
           track('website_generation_success', { image_count: (data.images || []).length, balance: data.balance });
           setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
           return refreshWebSession();
         })
         .catch(function (err) {
+          stopWorkingPreview(false);
           hideGenerationLoader(true);
           setStatus('', '');  // errors are shown in the results window instead
           var payload = err.payload || {};
