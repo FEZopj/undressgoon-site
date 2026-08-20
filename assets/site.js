@@ -2443,55 +2443,87 @@
     img.src = src;
   }
 
-  // resolve one slot ("a1") against the candidate extensions, in order
-  function exResolve(name, exts, cb) {
-    var i = 0;
-    (function next() {
-      if (i >= exts.length) { cb(null); return; }
-      exTryLoad(EX_BASE + name + exts[i++], function (src) {
-        if (src) cb(src); else next();
+  // Existence check by HEAD: probing with an Image downloaded the whole file,
+  // so simply looking for pairs pulled every example on the page. Only the
+  // pair actually on screen is downloaded now.
+  var EX_NO_FETCH = false;
+
+  function exHead(url, cb) {
+    if (EX_NO_FETCH || !window.fetch) { exTryLoad(url, cb); return; }
+    fetch(url, { method: 'HEAD' })
+      .then(function (r) { cb(r.ok ? url : null); })
+      .catch(function () {
+        // A missing file RESOLVES with ok=false; only being unable to ask at
+        // all rejects (a CSP that forgot connect-src 'self', an offline blip).
+        // Treating that as "no examples" would silently empty the section, so
+        // fall back to loading the image and stop trying to fetch.
+        EX_NO_FETCH = true;
+        exTryLoad(url, cb);
       });
-    })();
   }
 
-  function exDiscover(cb) {
-    var pairs = [];
-    var exts = EX_EXTS.slice();
-    var idx = 0;
-    var gaps = 0;
-    (function step() {
-      if (idx >= EX_ALPHABET.length) { cb(pairs); return; }
-      var letter = EX_ALPHABET.charAt(idx++);
-      exResolve(letter + '1', exts, function (before) {
-        if (!before) {
-          // Nothing found yet means the folder is empty: stop at once rather
-          // than firing a probe for every letter of the alphabet. Once a pair
-          // exists, step over a couple of gaps so one deleted pair does not
-          // hide everything after it.
-          if (!pairs.length || ++gaps > 2) { cb(pairs); return; }
-          step();
-          return;
-        }
-        gaps = 0;
-        // whichever extension answered is the likely one for the rest, so try
-        // it first from now on and keep the others as fallbacks
-        var hit = before.slice(before.lastIndexOf('.'));
-        exts = [hit].concat(EX_EXTS.filter(function (e) { return e !== hit; }));
-        exResolve(letter + '2', exts, function (after) {
-          // a lone "before" is a half-uploaded pair: skip it, do not stop
-          if (after) pairs.push({ before: before, after: after });
-          step();
-        });
+  // Every candidate extension at once. One at a time cost a round trip per
+  // miss, and .jpg/.jpeg/.png all have to miss before .webp is even tried, so
+  // the section could not paint until eight probes had come back in sequence.
+  var EX_HINT = '';   // the extension that answered last; almost always right
+
+  // deep: fall back to every extension when the hint misses. Worth it right
+  // after a hit (the next pair may just be a different format) and for the
+  // second half of a pair we know exists; not worth eight requests per letter
+  // while walking off the end of the folder.
+  function exResolve(name, deep, cb) {
+    // one request, not eight, once we know what these files are named
+    if (EX_HINT) {
+      exHead(EX_BASE + name + EX_HINT, function (hit) {
+        if (hit) { cb(hit); return; }
+        if (deep) exSweep(name, cb); else cb(null);
       });
-    })();
+      return;
+    }
+    exSweep(name, cb);
+  }
+
+  function exSweep(name, cb) {
+    var hits = new Array(EX_EXTS.length);
+    var left = EX_EXTS.length;
+    EX_EXTS.forEach(function (ext, i) {
+      exHead(EX_BASE + name + ext, function (hit) {
+        hits[i] = hit;
+        if (--left) return;
+        for (var k = 0; k < hits.length; k++) {
+          if (hits[k]) {                          // EX_EXTS order is priority
+            EX_HINT = EX_EXTS[k];
+            cb(hits[k]);
+            return;
+          }
+        }
+        cb(null);
+      });
+    });
+  }
+
+  // the pair at one alphabet position, or null if that letter has no pair
+  function exPairAt(idx, deep, cb) {
+    if (idx >= EX_ALPHABET.length) { cb(null); return; }
+    var letter = EX_ALPHABET.charAt(idx);
+    exResolve(letter + '1', deep, function (before) {
+      if (!before) { cb(null); return; }
+      exResolve(letter + '2', true, function (after) {
+        // a lone "before" is a half-uploaded pair
+        cb(after ? { before: before, after: after } : null);
+      });
+    });
   }
 
   function initExamplePair() {
     var mount = document.getElementById('ex-mount');
     if (!mount) return;
 
-    exDiscover(function (pairs) {
-      if (!pairs.length) return;   // nothing uploaded yet: leave the slot empty
+    // Paint as soon as the FIRST pair is known. Waiting for the whole walk is
+    // what made the section (and the link to it) show up late.
+    exPairAt(0, true, function (first) {
+      if (!first) return;   // nothing uploaded yet: leave the slot empty
+      var pairs = [first];
 
       var alt = i18n.imgAlt || 'AI undress result';
       var section = document.createElement('section');
@@ -2559,9 +2591,9 @@
       var beforeEl = section.querySelector('#ex-before');
       var afterEl = section.querySelector('#ex-after');
       var moreBtn = section.querySelector('#ex-more');
-      if (pairs.length < 2) moreBtn.hidden = true;
+      moreBtn.hidden = true;      // until a second pair turns up
 
-      var current = Math.floor(Math.random() * pairs.length);
+      var current = 0;
       var busy = false;
 
       function paint(idx) {
@@ -2597,7 +2629,31 @@
 
       paint(current);
       refreshIcons();   // this section is built long after boot()'s icon pass
-      track('example_shown', { total: pairs.length });
+      track('example_shown', {});
+
+      // The rest of the folder is mapped in the background with HEAD requests,
+      // which cost headers, not pixels. "Show me another" appears the moment a
+      // second pair is known and can then pick at random across the lot.
+      var gaps = 0;
+      var walk = function (idx) {
+        if (idx >= EX_ALPHABET.length) return;
+        // a hole right after a hit is worth a full sweep; deeper into the
+        // gap it is just the end of the folder
+        exPairAt(idx, gaps === 0, function (pair) {
+          if (!pair) {
+            // step over a couple of holes so one deleted pair does not hide
+            // everything after it
+            if (++gaps > 2) return;
+          } else {
+            gaps = 0;
+            pairs.push(pair);
+            if (pairs.length === 2) moreBtn.hidden = false;
+          }
+          walk(idx + 1);
+        });
+      };
+      // off the critical path: the visible pair is already loading
+      window.setTimeout(function () { walk(1); }, 400);
     });
   }
 
