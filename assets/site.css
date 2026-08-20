@@ -1503,11 +1503,12 @@ html[data-theme="light"] .variation-row select option:disabled {
 .form-status[data-tone="success"] { color: var(--green); }
 .form-status[data-tone="working"] { color: var(--tg); }
 .result-panel {
-  /* start, not stretch: the panel used to be pulled to the full height of the
-     (much taller) form column, which is where the empty white expanse came
-     from. Content is centred in whatever height is left. */
+  /* Not stretch: the panel used to be pulled to the full height of the (much
+     taller) form column, which is where the empty white expanse came from. It
+     now sizes to its content and rides at the vertical middle of that column,
+     with its own contents centred inside it. */
   min-height: 420px;
-  align-self: start;
+  align-self: center;
   display: grid;
   align-content: center;
   justify-items: center;
