@@ -218,12 +218,16 @@
   // Prefer explicit UG_CONFIG.thumbBase; else derive from this script's src attribute.
   // Resolves the site root from our own <script src>, so a locale page under
   // /fr/ points at ../examples/ and not /fr/examples/.
+  var SITE_VERSION = '';
+
   function detectSiteBase() {
     var scripts = document.getElementsByTagName('script');
     for (var i = scripts.length - 1; i >= 0; i--) {
       var src = scripts[i].getAttribute('src') || '';
       if (src.indexOf('site.js') === -1) continue;
       // "assets/site.js" -> "", "../assets/site.js" -> "../"
+      var q = src.match(/\?v=([^&"']+)/);
+      if (q) SITE_VERSION = q[1];
       return src.replace(/assets\/site\.js(\?.*)?$/, '');
     }
 
@@ -2446,6 +2450,13 @@
   // original and 2 is the result. Static hosting cannot list a directory, so
   // the letters are walked in order until one is missing.
   var EX_BASE = SITE_BASE + 'examples/';
+  // Pairs are swapped in place under the same a1/a2 names, so the URL alone is
+  // not enough to tell a browser the picture changed. Stamping our own asset
+  // version onto every request makes a redeploy fetch them again. Stored URLs
+  // stay clean, so the extension hint still parses.
+  var EX_VER = SITE_VERSION ? ('?v=' + encodeURIComponent(SITE_VERSION)) : '';
+
+  function exSrc(url) { return url + EX_VER; }
   // uppercase variants too: phone cameras and Windows hand back .PNG / .JPG
   var EX_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.PNG', '.JPG', '.JPEG', '.WEBP'];
   var EX_ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
@@ -2454,7 +2465,7 @@
     var img = new Image();
     img.onload = function () { cb(img.naturalWidth ? src : null); };
     img.onerror = function () { cb(null); };
-    img.src = src;
+    img.src = exSrc(src);
   }
 
   // Existence check by HEAD: probing with an Image downloaded the whole file,
@@ -2464,7 +2475,7 @@
 
   function exHead(url, cb) {
     if (EX_NO_FETCH || !window.fetch) { exTryLoad(url, cb); return; }
-    fetch(url, { method: 'HEAD' })
+    fetch(exSrc(url), { method: 'HEAD' })
       .then(function (r) { cb(r.ok ? url : null); })
       .catch(function () {
         // A missing file RESOLVES with ok=false; only being unable to ask at
@@ -2684,8 +2695,8 @@
         var left = 2;
         function armed() {
           if (--left) return;
-          beforeEl.src = pair.before;
-          afterEl.src = pair.after;
+          beforeEl.src = exSrc(pair.before);
+          afterEl.src = exSrc(pair.after);
           beforeEl.classList.add('is-in');
           afterEl.classList.add('is-in');
           busy = false;
