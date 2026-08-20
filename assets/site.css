@@ -2771,3 +2771,21 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
   .ug-nav-prev { left: 6px; }
   .ug-nav-next { right: 6px; }
 }
+
+/* the pitch column's link down to the before/after example */
+.ex-peek-btn {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  margin-top: 14px; min-height: 48px; padding: 10px 16px;
+  border-radius: 14px; cursor: pointer; text-align: left;
+  color: var(--text); font-weight: 700; font-size: .92rem;
+  background: linear-gradient(135deg, rgba(255,45,85,.14), rgba(42,171,238,.10));
+  border: 1px solid var(--border);
+}
+.ex-peek-btn:hover { border-color: var(--accent2); }
+.ex-peek-btn span { flex: 1; }
+.ex-peek-btn svg, .ex-peek-btn i { width: 18px; height: 18px; flex: 0 0 auto; color: var(--accent); }
+.ex-peek-btn svg:last-child { color: var(--muted); }
+.ex-note {
+  max-width: 640px; margin: 14px auto 0; text-align: center;
+  font-size: .82rem; line-height: 1.5; color: var(--muted);
+}

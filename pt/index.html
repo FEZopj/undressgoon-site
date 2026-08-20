@@ -59,14 +59,14 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260820-r15" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-r16" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-r15" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r15" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-r16" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r16" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r15" />
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-r16" />
 </head>
 <body>
 
@@ -241,6 +241,9 @@
         <div><i data-lucide="lock"></i><span><strong>Checkout seguro.</strong></span></div>
         <div><i data-lucide="shield-check"></i><span><strong>Apenas +18.</strong></span></div>
       </div>
+      <!-- filled by site.js only when examples/ actually has a pair, so the
+           link can never point at an empty section -->
+      <div id="ex-peek"></div>
       </div>
         <!-- The result takes this spot once a generation starts; the
              pitch above slides out of the way. site.js writes into the
@@ -450,6 +453,8 @@
         exAfter: "Depois",
         exMore: "Mostrar outro",
         exTry: "Quero testar",
+        exPeek: "Veja a qualidade dos nossos resultados",
+        exNote: "Todas as pessoas nestes exemplos são geradas por IA e não existem. Nunca guardamos suas fotos nem as usamos para divulgar nada.",
         prevImage: "Imagem anterior",
         nextImage: "Próxima imagem",
         downloadImage: "Baixar",
@@ -540,10 +545,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-r15" defer></script>
-  <script src="../assets/site.js?v=20260820-r15" defer></script>
-  <script src="../assets/scenes.js?v=20260820-r15" defer></script>
-  <script src="../assets/lp2.js?v=20260820-r15" defer></script>
+  <script src="../assets/analytics.js?v=20260820-r16" defer></script>
+  <script src="../assets/site.js?v=20260820-r16" defer></script>
+  <script src="../assets/scenes.js?v=20260820-r16" defer></script>
+  <script src="../assets/lp2.js?v=20260820-r16" defer></script>
 
 </body>
 </html>

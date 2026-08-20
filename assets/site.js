@@ -2509,6 +2509,11 @@
               '<figcaption class="ex-tag ex-tag-after">' + esc(t('exAfter', 'After')) + '</figcaption>' +
             '</figure>' +
           '</div>' +
+          // nobody should mistake an example for a real customer's photo
+          '<p class="ex-note">' + esc(t('exNote',
+            'Everyone in these examples is AI generated and does not exist. ' +
+            'We never store your photos, and we would never use them to ' +
+            'promote anything.')) + '</p>' +
           '<div class="ex-actions">' +
             '<button type="button" class="btn btn-accent ex-try" id="ex-try">' +
               esc(t('exTry', 'Let me try')) + '</button>' +
@@ -2518,6 +2523,24 @@
         '</div>';
 
       mount.appendChild(section);
+
+      // A link from the pitch column down to the example. Built here, not in
+      // the HTML, so it only ever exists when there is something to scroll to.
+      var peek = document.getElementById('ex-peek');
+      if (peek) {
+        var peekBtn = document.createElement('button');
+        peekBtn.type = 'button';
+        peekBtn.className = 'ex-peek-btn';
+        peekBtn.innerHTML =
+          '<i data-lucide="images"></i><span>' +
+          esc(t('exPeek', 'See the quality of our results')) +
+          '</span><i data-lucide="arrow-down"></i>';
+        peekBtn.addEventListener('click', function () {
+          track('example_peek_click', {});
+          scrollToElement(section, 'center');
+        });
+        peek.appendChild(peekBtn);
+      }
 
       // the whole point of the example is to send them back to the generator
       var tryBtn = section.querySelector('#ex-try');
@@ -2571,6 +2594,7 @@
       });
 
       paint(current);
+      refreshIcons();   // this section is built long after boot()'s icon pass
       track('example_shown', { total: pairs.length });
     });
   }
