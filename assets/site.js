@@ -2510,12 +2510,35 @@
       if (!before) { cb(null); return; }
       exResolve(letter + '2', true, function (after) {
         // a lone "before" is a half-uploaded pair
-        cb(after ? { before: before, after: after } : null);
+        cb(after ? { before: before, after: after, letter: letter } : null);
       });
     });
   }
 
   var EX_FIRST_BATCH = 8;   // letters considered for the opening pick
+  var EX_SEEN_KEY = 'ug_seen_examples';
+
+  // Nobody should be shown an example twice while one they have never seen is
+  // still available. Kept in localStorage so it holds across visits, and by
+  // letter rather than by index so adding pairs does not shuffle the record.
+  function exSeen() {
+    try {
+      var raw = window.localStorage.getItem(EX_SEEN_KEY);
+      return raw ? String(raw).split(',') : [];
+    } catch (e) { return []; }
+  }
+
+  function exMarkSeen(letter) {
+    if (!letter) return;
+    var seen = exSeen();
+    if (seen.indexOf(letter) > -1) return;
+    seen.push(letter);
+    try { window.localStorage.setItem(EX_SEEN_KEY, seen.join(',')); } catch (e) {}
+  }
+
+  function exResetSeen(keep) {
+    try { window.localStorage.setItem(EX_SEEN_KEY, keep || ''); } catch (e) {}
+  }
 
   // Which pair to open on. Lazy discovery resolves 'a' first, so opening on
   // whatever resolved first meant every visitor always saw a1/a2. The letters
@@ -2534,7 +2557,14 @@
             if (hit) found.push(idx);
             if (--left) return;
             var pool = [0].concat(found);
-            var pick = pool[Math.floor(Math.random() * pool.length)];
+            // an unseen pair first; everything seen means the visitor has been
+            // through the folder, so the whole pool opens up again
+            var seen = exSeen();
+            var fresh = pool.filter(function (idx) {
+              return seen.indexOf(EX_ALPHABET.charAt(idx)) === -1;
+            });
+            if (!fresh.length) { exResetSeen(); fresh = pool; }
+            var pick = fresh[Math.floor(Math.random() * fresh.length)];
             if (!pick) { cb({ pair: first, index: 0 }); return; }
             exPairAt(pick, true, function (pair) {
               // a half-uploaded pair falls back to the one already in hand
@@ -2630,6 +2660,7 @@
 
       function paint(idx) {
         var pair = pairs[idx];
+        exMarkSeen(pair.letter);
         busy = true;
         moreBtn.disabled = true;
         beforeEl.classList.remove('is-in');
@@ -2652,10 +2683,21 @@
 
       moreBtn.addEventListener('click', function () {
         if (busy || pairs.length < 2) return;
-        var next = current;
-        while (next === current) next = Math.floor(Math.random() * pairs.length);
+        var seen = exSeen();
+        var fresh = [];
+        for (var k = 0; k < pairs.length; k++) {
+          if (k !== current && seen.indexOf(pairs[k].letter) === -1) fresh.push(k);
+        }
+        var repeat = !fresh.length;
+        if (repeat) {
+          // everything known has been shown: start the rotation over rather
+          // than dead-ending, keeping the one on screen out of the draw
+          exResetSeen(pairs[current].letter);
+          for (var j = 0; j < pairs.length; j++) if (j !== current) fresh.push(j);
+        }
+        var next = fresh[Math.floor(Math.random() * fresh.length)];
         current = next;
-        track('example_shuffle', { index: current, total: pairs.length });
+        track('example_shuffle', { index: current, total: pairs.length, repeat: repeat });
         paint(current);
       });
 
