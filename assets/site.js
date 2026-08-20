@@ -2523,7 +2523,8 @@
   // the sliding marquee stays exactly as it was, so the section is never
   // empty while the folder is still being filled.
   var EX_BASE = THUMB_BASE.replace(/results\/thumbs\/$/, 'examples/');
-  var EX_EXTS = ['.jpg', '.jpeg', '.png', '.webp'];
+  // uppercase variants too: phone cameras and Windows hand back .PNG / .JPG
+  var EX_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.PNG', '.JPG', '.JPEG', '.WEBP'];
   var EX_ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
   function exTryLoad(src, cb) {
@@ -2548,11 +2549,21 @@
     var pairs = [];
     var exts = EX_EXTS.slice();
     var idx = 0;
+    var gaps = 0;
     (function step() {
       if (idx >= EX_ALPHABET.length) { cb(pairs); return; }
       var letter = EX_ALPHABET.charAt(idx++);
       exResolve(letter + '1', exts, function (before) {
-        if (!before) { cb(pairs); return; }   // first gap ends the walk
+        if (!before) {
+          // Nothing found yet means the folder is empty: stop at once rather
+          // than firing a probe for every letter of the alphabet. Once a pair
+          // exists, step over a couple of gaps so one deleted pair does not
+          // hide everything after it.
+          if (!pairs.length || ++gaps > 2) { cb(pairs); return; }
+          step();
+          return;
+        }
+        gaps = 0;
         // whichever extension answered is the likely one for the rest, so try
         // it first from now on and keep the others as fallbacks
         var hit = before.slice(before.lastIndexOf('.'));
