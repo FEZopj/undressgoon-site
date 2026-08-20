@@ -491,8 +491,12 @@
     el.id = 'ug-preview';
     el.hidden = true;
     el.innerHTML =
-      '<canvas id="ug-preview-canvas"></canvas>' +
-      '<div class="ug-preview-scan" aria-hidden="true"></div>' +
+      // the sweep lives INSIDE the media box: as a sibling it was sized
+      // against the whole preview block and swept on past the photo
+      '<div class="ug-preview-media">' +
+        '<canvas id="ug-preview-canvas"></canvas>' +
+        '<div class="ug-preview-scan" aria-hidden="true"></div>' +
+      '</div>' +
       '<p class="ug-preview-label" id="ug-preview-label"></p>' +
       '<div class="ug-preview-bar" aria-hidden="true"><span id="ug-preview-fill"></span></div>';
     panel.insertBefore(el, panel.firstChild);

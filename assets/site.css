@@ -1503,8 +1503,17 @@ html[data-theme="light"] .variation-row select option:disabled {
 .form-status[data-tone="success"] { color: var(--green); }
 .form-status[data-tone="working"] { color: var(--tg); }
 .result-panel {
-  min-height: 520px;
+  /* start, not stretch: the panel used to be pulled to the full height of the
+     (much taller) form column, which is where the empty white expanse came
+     from. Content is centred in whatever height is left. */
+  min-height: 420px;
+  align-self: start;
   display: grid;
+  align-content: center;
+  justify-items: center;
+  /* spacing between panel states lives here, not on a margin: a margin on the
+     preview left it sitting 14px above the true centre */
+  gap: 14px;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.03), transparent 34%),
     rgba(17, 17, 20, 0.94);
@@ -1609,7 +1618,11 @@ html[data-theme="light"] .gen-progress {
   transition: width 0.45s ease;
   animation: gen-flow 1.3s ease-in-out infinite;
 }
+/* an empty results grid is still a grid item, so it took a row and the panel's
+   gap, pushing the working preview off-centre */
+.web-results:empty { display: none; }
 .web-results {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
@@ -2653,16 +2666,28 @@ html[data-theme="light"] .toast {
    Shown in the result panel on BOTH landing pages while a job runs.
    The uploaded photo, heavily pixelated and slowly resolving, under a
    scanning sweep, with a bar that fills towards the expected wait. */
-.ug-preview { position: relative; margin-bottom: 14px; }
+/* a centred column in the panel rather than a stretched grid item: as a
+   stretched item it grew to the full panel height and dragged the sweep with
+   it, so the red band kept travelling well below the photo */
+.ug-preview {
+  align-self: center; justify-self: center;
+  width: min(360px, 100%);
+}
 .ug-preview[hidden] { display: none; }
+/* the sweep is positioned against THIS box, so it stops at the photo's
+   bottom edge no matter how tall the panel is */
+.ug-preview-media {
+  position: relative; line-height: 0;
+  border-radius: 14px; overflow: hidden;
+}
 .ug-preview canvas {
-  display: block; width: 100%; height: auto; border-radius: 14px;
+  display: block; width: 100%; height: auto;
   image-rendering: pixelated;          /* keep the blocks crisp */
   background: var(--surface2, #18181d);
 }
 .ug-preview-scan {
-  position: absolute; left: 0; right: 0; top: 0;
-  height: 100%; border-radius: 14px; overflow: hidden; pointer-events: none;
+  position: absolute; inset: 0;
+  overflow: hidden; pointer-events: none;
 }
 .ug-preview-scan::before {
   content: ""; position: absolute; left: 0; right: 0; height: 38%;
