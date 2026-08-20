@@ -462,6 +462,14 @@
   function setStatus(text, tone) {
     var el = document.getElementById('web-status');
     if (!el) return;
+    // Progress chatter ("Reading upload...", "Still generating... 65s elapsed")
+    // is already shown by the generation loader, and repeating it under the
+    // button just added noise. Only failures and completions land here now.
+    if (tone === 'working') {
+      el.textContent = '';
+      el.dataset.tone = '';
+      return;
+    }
     el.textContent = text || '';
     el.dataset.tone = tone || '';
   }
@@ -536,6 +544,12 @@
       if (reason === 'exit_post_gen') {
         if (title) title.textContent = t('exitOfferTitle', 'Wait - your first result unlocked a private deal');
         if (copy) copy.textContent = t('exitOfferCopy', 'Keep going now and get bonus credits added automatically to every pack.');
+      } else if (reason === 'locked_preset') {
+        if (title) title.textContent = t('lockedPresetTitle', 'This look needs credits');
+        if (copy) copy.textContent = t('lockedPresetHint', 'Your free generation runs the Fully Nude preset. Top up to unlock this look.');
+      } else if (reason === 'locked_custom') {
+        if (title) title.textContent = t('lockedCustomTitle', 'Custom prompts need credits');
+        if (copy) copy.textContent = t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.');
       } else {
         if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready for another image?');
         if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Pick a pack and keep generating on the website.');
@@ -1391,7 +1405,7 @@
     if (writeOwn && !writeOwn.dataset.bound) {
       writeOwn.dataset.bound = '1';
       writeOwn.addEventListener('click', function () {
-        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.'), 'working'); return; }
+        if (!isBuyer()) { showCheckout(true, 'locked_custom'); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';
@@ -1595,9 +1609,9 @@
       grid.querySelectorAll('button').forEach(function (button) {
         button.addEventListener('click', function () {
           if (button.dataset.locked === '1') {
-            // Don't ambush free users with the top-up popup on a casual tap —
-            // just explain what their free credit covers.
-            setStatus(t('lockedPresetHint', 'Your free generation runs the Fully Nude preset. Top up to unlock this look.'), 'working');
+            // The status line sits below the fold, so the explanation was
+            // invisible. Show it in the popup, which also offers the packs.
+            showCheckout(true, 'locked_preset');
             return;
           }
           var key = button.getAttribute('data-key');
@@ -1619,7 +1633,7 @@
 
     if (clear) {
       clear.addEventListener('click', function () {
-        if (!isBuyer()) { setStatus(t('lockedCustomHint', 'Custom prompts unlock after a top-up. Your free generation runs the Fully Nude preset.'), 'working'); return; }
+        if (!isBuyer()) { showCheckout(true, 'locked_custom'); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';
