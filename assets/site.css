@@ -1635,27 +1635,6 @@ html[data-theme="light"] .gen-progress {
   display: block;
 }
 
-/* MARQUEE */
-.marquee-wrap {
-  overflow: hidden;
-  padding: 28px 0 8px;
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  min-height: 300px;
-  contain: layout style;
-}
-.marquee {
-  display: flex;
-  gap: 14px;
-  width: max-content;
-  animation: scroll 48s linear infinite;
-  will-change: transform;
-}
-.marquee:hover { animation-play-state: paused; }
-@keyframes scroll {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
-}
 @keyframes gen-spin {
   to { transform: rotate(360deg); }
 }
@@ -1663,50 +1642,6 @@ html[data-theme="light"] .gen-progress {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
-.result-card {
-  width: 200px;
-  height: 286px;
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
-  border: 1px solid var(--border);
-  background: linear-gradient(135deg, #1a1a20, #121216);
-  content-visibility: auto;
-  contain-intrinsic-size: 200px 286px;
-}
-html[data-theme="light"] .result-card {
-  background: linear-gradient(135deg, #eef1f7, #ffffff);
-}
-.result-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0;
-  transition: opacity 0.35s ease, transform 0.4s ease;
-  transform: scale(1.02);
-}
-.result-card img.loaded {
-  opacity: 1;
-  transform: scale(1);
-}
-.result-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-.result-card.has-img::after { opacity: 0; }
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
 /* STATS */
 .stats {
   display: flex;
@@ -2415,8 +2350,6 @@ html[data-theme="light"] .toast {
   .features { grid-template-columns: 1fr; }
   .result-panel { min-height: 280px; }
   .stats { gap: 20px 32px; }
-  .result-card { width: 156px; height: 224px; contain-intrinsic-size: 156px 224px; }
-  .marquee-wrap { min-height: 240px; }
   .sticky-copy span { display: none; }
 }
 
@@ -2492,13 +2425,11 @@ html[data-theme="light"] .toast {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee { animation: none; }
   .btn-pulse { animation: none; }
   .sticky-cta .btn { animation: none; }
   .btn:hover::before { animation: none; opacity: 0; }
   .live-dot { animation: none; }
   .hero h1 .grad { animation: none; }
-  .result-card::after { animation: none; }
 }
 
 /* --- Email signup / login (Google + Email) --- */
@@ -2713,10 +2644,11 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
 }
 
 /* ===== Results: download + save reminder =========================== */
-/* .ug-result, not .result-card: the marquee owns that class, and its rules
+/* .ug-result, not .result-card: that was the marquee's class, and its rules
    (opacity: 0 pending a .loaded flag, object-fit: cover, a fixed 156x224 on
    mobile) applied to generated results too, which is why the finished image
-   came out cropped and then invisible.
+   came out cropped and then invisible. The marquee is gone now, but the name
+   stays distinct.
    Plain block, NOT flex: as a flex column the image link became a flex item
    and got compressed (a 200x300 photo rendered 155x171). The picture must keep
    its natural aspect exactly as it did before the button existed. */
@@ -2746,9 +2678,8 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
 }
 
 /* ===== "Example of result": before / after ==========================
-   Replaces the sliding marquee once examples/ has at least one pair. One
-   comparison a visitor can actually study beats a strip nobody can pause. */
-.marquee-wrap[hidden] { display: none; }
+   Replaced the sliding marquee: one comparison a visitor can actually study
+   beats a strip nobody can pause. */
 .ex-wrap { padding: 28px 0 8px; }
 .ex-kicker {
   text-align: center; margin: 0 0 12px;
@@ -2756,8 +2687,8 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
   text-transform: uppercase; color: var(--muted);
 }
 .ex-card {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  max-width: 640px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  max-width: 880px; margin: 0 auto;
 }
 .ex-pane {
   position: relative; margin: 0; overflow: hidden;
@@ -2778,14 +2709,20 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
   background: rgba(9, 9, 12, .72);
 }
 .ex-tag-after { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+.ex-actions {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center; margin-top: 16px;
+}
+.ex-actions .btn { min-height: 46px; }
 .ex-more {
-  display: flex; margin: 14px auto 0; min-height: 44px;
   background: var(--surface2); border: 1px solid var(--border); color: var(--text);
 }
 .ex-more:hover { border-color: var(--accent2); }
 @media (max-width: 520px) {
   .ex-wrap { padding: 20px 0 4px; }
   .ex-card { gap: 8px; }
+  .ex-actions { flex-direction: column; }
+  .ex-actions .btn { width: 100%; }
   .ex-tag { left: 8px; top: 8px; font-size: .64rem; padding: 4px 8px; }
 }
 @media (prefers-reduced-motion: reduce) {

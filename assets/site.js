@@ -6,8 +6,6 @@
   'use strict';
 
   var CFG = window.UG_CONFIG || {};
-  var IMAGE_COUNT = CFG.imageCount || 22;
-  var THUMB_EXT = CFG.thumbExt || '.webp';
   var BOT_URL = CFG.botUrl || 'https://t.me/goonmasterbotbot?start=web';
   var ETA_SECONDS = Number(CFG.etaSeconds || 60);
   var i18n = CFG.i18n || {};
@@ -218,111 +216,29 @@
 
   // Resolve paths for both https://undressgoon.app/ and file:///.../index.html
   // Prefer explicit UG_CONFIG.thumbBase; else derive from this script's src attribute.
-  function detectThumbBase() {
-    if (CFG.thumbBase) return CFG.thumbBase;
-
+  // Resolves the site root from our own <script src>, so a locale page under
+  // /fr/ points at ../examples/ and not /fr/examples/.
+  function detectSiteBase() {
     var scripts = document.getElementsByTagName('script');
     for (var i = scripts.length - 1; i >= 0; i--) {
       var src = scripts[i].getAttribute('src') || '';
       if (src.indexOf('site.js') === -1) continue;
-      // "assets/site.js" -> "results/thumbs/"
-      // "../assets/site.js" -> "../results/thumbs/"
-      // "/assets/site.js" -> "/results/thumbs/"
-      var prefix = src.replace(/assets\/site\.js(\?.*)?$/, '');
-      return prefix + 'results/thumbs/';
+      // "assets/site.js" -> "", "../assets/site.js" -> "../"
+      return src.replace(/assets\/site\.js(\?.*)?$/, '');
     }
 
     var path = (location.pathname || '').replace(/\\/g, '/');
     if (/\/(es|pt|fr|de|ru|zh|ja)(\/index\.html)?$/i.test(path)) {
-      return '../results/thumbs/';
+      return '../';
     }
-    return 'results/thumbs/';
+    return '';
   }
 
-  var THUMB_BASE = detectThumbBase();
+  var SITE_BASE = detectSiteBase();
 
-  function thumbUrl(n) {
-    return THUMB_BASE + n + THUMB_EXT;
-  }
 
-  function nums() {
-    var a = [];
-    for (var i = 1; i <= IMAGE_COUNT; i++) a.push(i);
-    return a;
-  }
 
-  function onImgLoad(img, card) {
-    if (img.complete && img.naturalWidth) {
-      img.classList.add('loaded');
-      if (card) card.classList.add('has-img');
-      return;
-    }
-    img.addEventListener('load', function () {
-      img.classList.add('loaded');
-      if (card) card.classList.add('has-img');
-    }, { once: true });
-    img.addEventListener('error', function () {
-      if (card) card.classList.add('has-img');
-    }, { once: true });
-  }
 
-  function buildMarquee() {
-    var marquee = document.getElementById('marquee');
-    if (!marquee) return;
-
-    var ids = nums();
-
-    function cardHtml(n, eager) {
-      var alt = i18n.imgAlt || 'AI undress result';
-      var src = thumbUrl(n);
-      var imgSource = eager ? 'src="' + src + '"' : 'data-src="' + src + '"';
-      return (
-        '<div class="result-card" data-n="' + n + '">' +
-          '<img ' + imgSource + ' alt="' + alt + '" width="480" height="600" ' +
-            'decoding="async" loading="' + (eager ? 'eager' : 'lazy') + '" ' +
-            (eager ? 'fetchpriority="high" ' : '') + '/>' +
-        '</div>'
-      );
-    }
-
-    // First 4 paint immediately; rest hydrate when near viewport. Duplicate track for loop.
-    var html = ids.map(function (n, idx) { return cardHtml(n, idx < 4); }).join('');
-    marquee.innerHTML = html + html;
-
-    function hydrateCard(card) {
-      var img = card.querySelector('img');
-      if (!img) return;
-      var pendingSrc = img.getAttribute('data-src');
-      if (pendingSrc) {
-        img.setAttribute('src', pendingSrc);
-        img.removeAttribute('data-src');
-      }
-      onImgLoad(img, card);
-    }
-
-    var lazyCards = [];
-    marquee.querySelectorAll('.result-card').forEach(function (card) {
-      var img = card.querySelector('img');
-      if (!img) return;
-      if (img.getAttribute('src')) hydrateCard(card);
-      else lazyCards.push(card);
-    });
-
-    if ('IntersectionObserver' in window) {
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          observer.unobserve(entry.target);
-          hydrateCard(entry.target);
-        });
-      }, { rootMargin: '600px 800px' });
-      lazyCards.forEach(function (card) { observer.observe(card); });
-    } else {
-      window.setTimeout(function () {
-        lazyCards.forEach(hydrateCard);
-      }, 1200);
-    }
-  }
 
   // Sticky bottom CTA after scroll
   function initSticky() {
@@ -412,17 +328,6 @@
     }
   }
 
-  // Preload first few thumbs for instant marquee paint
-  function preloadCritical() {
-    for (var i = 1; i <= 4; i++) {
-      var link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = thumbUrl(i);
-      link.type = 'image/webp';
-      document.head.appendChild(link);
-    }
-  }
 
   function normalizeCtas() {
     // On the generator page scroll to #generate; on pages without a generator
@@ -564,24 +469,30 @@
   // tapping Generate looks like nothing happened. Bring the preview on screen,
   // but only when it is not already there, and never on lp2: that page moves
   // its own stage and scrolls itself.
+  // instant, not smooth: a smooth scroll silently does nothing where the
+  // compositor is not animating, and these have to land every time
+  function scrollToElement(el, block) {
+    if (!el) return;
+    var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+    var rect = el.getBoundingClientRect();
+    try {
+      el.scrollIntoView({ block: block || 'center' });
+    } catch (e) {
+      el.scrollIntoView();
+    }
+    // and if that did not move the page, drive the window itself
+    if (el.getBoundingClientRect().top === rect.top) {
+      window.scrollTo(0, Math.max(0, rect.top + window.pageYOffset - vh * 0.25));
+    }
+  }
+
   function scrollResultIntoView(el) {
     if (!el) return;
     if (document.getElementById('lp2-stage-result')) return;
     var vh = window.innerHeight || document.documentElement.clientHeight || 0;
     var rect = el.getBoundingClientRect();
     if (rect.top >= 0 && rect.top < vh * 0.6) return;   // already in sight
-    // instant, not smooth: a smooth scroll silently does nothing where the
-    // compositor is not animating, and this has to land every time
-    try {
-      el.scrollIntoView({ block: 'center' });
-    } catch (e) {
-      el.scrollIntoView();
-    }
-    // and if that did not move the page, drive the window itself
-    var moved = el.getBoundingClientRect().top;
-    if (moved === rect.top) {
-      window.scrollTo(0, Math.max(0, rect.top + window.pageYOffset - vh * 0.25));
-    }
+    scrollToElement(el, 'center');
   }
 
   function startWorkingPreview(file) {
@@ -1498,9 +1409,9 @@
     list.forEach(function (img, idx) {
       var url = 'data:' + (img.mime || 'image/jpeg') + ';base64,' + img.data;
       var name = 'undressgoon-' + (idx + 1) + '.jpg';
-      // NOT 'result-card': that is the marquee's class, and its img rule
-      // (opacity: 0 until JS adds .loaded, height 100% + object-fit: cover,
-      // plus a fixed 156x224 on mobile) was hiding and cropping real results
+      // 'ug-result', not the old 'result-card': that name belonged to the
+      // marquee, whose img rule (opacity: 0 until .loaded, object-fit: cover)
+      // hid and cropped real results
       var card = document.createElement('div');
       card.className = 'ug-result';
       var a = document.createElement('a');
@@ -2519,10 +2430,8 @@
   // ===== "Example of result": one before / after pair ==================
   // Pairs are dropped into examples/ as a1 + a2, b1 + b2, ... where 1 is the
   // original and 2 is the result. Static hosting cannot list a directory, so
-  // the letters are walked in order until one is missing. If nothing is there
-  // the sliding marquee stays exactly as it was, so the section is never
-  // empty while the folder is still being filled.
-  var EX_BASE = THUMB_BASE.replace(/results\/thumbs\/$/, 'examples/');
+  // the letters are walked in order until one is missing.
+  var EX_BASE = SITE_BASE + 'examples/';
   // uppercase variants too: phone cameras and Windows hand back .PNG / .JPG
   var EX_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.PNG', '.JPG', '.JPEG', '.WEBP'];
   var EX_ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
@@ -2578,11 +2487,11 @@
   }
 
   function initExamplePair() {
-    var marquee = document.querySelector('.marquee-wrap');
-    if (!marquee) return;
+    var mount = document.getElementById('ex-mount');
+    if (!mount) return;
 
     exDiscover(function (pairs) {
-      if (!pairs.length) return;   // nothing uploaded yet: keep the marquee
+      if (!pairs.length) return;   // nothing uploaded yet: leave the slot empty
 
       var alt = i18n.imgAlt || 'AI undress result';
       var section = document.createElement('section');
@@ -2600,12 +2509,27 @@
               '<figcaption class="ex-tag ex-tag-after">' + esc(t('exAfter', 'After')) + '</figcaption>' +
             '</figure>' +
           '</div>' +
-          '<button type="button" class="btn ex-more" id="ex-more">' +
-            esc(t('exMore', 'Show me another')) + '</button>' +
+          '<div class="ex-actions">' +
+            '<button type="button" class="btn btn-accent ex-try" id="ex-try">' +
+              esc(t('exTry', 'Let me try')) + '</button>' +
+            '<button type="button" class="btn ex-more" id="ex-more">' +
+              esc(t('exMore', 'Show me another')) + '</button>' +
+          '</div>' +
         '</div>';
 
-      marquee.hidden = true;
-      marquee.parentNode.insertBefore(section, marquee);
+      mount.appendChild(section);
+
+      // the whole point of the example is to send them back to the generator
+      var tryBtn = section.querySelector('#ex-try');
+      tryBtn.addEventListener('click', function () {
+        track('example_try_click', {});
+        var gen = document.getElementById('generate') ||
+          document.querySelector('[data-web-generator]') ||
+          document.querySelector('.generator-app');
+        scrollToElement(gen, 'start');
+        var file = document.getElementById('person-photo');
+        if (file && !(file.files && file.files.length)) file.focus();
+      });
 
       var beforeEl = section.querySelector('#ex-before');
       var afterEl = section.querySelector('#ex-after');
@@ -2670,8 +2594,6 @@
 
   function boot() {
     loadPresetCatalogue();
-    preloadCritical();
-    buildMarquee();
     initExamplePair();
     normalizeCtas();
     initLanguageSwitch();
