@@ -2718,12 +2718,19 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
 }
 
 /* ===== Results: download + save reminder =========================== */
-/* Plain block, NOT flex: as a flex column the image link became a flex item
+/* .ug-result, not .result-card: the marquee owns that class, and its rules
+   (opacity: 0 pending a .loaded flag, object-fit: cover, a fixed 156x224 on
+   mobile) applied to generated results too, which is why the finished image
+   came out cropped and then invisible.
+   Plain block, NOT flex: as a flex column the image link became a flex item
    and got compressed (a 200x300 photo rendered 155x171). The picture must keep
    its natural aspect exactly as it did before the button existed. */
-.result-card { display: block; }
-.result-card > a:first-child { display: block; }
-.result-card > a:first-child img { width: 100%; height: auto; display: block; }
+.ug-result { display: block; }
+.ug-result > a:first-child { display: block; }
+.ug-result > a:first-child img {
+  width: 100%; height: auto; display: block;
+  opacity: 1; transform: none; object-fit: fill;
+}
 .result-download {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   margin-top: 8px;

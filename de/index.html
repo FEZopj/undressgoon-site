@@ -59,12 +59,12 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260820-r7" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-r8" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-r7" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r7" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-r8" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r8" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -124,7 +124,7 @@
       </div>
       <p class="free-note"><strong>1 Gratis-Generierung</strong> · keine Karte nötig</p>
       <div class="trust-row">
-        <span><i data-lucide="zap"></i> Ergebnisse in 30–60s</span>
+        <span><i data-lucide="zap"></i> Ergebnisse in 60s</span>
         <span><i data-lucide="shield-check"></i> Keine öffentliche Galerie</span>
         <span><i data-lucide="badge-check"></i> Nur 18+</span>
       </div>
@@ -273,7 +273,7 @@
       </div>
       <div class="stat">
         <i data-lucide="timer"></i>
-        <div class="stat-num">30–60s</div>
+        <div class="stat-num">60s</div>
         <div class="stat-label">Typische Generierung</div>
       </div>
       <div class="stat">
@@ -484,7 +484,12 @@
         { key: 'office', category: 'fantasy', label: 'Office-Look', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
-        workingOnPhoto: "arbeitet an deinem Foto",
+        workStep1: "Dein Foto wird hochgeladen",
+        workStep2: "Preset wird angewendet",
+        workStep3: "Details werden gerendert",
+        workStep4: "Qualität wird verbessert",
+        workStep5: "Letzter Feinschliff",
+        workBusy: "Gerade generieren viele Nutzer gleichzeitig, deshalb dauert es etwas länger.",
         downloadImage: "Herunterladen",
         saveNote: "Wir speichern deine Bilder nicht. Lade sie jetzt herunter, wenn du sie behalten willst.",
         noticeOk: "Alles klar",
@@ -573,8 +578,8 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-r7" defer></script>
-  <script src="../assets/site.js?v=20260820-r7" defer></script>
-  <script src="../assets/scenes.js?v=20260820-r7" defer></script>
+  <script src="../assets/analytics.js?v=20260820-r8" defer></script>
+  <script src="../assets/site.js?v=20260820-r8" defer></script>
+  <script src="../assets/scenes.js?v=20260820-r8" defer></script>
 </body>
 </html>

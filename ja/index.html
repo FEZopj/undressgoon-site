@@ -59,12 +59,12 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260820-r7" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-r8" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
   <link rel="preload" href="../results/thumbs/1.webp" as="image" type="image/webp" />
   <link rel="preload" href="../results/thumbs/2.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-r7" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r7" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-r8" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-r8" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -124,7 +124,7 @@
       </div>
       <p class="free-note"><strong>無料生成1回</strong> · カード不要</p>
       <div class="trust-row">
-        <span><i data-lucide="zap"></i> 30〜60秒で結果</span>
+        <span><i data-lucide="zap"></i> 60秒で結果</span>
         <span><i data-lucide="shield-check"></i> 公開ギャラリーなし</span>
         <span><i data-lucide="badge-check"></i> 18歳以上限定</span>
       </div>
@@ -273,7 +273,7 @@
       </div>
       <div class="stat">
         <i data-lucide="timer"></i>
-        <div class="stat-num">30–60s</div>
+        <div class="stat-num">60s</div>
         <div class="stat-label">標準的な生成時間</div>
       </div>
       <div class="stat">
@@ -484,7 +484,12 @@
         { key: 'office', category: 'fantasy', label: 'オフィス風', prompt: 'slutty office look: tight blouse unbuttoned, pencil skirt hiked up, no panties, stockings' }
       ],
       i18n: {
-        workingOnPhoto: "あなたの写真を処理中",
+        workStep1: "写真をアップロード中",
+        workStep2: "プリセットを適用中",
+        workStep3: "ディテールを生成中",
+        workStep4: "画質を高めています",
+        workStep5: "仕上げ中",
+        workBusy: "現在ほかのユーザーも生成中のため、少し時間がかかっています。",
         downloadImage: "ダウンロード",
         saveNote: "画像は保存されません。残したい場合は今すぐダウンロードしてください。",
         noticeOk: "了解",
@@ -573,8 +578,8 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-r7" defer></script>
-  <script src="../assets/site.js?v=20260820-r7" defer></script>
-  <script src="../assets/scenes.js?v=20260820-r7" defer></script>
+  <script src="../assets/analytics.js?v=20260820-r8" defer></script>
+  <script src="../assets/site.js?v=20260820-r8" defer></script>
+  <script src="../assets/scenes.js?v=20260820-r8" defer></script>
 </body>
 </html>

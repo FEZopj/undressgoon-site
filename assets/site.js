@@ -9,7 +9,7 @@
   var IMAGE_COUNT = CFG.imageCount || 22;
   var THUMB_EXT = CFG.thumbExt || '.webp';
   var BOT_URL = CFG.botUrl || 'https://t.me/goonmasterbotbot?start=web';
-  var ETA_SECONDS = Number(CFG.etaSeconds || 45);
+  var ETA_SECONDS = Number(CFG.etaSeconds || 60);
   var i18n = CFG.i18n || {};
   var currentSession = null;
   var telegramLinkPoll = 0;
@@ -518,6 +518,31 @@
     canvas.style.aspectRatio = _pvImg.naturalWidth + ' / ' + _pvImg.naturalHeight;
   }
 
+  // A live counter on its own reads like a hang, so the label narrates the
+  // stages instead. Times are cosmetic: the worker reports no sub-progress.
+  var PV_STEPS = [
+    { at: 0,  key: 'workStep1', text: 'Uploading your photo' },
+    { at: 6,  key: 'workStep2', text: 'Applying the preset' },
+    { at: 15, key: 'workStep3', text: 'Rendering the details' },
+    { at: 28, key: 'workStep4', text: 'Enhancing the quality' },
+    { at: 42, key: 'workStep5', text: 'Adding the finishing touches' }
+  ];
+
+  function previewStatus(elapsed) {
+    // past the advertised wait, say why rather than counting on in silence
+    if (elapsed > ETA_SECONDS) {
+      return t(
+        'workBusy',
+        'Other users are generating right now, so this one takes a little longer.'
+      );
+    }
+    var step = PV_STEPS[0];
+    for (var i = 0; i < PV_STEPS.length; i++) {
+      if (elapsed >= PV_STEPS[i].at) step = PV_STEPS[i];
+    }
+    return t(step.key, step.text) + '…';
+  }
+
   function tickPreview() {
     var elapsed = (Date.now() - _pvStarted) / 1000;
     // fill towards 92% over the expected wait, then creep, so it never sits
@@ -529,8 +554,8 @@
     if (fill) fill.style.width = Math.min(98, Math.max(2, pct)).toFixed(1) + '%';
     var label = document.getElementById('ug-preview-label');
     if (label) {
-      label.innerHTML = '<b>' + Math.round(elapsed) + 's</b> ' +
-        esc(t('workingOnPhoto', 'working on your photo'));
+      label.innerHTML = '<b>' + Math.round(elapsed) + 's</b> · ' +
+        esc(previewStatus(elapsed));
     }
     _pvRaf = window.setTimeout(tickPreview, 250);
   }
@@ -1368,8 +1393,11 @@
     (images || []).forEach(function (img, idx) {
       var url = 'data:' + (img.mime || 'image/jpeg') + ';base64,' + img.data;
       var name = 'undressgoon-' + (idx + 1) + '.jpg';
+      // NOT 'result-card': that is the marquee's class, and its img rule
+      // (opacity: 0 until JS adds .loaded, height 100% + object-fit: cover,
+      // plus a fixed 156x224 on mobile) was hiding and cropping real results
       var card = document.createElement('div');
-      card.className = 'result-card';
+      card.className = 'ug-result';
       var a = document.createElement('a');
       a.href = url;
       a.download = name;
