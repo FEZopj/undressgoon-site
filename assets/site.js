@@ -2523,6 +2523,8 @@
         '</div>';
 
       mount.appendChild(section);
+      var heading = document.getElementById('ex-heading');
+      if (heading) heading.hidden = false;
 
       // A link from the pitch column down to the example. Built here, not in
       // the HTML, so it only ever exists when there is something to scroll to.

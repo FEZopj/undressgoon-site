@@ -2789,3 +2789,6 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
   max-width: 640px; margin: 14px auto 0; text-align: center;
   font-size: .82rem; line-height: 1.5; color: var(--muted);
 }
+
+/* .section sets display, so the UA's [hidden] rule needs the help */
+.section[hidden] { display: none; }

@@ -3,7 +3,6 @@ deployment:
   tasks:
     - export DEPLOYPATH=$HOME/public_html/
     - /bin/cp index.html $DEPLOYPATH
-    - /bin/cp lp2.html $DEPLOYPATH
     - /bin/cp referral.html $DEPLOYPATH
     - /bin/cp mailrelay.php $DEPLOYPATH
     - /bin/cp terms.html $DEPLOYPATH
@@ -23,6 +22,7 @@ deployment:
     - /bin/cp sitemap.xml $DEPLOYPATH
     - /bin/cp -R assets $DEPLOYPATH
     - /bin/cp -R results $DEPLOYPATH
+    - /bin/cp -R examples $DEPLOYPATH
     - /bin/cp -R de $DEPLOYPATH
     - /bin/cp -R es $DEPLOYPATH
     - /bin/cp -R fr $DEPLOYPATH
