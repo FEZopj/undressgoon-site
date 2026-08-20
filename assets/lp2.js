@@ -1,35 +1,22 @@
 /* ==========================================================================
    UndressGoon — landing variant B (lp2) behaviour.
 
-   Two jobs, both purely presentational — no product/auth/payment logic here,
+   One job, purely presentational — no product/auth/payment logic here,
    site.js still owns the whole funnel:
 
-   1. Force the black theme. lp2 is a paid-traffic page and must always look
-      the same, so a visitor's saved light-theme preference is ignored here.
-   2. Turn the result panel into a POPUP. The panel still lives in the DOM
-      (site.js needs .result-panel / #web-results / #web-result-empty), it's
-      just parked inside a modal that opens when a generation starts and when
-      results land — so the page itself never shows a big empty result box.
+   Turn the result panel into a POPUP. The panel still lives in the DOM
+   (site.js needs .result-panel / #web-results / #web-result-empty), it's just
+   parked inside a modal that opens when a generation starts and when results
+   land — so the page itself never shows a big empty result box.
+
+   The page arrives on the black theme because that is the CSS default (:root)
+   and site.js only switches to light when the visitor picked it before — the
+   theme toggle stays functional.
    ========================================================================== */
 (function () {
   'use strict';
 
-  // ---- 1. Lock the page to the black theme -------------------------------
-  function forceDark() {
-    if (document.documentElement.getAttribute('data-theme') !== 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-  }
-  forceDark();
-  // site.js's initTheme() runs later and may apply a saved 'light' choice —
-  // watch the attribute and put it back.
-  try {
-    new MutationObserver(forceDark).observe(document.documentElement, {
-      attributes: true, attributeFilter: ['data-theme']
-    });
-  } catch (e) { /* observer unsupported — the inline attribute still applies */ }
-
-  // ---- 2. Result popup ----------------------------------------------------
+  // ---- Result popup ----------------------------------------------------
   function ready(fn) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
     else fn();

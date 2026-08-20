@@ -2,8 +2,8 @@
        Generator left, pitch right, results in a popup. Everything else
        reuses site.css so the brand identity is untouched. */
 
-    /* Locked to the black theme (see assets/lp2.js) */
-    html[data-theme="light"] body { background: #070709; }
+    /* Black is the default arrival theme (site.css :root); the visitor can
+       still switch to light with the header toggle. */
 
     /* --- the stage: product + pitch side by side --------------------- */
     .lp2-stage { padding: 26px 0 10px; }
@@ -11,14 +11,14 @@
       display: grid;
       grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
       gap: 32px;
-      align-items: start;
+      align-items: center;   /* pitch column centred against the generator */
     }
     /* the generator shell was a 2-col grid (form + result); it is a single
        column here because the result now lives in the popup */
     .lp2-col-gen .generator-app { display: block; padding: 10px; }
     .lp2-col-gen .generator-panel { margin: 0; }
 
-    .lp2-col-pitch { position: sticky; top: 78px; }
+    .lp2-col-pitch { align-self: center; }
     .lp2-col-pitch .badge { margin-bottom: 14px; }
     .lp2-col-pitch h1 {
       margin: 0 0 10px;
@@ -32,10 +32,13 @@
     /* proof points read as a checklist, not a row of pills */
     .lp2-proof {
       display: flex; flex-direction: column; align-items: flex-start;
-      gap: 10px; margin: 0 0 16px; color: var(--text); font-size: .95rem;
+      gap: 13px; margin: 4px 0 20px; color: var(--text);
+      font-size: 1.12rem; font-weight: 600;
     }
-    .lp2-proof span { display: inline-flex; align-items: center; gap: 10px; }
-    .lp2-proof i, .lp2-proof svg { color: var(--accent2); flex: 0 0 auto; }
+    .lp2-proof span { display: inline-flex; align-items: center; gap: 12px; }
+    .lp2-proof i, .lp2-proof svg {
+      color: var(--accent2); flex: 0 0 auto; width: 22px; height: 22px;
+    }
 
     .lp2-col-pitch .free-note { font-size: .82rem; color: var(--muted); margin: 0 0 18px; }
 
@@ -140,8 +143,9 @@
   /* proof points become wrapping chips instead of a tall vertical list */
   .lp2-proof {
     flex-direction: row; flex-wrap: wrap; justify-content: center;
-    gap: 8px 14px; margin-bottom: 12px; font-size: .85rem;
+    gap: 9px 15px; margin-bottom: 12px; font-size: .95rem;
   }
+  .lp2-proof i, .lp2-proof svg { width: 18px; height: 18px; }
   .lp2-col-pitch .free-note { margin-bottom: 6px; }
   /* trust strip sits under the generator on small screens */
   .lp2-trust-mobile { margin-top: 16px; }
@@ -149,4 +153,10 @@
 }
 @media (max-width: 560px) {
   .lp2-trust-mobile .lp2-trust { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  /* inline links inside FAQ answers: keep them in the sentence but give the
+     tap a bit more height */
+  .lp2-faq p a { display: inline-block; padding: 4px 1px; }
 }

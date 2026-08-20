@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -12,12 +12,12 @@
   <link rel="icon" href="assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <link rel="preload" href="assets/site.css?v=20260820-lp2" as="style" />
+  <link rel="preload" href="assets/site.css?v=20260820-m7" as="style" />
   <link rel="preload" href="assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="assets/site.css?v=20260820-lp2" />
-  <link rel="stylesheet" href="assets/scenes.css?v=20260820-lp2" />
+  <link rel="stylesheet" href="assets/site.css?v=20260820-m7" />
+  <link rel="stylesheet" href="assets/scenes.css?v=20260820-m7" />
   <script src="assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="assets/lp2.css?v=20260820-lp2" />
+  <link rel="stylesheet" href="assets/lp2.css?v=20260820-m7" />
 </head>
 <body>
 
@@ -31,6 +31,7 @@
       </a>
       <div class="header-right">
         <a href="#generate" class="btn btn-accent" data-generate-cta>Generate free</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
@@ -172,12 +173,11 @@
         <span><i data-lucide="credit-card"></i> No card required</span>
         <span><i data-lucide="timer"></i> Results in 15–40s</span>
       </div>
-      <p class="free-note" style="margin-top:10px">Adults only. Use photos you have the rights and consent to edit.</p>
 <div class="lp2-trust">
-        <div><i data-lucide="eye-off"></i><span><strong>No public gallery.</strong> Your results stay in your account.</span></div>
-        <div><i data-lucide="package"></i><span><strong>One-time packs.</strong> No subscription, credits never expire.</span></div>
-        <div><i data-lucide="lock"></i><span><strong>Secure checkout.</strong> Card or crypto, discreet billing name.</span></div>
-        <div><i data-lucide="shield-check"></i><span><strong>18+ only.</strong> Consent and image rights required.</span></div>
+        <div><i data-lucide="eye-off"></i><span><strong>No public gallery.</strong></span></div>
+        <div><i data-lucide="sparkles"></i><span><strong>High quality results.</strong></span></div>
+        <div><i data-lucide="lock"></i><span><strong>Secure checkout.</strong></span></div>
+        <div><i data-lucide="shield-check"></i><span><strong>18+ only.</strong></span></div>
       </div>
       </aside>
 
@@ -390,10 +390,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="assets/analytics.js?v=20260820-lp2" defer></script>
-  <script src="assets/site.js?v=20260820-lp2" defer></script>
-  <script src="assets/scenes.js?v=20260820-lp2" defer></script>
-  <script src="assets/lp2.js?v=20260820-lp2" defer></script>
+  <script src="assets/analytics.js?v=20260820-m7" defer></script>
+  <script src="assets/site.js?v=20260820-m7" defer></script>
+  <script src="assets/scenes.js?v=20260820-m7" defer></script>
+  <script src="assets/lp2.js?v=20260820-m7" defer></script>
   <!-- Result popup — holds the live result panel that site.js writes
        into. Opened by assets/lp2.js when a generation starts. -->
   <div class="lp2-result-modal" id="lp2-result-modal" hidden>

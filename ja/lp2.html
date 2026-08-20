@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-theme="dark">
+<html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -13,12 +13,12 @@
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="preload" href="../assets/site.css?v=20260820-lp2" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-m7" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-lp2" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-lp2" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-m7" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-m7" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-lp2" />
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-m7" />
 </head>
 <body>
 
@@ -32,6 +32,7 @@
       </a>
       <div class="header-right">
         <a href="#generate" class="btn btn-accent" data-generate-cta>無料で生成</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
@@ -173,12 +174,11 @@
         <span><i data-lucide="credit-card"></i> カード不要</span>
         <span><i data-lucide="timer"></i> 15〜40秒で結果</span>
       </div>
-      <p class="free-note" style="margin-top:10px">成人限定。使用する権利と同意のある写真のみご利用ください。</p>
 <div class="lp2-trust">
-        <div><i data-lucide="eye-off"></i><span><strong>公開ギャラリーなし。</strong> 生成結果はあなたのアカウント内に残ります。</span></div>
-        <div><i data-lucide="package"></i><span><strong>買い切りパック。</strong> サブスクなし、クレジットは無期限。</span></div>
-        <div><i data-lucide="lock"></i><span><strong>安全なチェックアウト。</strong> カードまたは暗号資産、控えめな請求名。</span></div>
-        <div><i data-lucide="shield-check"></i><span><strong>18歳以上限定。</strong> 同意と画像の権利が必要です。</span></div>
+        <div><i data-lucide="eye-off"></i><span><strong>公開ギャラリーなし。</strong></span></div>
+        <div><i data-lucide="sparkles"></i><span><strong>高品質な仕上がり。</strong></span></div>
+        <div><i data-lucide="lock"></i><span><strong>安全なチェックアウト。</strong></span></div>
+        <div><i data-lucide="shield-check"></i><span><strong>18歳以上限定。</strong></span></div>
       </div>
       </aside>
 
@@ -446,10 +446,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-lp2" defer></script>
-  <script src="../assets/site.js?v=20260820-lp2" defer></script>
-  <script src="../assets/scenes.js?v=20260820-lp2" defer></script>
-  <script src="../assets/lp2.js?v=20260820-lp2" defer></script>
+  <script src="../assets/analytics.js?v=20260820-m7" defer></script>
+  <script src="../assets/site.js?v=20260820-m7" defer></script>
+  <script src="../assets/scenes.js?v=20260820-m7" defer></script>
+  <script src="../assets/lp2.js?v=20260820-m7" defer></script>
   <!-- Result popup — holds the live result panel that site.js writes
        into. Opened by assets/lp2.js when a generation starts. -->
   <div class="lp2-result-modal" id="lp2-result-modal" hidden>

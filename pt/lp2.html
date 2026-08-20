@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt" data-theme="dark">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -13,12 +13,12 @@
   <link rel="icon" href="../assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <link rel="preload" href="../assets/site.css?v=20260820-lp2" as="style" />
+  <link rel="preload" href="../assets/site.css?v=20260820-m7" as="style" />
   <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260820-lp2" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-lp2" />
+  <link rel="stylesheet" href="../assets/site.css?v=20260820-m7" />
+  <link rel="stylesheet" href="../assets/scenes.css?v=20260820-m7" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-lp2" />
+  <link rel="stylesheet" href="../assets/lp2.css?v=20260820-m7" />
 </head>
 <body>
 
@@ -32,6 +32,7 @@
       </a>
       <div class="header-right">
         <a href="#generate" class="btn btn-accent" data-generate-cta>Gerar grátis</a>
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
           <button class="account-trigger" type="button" id="site-account-trigger" aria-expanded="false" aria-controls="site-account-menu">
             <span class="account-avatar" id="site-account-avatar">U</span>
@@ -173,12 +174,11 @@
         <span><i data-lucide="credit-card"></i> Sem cartão</span>
         <span><i data-lucide="timer"></i> Resultados em 15–40s</span>
       </div>
-      <p class="free-note" style="margin-top:10px">Apenas adultos. Use fotos para as quais você tem os direitos e o consentimento para editar.</p>
 <div class="lp2-trust">
-        <div><i data-lucide="eye-off"></i><span><strong>Sem galeria pública.</strong> Seus resultados ficam na sua conta.</span></div>
-        <div><i data-lucide="package"></i><span><strong>Pacotes avulsos.</strong> Sem assinatura, os créditos nunca expiram.</span></div>
-        <div><i data-lucide="lock"></i><span><strong>Checkout seguro.</strong> Cartão ou crypto, nome de cobrança discreto.</span></div>
-        <div><i data-lucide="shield-check"></i><span><strong>Apenas +18.</strong> Consentimento e direitos de imagem obrigatórios.</span></div>
+        <div><i data-lucide="eye-off"></i><span><strong>Sem galeria pública.</strong></span></div>
+        <div><i data-lucide="sparkles"></i><span><strong>Resultados de alta qualidade.</strong></span></div>
+        <div><i data-lucide="lock"></i><span><strong>Checkout seguro.</strong></span></div>
+        <div><i data-lucide="shield-check"></i><span><strong>Apenas +18.</strong></span></div>
       </div>
       </aside>
 
@@ -446,10 +446,10 @@
       posthogHost: 'https://us.i.posthog.com'
     };
   </script>
-  <script src="../assets/analytics.js?v=20260820-lp2" defer></script>
-  <script src="../assets/site.js?v=20260820-lp2" defer></script>
-  <script src="../assets/scenes.js?v=20260820-lp2" defer></script>
-  <script src="../assets/lp2.js?v=20260820-lp2" defer></script>
+  <script src="../assets/analytics.js?v=20260820-m7" defer></script>
+  <script src="../assets/site.js?v=20260820-m7" defer></script>
+  <script src="../assets/scenes.js?v=20260820-m7" defer></script>
+  <script src="../assets/lp2.js?v=20260820-m7" defer></script>
   <!-- Result popup — holds the live result panel that site.js writes
        into. Opened by assets/lp2.js when a generation starts. -->
   <div class="lp2-result-modal" id="lp2-result-modal" hidden>
