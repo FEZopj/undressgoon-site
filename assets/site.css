@@ -2617,3 +2617,10 @@ html[data-theme="light"] .toast {
   /* the sticky bar is the main mobile CTA — keep it a full target */
   .sticky-cta .btn { min-height: 44px; }
 }
+
+@media (max-width: 700px) {
+  /* The switcher had a fixed 62px width, which clipped the native CJK labels
+     (日本語 needs ~37px of text room but only ~28px was available). Size to
+     content instead, with a cap so it can never crowd out the header. */
+  .lang-switch select { width: auto; min-width: 58px; max-width: 104px; }
+}
