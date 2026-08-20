@@ -1415,6 +1415,10 @@
       card.appendChild(dl);
       target.appendChild(card);
     });
+    // A single result should fill the frame the way the upload preview does.
+    // The auto-fit columns are sized for a batch, so one image was landing in
+    // the first of two tracks and rendering at half width.
+    target.style.gridTemplateColumns = images && images.length > 1 ? '' : '1fr';
     if (images && images.length) {
       // results live in this response only; nothing is stored server-side
       var note = document.createElement('p');
