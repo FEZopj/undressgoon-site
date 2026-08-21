@@ -80,6 +80,10 @@
       color: var(--text); font-size: 1.1rem; line-height: 1; cursor: pointer;
     }
     .lp2-rm-close:hover { background: rgba(255,255,255,.16); }
+    /* the two tints above are white films meant for a dark dialog; on light
+       they wash out to invisible, so darken instead of lighten */
+    html[data-theme="light"] .lp2-rm-close { background: rgba(0,0,0,.06); }
+    html[data-theme="light"] .lp2-rm-close:hover { background: rgba(0,0,0,.12); }
     /* the panel is a plain container inside the dialog */
     .lp2-rm-dialog .result-panel {
       min-height: 320px; background: transparent; border: 0;

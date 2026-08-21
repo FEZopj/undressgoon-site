@@ -724,9 +724,13 @@
   function initTheme() {
     var saved = '';
     try { saved = localStorage.getItem('ug_theme') || ''; } catch (e) {}
-    // Dark is the default on arrival regardless of OS preference; only switch
-    // to light if the visitor explicitly chose it via the toggle.
-    setTheme(saved === 'light' ? 'light' : 'dark');
+    // Light is the default on arrival regardless of OS preference: a paid
+    // adult service reads as more legitimate on white, and first-time visitors
+    // decide whether to trust the page long before they touch the toggle.
+    // Only switch to dark if the visitor explicitly chose it.
+    // The markup already ships data-theme="light", so this agrees with what is
+    // painted and nothing flashes; a saved "dark" repaints once, on purpose.
+    setTheme(saved === 'dark' ? 'dark' : 'light');
     var toggle = document.getElementById('theme-toggle');
     if (toggle) {
       toggle.addEventListener('click', function () {
@@ -2496,8 +2500,9 @@
 
   // ===== "Example of result": one before / after pair ==================
   // Pairs are dropped into examples/ as a1 + a2, b1 + b2, ... where 1 is the
-  // original and 2 is the result. Static hosting cannot list a directory, so
-  // the letters are walked in order until one is missing.
+  // original and 2 is the result. A generated static manifest names the files
+  // for ordinary hosting; list.php can refresh that list dynamically on PHP
+  // hosting. The old probe is kept only as a last-ditch fallback.
   var EX_BASE = SITE_BASE + 'examples/';
   // Pairs are swapped in place under the same a1/a2 names, so the URL alone is
   // not enough to tell a browser the picture changed. Stamping our own asset
@@ -2545,13 +2550,31 @@
   // after a hit (the next pair may just be a different format) and for the
   // second half of a pair we know exists; not worth eight requests per letter
   // while walking off the end of the folder.
-  // examples/list.php names every pair in one call, so the sweep below never
-  // has to run. Probing cost ~8 requests per letter across the whole alphabet
-  // - a few hundred 404s on every visit, which slowed the first paint on
-  // mobile for no reason. null = not asked yet, {} = asked and unavailable
-  // (PHP off, file not deployed), in which case we fall back to probing.
+  // examples/manifest.json or examples/list.php names every pair in one call,
+  // so the sweep below never has to run. Probing cost ~8 requests per letter
+  // across the whole alphabet - a few hundred 404s on every visit, which
+  // slowed the first paint on mobile for no reason. null = not asked yet,
+  // {} = no manifest/list available, in which case we fall back to probing.
   var EX_MAP = null;
   var EX_MAP_WAIT = [];
+
+  function exMapFromBody(body) {
+    var map = {};
+    var pairs = (body && body.pairs) || [];
+    for (var i = 0; i < pairs.length; i++) {
+      var p = pairs[i];
+      if (!p || !p.letter || !p.before || !p.after) continue;
+      map[p.letter + '1'] = EX_BASE + p.before;
+      map[p.letter + '2'] = EX_BASE + p.after;
+    }
+    return map;
+  }
+
+  function exFetchJson(url) {
+    return fetch(exSrc(url))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
 
   function exManifest(cb) {
     if (EX_MAP) { cb(EX_MAP); return; }
@@ -2564,20 +2587,21 @@
       for (var i = 0; i < waiting.length; i++) waiting[i](map);
     };
     if (!window.fetch) { done({}); return; }
-    fetch(exSrc(EX_BASE + 'list.php'))
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (body) {
-        var map = {};
-        var pairs = (body && body.pairs) || [];
-        for (var i = 0; i < pairs.length; i++) {
-          var p = pairs[i];
-          if (!p || !p.letter || !p.before || !p.after) continue;
-          map[p.letter + '1'] = EX_BASE + p.before;
-          map[p.letter + '2'] = EX_BASE + p.after;
+    exFetchJson(EX_BASE + 'manifest.json')
+      .then(function (staticBody) {
+        var staticMap = exMapFromBody(staticBody);
+        for (var k in staticMap) {
+          if (Object.prototype.hasOwnProperty.call(staticMap, k)) {
+            done(staticMap);
+            return { done: true };
+          }
         }
-        done(map);
+        return exFetchJson(EX_BASE + 'list.php');
       })
-      .catch(function () { done({}); });
+      .then(function (phpBody) {
+        if (phpBody && phpBody.done) return;
+        done(exMapFromBody(phpBody));
+      });
   }
 
   function exMapHasAny() {

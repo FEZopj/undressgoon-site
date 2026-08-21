@@ -1,0 +1,160 @@
+{
+  "ok": true,
+  "generated": "2026-08-21",
+  "pairs": [
+    {
+      "letter": "a",
+      "before": "a1.webp",
+      "after": "a2.webp",
+      "beforeBytes": 146878,
+      "afterBytes": 92916
+    },
+    {
+      "letter": "b",
+      "before": "b1.webp",
+      "after": "b2.webp",
+      "beforeBytes": 150788,
+      "afterBytes": 92854
+    },
+    {
+      "letter": "c",
+      "before": "c1.webp",
+      "after": "c2.webp",
+      "beforeBytes": 162344,
+      "afterBytes": 97594
+    },
+    {
+      "letter": "d",
+      "before": "d1.webp",
+      "after": "d2.webp",
+      "beforeBytes": 222512,
+      "afterBytes": 149714
+    },
+    {
+      "letter": "e",
+      "before": "e1.webp",
+      "after": "e2.webp",
+      "beforeBytes": 150128,
+      "afterBytes": 100572
+    },
+    {
+      "letter": "f",
+      "before": "f1.webp",
+      "after": "f2.webp",
+      "beforeBytes": 203376,
+      "afterBytes": 94856
+    },
+    {
+      "letter": "g",
+      "before": "g1.webp",
+      "after": "g2.webp",
+      "beforeBytes": 143624,
+      "afterBytes": 91720
+    },
+    {
+      "letter": "h",
+      "before": "h1.webp",
+      "after": "h2.webp",
+      "beforeBytes": 165964,
+      "afterBytes": 110442
+    },
+    {
+      "letter": "i",
+      "before": "i1.webp",
+      "after": "i2.webp",
+      "beforeBytes": 121534,
+      "afterBytes": 89086
+    },
+    {
+      "letter": "j",
+      "before": "j1.webp",
+      "after": "j2.webp",
+      "beforeBytes": 101228,
+      "afterBytes": 68652
+    },
+    {
+      "letter": "k",
+      "before": "k1.webp",
+      "after": "k2.webp",
+      "beforeBytes": 119586,
+      "afterBytes": 78128
+    },
+    {
+      "letter": "l",
+      "before": "l1.webp",
+      "after": "l2.webp",
+      "beforeBytes": 141408,
+      "afterBytes": 65508
+    },
+    {
+      "letter": "m",
+      "before": "m1.webp",
+      "after": "m2.webp",
+      "beforeBytes": 121696,
+      "afterBytes": 68032
+    },
+    {
+      "letter": "n",
+      "before": "n1.webp",
+      "after": "n2.webp",
+      "beforeBytes": 146912,
+      "afterBytes": 90530
+    },
+    {
+      "letter": "p",
+      "before": "p1.webp",
+      "after": "p2.webp",
+      "beforeBytes": 200922,
+      "afterBytes": 155410
+    },
+    {
+      "letter": "q",
+      "before": "q1.webp",
+      "after": "q2.webp",
+      "beforeBytes": 95674,
+      "afterBytes": 240330
+    },
+    {
+      "letter": "r",
+      "before": "r1.webp",
+      "after": "r2.webp",
+      "beforeBytes": 99442,
+      "afterBytes": 51926
+    },
+    {
+      "letter": "s",
+      "before": "s1.webp",
+      "after": "s2.webp",
+      "beforeBytes": 117338,
+      "afterBytes": 87118
+    },
+    {
+      "letter": "t",
+      "before": "t1.webp",
+      "after": "t2.webp",
+      "beforeBytes": 134786,
+      "afterBytes": 78288
+    },
+    {
+      "letter": "v",
+      "before": "v1.webp",
+      "after": "v2.webp",
+      "beforeBytes": 89376,
+      "afterBytes": 225356
+    },
+    {
+      "letter": "w",
+      "before": "w1.webp",
+      "after": "w2.webp",
+      "beforeBytes": 121534,
+      "afterBytes": 228822
+    },
+    {
+      "letter": "z",
+      "before": "z1.webp",
+      "after": "z2.webp",
+      "beforeBytes": 75408,
+      "afterBytes": 233690
+    }
+  ]
+}

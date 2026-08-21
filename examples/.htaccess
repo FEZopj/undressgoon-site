@@ -6,10 +6,14 @@
   <FilesMatch "\.(jpe?g|png|webp)$">
     Header set Cache-Control "public, max-age=300, must-revalidate"
   </FilesMatch>
+  <FilesMatch "^(manifest\.json|list\.php)$">
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </FilesMatch>
 </IfModule>
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/png "access plus 5 minutes"
   ExpiresByType image/jpeg "access plus 5 minutes"
   ExpiresByType image/webp "access plus 5 minutes"
+  ExpiresByType application/json "access plus 5 minutes"
 </IfModule>

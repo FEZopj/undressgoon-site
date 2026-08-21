@@ -8,8 +8,8 @@
 //
 // Images are dropped straight into this folder on the server (they are not in
 // git), which is why the front end cannot know the names ahead of time.
-// site.js keeps the old probe as a fallback, so if PHP is ever disabled the
-// section still fills in — just slowly.
+// site.js tries manifest.json first for static/local hosting, then this PHP
+// list. It keeps the old probe only as a last-resort fallback.
 
 header('Content-Type: application/json; charset=utf-8');
 // The gallery changes when someone uploads a pair; a short cache keeps this
@@ -30,18 +30,25 @@ if ($handle !== false) {
             if (!isset($out[$letter])) {
                 $out[$letter] = array('letter' => $letter);
             }
-            // When the same shot exists in several formats, serve the lightest.
-            // readdir order is not defined, so without this a 2 MB .png could
-            // win over a 200 KB .jpg of the same picture from one deploy to the
-            // next. Dropping a lighter copy next to a heavy one now replaces it
-            // with no need to delete anything.
+            // When the same shot exists in several formats, serve the smallest
+            // actual file. readdir order is not defined, so without this a 2 MB
+            // .png could win over a 120 KB .webp of the same picture from one
+            // deploy to the next.
             $ext = strtolower($m[3]);
             $rank = array('webp' => 0, 'jpg' => 1, 'jpeg' => 2, 'png' => 3);
             $score = isset($rank[$ext]) ? $rank[$ext] : 9;
+            $size = @filesize($dir . DIRECTORY_SEPARATOR . $entry);
+            if ($size === false) {
+                $size = PHP_INT_MAX;
+            }
             $key = $slot . '_rank';
-            if (!isset($out[$letter][$slot]) || $score < $out[$letter][$key]) {
+            $size_key = $slot . '_size';
+            if (!isset($out[$letter][$slot]) ||
+                $size < $out[$letter][$size_key] ||
+                ($size === $out[$letter][$size_key] && $score < $out[$letter][$key])) {
                 $out[$letter][$slot] = $entry;
                 $out[$letter][$key] = $score;
+                $out[$letter][$size_key] = $size;
             }
         }
     }
@@ -53,6 +60,7 @@ $pairs = array();
 foreach ($out as $letter => $pair) {
     if (isset($pair['before']) && isset($pair['after'])) {
         unset($pair['before_rank'], $pair['after_rank']);
+        unset($pair['before_size'], $pair['after_size']);
         $pairs[] = $pair;
     }
 }

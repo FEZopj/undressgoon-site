@@ -6,8 +6,11 @@ Name them in pairs, in order, starting at a:
   c1, c2 ...
 
 .jpg, .jpeg, .png and .webp all work, upper or lower case.
-Keep the letters contiguous: the site walks a, b, c... and stops after two
-missing letters in a row.
+
+Run the local optimizer/manifest step after changing examples, or regenerate
+examples/manifest.json from the files present in this folder. The site reads
+that manifest first, then falls back to list.php on PHP hosting, so letters do
+not need to be contiguous and visitors do not pay for missing-file probes.
 
 Drop files straight into public_html/examples/ on the server, or commit them
 here and deploy.
