@@ -42,6 +42,13 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Auth/generation calls the HTTPS API with credentialed CORS. Never let the
+  # frontend remain on plain HTTP, because http://undressgoon.app is a different
+  # Origin from https://undressgoon.app and the browser will block API POSTs.
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
   RewriteRule ^terms/?$ terms.html [L]
   RewriteRule ^privacy/?$ privacy.html [L]
   RewriteRule ^acceptable-use/?$ acceptable-use.html [L]
