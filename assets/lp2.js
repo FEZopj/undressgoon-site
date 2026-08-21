@@ -1,510 +1,228 @@
-/* ==========================================================================
-   UndressGoon — conversion landing behaviour.
-
-   site.js owns auth, credits, generation and checkout. This layer only shapes
-   the landing funnel: let visitors build first, ask for signup on Generate,
-   expose every standard preset to the free credit, surface proof earlier, keep
-   the sticky CTA out of the active funnel, and sell the second generation hard.
-   ========================================================================== */
+/* UndressGoon landing loader: stable conversion core + returning-user UX layer. */
 (function () {
   'use strict';
 
-  function ready(fn) {
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
-    else fn();
+  function currentScriptBase() {
+    var scripts = document.getElementsByTagName('script');
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      var src = scripts[i].getAttribute('src') || '';
+      if (src.indexOf('lp2.js') === -1) continue;
+      return src.replace(/lp2\.js(?:\?.*)?$/, '');
+    }
+    return 'assets/';
   }
 
-  ready(function () {
-    // Keep conversion-only CSS separate from the large shared stylesheet.
-    (function loadConversionStyles() {
-      if (document.getElementById('ug-conversion-r7-css')) return;
-      var scripts = document.getElementsByTagName('script');
-      for (var i = scripts.length - 1; i >= 0; i--) {
-        var src = scripts[i].getAttribute('src') || '';
-        if (src.indexOf('lp2.js') === -1) continue;
-        var href = src.replace(/lp2\.js(?:\?.*)?$/, 'conversion-r7.css?v=20260822-r7');
-        var link = document.createElement('link');
-        link.id = 'ug-conversion-r7-css';
-        link.rel = 'stylesheet';
-        link.href = href;
-        document.head.appendChild(link);
-        break;
-      }
-    })();
+  var core = document.createElement('script');
+  core.src = currentScriptBase() + 'lp2-core-r7.js?v=20260822-r7';
+  core.async = false;
+  core.onload = function () {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', enhance, { once: true });
+    } else {
+      enhance();
+    }
+  };
+  document.head.appendChild(core);
 
-    var stage = document.querySelector('.lp2-stage');
-    var pitch = document.querySelector('.lp2-pitch');
-    var resultWrap = document.getElementById('lp2-stage-result');
-    var results = document.getElementById('web-results');
+  function enhance() {
     var form = document.getElementById('web-generate-form');
     var login = document.getElementById('login-box');
-    var siteAccount = document.getElementById('site-account');
-    var sticky = document.getElementById('sticky-cta');
-    if (!stage || !resultWrap || !form) return;
-
-    var pitchTimer = 0;
-    var authRequested = false;
-    var generationWasFree = false;
-    var heroExamplePainted = false;
-    var enforcingLogin = false;
-    var enforcingSticky = false;
-
-    // The old animated jump CTA is unnecessary once proof is surfaced in the hero.
-    var examplePeek = document.getElementById('ex-peek');
-    if (examplePeek) examplePeek.remove();
+    var account = document.getElementById('site-account');
+    var headerRight = document.querySelector('.header-right');
+    if (!form || !login || !headerRight) return;
 
     function lang() {
       return String(document.documentElement.lang || 'en').toLowerCase().split('-')[0];
     }
-
     function copy(map, fallback) {
       return map[lang()] || fallback;
     }
-
     function isAuthed() {
-      return !!(siteAccount && !siteAccount.hidden);
+      return !!(account && !account.hidden);
     }
 
-    function isSignedOut() {
-      return !isAuthed();
+    // The acquisition funnel only works if it looks usable before signup.
+    // site.js can still add is-locked for signed-out users, so strip the visual
+    // lock every time it appears. Premium-only controls keep their own locks.
+    function keepGeneratorActive() {
+      form.classList.remove('is-locked');
+      form.style.opacity = '1';
     }
-
-    function topBelowHeader(el) {
-      if (!el) return;
-      var header = document.querySelector('header');
-      var headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-      var top = el.getBoundingClientRect().top + window.pageYOffset - headerHeight - 14;
-      var maxTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      window.scrollTo(0, Math.max(0, Math.min(top, maxTop)));
-    }
-
-    function scrollLoginBox() {
-      var land = function () { topBelowHeader(login); };
-      window.setTimeout(land, 20);
-      window.setTimeout(land, 260);
-    }
-
-    function styleLoginPrompt() {
-      if (!login || isAuthed() || !authRequested) return;
-      login.hidden = false;
-      var p = document.getElementById('login-box-copy');
-      if (p) {
-        p.innerHTML =
-          '<strong class="login-ready-title">' +
-          copy({
-            fr: 'Ta génération est prête.',
-            de: 'Deine Generierung ist bereit.',
-            es: 'Tu generación está lista.',
-            pt: 'Sua geração está pronta.',
-            ja: '生成の準備ができました。',
-            ru: 'Ваша генерация готова.',
-            zh: '你的生成已准备好。'
-          }, 'Your generation is ready.') +
-          '</strong><span>' +
-          copy({
-            fr: ' Inscris-toi pour la lancer — ta photo et tes réglages sont sauvegardés. Première génération gratuite, sans carte.',
-            de: ' Registriere dich, um sie zu starten — Foto und Einstellungen sind gespeichert. Erste Generierung gratis, keine Karte nötig.',
-            es: ' Regístrate para iniciarla — tu foto y ajustes están guardados. Primera generación gratis, sin tarjeta.',
-            pt: ' Cadastre-se para iniciar — sua foto e configurações estão salvas. Primeira geração grátis, sem cartão.',
-            ja: ' 開始するには登録してください。写真と設定は保存済みです。初回生成は無料、カード不要です。',
-            ru: ' Зарегистрируйтесь, чтобы запустить её — фото и настройки сохранены. Первая генерация бесплатна, карта не нужна.',
-            zh: ' 注册即可开始——照片和设置已保存。首次生成免费，无需信用卡。'
-          }, ' Sign up to start it — your photo and settings are saved. First generation free, no card required.') +
-          '</span>';
-      }
-      scrollLoginBox();
-    }
-
-    // Hide signup on arrival. site.js may try to reveal it after session refresh,
-    // so keep enforcing this until the visitor actually presses Generate.
-    function syncLoginVisibility() {
-      if (!login || enforcingLogin) return;
-      enforcingLogin = true;
-      if (isAuthed()) {
-        authRequested = false;
-        if (!login.hidden) login.hidden = true;
-      } else if (!authRequested) {
-        if (!login.hidden) login.hidden = true;
-      } else {
-        if (login.hidden) login.hidden = false;
-        styleLoginPrompt();
-      }
-      enforcingLogin = false;
-    }
-
-    syncLoginVisibility();
+    keepGeneratorActive();
     try {
-      if (login) {
-        new MutationObserver(function () { syncLoginVisibility(); })
-          .observe(login, { attributes: true, attributeFilter: ['hidden'] });
-      }
-      if (siteAccount) {
-        new MutationObserver(function () {
-          syncLoginVisibility();
-          unlockStandardPresets();
-        }).observe(siteAccount, { attributes: true, attributeFilter: ['hidden'] });
-      }
-    } catch (e) { /* old browser */ }
+      new MutationObserver(keepGeneratorActive)
+        .observe(form, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {}
 
-    // ---- headline + trust -------------------------------------------------
-    function tuneHeroCopy() {
-      var h1 = document.querySelector('.lp2-pitch h1');
-      if (h1) {
-        h1.textContent = copy({
-          fr: 'Importe une photo. Obtiens un nude IA et plus en ~60 secondes.',
-          de: 'Foto hochladen. KI-Nacktbild & mehr in ~60 Sekunden.',
-          es: 'Sube una foto. Obtén un desnudo con IA y más en ~60 segundos.',
-          pt: 'Envie uma foto. Gere um nude com IA e muito mais em ~60 segundos.',
-          ja: '写真をアップロード。AIヌードなどを約60秒で生成。',
-          ru: 'Загрузите фото. Получите AI-нюд и другие образы примерно за 60 секунд.',
-          zh: '上传照片。约 60 秒生成 AI 裸照及更多效果。'
-        }, 'Upload a photo. Get an AI nude & more in ~60 seconds.');
-      }
-
-      var heading = document.querySelector('#ex-heading .section-title');
-      if (heading) {
-        heading.textContent = copy({
-          fr: 'Exemples de résultats',
-          de: 'Beispielergebnisse',
-          es: 'Ejemplos de resultados',
-          pt: 'Exemplos de resultados',
-          ja: '生成例',
-          ru: 'Примеры результатов',
-          zh: '效果示例'
-        }, 'Example results');
-      }
-
-      var trust = document.querySelector('.lp2-trust');
-      if (trust) {
-        var items = [
-          ['eye-off', copy({
-            fr: 'Aucune galerie publique.',
-            de: 'Keine öffentliche Galerie.',
-            es: 'Sin galería pública.',
-            pt: 'Sem galeria pública.',
-            ja: '公開ギャラリーなし。',
-            ru: 'Без публичной галереи.',
-            zh: '无公开图库。'
-          }, 'No public gallery.')],
-          ['badge-dollar-sign', copy({
-            fr: 'Aucun abonnement.',
-            de: 'Kein Abo.',
-            es: 'Sin suscripción.',
-            pt: 'Sem assinatura.',
-            ja: 'サブスクなし。',
-            ru: 'Без подписки.',
-            zh: '无订阅。'
-          }, 'No subscription.')],
-          ['rotate-ccw', copy({
-            fr: 'Les générations échouées sont remboursées.',
-            de: 'Fehlgeschlagene Generierungen werden erstattet.',
-            es: 'Las generaciones fallidas se reembolsan.',
-            pt: 'Gerações com falha são reembolsadas.',
-            ja: '失敗した生成はクレジット返却。',
-            ru: 'Неудачные генерации возвращаются.',
-            zh: '生成失败会退还点数。'
-          }, 'Failed generations refunded.')],
-          ['timer', copy({
-            fr: 'Résultats en ~60 s.',
-            de: 'Ergebnisse in ~60 Sek.',
-            es: 'Resultados en ~60 s.',
-            pt: 'Resultados em ~60 s.',
-            ja: '約60秒で結果。',
-            ru: 'Результат примерно за 60 сек.',
-            zh: '约 60 秒出结果。'
-          }, 'Results in ~60s.')]
-        ];
-        var nodes = trust.querySelectorAll(':scope > div');
-        nodes.forEach(function (node, idx) {
-          if (!items[idx]) return;
-          node.innerHTML = '<i data-lucide="' + items[idx][0] + '"></i><span><strong>' +
-            items[idx][1] + '</strong></span>';
-        });
-        if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
-      }
+    // Headline category breadth: sell the whole product, not five outfit names.
+    function tuneProductBreadth() {
+      var cats = document.querySelector('.lp2-cats');
+      if (!cats) return;
+      cats.textContent = copy({
+        fr: 'Nudes · Retouches de tenues · Scènes sexuelles · Looks fétiche · Prompts personnalisés',
+        de: 'Nudes · Outfit-Edits · Sexszenen · Fetisch-Looks · Eigene Prompts',
+        es: 'Desnudos · Edición de outfits · Escenas sexuales · Looks fetiche · Prompts personalizados',
+        pt: 'Nudes · Edições de roupa · Cenas de sexo · Looks fetiche · Prompts personalizados',
+        ja: 'ヌード · 衣装編集 · セックスシーン · フェティッシュ · カスタムプロンプト',
+        ru: 'Нюд · Смена образа · Секс-сцены · Фетиш-образы · Свои промпты',
+        zh: '裸照 · 服装编辑 · 性爱场景 · 情趣造型 · 自定义提示词'
+      }, 'Nudes · Outfit edits · Sex scenes · Fetish looks · Custom prompts');
     }
-    tuneHeroCopy();
+    tuneProductBreadth();
 
-    // ---- standard presets are valid for the one free generation -----------
-    function unlockStandardPresets() {
-      var mode = document.querySelector('input[name="mode"]:checked');
-      if (mode && mode.value !== 'prompt') return; // scenes stay paywalled
-      var grid = document.getElementById('preset-grid');
-      if (!grid) return;
-      grid.querySelectorAll('button[data-locked="1"]').forEach(function (button) {
-        button.removeAttribute('data-locked');
-        button.classList.remove('locked');
-        var lock = button.querySelector('.preset-lock');
-        if (lock) lock.remove();
-      });
+    // Correct the old Fully-Nude-only popup copy. Standard Outfit Edit presets
+    // are now included in the free generation; scenes and custom prompts are not.
+    function patchFreeNotice() {
+      var notice = document.getElementById('ug-notice');
+      if (!notice || notice.hidden) return;
+      var msg = notice.querySelector('.ug-notice-msg');
+      if (!msg) return;
+      msg.textContent = copy({
+        fr: 'Ta génération gratuite couvre tous les presets Outfit Edit. Les scènes et les prompts personnalisés se débloquent dès que tu recharges.',
+        de: 'Deine kostenlose Generierung gilt für alle Outfit-Edit-Presets. Szenen und eigene Prompts werden nach dem ersten Aufladen freigeschaltet.',
+        es: 'Tu generación gratis cubre todos los presets de Outfit Edit. Las escenas y los prompts personalizados se desbloquean al recargar.',
+        pt: 'Sua geração grátis cobre todos os presets de Outfit Edit. Cenas e prompts personalizados são desbloqueados ao recarregar.',
+        ja: '無料生成ではすべての Outfit Edit プリセットを利用できます。シーンとカスタムプロンプトはチャージ後に解放されます。',
+        ru: 'Бесплатная генерация доступна для всех пресетов Outfit Edit. Сцены и свои промпты открываются после пополнения.',
+        zh: '免费生成可使用全部 Outfit Edit 预设。充值后可解锁场景和自定义提示词。'
+      }, 'Your free generation covers all Outfit Edit presets. Scenes and custom prompts unlock whenever you top up.');
     }
 
-    var presetGrid = document.getElementById('preset-grid');
-    if (presetGrid) {
-      try {
-        new MutationObserver(function () {
-          window.setTimeout(unlockStandardPresets, 0);
-        }).observe(presetGrid, { childList: true, subtree: true });
-      } catch (e) {}
-      unlockStandardPresets();
-    }
     document.addEventListener('click', function (event) {
-      if (event.target && event.target.closest &&
-          (event.target.closest('#preset-tabs button') || event.target.closest('.mode-row label'))) {
-        window.setTimeout(unlockStandardPresets, 0);
+      var target = event.target && event.target.closest ? event.target : null;
+      if (!target) return;
+      if (target.closest('.write-own-btn.locked') ||
+          target.closest('#preset-grid button[data-locked="1"]') ||
+          target.closest('[data-scene-locked="1"]')) {
+        window.setTimeout(patchFreeNotice, 0);
+        window.setTimeout(patchFreeNotice, 40);
       }
     }, true);
 
-    // ---- one strong before/after earlier ----------------------------------
-    function paintHeroExample() {
-      if (heroExamplePainted) return true;
-      var before = document.getElementById('ex-before');
-      var after = document.getElementById('ex-after');
-      if (!before || !after || !before.getAttribute('src') || !after.getAttribute('src')) return false;
-      var proof = document.querySelector('.lp2-pitch .lp2-proof');
-      if (!proof) return false;
+    // Defensive fallback for cached site.js/locales that can still paint the
+    // old Fully Nude wording through another locked entry point.
+    try {
+      new MutationObserver(function () {
+        var msg = document.querySelector('#ug-notice:not([hidden]) .ug-notice-msg');
+        if (!msg) return;
+        var text = String(msg.textContent || '');
+        if (/Fully Nude|free generation|génération gratuite|generación gratis|geração grátis/i.test(text)) {
+          patchFreeNotice();
+        }
+      }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
+    } catch (e) {}
 
-      var mount = document.createElement('div');
-      mount.className = 'hero-example';
-      mount.innerHTML =
-        '<div class="hero-ex-label">' +
-        copy({
-          fr: 'Exemple réel',
-          de: 'Beispiel',
-          es: 'Ejemplo',
-          pt: 'Exemplo',
-          ja: '生成例',
-          ru: 'Пример',
-          zh: '效果示例'
-        }, 'Example result') +
-        '</div>' +
-        '<div class="hero-ex-card">' +
-          '<figure class="hero-ex-pane"><img src="' + before.getAttribute('src') + '" alt="" decoding="async">' +
-            '<figcaption>' + copy({fr:'Avant',de:'Vorher',es:'Antes',pt:'Antes',ja:'変換前',ru:'До',zh:'之前'}, 'Before') + '</figcaption></figure>' +
-          '<figure class="hero-ex-pane"><img src="' + after.getAttribute('src') + '" alt="" decoding="async">' +
-            '<figcaption class="after">' + copy({fr:'Après',de:'Nachher',es:'Después',pt:'Depois',ja:'変換後',ru:'После',zh:'之后'}, 'After') + '</figcaption></figure>' +
-        '</div>';
-      proof.insertAdjacentElement('afterend', mount);
-      heroExamplePainted = true;
-      return true;
+    // --- Returning-user login --------------------------------------------
+    // Reuse the exact Google/email controls and their existing site.js event
+    // handlers by temporarily moving them into a lightweight header modal.
+    var style = document.createElement('style');
+    style.id = 'ug-returning-login-style';
+    style.textContent =
+      '.web-form.is-locked{opacity:1!important}' +
+      '.ug-header-login{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 12px;border:1px solid var(--border);border-radius:11px;background:transparent;color:var(--text);font:inherit;font-size:.84rem;font-weight:850;cursor:pointer;white-space:nowrap}' +
+      '.ug-header-login:hover{border-color:rgba(255,45,85,.58);background:rgba(255,45,85,.1)}' +
+      '.ug-header-login svg{width:16px;height:16px}' +
+      '.ug-login-modal[hidden]{display:none!important}' +
+      '.ug-login-modal{position:fixed;inset:0;z-index:900;display:grid;place-items:center;padding:18px}' +
+      '.ug-login-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px)}' +
+      '.ug-login-dialog{position:relative;width:min(440px,100%);padding:22px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:0 28px 90px rgba(0,0,0,.55)}' +
+      '.ug-login-close{position:absolute;right:11px;top:10px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.07);color:var(--text);font-size:1.2rem;cursor:pointer}' +
+      '.ug-login-dialog h2{margin:0 38px 5px 0;font-size:1.25rem}' +
+      '.ug-login-dialog>p{margin:0 0 16px;color:var(--muted);font-size:.9rem}' +
+      '.ug-login-body{display:grid;gap:10px}' +
+      '.ug-login-body .login-choices{display:grid;gap:9px}' +
+      '.ug-login-body .btn{width:100%}' +
+      '@media(max-width:560px){.ug-header-login{min-height:38px;padding:8px 9px;font-size:.78rem}.ug-login-dialog{padding:18px 14px}}';
+    document.head.appendChild(style);
+
+    var headerLogin = document.createElement('button');
+    headerLogin.type = 'button';
+    headerLogin.id = 'ug-header-login';
+    headerLogin.className = 'ug-header-login';
+    headerLogin.hidden = true;
+    headerLogin.innerHTML = '<i data-lucide="log-in"></i><span>' + copy({
+      fr: 'Connexion', de: 'Login', es: 'Entrar', pt: 'Entrar', ja: 'ログイン', ru: 'Войти', zh: '登录'
+    }, 'Log in') + '</span>';
+    var generateCta = headerRight.querySelector('[data-generate-cta]');
+    headerRight.insertBefore(headerLogin, generateCta || headerRight.firstChild);
+
+    var modal = document.createElement('div');
+    modal.id = 'ug-returning-login-modal';
+    modal.className = 'ug-login-modal';
+    modal.hidden = true;
+    modal.innerHTML =
+      '<div class="ug-login-backdrop" data-ug-login-close></div>' +
+      '<div class="ug-login-dialog" role="dialog" aria-modal="true" aria-labelledby="ug-login-title">' +
+        '<button type="button" class="ug-login-close" aria-label="Close" data-ug-login-close>×</button>' +
+        '<h2 id="ug-login-title">' + copy({
+          fr:'Bon retour',de:'Willkommen zurück',es:'Bienvenido de nuevo',pt:'Bem-vindo de volta',ja:'おかえりなさい',ru:'С возвращением',zh:'欢迎回来'
+        }, 'Welcome back') + '</h2>' +
+        '<p>' + copy({
+          fr:'Connecte-toi pour retrouver tes crédits et continuer à générer.',
+          de:'Logge dich ein, um deine Credits zu nutzen und weiter zu generieren.',
+          es:'Inicia sesión para acceder a tus créditos y seguir generando.',
+          pt:'Entre para acessar seus créditos e continuar gerando.',
+          ja:'ログインしてクレジットを確認し、生成を続けましょう。',
+          ru:'Войдите, чтобы получить доступ к кредитам и продолжить генерацию.',
+          zh:'登录以使用你的点数并继续生成。'
+        }, 'Log in to access your credits and continue generating.') + '</p>' +
+        '<div class="ug-login-body" id="ug-login-body"></div>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    var modalBody = modal.querySelector('#ug-login-body');
+    var authNodes = [
+      login.querySelector('.login-choices'),
+      document.getElementById('email-form'),
+      document.getElementById('email-code-form'),
+      document.getElementById('login-error')
+    ].filter(Boolean);
+
+    function restoreAuthNodes() {
+      if (!login) return;
+      authNodes.forEach(function (node) { login.appendChild(node); });
     }
 
-    var exampleMount = document.getElementById('ex-mount');
-    if (exampleMount) {
-      try {
-        new MutationObserver(function () {
-          window.setTimeout(paintHeroExample, 20);
-          window.setTimeout(paintHeroExample, 250);
-        }).observe(exampleMount, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
-      } catch (e) {}
-      paintHeroExample();
-    }
-
-    // ---- result stage -----------------------------------------------------
-    function showResultStage() {
-      if (!resultWrap.hidden) return;
-      resultWrap.hidden = false;
-      stage.classList.add('is-generating');
-      if (pitch) {
-        window.clearTimeout(pitchTimer);
-        pitchTimer = window.setTimeout(function () {
-          pitch.classList.add('is-gone');
-        }, 300);
-      }
+    function openLoginModal() {
+      if (isAuthed()) return;
+      authNodes.forEach(function (node) { modalBody.appendChild(node); });
+      modal.hidden = false;
+      document.documentElement.classList.add('ug-login-open');
+      var google = document.getElementById('google-login');
+      if (google) window.setTimeout(function () { google.focus(); }, 30);
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
     }
 
-    function scrollToResult() {
-      var top = function () {
-        return resultWrap.getBoundingClientRect().top + window.pageYOffset - 72;
-      };
-      try { window.scrollTo({ top: top(), behavior: 'smooth' }); }
-      catch (e) { window.scrollTo(0, top()); }
-      window.setTimeout(function () {
-        var r = resultWrap.getBoundingClientRect();
-        if (r.top > window.innerHeight * 0.9 || r.bottom < 0) window.scrollTo(0, top());
-      }, 450);
+    function closeLoginModal() {
+      if (modal.hidden) return;
+      modal.hidden = true;
+      document.documentElement.classList.remove('ug-login-open');
+      restoreAuthNodes();
     }
 
-    function removeDuplicateSignupNotice() {
-      if (!results || !isSignedOut() || !authRequested) return false;
-      var card = results.querySelector('.result-notice');
-      var google = card && card.querySelector('#rn-action');
-      if (!card || !google) return false;
-      card.remove();
-      if (!results.children.length) resultWrap.hidden = true;
-      styleLoginPrompt();
-      return true;
-    }
+    headerLogin.addEventListener('click', openLoginModal);
+    modal.addEventListener('click', function (event) {
+      if (event.target && event.target.hasAttribute('data-ug-login-close')) closeLoginModal();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !modal.hidden) closeLoginModal();
+    });
 
-    function freeUserSignal() {
-      // Custom prompt stays locked until a purchase. That makes it a stable,
-      // non-invasive signal that the account is still on its free entitlement.
-      var custom = document.querySelector('.write-own-btn');
-      return !!(custom && custom.classList.contains('locked'));
+    function syncHeaderLogin() {
+      var authed = isAuthed();
+      headerLogin.hidden = authed;
+      if (authed) closeLoginModal();
     }
-
-    function openTopup() {
-      var btn = document.getElementById('account-topup');
-      if (btn) {
-        btn.click();
-        return;
+    try {
+      if (account) {
+        new MutationObserver(syncHeaderLogin)
+          .observe(account, { attributes: true, attributeFilter: ['hidden'] });
       }
-      var fallback = document.querySelector('[data-topup], #web-topup, #topup-button');
-      if (fallback) fallback.click();
-    }
+    } catch (e) {}
 
-    function paintPostFreeOffer() {
-      if (!results || document.getElementById('post-free-offer')) return;
-      var offer = document.createElement('div');
-      offer.id = 'post-free-offer';
-      offer.className = 'post-free-offer';
-      offer.innerHTML =
-        '<span class="post-free-kicker">' +
-          copy({fr:'RÉSULTAT GRATUIT TERMINÉ',de:'GRATIS-ERGEBNIS FERTIG',es:'RESULTADO GRATIS LISTO',pt:'RESULTADO GRÁTIS PRONTO',ja:'無料生成完了',ru:'БЕСПЛАТНЫЙ РЕЗУЛЬТАТ ГОТОВ',zh:'免费生成完成'}, 'FREE RESULT COMPLETE') +
-        '</span>' +
-        '<h3>' +
-          copy({fr:'Tu aimes le résultat ? Continue sans limite.',de:'Gefällt dir das Ergebnis? Mach direkt weiter.',es:'¿Te gusta el resultado? Sigue creando.',pt:'Gostou do resultado? Continue criando.',ja:'気に入った？そのまま続けよう。',ru:'Нравится результат? Продолжайте.',zh:'喜欢这个效果？继续生成。'}, 'Like the result? Keep going.') +
-        '</h3>' +
-        '<p>' +
-          copy({
-            fr:'Génère encore avec tous les presets, débloque les prompts personnalisés et crée jusqu’à 4 images à la fois.',
-            de:'Nutze weiter alle Presets, schalte eigene Prompts frei und generiere bis zu 4 Bilder auf einmal.',
-            es:'Sigue usando todos los presets, desbloquea prompts personalizados y genera hasta 4 imágenes a la vez.',
-            pt:'Continue com todos os presets, desbloqueie prompts personalizados e gere até 4 imagens de uma vez.',
-            ja:'すべてのプリセットを使い続け、カスタムプロンプトを解放し、一度に最大4枚生成。',
-            ru:'Продолжайте со всеми пресетами, откройте свои промпты и генерируйте до 4 изображений за раз.',
-            zh:'继续使用全部预设，解锁自定义提示词，并一次生成最多 4 张图片。'
-          }, 'Keep using every preset, unlock custom prompts, and generate up to 4 images at once.') +
-        '</p>' +
-        '<div class="post-free-benefits">' +
-          '<span>✓ ' + copy({fr:'Packs à achat unique',de:'Einmalige Credit-Pakete',es:'Packs de pago único',pt:'Pacotes de compra única',ja:'買い切りクレジット',ru:'Разовые пакеты кредитов',zh:'一次性点数包'}, 'One-time credit packs') + '</span>' +
-          '<span>✓ ' + copy({fr:'Aucun abonnement',de:'Kein Abo',es:'Sin suscripción',pt:'Sem assinatura',ja:'サブスクなし',ru:'Без подписки',zh:'无订阅'}, 'No subscription') + '</span>' +
-          '<span>✓ ' + copy({fr:'Crédits sans expiration',de:'Credits verfallen nie',es:'Los créditos no caducan',pt:'Créditos não expiram',ja:'クレジット無期限',ru:'Кредиты не сгорают',zh:'点数永不过期'}, 'Credits never expire') + '</span>' +
-        '</div>' +
-        '<button type="button" class="btn btn-accent btn-pulse" id="post-free-topup">' +
-          copy({fr:'Générer encore',de:'Noch eins generieren',es:'Generar otra',pt:'Gerar outra',ja:'もう1枚生成',ru:'Создать ещё',zh:'再生成一张'}, 'Generate another') +
-        '</button>' +
-        '<small>' + copy({fr:'Choisis simplement un pack de crédits pour continuer.',de:'Wähle einfach ein Credit-Paket, um weiterzumachen.',es:'Elige un pack de créditos para continuar.',pt:'Escolha um pacote de créditos para continuar.',ja:'クレジットパックを選ぶだけで続けられます。',ru:'Выберите пакет кредитов и продолжайте.',zh:'选择点数包即可继续。'}, 'Pick a credit pack and continue immediately.') + '</small>';
-      results.appendChild(offer);
-      var btn = document.getElementById('post-free-topup');
-      if (btn) btn.addEventListener('click', openTopup);
-      if (typeof window.ugTrack === 'function') window.ugTrack('website_post_free_offer_viewed', {});
-    }
-
-    function resultLooksSuccessful() {
-      if (!results) return false;
-      return !!results.querySelector('img, a[href^="data:image"], a[download]');
-    }
-
-    if (results) {
-      try {
-        new MutationObserver(function () {
-          if (removeDuplicateSignupNotice()) return;
-          if (!results.children.length) return;
-          if (resultLooksSuccessful()) {
-            showResultStage();
-            if (generationWasFree) {
-              paintPostFreeOffer();
-              generationWasFree = false;
-            }
-            scrollToResult();
-          } else if (!isSignedOut()) {
-            showResultStage();
-          }
-        }).observe(results, { childList: true, subtree: true });
-      } catch (e) {}
-    }
-
-    // Capture runs before site.js's submit handler. That lets us mark signup as
-    // intentional before site.js reveals the auth controls and lets us remember
-    // whether this run is the user's free entitlement.
-    form.addEventListener('submit', function () {
-      var consent = document.getElementById('web-consent');
-      var file = document.getElementById('person-photo');
-      var chosen = file && file.files && file.files[0];
-      if (!chosen || !consent || !consent.checked) return;
-
-      if (isSignedOut()) {
-        authRequested = true;
-        generationWasFree = true;
-        window.setTimeout(function () {
-          syncLoginVisibility();
-          styleLoginPrompt();
-          removeDuplicateSignupNotice();
-        }, 30);
-        window.setTimeout(function () {
-          syncLoginVisibility();
-          styleLoginPrompt();
-          removeDuplicateSignupNotice();
-        }, 320);
-        return;
-      }
-
-      generationWasFree = freeUserSignal();
-      showResultStage();
-      scrollToResult();
-    }, true);
-
-    // ---- sticky CTA -------------------------------------------------------
-    function generatorActive() {
-      var generator = document.getElementById('generate');
-      if (!generator) return false;
-      var r = generator.getBoundingClientRect();
-      return r.bottom > 70 && r.top < window.innerHeight - 30;
-    }
-
-    function enforceSticky() {
-      if (!sticky || enforcingSticky) return;
-      enforcingSticky = true;
-      var active = generatorActive() || authRequested || stage.classList.contains('is-generating');
-      if (active && sticky.classList.contains('show')) sticky.classList.remove('show');
-      enforcingSticky = false;
-    }
-    if (sticky) {
-      window.addEventListener('scroll', enforceSticky, { passive: true });
-      window.addEventListener('resize', enforceSticky);
-      try {
-        new MutationObserver(enforceSticky).observe(sticky, { attributes: true, attributeFilter: ['class'] });
-      } catch (e) {}
-      enforceSticky();
-    }
-
-    // ---- mobile: trust strip stays below the generator --------------------
-    var trust = document.querySelector('.lp2-pitch .lp2-trust');
-    var genCol = document.querySelector('.lp2-col-gen');
-    var pitchHost = document.querySelector('.lp2-pitch');
-    if (trust && pitchHost && genCol && window.matchMedia) {
-      var slot = document.createElement('div');
-      slot.className = 'lp2-trust-mobile';
-      genCol.appendChild(slot);
-      var mq = window.matchMedia('(max-width: 980px)');
-      var place = function () {
-        if (mq.matches) {
-          if (trust.parentNode !== slot) slot.appendChild(trust);
-        } else if (trust.parentNode !== pitchHost) {
-          pitchHost.appendChild(trust);
-        }
-      };
-      place();
-      if (mq.addEventListener) mq.addEventListener('change', place);
-      else if (mq.addListener) mq.addListener(place);
-      window.addEventListener('resize', place);
-    }
-
-    // Final delayed passes after site.js has painted session/presets/examples.
-    window.setTimeout(function () {
-      syncLoginVisibility();
-      tuneHeroCopy();
-      unlockStandardPresets();
-      paintHeroExample();
-      enforceSticky();
-    }, 120);
-    window.setTimeout(function () {
-      syncLoginVisibility();
-      unlockStandardPresets();
-      paintHeroExample();
-      enforceSticky();
-    }, 650);
-  });
+    // Avoid a login-button flash while site.js is resolving an existing session.
+    window.setTimeout(syncHeaderLogin, 450);
+    window.setTimeout(syncHeaderLogin, 1000);
+    if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
+  }
 })();
