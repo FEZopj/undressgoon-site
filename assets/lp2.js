@@ -29,6 +29,10 @@
     var login = document.getElementById('login-box');
     var account = document.getElementById('site-account');
     var headerRight = document.querySelector('.header-right');
+    var stage = document.querySelector('.lp2-stage');
+    var resultWrap = document.getElementById('lp2-stage-result');
+    var pitch = document.querySelector('.lp2-pitch');
+    var submit = document.getElementById('web-submit');
     if (!form || !login || !headerRight) return;
 
     function lang() {
@@ -39,6 +43,39 @@
     }
     function isAuthed() {
       return !!(account && !account.hidden);
+    }
+
+    // Whenever site.js actually starts (or resumes) a generation, immediately
+    // expose the existing working-preview/result stage. This is especially
+    // important after signup: resumePendingGeneration() starts the job without
+    // another form submit, so the old capture listener never got a chance to
+    // reveal the loader and the disabled Generate button looked broken.
+    function revealGenerationProgress() {
+      if (!submit || submit.dataset.busy !== '1' || !resultWrap || !stage) return;
+      var wasHidden = resultWrap.hidden;
+      resultWrap.hidden = false;
+      stage.classList.add('is-generating');
+      if (wasHidden && pitch) {
+        window.setTimeout(function () { pitch.classList.add('is-gone'); }, 300);
+      }
+      if (wasHidden) {
+        var land = function () {
+          var header = document.querySelector('header');
+          var offset = (header ? Math.ceil(header.getBoundingClientRect().height) : 0) + 12;
+          var top = resultWrap.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo(0, Math.max(0, top));
+        };
+        window.setTimeout(land, 25);
+        window.setTimeout(land, 320);
+      }
+      if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
+    }
+    if (submit) {
+      try {
+        new MutationObserver(revealGenerationProgress)
+          .observe(submit, { attributes: true, attributeFilter: ['data-busy', 'disabled'] });
+      } catch (e) {}
+      revealGenerationProgress();
     }
 
     function keepGeneratorActive() {
@@ -206,13 +243,22 @@
     }
     try {
       if (account) {
-        new MutationObserver(syncHeaderLogin)
-          .observe(account, { attributes: true, attributeFilter: ['hidden'] });
+        new MutationObserver(function () {
+          syncHeaderLogin();
+          window.setTimeout(revealGenerationProgress, 0);
+          window.setTimeout(revealGenerationProgress, 80);
+        }).observe(account, { attributes: true, attributeFilter: ['hidden'] });
       }
     } catch (e) {}
 
-    window.setTimeout(syncHeaderLogin, 450);
-    window.setTimeout(syncHeaderLogin, 1000);
+    window.setTimeout(function () {
+      syncHeaderLogin();
+      revealGenerationProgress();
+    }, 450);
+    window.setTimeout(function () {
+      syncHeaderLogin();
+      revealGenerationProgress();
+    }, 1000);
     if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
   }
 })();
