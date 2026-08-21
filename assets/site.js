@@ -730,7 +730,7 @@
     // Only switch to dark if the visitor explicitly chose it.
     // The markup already ships data-theme="light", so this agrees with what is
     // painted and nothing flashes; a saved "dark" repaints once, on purpose.
-    setTheme(saved === 'dark' ? 'dark' : 'light');
+    setTheme(saved === 'light' ? 'light' : 'dark');
     var toggle = document.getElementById('theme-toggle');
     if (toggle) {
       toggle.addEventListener('click', function () {
