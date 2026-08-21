@@ -21,6 +21,12 @@
     var form = document.getElementById('web-generate-form');
     if (!stage || !resultWrap) return;
 
+    // The examples sit immediately below the generator now, so the animated
+    // "See the quality of our results" jump CTA is unnecessary visual noise.
+    // Remove its mount before site.js's async example loader can populate it.
+    var examplePeek = document.getElementById('ex-peek');
+    if (examplePeek) examplePeek.remove();
+
     var pitchTimer = 0;
     var lockedPresetAttempt = false;
 
