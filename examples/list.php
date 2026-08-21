@@ -30,9 +30,18 @@ if ($handle !== false) {
             if (!isset($out[$letter])) {
                 $out[$letter] = array('letter' => $letter);
             }
-            // first match wins, so a duplicate a1.jpg + a1.png stays stable
-            if (!isset($out[$letter][$slot])) {
+            // When the same shot exists in several formats, serve the lightest.
+            // readdir order is not defined, so without this a 2 MB .png could
+            // win over a 200 KB .jpg of the same picture from one deploy to the
+            // next. Dropping a lighter copy next to a heavy one now replaces it
+            // with no need to delete anything.
+            $ext = strtolower($m[3]);
+            $rank = array('webp' => 0, 'jpg' => 1, 'jpeg' => 2, 'png' => 3);
+            $score = isset($rank[$ext]) ? $rank[$ext] : 9;
+            $key = $slot . '_rank';
+            if (!isset($out[$letter][$slot]) || $score < $out[$letter][$key]) {
                 $out[$letter][$slot] = $entry;
+                $out[$letter][$key] = $score;
             }
         }
     }
@@ -43,6 +52,7 @@ if ($handle !== false) {
 $pairs = array();
 foreach ($out as $letter => $pair) {
     if (isset($pair['before']) && isset($pair['after'])) {
+        unset($pair['before_rank'], $pair['after_rank']);
         $pairs[] = $pair;
     }
 }
