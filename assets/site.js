@@ -2545,7 +2545,62 @@
   // after a hit (the next pair may just be a different format) and for the
   // second half of a pair we know exists; not worth eight requests per letter
   // while walking off the end of the folder.
+  // examples/list.php names every pair in one call, so the sweep below never
+  // has to run. Probing cost ~8 requests per letter across the whole alphabet
+  // - a few hundred 404s on every visit, which slowed the first paint on
+  // mobile for no reason. null = not asked yet, {} = asked and unavailable
+  // (PHP off, file not deployed), in which case we fall back to probing.
+  var EX_MAP = null;
+  var EX_MAP_WAIT = [];
+
+  function exManifest(cb) {
+    if (EX_MAP) { cb(EX_MAP); return; }
+    EX_MAP_WAIT.push(cb);
+    if (EX_MAP_WAIT.length > 1) return;   // a fetch is already in flight
+    var done = function (map) {
+      EX_MAP = map;
+      var waiting = EX_MAP_WAIT;
+      EX_MAP_WAIT = [];
+      for (var i = 0; i < waiting.length; i++) waiting[i](map);
+    };
+    if (!window.fetch) { done({}); return; }
+    fetch(exSrc(EX_BASE + 'list.php'))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (body) {
+        var map = {};
+        var pairs = (body && body.pairs) || [];
+        for (var i = 0; i < pairs.length; i++) {
+          var p = pairs[i];
+          if (!p || !p.letter || !p.before || !p.after) continue;
+          map[p.letter + '1'] = EX_BASE + p.before;
+          map[p.letter + '2'] = EX_BASE + p.after;
+        }
+        done(map);
+      })
+      .catch(function () { done({}); });
+  }
+
+  function exMapHasAny() {
+    for (var k in EX_MAP) {
+      if (Object.prototype.hasOwnProperty.call(EX_MAP, k)) return true;
+    }
+    return false;
+  }
+
   function exResolve(name, deep, cb) {
+    // Ask list.php once before probing anything. Every caller funnels through
+    // here, so this single guard is what keeps the old 404 storm from firing
+    // while the manifest is still in flight.
+    if (EX_MAP === null) {
+      exManifest(function () { exResolve(name, deep, cb); });
+      return;
+    }
+    // the manifest knows the real filename outright - no request at all
+    if (EX_MAP && EX_MAP[name]) { cb(EX_MAP[name]); return; }
+    // A populated manifest is authoritative: a miss really means "no such
+    // pair", so do not spend eight probes confirming it. An EMPTY manifest
+    // means list.php was unavailable, so fall through to the old sweep.
+    if (EX_MAP && exMapHasAny()) { cb(null); return; }
     // one request, not eight, once we know what these files are named
     if (EX_HINT) {
       exHead(EX_BASE + name + EX_HINT, function (hit) {
