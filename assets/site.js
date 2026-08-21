@@ -2577,7 +2577,7 @@
     });
   }
 
-  var EX_FIRST_BATCH = 8;   // letters considered for the opening pick
+  var EX_LETTERS = null;    // every letter with a "before" file, mapped once
   var EX_SEEN_KEY = 'ug_seen_examples';
 
   // Nobody should be shown an example twice while one they have never seen is
@@ -2602,39 +2602,51 @@
     try { window.localStorage.setItem(EX_SEEN_KEY, keep || ''); } catch (e) {}
   }
 
-  // Which pair to open on. Lazy discovery resolves 'a' first, so opening on
-  // whatever resolved first meant every visitor always saw a1/a2. The letters
-  // after it are checked in one parallel burst (headers only, one extension
-  // now that we know it) purely so the opening pair can be random.
+  // Map the whole folder before opening. Two bugs used to live here: only the
+  // first EX_FIRST_BATCH letters were considered, and each was probed with the
+  // hint extension alone. The hint comes from a1, so with a .png "a" every
+  // letter whose before-shot is a .jpg was invisible — which is how a folder of
+  // 22 pairs showed the same handful of pictures on every reload.
+  //
+  // Headers only, no pixels, and the visible pair loads from this same list, so
+  // the cost is one HEAD per letter rather than a download per pair.
+  function exDiscover(cb) {
+    if (EX_LETTERS) { cb(EX_LETTERS); return; }
+    var found = [];
+    var left = EX_ALPHABET.length;
+    for (var i = 0; i < EX_ALPHABET.length; i++) {
+      (function (idx) {
+        // deep: never let a wrong hint hide a letter
+        exResolve(EX_ALPHABET.charAt(idx) + '1', true, function (hit) {
+          if (hit) found.push(idx);
+          if (--left) return;
+          found.sort(function (a, b) { return a - b; });
+          EX_LETTERS = found;
+          cb(found);
+        });
+      })(i);
+    }
+  }
+
   function exOpening(cb) {
+    // resolve one pair first so EX_HINT is set and the sweep above is cheap
     exPairAt(0, true, function (first) {
-      if (!first) { cb(null); return; }
-      if (!EX_HINT) { cb({ pair: first, index: 0 }); return; }
-      var found = [];
-      var left = EX_FIRST_BATCH - 1;
-      if (left < 1) { cb({ pair: first, index: 0 }); return; }
-      for (var i = 1; i < EX_FIRST_BATCH; i++) {
-        (function (idx) {
-          exHead(EX_BASE + EX_ALPHABET.charAt(idx) + '1' + EX_HINT, function (hit) {
-            if (hit) found.push(idx);
-            if (--left) return;
-            var pool = [0].concat(found);
-            // an unseen pair first; everything seen means the visitor has been
-            // through the folder, so the whole pool opens up again
-            var seen = exSeen();
-            var fresh = pool.filter(function (idx) {
-              return seen.indexOf(EX_ALPHABET.charAt(idx)) === -1;
-            });
-            if (!fresh.length) { exResetSeen(); fresh = pool; }
-            var pick = fresh[Math.floor(Math.random() * fresh.length)];
-            if (!pick) { cb({ pair: first, index: 0 }); return; }
-            exPairAt(pick, true, function (pair) {
-              // a half-uploaded pair falls back to the one already in hand
-              cb(pair ? { pair: pair, index: pick } : { pair: first, index: 0 });
-            });
-          });
-        })(i);
-      }
+      exDiscover(function (pool) {
+        if (!pool.length) { cb(first ? { pair: first, index: 0 } : null); return; }
+        // an unseen pair first; everything seen means the visitor has been
+        // through the folder, so the whole pool opens up again
+        var seen = exSeen();
+        var fresh = pool.filter(function (idx) {
+          return seen.indexOf(EX_ALPHABET.charAt(idx)) === -1;
+        });
+        if (!fresh.length) { exResetSeen(); fresh = pool; }
+        var pick = fresh[Math.floor(Math.random() * fresh.length)];
+        exPairAt(pick, true, function (pair) {
+          // a half-uploaded pair falls back to the one already in hand
+          if (pair) { cb({ pair: pair, index: pick }); return; }
+          cb(first ? { pair: first, index: 0 } : null);
+        });
+      });
     });
   }
 
@@ -2767,30 +2779,26 @@
       refreshIcons();   // this section is built long after boot()'s icon pass
       track('example_shown', {});
 
-      // The rest of the folder is mapped in the background with HEAD requests,
-      // which cost headers, not pixels. "Show me another" appears the moment a
-      // second pair is known and can then pick at random across the lot.
-      var gaps = 0;
-      var walk = function (idx) {
-        if (idx >= EX_ALPHABET.length) return;
-        // a hole right after a hit is worth a full sweep; deeper into the
-        // gap it is just the end of the folder
-        if (idx === openedAt) { walk(idx + 1); return; }   // already showing
-        exPairAt(idx, gaps === 0, function (pair) {
-          if (!pair) {
-            // step over a couple of holes so one deleted pair does not hide
-            // everything after it
-            if (++gaps > 2) return;
-          } else {
-            gaps = 0;
+      // The rest of the folder comes from the same map the opening used, so a
+      // gap in the alphabet is simply absent from the list. The old walk
+      // stepped letter by letter and gave up after three consecutive holes,
+      // which meant a few deleted pairs could hide everything after them.
+      var walk = function (list, i) {
+        if (i >= list.length) return;
+        var idx = list[i];
+        if (idx === openedAt) { walk(list, i + 1); return; }   // already showing
+        exPairAt(idx, true, function (pair) {
+          if (pair) {                       // a lone "before" is half-uploaded
             pairs.push(pair);
             if (pairs.length === 2) moreBtn.hidden = false;
           }
-          walk(idx + 1);
+          walk(list, i + 1);
         });
       };
       // off the critical path: the visible pair is already loading
-      window.setTimeout(function () { walk(0); }, 400);
+      window.setTimeout(function () {
+        exDiscover(function (pool) { walk(pool, 0); });
+      }, 400);
     });
   }
 
