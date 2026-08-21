@@ -2,26 +2,24 @@
 (function () {
   'use strict';
 
-  function currentScriptBase() {
+  function scriptBase() {
     var scripts = document.getElementsByTagName('script');
     for (var i = scripts.length - 1; i >= 0; i--) {
       var src = scripts[i].getAttribute('src') || '';
-      if (src.indexOf('lp2.js') === -1) continue;
-      return src.replace(/lp2\.js(?:\?.*)?$/, '');
+      if (src.indexOf('lp2.js') !== -1) return src.replace(/lp2\.js(?:\?.*)?$/, '');
     }
     return 'assets/';
   }
 
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, { once: true });
+    else fn();
+  }
+
   var core = document.createElement('script');
-  core.src = currentScriptBase() + 'lp2-core-r7.js?v=20260822-r7';
+  core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r7';
   core.async = false;
-  core.onload = function () {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', enhance, { once: true });
-    } else {
-      enhance();
-    }
-  };
+  core.onload = function () { ready(enhance); };
   document.head.appendChild(core);
 
   function enhance() {
@@ -45,11 +43,19 @@
       return !!(account && !account.hidden);
     }
 
-    // Whenever site.js actually starts (or resumes) a generation, immediately
-    // expose the existing working-preview/result stage. This is especially
-    // important after signup: resumePendingGeneration() starts the job without
-    // another form submit, so the old capture listener never got a chance to
-    // reveal the loader and the disabled Generate button looked broken.
+    // Keep the acquisition form looking fully usable before signup.
+    function keepGeneratorActive() {
+      form.classList.remove('is-locked');
+      form.style.opacity = '1';
+    }
+    keepGeneratorActive();
+    try {
+      new MutationObserver(keepGeneratorActive)
+        .observe(form, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {}
+
+    // If a saved generation resumes after auth, immediately reveal the existing
+    // working animation/result stage and scroll to it.
     function revealGenerationProgress() {
       if (!submit || submit.dataset.busy !== '1' || !resultWrap || !stage) return;
       var wasHidden = resultWrap.hidden;
@@ -78,19 +84,9 @@
       revealGenerationProgress();
     }
 
-    function keepGeneratorActive() {
-      form.classList.remove('is-locked');
-      form.style.opacity = '1';
-    }
-    keepGeneratorActive();
-    try {
-      new MutationObserver(keepGeneratorActive)
-        .observe(form, { attributes: true, attributeFilter: ['class'] });
-    } catch (e) {}
-
-    function tuneProductBreadth() {
-      var cats = document.querySelector('.lp2-cats');
-      if (!cats) return;
+    // Sell the breadth of the product instead of a short outfit list.
+    var cats = document.querySelector('.lp2-cats');
+    if (cats) {
       cats.textContent = copy({
         fr: 'Nudes · Retouches de tenues · Scènes sexuelles · Looks fétiche · Prompts personnalisés',
         de: 'Nudes · Outfit-Edits · Sexszenen · Fetisch-Looks · Eigene Prompts',
@@ -101,8 +97,8 @@
         zh: '裸照 · 服装编辑 · 性爱场景 · 情趣造型 · 自定义提示词'
       }, 'Nudes · Outfit edits · Sex scenes · Fetish looks · Custom prompts');
     }
-    tuneProductBreadth();
 
+    // Correct stale Fully-Nude-only lock copy from cached site.js/locales.
     function patchFreeNotice() {
       var notice = document.getElementById('ug-notice');
       if (!notice || notice.hidden) return;
@@ -135,13 +131,44 @@
       new MutationObserver(function () {
         var msg = document.querySelector('#ug-notice:not([hidden]) .ug-notice-msg');
         if (!msg) return;
-        var text = String(msg.textContent || '');
-        if (/Fully Nude|free generation|génération gratuite|generación gratis|geração grátis/i.test(text)) {
+        if (/Fully Nude|free generation|génération gratuite|generación gratis|geração grátis/i.test(String(msg.textContent || ''))) {
           patchFreeNotice();
         }
       }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
     } catch (e) {}
 
+    // Deterministic logout: stop the legacy handler before it can navigate or
+    // leave the UI half-reset. POST the API, then reload the clean landing page.
+    document.addEventListener('click', function (event) {
+      var button = event.target && event.target.closest ? event.target.closest('#account-logout') : null;
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      if (button.dataset.loggingOut === '1') return;
+      button.dataset.loggingOut = '1';
+      button.disabled = true;
+
+      var cfg = window.UG_CONFIG || {};
+      var apiBase = String(cfg.apiBase || '').replace(/\/$/, '');
+      var currentLang = lang();
+      var localized = ['fr', 'de', 'es', 'pt', 'ja', 'ru', 'zh'].indexOf(currentLang) !== -1;
+      var landing = localized ? '/' + currentLang + '/' : '/';
+
+      fetch(apiBase + '/web/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Accept': 'application/json' }
+      }).catch(function () {
+        // Even if the request fails at the network layer, never send the user
+        // to an API/error page; return to the landing and let session refresh decide.
+      }).finally(function () {
+        window.location.replace(landing);
+      });
+    }, true);
+
+    // Returning-user login button + modal. Reuse the real Google/email controls
+    // so all existing auth handlers and pending-generation behavior stay intact.
     var style = document.createElement('style');
     style.id = 'ug-returning-login-style';
     style.textContent =
@@ -183,7 +210,8 @@
       '<div class="ug-login-dialog" role="dialog" aria-modal="true" aria-labelledby="ug-login-title">' +
         '<button type="button" class="ug-login-close" aria-label="Close" data-ug-login-close>×</button>' +
         '<h2 id="ug-login-title">' + copy({
-          fr:'Bon retour',de:'Willkommen zurück',es:'Bienvenido de nuevo',pt:'Bem-vindo de volta',ja:'おかえりなさい',ru:'С возвращением',zh:'欢迎回来'
+          fr:'Bon retour', de:'Willkommen zurück', es:'Bienvenido de nuevo', pt:'Bem-vindo de volta',
+          ja:'おかえりなさい', ru:'С возвращением', zh:'欢迎回来'
         }, 'Welcome back') + '</h2>' +
         '<p>' + copy({
           fr:'Connecte-toi pour retrouver tes crédits et continuer à générer.',
@@ -207,10 +235,8 @@
     ].filter(Boolean);
 
     function restoreAuthNodes() {
-      if (!login) return;
       authNodes.forEach(function (node) { login.appendChild(node); });
     }
-
     function openLoginModal() {
       if (isAuthed()) return;
       authNodes.forEach(function (node) { modalBody.appendChild(node); });
@@ -220,12 +246,15 @@
       if (google) window.setTimeout(function () { google.focus(); }, 30);
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
     }
-
     function closeLoginModal() {
       if (modal.hidden) return;
       modal.hidden = true;
       document.documentElement.classList.remove('ug-login-open');
       restoreAuthNodes();
+    }
+    function syncHeaderLogin() {
+      headerLogin.hidden = isAuthed();
+      if (isAuthed()) closeLoginModal();
     }
 
     headerLogin.addEventListener('click', openLoginModal);
@@ -236,11 +265,6 @@
       if (event.key === 'Escape' && !modal.hidden) closeLoginModal();
     });
 
-    function syncHeaderLogin() {
-      var authed = isAuthed();
-      headerLogin.hidden = authed;
-      if (authed) closeLoginModal();
-    }
     try {
       if (account) {
         new MutationObserver(function () {
@@ -259,6 +283,7 @@
       syncHeaderLogin();
       revealGenerationProgress();
     }, 1000);
+
     if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
   }
 })();
