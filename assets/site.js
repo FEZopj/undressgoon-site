@@ -475,6 +475,15 @@
   // its own stage and scrolls itself.
   // instant, not smooth: a smooth scroll silently does nothing where the
   // compositor is not animating, and these have to land every time
+  // Phones stack the generator and the result vertically, so on a tap the
+  // answer is below the fold and we scroll to it. Desktop lays them side by
+  // side — the result is already on screen, so that same scroll just yanks the
+  // page down for nothing. Gate the on-submit / on-loading scroll to mobile;
+  // desktop only recentres the finished result (and only if it is off screen).
+  function isMobileView() {
+    return (window.innerWidth || document.documentElement.clientWidth || 0) < 768;
+  }
+
   function scrollToElement(el, block) {
     if (!el) return;
     var vh = window.innerHeight || document.documentElement.clientHeight || 0;
@@ -513,7 +522,7 @@
       var oldLoader = document.getElementById('generation-loader');
       if (oldLoader) oldLoader.hidden = true;
       drawPreviewFrame();
-      scrollResultIntoView(el);
+      if (isMobileView()) scrollResultIntoView(el);
       _pvStarted = Date.now();
       window.clearInterval(_pvTimer);
       _pvTimer = window.setInterval(function () {
@@ -1459,6 +1468,9 @@
     }
     refreshIcons();
     if (empty) empty.hidden = !!list.length;
+    // Bring the finished result into view — on desktop this is the only
+    // scroll; scrollResultIntoView no-ops when it is already on screen.
+    if (list.length) scrollResultIntoView(document.querySelector('.result-panel'));
   }
 
   function goToGoogleLogin() {
@@ -2462,7 +2474,7 @@
       // Phones stack the panel below the whole form, so whatever answers this
       // tap (the working preview, or the sign-up card) is off screen and the
       // tap reads as dead. Both branches below write into this panel.
-      scrollResultIntoView(document.querySelector('.result-panel'));
+      if (isMobileView()) scrollResultIntoView(document.querySelector('.result-panel'));
       var authed = !!(currentSession && currentSession.user);
       track('website_generation_submit', { mode: selectedModeValue(), logged_in: authed });
       // Must be signed in to generate — save their work and prompt sign-up.
