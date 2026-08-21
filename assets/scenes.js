@@ -63,6 +63,9 @@
       .then(function (r) { return r.json(); })
       .then(function (d) {
         applySceneAvailability(!!(d && d.enabled), !!(d && d.beta));
+        // Hand the catalogue to site.js so its picker is always the server's
+        // list — otherwise a preset removed server-side lingers as a dead button.
+        if (window.UG_APPLY_SCENE_CATALOGUE) window.UG_APPLY_SCENE_CATALOGUE(d);
         if (!announced) { renderAnnouncement(d && d.announcement); announced = true; }
       })
       .catch(function () { /* silent — Scene mode stays hidden */ });

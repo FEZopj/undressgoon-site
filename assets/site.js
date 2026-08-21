@@ -1551,6 +1551,7 @@
   // prompt text stays server-side and is resolved from the key at generation
   // time. Labels stay local because each locale page ships translated ones.
   var remoteCatalogue = null;
+  var remoteScenes = null;      // /web/scenes catalogue, so the picker never drifts
   var rerenderPresets = null;   // set by initPresets so a late fetch can repaint
   var selectedPresetKey = '';   // sent as `preset` on submit
 
@@ -1585,6 +1586,44 @@
       };
     });
   }
+  // Scene catalogue from the backend. scenes.js already fetches /web/scenes for
+  // the availability flag, so it hands the payload here rather than us issuing a
+  // second request. Same contract as cataloguePresets: server owns the list,
+  // local list only supplies labels, and a failed fetch degrades to the built-in
+  // array instead of an empty picker.
+  window.UG_APPLY_SCENE_CATALOGUE = function (payload) {
+    var cat = payload && payload.scenes;
+    if (!cat || !cat.presets || !cat.presets.length) return;
+    remoteScenes = cat;
+    if (rerenderPresets) rerenderPresets();
+  };
+
+  function sceneCatalogue(localScenes) {
+    if (!remoteScenes || !remoteScenes.presets) return localScenes;
+    var byKey = {};
+    (localScenes || []).forEach(function (p) { byKey[p.key] = p; });
+    return remoteScenes.presets.map(function (rp) {
+      var local = byKey[rp.key];
+      return {
+        key: rp.key,
+        category: rp.category,
+        label: (local && local.label) || rp.label,
+        // scene presets carry the KEY, not prose — the backend resolves it
+        prompt: rp.key
+      };
+    });
+  }
+
+  function sceneCategories(localCats) {
+    if (!remoteScenes || !remoteScenes.categories || !remoteScenes.categories.length) return localCats;
+    var byKey = {};
+    (localCats || []).forEach(function (c) { byKey[c.key] = c; });
+    return remoteScenes.categories.map(function (rc) {
+      var local = byKey[rc.key];
+      return { key: rc.key, label: (local && local.label) || rc.label };
+    });
+  }
+
   function isBuyer() {
     return !!(currentSession && currentSession.user && currentSession.user.hasPurchased);
   }
@@ -1755,11 +1794,11 @@
     }
 
     function activeCats() {
-      return activeMode() === 'scene' ? sceneCats : outfitCats;
+      return activeMode() === 'scene' ? sceneCategories(sceneCats) : outfitCats;
     }
 
     function activePresets() {
-      if (activeMode() === 'scene') return scenePresets;
+      if (activeMode() === 'scene') return sceneCatalogue(scenePresets);
       return cataloguePresets(presets);
     }
 
