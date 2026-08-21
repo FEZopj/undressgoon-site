@@ -1,0 +1,315 @@
+name: One-shot conversion funnel r6
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-shot-conversion-funnel-r6.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply conversion funnel improvements
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          def must_replace(text, old, new, label, count=1):
+              if old not in text:
+                  raise SystemExit(f'Missing expected block: {label}')
+              return text.replace(old, new, count)
+
+          # ---------------- site.js ----------------
+          p = Path('assets/site.js')
+          s = p.read_text(encoding='utf-8')
+
+          s = must_replace(
+              s,
+              "  var firstGenerationDone = false;\n  var exitOfferArmed = false;\n",
+              "  var firstGenerationDone = false;\n  var exitOfferArmed = false;\n  var loginPromptRevealed = false;\n",
+              'login prompt state',
+          )
+
+          sticky_pattern = re.compile(
+              r'  // Sticky bottom CTA after scroll\n  function initSticky\(\) \{.*?\n  \}\n\n  // Live "generating now" counter',
+              re.S,
+          )
+          sticky_new = '''  // Sticky bottom CTA after scroll. Keep it out of the way while the\n  // visitor is actively using the generator, signing in, or viewing a result.\n  function initSticky() {\n    var bar = document.getElementById('sticky-cta');\n    if (!bar) return;\n    var generator = document.getElementById('generate');\n    var login = document.getElementById('login-box');\n    var stage = document.querySelector('.lp2-stage');\n\n    function check() {\n      var y = window.scrollY || document.documentElement.scrollTop;\n      var generatorVisible = false;\n      if (generator) {\n        var r = generator.getBoundingClientRect();\n        generatorVisible = r.bottom > 80 && r.top < window.innerHeight - 40;\n      }\n      var loginVisible = !!(login && !login.hidden);\n      var generating = !!(stage && stage.classList.contains('is-generating'));\n      bar.classList.toggle('show', y > 420 && !generatorVisible && !loginVisible && !generating);\n    }\n\n    window.addEventListener('scroll', check, { passive: true });\n    window.addEventListener('resize', check);\n    try {\n      if (login) new MutationObserver(check).observe(login, { attributes: true, attributeFilter: ['hidden'] });\n      if (stage) new MutationObserver(check).observe(stage, { attributes: true, attributeFilter: ['class'] });\n    } catch (e) {}\n    check();\n  }\n\n  // Live "generating now" counter'''
+          s, n = sticky_pattern.subn(sticky_new, s, count=1)
+          if n != 1:
+              raise SystemExit('Could not replace initSticky')
+
+          account_old = '''    var loginCopy = document.getElementById('login-box-copy');\n    if (loginCopy && !authed) loginCopy.textContent = signupCreditCopy() + '. ' + t('noCardNeeded', 'No card needed.');\n    // Must be signed in to generate — show the login box when signed out.\n    if (login) login.hidden = authed;\n    if (logout) logout.hidden = !authed;\n    if (form) form.classList.toggle('is-locked', !authed);'''
+          account_new = '''    // Let signed-out visitors build their generation first. The signup box only\n    // appears after they press Generate, so account creation is the last step.\n    if (authed) loginPromptRevealed = false;\n    if (login) login.hidden = authed || !loginPromptRevealed;\n    if (logout) logout.hidden = !authed;\n    if (form) form.classList.remove('is-locked');'''
+          s = must_replace(s, account_old, account_new, 'signed-out generator flow')
+
+          reveal_old = '''    function revealLoginPrompt() {\n      var box = document.getElementById('login-box');\n      if (box) {\n        box.hidden = false;\n        try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}\n      }\n      setStatus(t('signInToGenerate', 'Sign in to generate, your photo and prompt are saved.'), 'working');\n    }'''
+          reveal_new = '''    function revealLoginPrompt() {\n      loginPromptRevealed = true;\n      var box = document.getElementById('login-box');\n      if (box) {\n        box.hidden = false;\n        var land = function () {\n          var header = document.querySelector('header');\n          var headerH = header ? Math.ceil(header.getBoundingClientRect().height) : 0;\n          var top = box.getBoundingClientRect().top + window.pageYOffset - headerH - 14;\n          window.scrollTo(0, Math.max(0, top));\n        };\n        window.setTimeout(land, 20);\n        window.setTimeout(land, 260);\n      }\n      setStatus(t('signInToGenerate', 'Your generation is ready. Sign up to start it — your photo and settings are saved.'), 'working');\n    }'''
+          s = must_replace(s, reveal_old, reveal_new, 'revealLoginPrompt')
+
+          # Standard prompt presets are free for a never-purchased user; scenes stay locked.
+          s = must_replace(
+              s,
+              "        var locked = !buyer && p.key !== FREE_PRESET_KEY;",
+              "        var locked = !buyer && mode === 'scene';",
+              'preset lock rule',
+          )
+          s = s.replace(
+              "t('lockedPresetHint', 'Your free generation covers the Fully Nude preset. The other looks unlock whenever you top up.')",
+              "t('lockedPresetHint', 'Your free generation can use any standard preset. Scenes unlock whenever you top up.')",
+          )
+          s = s.replace(
+              "t('lockedCustomHint', 'Your free generation covers the Fully Nude preset. Custom prompts unlock whenever you top up.')",
+              "t('lockedCustomHint', 'Your free generation can use any standard preset. Custom prompts unlock whenever you top up.')",
+          )
+
+          # The login box is now the only signup UI after Generate; remove duplicate result-card signup notices.
+          signup_notice = re.compile(
+              r'\n\s*paintResultNotice\(\{\s*icon: .🔒.,\s*title: t\(.signUpToGenerateTitle.*?onAction: goToGoogleLogin\s*\}\);',
+              re.S,
+          )
+          s, removed = signup_notice.subn('', s)
+          if removed < 2:
+              raise SystemExit(f'Expected to remove 2 signup result notices, removed {removed}')
+
+          # More compelling checkout copy immediately after the free result.
+          s = must_replace(
+              s,
+              "      if (reason === 'exit_post_gen') {\n        if (title) title.textContent = t('exitOfferTitle', 'Wait - your first result unlocked a private deal');\n        if (copy) copy.textContent = t('exitOfferCopy', 'Keep going now and get bonus credits added automatically to every pack.');\n      } else {",
+              "      if (reason === 'post_free_result') {\n        if (title) title.textContent = t('postFreeTopupTitle', 'Your free result was just the start 🔥');\n        if (copy) copy.textContent = t('postFreeTopupCopy', 'Unlock every preset, custom prompts and more images. One-time credit packs, no subscription, credits never expire.');\n      } else if (reason === 'exit_post_gen') {\n        if (title) title.textContent = t('exitOfferTitle', 'Wait - your first result unlocked a private deal');\n        if (copy) copy.textContent = t('exitOfferCopy', 'Keep going now and get bonus credits added automatically to every pack.');\n      } else {",
+              'post-free checkout copy',
+          )
+
+          post_offer = r'''  function paintPostFreeOffer() {
+    var results = document.getElementById('web-results');
+    if (!results) return;
+    var old = document.getElementById('post-free-offer');
+    if (old) old.remove();
+    var offer = document.createElement('div');
+    offer.id = 'post-free-offer';
+    offer.className = 'post-free-offer';
+    offer.innerHTML =
+      '<span class="post-free-kicker">' + esc(t('postFreeKicker', 'FREE RESULT COMPLETE')) + '</span>' +
+      '<h3>' + esc(t('postFreeTitle', 'Like the result? Unlock every look.')) + '</h3>' +
+      '<p>' + esc(t('postFreeCopy', 'Keep going with every preset, custom prompts and up to 4 images at once.')) + '</p>' +
+      '<div class="post-free-benefits">' +
+        '<span>✓ ' + esc(t('postFreeBenefit1', 'One-time credit packs')) + '</span>' +
+        '<span>✓ ' + esc(t('postFreeBenefit2', 'Credits never expire')) + '</span>' +
+        '<span>✓ ' + esc(t('postFreeBenefit3', 'Failed generations refunded')) + '</span>' +
+      '</div>' +
+      '<button type="button" class="btn btn-accent btn-pulse" id="post-free-topup">' +
+        esc(t('postFreeCta', 'Generate another')) +
+      '</button>' +
+      '<small>' + esc(t('postFreeNoSub', 'No subscription.')) + '</small>';
+    results.insertAdjacentElement('afterend', offer);
+    var btn = document.getElementById('post-free-topup');
+    if (btn) btn.addEventListener('click', function () {
+      track('website_post_free_offer_clicked');
+      showCheckout(true, 'post_free_result');
+    });
+    track('website_post_free_offer_viewed');
+    refreshIcons();
+  }
+
+'''
+          marker = "  function paintResults(images) {\n"
+          if marker not in s:
+              raise SystemExit('paintResults marker missing')
+          s = s.replace(marker, post_offer + marker, 1)
+          s = must_replace(
+              s,
+              "  function paintResults(images) {\n    var empty = document.getElementById('web-result-empty');",
+              "  function paintResults(images) {\n    var priorOffer = document.getElementById('post-free-offer');\n    if (priorOffer) priorOffer.remove();\n    var empty = document.getElementById('web-result-empty');",
+              'clear old post-free offer',
+          )
+
+          success_old = '''        .then(function (data) {\n          if (isFirstResultOfferEligible()) {\n            firstGenerationDone = true;\n            armExitOffer();\n          }\n          stopWorkingPreview(true);\n          paintResults(data.images || []);\n          track('website_generation_success', { image_count: (data.images || []).length, balance: data.balance });'''
+          success_new = '''        .then(function (data) {\n          var firstFreeResult = isFirstResultOfferEligible();\n          if (firstFreeResult) {\n            firstGenerationDone = true;\n            armExitOffer();\n          }\n          stopWorkingPreview(true);\n          paintResults(data.images || []);\n          if (firstFreeResult) paintPostFreeOffer();\n          track('website_generation_success', { image_count: (data.images || []).length, balance: data.balance });'''
+          s = must_replace(s, success_old, success_new, 'first result upsell')
+
+          # Paint one strong before/after directly beneath the mobile promise.
+          hero_marker = "      var openedAt = opening.index;\n\n      var alt = i18n.imgAlt || 'AI undress result';"
+          hero_inject = '''      var openedAt = opening.index;\n\n      var heroMount = document.getElementById('hero-example');\n      if (!heroMount) {\n        var proof = document.querySelector('.lp2-pitch .lp2-proof');\n        if (proof) {\n          heroMount = document.createElement('div');\n          heroMount.id = 'hero-example';\n          heroMount.className = 'hero-example';\n          proof.insertAdjacentElement('afterend', heroMount);\n        }\n      }\n      if (heroMount) {\n        var hp = opening.pair;\n        heroMount.innerHTML =\n          '<div class="hero-ex-label">' + esc(t('heroExample', 'Example result')) + '</div>' +\n          '<div class="hero-ex-card">' +\n            '<figure class="hero-ex-pane"><img src="' + esc(exSrc(hp.before)) + '" alt="" decoding="async" /><figcaption>' + esc(t('exBefore', 'Before')) + '</figcaption></figure>' +\n            '<figure class="hero-ex-pane"><img src="' + esc(exSrc(hp.after)) + '" alt="" decoding="async" /><figcaption class="after">' + esc(t('exAfter', 'After')) + '</figcaption></figure>' +\n          '</div>';\n        heroMount.hidden = false;\n      }\n\n      var alt = i18n.imgAlt || 'AI undress result';'''
+          s = must_replace(s, hero_marker, hero_inject, 'early hero example')
+
+          p.write_text(s, encoding='utf-8')
+
+          # ---------------- lp2.js ----------------
+          p = Path('assets/lp2.js')
+          l = p.read_text(encoding='utf-8')
+          l = must_replace(
+              l,
+              "    function isSignedOut() {\n      var login = document.getElementById('login-box');\n      return !!(login && !login.hidden);\n    }",
+              "    function isSignedOut() {\n      var account = document.getElementById('site-account');\n      return !account || account.hidden;\n    }",
+              'lp2 auth detection',
+          )
+          p.write_text(l, encoding='utf-8')
+
+          # ---------------- CSS ----------------
+          css = Path('assets/site.css')
+          c = css.read_text(encoding='utf-8')
+          c += r'''
+
+/* ===== Conversion funnel r6 ======================================== */
+.ex-kicker { display: none; }
+
+.post-free-offer {
+  margin: 16px 0 2px;
+  padding: 18px;
+  border: 1px solid rgba(255,45,85,.42);
+  border-radius: 16px;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(255,45,85,.13), rgba(180,76,255,.08)), var(--surface2);
+  box-shadow: 0 16px 42px rgba(255,45,85,.12);
+}
+.post-free-kicker {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: var(--accent2);
+  font-size: .7rem;
+  font-weight: 950;
+  letter-spacing: .11em;
+}
+.post-free-offer h3 { margin: 0 0 7px; font-size: 1.18rem; }
+.post-free-offer > p { margin: 0 auto 12px; max-width: 560px; color: var(--muted); font-size: .9rem; }
+.post-free-benefits { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px 14px; margin: 0 0 14px; color: var(--text); font-size: .78rem; font-weight: 800; }
+.post-free-offer .btn { width: min(360px, 100%); min-height: 48px; }
+.post-free-offer small { display: block; margin-top: 8px; color: var(--muted); font-size: .72rem; }
+
+.hero-example { display: none; }
+@media (max-width: 980px) {
+  .hero-example:not([hidden]) { display: block; width: min(580px, 100%); margin: 10px auto 5px; }
+  .hero-ex-label { margin-bottom: 7px; color: var(--muted); font-size: .7rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+  .hero-ex-card { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hero-ex-pane { position: relative; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--surface2); aspect-ratio: 3 / 4; }
+  .hero-ex-pane img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .hero-ex-pane figcaption { position: absolute; top: 8px; left: 8px; padding: 4px 8px; border-radius: 999px; color: #fff; background: rgba(9,9,12,.75); font-size: .64rem; font-weight: 950; letter-spacing: .06em; text-transform: uppercase; }
+  .hero-ex-pane figcaption.after { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+}
+
+@media (max-width: 700px) {
+  body { padding-bottom: 68px; }
+  .sticky-cta { padding: 6px 10px calc(6px + var(--safe-bottom)); }
+  .sticky-inner { gap: 7px; }
+  .sticky-copy span { display: none; }
+  .sticky-copy strong { font-size: .78rem; line-height: 1.15; }
+  .sticky-cta .btn { min-height: 40px; padding: 8px 11px; font-size: .78rem; border-radius: 10px; animation: none; }
+}
+'''
+          css.write_text(c, encoding='utf-8')
+
+          # ---------------- localized landing HTML ----------------
+          pages = {
+            'index.html': {
+              'headline': 'Upload a photo. Get an AI nude & more in ~60 seconds.',
+              'login': 'Your generation is ready. Create your free account to start it. Your photo and settings are saved.',
+              'preset': 'CHOOSE A PRESET',
+              'example': 'Example results',
+              'trust': ['No public gallery.', 'No subscription.', 'Failed generations refunded.', 'Results in ~60s.'],
+              'faq': 'Yes. Sign up and you get 1 free generation with any standard preset. No card required. Scenes and custom prompts unlock after your first top-up.'
+            },
+            'fr/index.html': {
+              'headline': 'Importe une photo. Obtiens un nu IA et plus en ~60 secondes.',
+              'login': 'Ta génération est prête. Crée ton compte gratuit pour la lancer. Ta photo et tes réglages sont enregistrés.',
+              'preset': 'CHOISIS UN PRESET',
+              'example': 'Exemples de résultats',
+              'trust': ['Aucune galerie publique.', 'Aucun abonnement.', 'Générations échouées remboursées.', 'Résultats en ~60 s.'],
+              'faq': 'Oui. Inscris-toi et tu obtiens 1 génération gratuite avec le preset standard de ton choix. Aucune carte requise. Les scènes et les prompts personnalisés se débloquent après ton premier achat de crédits.'
+            },
+            'es/index.html': {
+              'headline': 'Sube una foto. Obtén un desnudo con IA y más en ~60 segundos.',
+              'login': 'Tu generación está lista. Crea tu cuenta gratis para iniciarla. Tu foto y tus ajustes están guardados.',
+              'preset': 'ELIGE UN PRESET',
+              'example': 'Ejemplos de resultados',
+              'trust': ['Sin galería pública.', 'Sin suscripción.', 'Generaciones fallidas reembolsadas.', 'Resultados en ~60 s.'],
+              'faq': 'Sí. Regístrate y obtén 1 generación gratis con cualquier preset estándar. No necesitas tarjeta. Las escenas y los prompts personalizados se desbloquean después de tu primera compra de créditos.'
+            },
+            'pt/index.html': {
+              'headline': 'Envie uma foto. Gere um nu com IA e mais em ~60 segundos.',
+              'login': 'Sua geração está pronta. Crie sua conta grátis para iniciar. Sua foto e configurações estão salvas.',
+              'preset': 'ESCOLHA UM PRESET',
+              'example': 'Exemplos de resultados',
+              'trust': ['Sem galeria pública.', 'Sem assinatura.', 'Gerações com falha são reembolsadas.', 'Resultados em ~60 s.'],
+              'faq': 'Sim. Cadastre-se e ganhe 1 geração grátis com qualquer preset padrão. Não precisa de cartão. Cenas e prompts personalizados são liberados após a primeira compra de créditos.'
+            },
+            'de/index.html': {
+              'headline': 'Lade ein Foto hoch. Erhalte ein KI-Nacktbild & mehr in ~60 Sekunden.',
+              'login': 'Deine Generierung ist bereit. Erstelle dein kostenloses Konto, um sie zu starten. Foto und Einstellungen sind gespeichert.',
+              'preset': 'WÄHLE EIN PRESET',
+              'example': 'Beispielergebnisse',
+              'trust': ['Keine öffentliche Galerie.', 'Kein Abo.', 'Fehlgeschlagene Generierungen werden erstattet.', 'Ergebnisse in ~60 Sek.'],
+              'faq': 'Ja. Registriere dich und erhalte 1 kostenlose Generierung mit einem beliebigen Standard-Preset. Keine Karte nötig. Szenen und eigene Prompts werden nach deinem ersten Credit-Kauf freigeschaltet.'
+            },
+            'ja/index.html': {
+              'headline': '写真をアップロード。約60秒でAIヌードなどを生成。',
+              'login': '生成準備ができました。無料アカウントを作成すると開始できます。写真と設定は保存されています。',
+              'preset': 'プリセットを選択',
+              'example': '生成例',
+              'trust': ['公開ギャラリーなし。', 'サブスクなし。', '失敗した生成は自動返金。', '約60秒で結果。'],
+              'faq': 'はい。登録すると、標準プリセットならどれでも1回無料で生成できます。カードは不要です。シーンとカスタムプロンプトは最初のクレジット購入後に利用できます。'
+            },
+            'zh/index.html': {
+              'headline': '上传照片，约 60 秒生成 AI 裸照等效果。',
+              'login': '你的生成已准备好。创建免费账户即可开始，照片和设置都已保存。',
+              'preset': '选择一个预设',
+              'example': '效果示例',
+              'trust': ['无公开作品库。', '无订阅。', '生成失败自动退还点数。', '约60秒出结果。'],
+              'faq': '是的。注册后可使用任意标准预设免费生成1次，无需银行卡。场景和自定义提示词会在首次购买点数后解锁。'
+            },
+            'ru/index.html': {
+              'headline': 'Загрузите фото. Получите AI-ню и другие варианты примерно за 60 секунд.',
+              'login': 'Генерация готова. Создайте бесплатный аккаунт, чтобы запустить её. Фото и настройки сохранены.',
+              'preset': 'ВЫБЕРИТЕ ПРЕСЕТ',
+              'example': 'Примеры результатов',
+              'trust': ['Без публичной галереи.', 'Без подписки.', 'Неудачные генерации возвращаются.', 'Результат примерно за 60 сек.'],
+              'faq': 'Да. Зарегистрируйтесь и получите 1 бесплатную генерацию с любым стандартным пресетом. Карта не нужна. Сцены и собственные промпты открываются после первой покупки кредитов.'
+            },
+          }
+
+          icons = ['eye-off', 'repeat-2', 'rotate-ccw', 'timer']
+          for file, copy in pages.items():
+              path = Path(file)
+              text = path.read_text(encoding='utf-8')
+              text = text.replace('<div class="login-box" id="login-box">', '<div class="login-box" id="login-box" hidden>', 1)
+              text, n = re.subn(r'<p id="login-box-copy">.*?</p>', '<p id="login-box-copy">' + copy['login'] + '</p>', text, count=1, flags=re.S)
+              if n != 1: raise SystemExit(f'login copy not found: {file}')
+              text, n = re.subn(r'(<div class="lp2-pitch">.*?<h1>).*?(</h1>)', r'\1' + copy['headline'] + r'\2', text, count=1, flags=re.S)
+              if n != 1: raise SystemExit(f'headline not found: {file}')
+              text, n = re.subn(r'(<div class="preset-top">\s*<span class="field-label">).*?(</span>)', r'\1' + copy['preset'] + r'\2', text, count=1, flags=re.S)
+              if n != 1: raise SystemExit(f'preset label not found: {file}')
+              text, n = re.subn(r'(<section class="section" id="ex-heading".*?<h2 class="section-title">).*?(</h2>)', r'\1' + copy['example'] + r'\2', text, count=1, flags=re.S)
+              if n != 1: raise SystemExit(f'example heading not found: {file}')
+
+              trust_html = '<div class="lp2-trust">\n' + '\n'.join(
+                  f'        <div><i data-lucide="{icons[i]}"></i><span><strong>{label}</strong></span></div>'
+                  for i, label in enumerate(copy['trust'])
+              ) + '\n      </div>'
+              text, n = re.subn(r'<div class="lp2-trust">\s*(?:<div>.*?</div>\s*){4}</div>', trust_html, text, count=1, flags=re.S)
+              if n != 1: raise SystemExit(f'trust block not found: {file}')
+
+              # Update the FAQ entry that still describes Fully Nude as the only free preset.
+              faq_pattern = re.compile(r'(<details>\s*<summary>.*?</summary>\s*<p>)([^<]*Fully Nude[^<]*)(</p>)', re.S)
+              text, _ = faq_pattern.subn(lambda m: m.group(1) + copy['faq'] + m.group(3), text, count=1)
+
+              text = text.replace('?v=20260821-r4', '?v=20260822-r6')
+              path.write_text(text, encoding='utf-8')
+
+          PY
+
+          node --check assets/site.js
+          node --check assets/lp2.js
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-shot-conversion-funnel-r6.yml
+          git add assets/site.js assets/lp2.js assets/site.css index.html es/index.html pt/index.html zh/index.html ja/index.html ru/index.html fr/index.html de/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Improve landing conversion funnel"
+          git push origin HEAD:main
