@@ -41,9 +41,6 @@
       return !!(account && !account.hidden);
     }
 
-    // The acquisition funnel only works if it looks usable before signup.
-    // site.js can still add is-locked for signed-out users, so strip the visual
-    // lock every time it appears. Premium-only controls keep their own locks.
     function keepGeneratorActive() {
       form.classList.remove('is-locked');
       form.style.opacity = '1';
@@ -54,7 +51,6 @@
         .observe(form, { attributes: true, attributeFilter: ['class'] });
     } catch (e) {}
 
-    // Headline category breadth: sell the whole product, not five outfit names.
     function tuneProductBreadth() {
       var cats = document.querySelector('.lp2-cats');
       if (!cats) return;
@@ -70,14 +66,12 @@
     }
     tuneProductBreadth();
 
-    // Correct the old Fully-Nude-only popup copy. Standard Outfit Edit presets
-    // are now included in the free generation; scenes and custom prompts are not.
     function patchFreeNotice() {
       var notice = document.getElementById('ug-notice');
       if (!notice || notice.hidden) return;
       var msg = notice.querySelector('.ug-notice-msg');
       if (!msg) return;
-      msg.textContent = copy({
+      var desired = copy({
         fr: 'Ta génération gratuite couvre tous les presets Outfit Edit. Les scènes et les prompts personnalisés se débloquent dès que tu recharges.',
         de: 'Deine kostenlose Generierung gilt für alle Outfit-Edit-Presets. Szenen und eigene Prompts werden nach dem ersten Aufladen freigeschaltet.',
         es: 'Tu generación gratis cubre todos los presets de Outfit Edit. Las escenas y los prompts personalizados se desbloquean al recargar.',
@@ -86,6 +80,7 @@
         ru: 'Бесплатная генерация доступна для всех пресетов Outfit Edit. Сцены и свои промпты открываются после пополнения.',
         zh: '免费生成可使用全部 Outfit Edit 预设。充值后可解锁场景和自定义提示词。'
       }, 'Your free generation covers all Outfit Edit presets. Scenes and custom prompts unlock whenever you top up.');
+      if (msg.textContent !== desired) msg.textContent = desired;
     }
 
     document.addEventListener('click', function (event) {
@@ -99,8 +94,6 @@
       }
     }, true);
 
-    // Defensive fallback for cached site.js/locales that can still paint the
-    // old Fully Nude wording through another locked entry point.
     try {
       new MutationObserver(function () {
         var msg = document.querySelector('#ug-notice:not([hidden]) .ug-notice-msg');
@@ -112,9 +105,6 @@
       }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
     } catch (e) {}
 
-    // --- Returning-user login --------------------------------------------
-    // Reuse the exact Google/email controls and their existing site.js event
-    // handlers by temporarily moving them into a lightweight header modal.
     var style = document.createElement('style');
     style.id = 'ug-returning-login-style';
     style.textContent =
@@ -122,6 +112,7 @@
       '.ug-header-login{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 12px;border:1px solid var(--border);border-radius:11px;background:transparent;color:var(--text);font:inherit;font-size:.84rem;font-weight:850;cursor:pointer;white-space:nowrap}' +
       '.ug-header-login:hover{border-color:rgba(255,45,85,.58);background:rgba(255,45,85,.1)}' +
       '.ug-header-login svg{width:16px;height:16px}' +
+      '.ug-login-open body{overflow:hidden}' +
       '.ug-login-modal[hidden]{display:none!important}' +
       '.ug-login-modal{position:fixed;inset:0;z-index:900;display:grid;place-items:center;padding:18px}' +
       '.ug-login-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px)}' +
@@ -220,7 +211,6 @@
       }
     } catch (e) {}
 
-    // Avoid a login-button flash while site.js is resolving an existing session.
     window.setTimeout(syncHeaderLogin, 450);
     window.setTimeout(syncHeaderLogin, 1000);
     if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
