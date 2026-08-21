@@ -1,0 +1,85 @@
+name: One-shot dark theme default
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-shot-dark-default.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make dark the default arrival theme
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          changed = []
+          for path in Path('.').rglob('*.html'):
+              if '.git' in path.parts:
+                  continue
+              text = path.read_text(encoding='utf-8')
+              original = text
+              text = re.sub(
+                  r'(<html\b[^>]*\bdata-theme=)["\']light["\']',
+                  r'\1"dark"',
+                  text,
+                  count=1,
+                  flags=re.I,
+              )
+              text = text.replace(
+                  '<meta name="theme-color" content="#f6f7fb"',
+                  '<meta name="theme-color" content="#070709"',
+              )
+              # Avoid a light-logo flash before site.js boots on first paint.
+              text = text.replace('brand-logo-light-fast.png', 'brand-logo-fast.png')
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  changed.append(str(path))
+
+          site = Path('assets/site.js')
+          text = site.read_text(encoding='utf-8')
+          old = "setTheme(saved === 'dark' ? 'dark' : 'light');"
+          new = "setTheme(saved === 'light' ? 'light' : 'dark');"
+          if old not in text:
+              raise SystemExit('Expected initTheme default line not found')
+          text = text.replace(old, new, 1)
+          text = text.replace(
+              '// Light is the default on arrival regardless of OS preference: a paid\n'
+              '// adult service reads as more legitimate on white, and first-time visitors\n'
+              '// decide whether to trust the page long before they touch the toggle.\n'
+              '// Only switch to dark if the visitor explicitly chose it.\n'
+              '// The markup already ships data-theme="light", so this agrees with what is\n'
+              '// painted and nothing flashes; a saved "dark" repaints once, on purpose.',
+              '// Dark is the default on arrival. Respect an explicit saved light choice;\n'
+              '// otherwise keep the dark markup so first paint and hydrated state agree.',
+              1,
+          )
+          site.write_text(text, encoding='utf-8')
+
+          manifest = Path('assets/site.webmanifest')
+          if manifest.exists():
+              m = manifest.read_text(encoding='utf-8')
+              m2 = m.replace('#f6f7fb', '#070709')
+              if m2 != m:
+                  manifest.write_text(m2, encoding='utf-8')
+
+          print('Updated HTML files:', len(changed))
+          PY
+
+          node --check assets/site.js
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-shot-dark-default.yml
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Make dark theme the default"
+          git push origin HEAD:main
