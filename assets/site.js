@@ -2611,6 +2611,15 @@
     return false;
   }
 
+  // Answering from the manifest is instant, but every caller here was written
+  // against a fetch - exDiscover counts callbacks against a countdown, walk()
+  // recurses from inside them, and initExamplePair assumed its work landed
+  // after boot() had finished. Replying synchronously ran that entire chain
+  // inside boot(), so anything that threw in it took the language switch, the
+  // theme and the generator down with it. Hand the answer back on a fresh
+  // task, exactly as the network used to.
+  function exLater(cb, value) { window.setTimeout(function () { cb(value); }, 0); }
+
   function exResolve(name, deep, cb) {
     // Ask list.php once before probing anything. Every caller funnels through
     // here, so this single guard is what keeps the old 404 storm from firing
@@ -2620,11 +2629,11 @@
       return;
     }
     // the manifest knows the real filename outright - no request at all
-    if (EX_MAP && EX_MAP[name]) { cb(EX_MAP[name]); return; }
+    if (EX_MAP && EX_MAP[name]) { exLater(cb, EX_MAP[name]); return; }
     // A populated manifest is authoritative: a miss really means "no such
     // pair", so do not spend eight probes confirming it. An EMPTY manifest
     // means list.php was unavailable, so fall through to the old sweep.
-    if (EX_MAP && exMapHasAny()) { cb(null); return; }
+    if (EX_MAP && exMapHasAny()) { exLater(cb, null); return; }
     // one request, not eight, once we know what these files are named
     if (EX_HINT) {
       exHead(EX_BASE + name + EX_HINT, function (hit) {
@@ -2911,17 +2920,32 @@
   }
 
   function boot() {
-    loadPresetCatalogue();
-    initExamplePair();
-    normalizeCtas();
-    initLanguageSwitch();
-    initTheme();
-    initDiscountCode();
-    initWebGenerator();
-    initReferralPage();
-    initSticky();
-    initLiveCounter();
-    initToast();
-    refreshIcons();
+    // Each step is independent, so one throwing must not silently cancel the
+    // ones after it. That is what "the page opens but nothing is clickable"
+    // was: an early step failed and the generator, language switch and theme
+    // never got wired up. Report the failure and keep going.
+    var steps = [
+      ['presets', loadPresetCatalogue],
+      ['examples', initExamplePair],
+      ['ctas', normalizeCtas],
+      ['language', initLanguageSwitch],
+      ['theme', initTheme],
+      ['discount', initDiscountCode],
+      ['generator', initWebGenerator],
+      ['referral', initReferralPage],
+      ['sticky', initSticky],
+      ['counter', initLiveCounter],
+      ['toast', initToast],
+      ['icons', refreshIcons]
+    ];
+    for (var i = 0; i < steps.length; i++) {
+      try {
+        steps[i][1]();
+      } catch (err) {
+        if (window.console && console.error) {
+          console.error('[boot] "' + steps[i][0] + '" failed; continuing', err);
+        }
+      }
+    }
   }
 })();

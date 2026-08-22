@@ -26,7 +26,7 @@
     ready(enhance);
   } else {
     var core = document.createElement('script');
-    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r9';
+    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r10';
     core.async = false;
     core.onload = function () { ready(enhance); };
     document.head.appendChild(core);
