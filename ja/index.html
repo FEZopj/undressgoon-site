@@ -59,13 +59,11 @@
 }
   </script>
 
-  <link rel="preload" href="../assets/site.css?v=20260822-r12" as="style" />
-  <link rel="preload" href="../assets/brand-logo-fast.png" as="image" type="image/png" />
-  <link rel="stylesheet" href="../assets/site.css?v=20260822-r12" />
-  <link rel="stylesheet" href="../assets/scenes.css?v=20260822-r11" />
+  <link rel="preconnect" href="https://api.undressgoon.app" crossorigin />
+  <link rel="preload" href="/assets/hero-before.webp?v=20260822-r15" imagesrcset="/assets/hero-before-240.webp?v=20260822-r15 240w, /assets/hero-before.webp?v=20260822-r15 480w" imagesizes="(max-width: 980px) calc(50vw - 18px), 260px" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="../assets/brand-logo-fast.webp" as="image" type="image/webp" />
+  <link id="ug-conversion-r7-css" rel="stylesheet" href="../assets/landing.css?v=20260822-r15" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
-  <link rel="stylesheet" href="../assets/lp2.css?v=20260822-r11" />
-  <link id="ug-conversion-r7-css" rel="stylesheet" href="../assets/conversion-r7.css?v=20260822-r11" />
 </head>
 <body>
 
@@ -75,7 +73,7 @@
   <header>
     <div class="container header-inner">
       <a class="logo" href="index.html" aria-label="UndressGoon home">
-        <img src="../assets/brand-logo-fast.png" alt="UndressGoon" width="220" height="63" />
+        <img src="../assets/brand-logo-fast.webp" alt="UndressGoon" width="220" height="56" />
       </a>
       <div class="header-right">
         <nav class="lang-switch" aria-label="Language">
@@ -90,6 +88,7 @@
           <option value="../de/index.html">DE</option>
           </select>
         </nav>
+        <button type="button" class="ug-header-login" id="ug-header-login"><i data-lucide="log-in"></i><span>ログイン</span></button>
         <a href="#generate" class="btn btn-accent" data-generate-cta>無料で生成</a>
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><i data-lucide="sun"></i></button>
         <div class="site-account" id="site-account" hidden>
@@ -121,7 +120,7 @@
     <!-- STAGE — the product IS the hero: generator on the left, the
        pitch on the right. Results open in a popup (assets/lp2.js), so
        the page never shows an empty result box. -->
-  <section class="lp2-stage" id="generate">
+  <section class="lp2-stage" id="generate" role="main">
     <div class="container lp2-split">
 
       <div class="lp2-col-gen">
@@ -221,18 +220,26 @@
           </form>
         </div>
         </div>
+        <div class="lp2-trust-mobile" id="lp2-trust-mobile"></div>
       </div>
 
             <aside class="lp2-col-right">
         <div class="lp2-pitch">
 
       <div class="badge">AI脱衣ジェネレーター · 18+</div>
-      <h1>あなたの写真をAIで脱がす。</h1>
-      <p class="lp2-cats"><strong>フルヌード</strong> · マイクロビキニ · ランジェリー · ラテックス · BDSM · カスタムプロンプト</p>
+      <h1>写真をアップロード。AIヌードなどを約60秒で生成。</h1>
+      <p class="lp2-cats">ヌード · 衣装編集 · セックスシーン · フェティッシュ · カスタムプロンプト</p>
       <div class="lp2-proof">
         <span><i data-lucide="ticket"></i> 無料生成1回</span>
         <span><i data-lucide="credit-card"></i> カード不要</span>
         <span><i data-lucide="timer"></i> 60秒で結果</span>
+      </div>
+      <div class="hero-example" data-static-example>
+        <div class="hero-ex-label">Example result</div>
+        <div class="hero-ex-card">
+          <figure class="hero-ex-pane"><img src="/assets/hero-before.webp?v=20260822-r15" srcset="/assets/hero-before-240.webp?v=20260822-r15 240w, /assets/hero-before.webp?v=20260822-r15 480w" sizes="(max-width: 980px) calc(50vw - 18px), 260px" width="480" height="600" alt="Example before AI edit" decoding="async" fetchpriority="high"><figcaption>Before</figcaption></figure>
+          <figure class="hero-ex-pane"><img src="/assets/hero-after.webp?v=20260822-r15" srcset="/assets/hero-after-240.webp?v=20260822-r15 240w, /assets/hero-after.webp?v=20260822-r15 480w" sizes="(max-width: 980px) calc(50vw - 18px), 260px" width="480" height="600" alt="Example AI-generated result" decoding="async"><figcaption class="after">After</figcaption></figure>
+        </div>
       </div>
 <div class="lp2-trust">
         <div><i data-lucide="eye-off"></i><span><strong>公開ギャラリーなし。</strong></span></div>
@@ -266,9 +273,9 @@
 
   <!-- 3 · VISUAL PROOF. Hidden until site.js finds a pair in examples/: a
        heading with nothing under it reads as a broken page. -->
-  <section class="section" id="ex-heading" style="padding-bottom:0" hidden>
+  <section class="section" id="ex-heading" style="padding-bottom:0">
     <div class="container">
-      <h2 class="section-title">生成結果はこんな感じになります</h2>
+      <h2 class="section-title">生成例</h2>
     </div>
   </section>
   <div id="ex-mount"></div>
@@ -548,10 +555,10 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260822-r11" defer></script>
-  <script src="../assets/site.js?v=20260822-r13" defer></script>
+  <script src="../assets/site.js?v=20260822-r15" defer></script>
   <script src="../assets/scenes.js?v=20260822-r11" defer></script>
-  <script src="../assets/lp2-core-r7.js?v=20260822-r13" defer></script>
-  <script src="../assets/lp2.js?v=20260822-r14" defer></script>
+  <script src="../assets/lp2-core-r7.js?v=20260822-r15" defer></script>
+  <script src="../assets/lp2.js?v=20260822-r15" defer></script>
 
 </body>
 </html>

@@ -26,7 +26,7 @@
     ready(enhance);
   } else {
     var core = document.createElement('script');
-    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r13';
+    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r15';
     core.async = false;
     core.onload = function () { ready(enhance); };
     document.head.appendChild(core);
@@ -190,16 +190,19 @@
       '@media(max-width:560px){.ug-header-login{min-height:38px;padding:8px 9px;font-size:.78rem}.ug-login-modal{padding:8px}.ug-login-dialog{max-height:calc(100dvh - 16px);padding:22px 17px 18px;border-radius:18px}.ug-login-dialog:before{left:17px;right:17px}.ug-login-kicker{margin-bottom:11px}.ug-login-description{font-size:.96rem;margin-bottom:16px}}';
     document.head.appendChild(style);
 
-    var headerLogin = document.createElement('button');
-    headerLogin.type = 'button';
-    headerLogin.id = 'ug-header-login';
-    headerLogin.className = 'ug-header-login';
-    headerLogin.hidden = true;
-    headerLogin.innerHTML = '<i data-lucide="log-in"></i><span>' + copy({
-      fr: 'Connexion', de: 'Login', es: 'Entrar', pt: 'Entrar', ja: 'ログイン', ru: 'Войти', zh: '登录'
-    }, 'Log in') + '</span>';
+    var headerLogin = document.getElementById('ug-header-login');
     var generateCta = headerRight.querySelector('[data-generate-cta]');
-    headerRight.insertBefore(headerLogin, generateCta || headerRight.firstChild);
+    if (!headerLogin) {
+      headerLogin = document.createElement('button');
+      headerLogin.type = 'button';
+      headerLogin.id = 'ug-header-login';
+      headerLogin.className = 'ug-header-login';
+      headerLogin.hidden = true;
+      headerLogin.innerHTML = '<i data-lucide="log-in"></i><span>' + copy({
+        fr: 'Connexion', de: 'Login', es: 'Entrar', pt: 'Entrar', ja: 'ログイン', ru: 'Войти', zh: '登录'
+      }, 'Log in') + '</span>';
+      headerRight.insertBefore(headerLogin, generateCta || headerRight.firstChild);
+    }
 
     var modal = document.createElement('div');
     modal.id = 'ug-returning-login-modal';

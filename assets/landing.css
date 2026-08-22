@@ -1,3 +1,4 @@
+/* bundled from site.css */
 :root {
   --bg: #070709;
   --surface: #111114;
@@ -2893,3 +2894,437 @@ html[data-theme="light"] .ex-peek-btn::after {
 @media (prefers-reduced-motion: reduce) {
   .ex-peek-btn::after { animation: none; opacity: 0; }
 }
+
+/* bundled from scenes.css */
+/* ==========================================================================
+   UndressGoon — site announcement banner styles (rendered by assets/scenes.js).
+   The Scenes feature UI lives in the main generator and uses site.css styles;
+   this file only styles the header announcement banner.
+   ========================================================================== */
+.ugsc-announce {
+  background: linear-gradient(90deg, var(--accent, #ff2d55), var(--accent2, #ff6b8a));
+  color: #fff; text-align: center; padding: 10px 42px; font-size: .92rem; font-weight: 700;
+  position: relative; z-index: 60; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.ugsc-announce a { color: #fff; text-decoration: underline; }
+.ugsc-announce .ugsc-x {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  cursor: pointer; opacity: .9; font-weight: 900; font-size: 1.1rem; line-height: 1;
+}
+
+/* Scene subject-attribute selectors reuse .advanced-options from site.css; this
+   just tightens the optional helper line above them. */
+#scene-subject .scene-subject-head { line-height: 1.35; }
+
+/* "Coming soon" state for the Scene generator mode — greyed + unselectable. */
+.mode-row label.scene-coming-soon { opacity: .5; cursor: not-allowed; }
+.mode-row label.scene-coming-soon input { cursor: not-allowed; pointer-events: none; }
+
+/* bundled from lp2.css */
+/* ===== lp2 (variant B) — conversion layout ==========================
+       Generator left, pitch right, results in a popup. Everything else
+       reuses site.css so the brand identity is untouched. */
+
+    /* Black is the default arrival theme (site.css :root); the visitor can
+       still switch to light with the header toggle. */
+
+    /* The signed-out header action is present in the initial HTML so revealing
+       it after session lookup cannot shift the navigation. */
+    .ug-header-login {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      min-height: 38px; padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 11px; background: transparent; color: var(--text);
+      font: inherit; font-size: .84rem; font-weight: 850; cursor: pointer;
+      white-space: nowrap;
+    }
+    .ug-header-login:hover { border-color: rgba(255,45,85,.58); background: rgba(255,45,85,.1); }
+    .ug-header-login i, .ug-header-login svg { display: block; width: 16px; height: 16px; flex: 0 0 16px; }
+
+    /* --- the stage: product + pitch side by side --------------------- */
+    .lp2-stage { padding: 26px 0 10px; }
+    .lp2-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+      gap: 32px;
+      align-items: center;   /* pitch column centred against the generator */
+    }
+    /* the generator shell was a 2-col grid (form + result); it is a single
+       column here because the result now lives in the popup */
+    .lp2-col-gen .generator-app { display: block; padding: 10px; }
+    .lp2-col-gen .generator-panel { margin: 0; }
+
+    .lp2-col-right { align-self: center; }
+    .lp2-col-right .badge { margin-bottom: 14px; }
+    .lp2-col-right h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.9rem, 3.2vw, 2.9rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+    .lp2-cats { color: var(--muted); font-size: .98rem; margin: 0 0 18px; }
+    .lp2-cats strong { color: var(--text); font-weight: 700; }
+
+    /* proof points read as a checklist, not a row of pills */
+    .lp2-proof {
+      display: flex; flex-direction: column; align-items: flex-start;
+      gap: 13px; margin: 4px 0 20px; color: var(--text);
+      font-size: 1.12rem; font-weight: 600;
+    }
+    .lp2-proof span { display: inline-flex; align-items: center; gap: 12px; }
+    .lp2-proof i, .lp2-proof svg {
+      color: var(--accent2); flex: 0 0 auto; width: 22px; height: 22px;
+    }
+
+    .lp2-col-right .free-note { font-size: .82rem; color: var(--muted); margin: 0 0 18px; }
+
+    /* trust strip, relocated into the pitch column */
+    .lp2-col-right .lp2-trust { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .lp2-trust-mobile { display: none; }
+    .lp2-trust {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px; margin: 0;
+    }
+    .lp2-trust div {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 13px; font-size: .82rem;
+      color: var(--muted); display: flex; align-items: center; gap: 9px;
+    }
+    .lp2-trust svg, .lp2-trust i { color: var(--accent2); flex: 0 0 auto; }
+    .lp2-trust strong { color: var(--text); }
+
+    /* --- result popup ------------------------------------------------ */
+    .lp2-result-modal {
+      position: fixed; inset: 0; z-index: 140;
+      display: flex; align-items: center; justify-content: center; padding: 18px;
+      opacity: 0; transition: opacity .18s ease;
+    }
+    .lp2-result-modal.is-open { opacity: 1; }
+    .lp2-result-modal[hidden] { display: none; }
+    .lp2-rm-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.74); }
+    .lp2-rm-dialog {
+      position: relative; width: min(760px, 100%); max-height: 88vh; overflow: auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 16px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      transform: translateY(8px); transition: transform .18s ease;
+    }
+    .lp2-result-modal.is-open .lp2-rm-dialog { transform: none; }
+    .lp2-rm-close {
+      position: absolute; top: 10px; right: 10px; z-index: 2;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,.08); border: 1px solid var(--border);
+      color: var(--text); font-size: 1.1rem; line-height: 1; cursor: pointer;
+    }
+    .lp2-rm-close:hover { background: rgba(255,255,255,.16); }
+    /* the two tints above are white films meant for a dark dialog; on light
+       they wash out to invisible, so darken instead of lighten */
+    html[data-theme="light"] .lp2-rm-close { background: rgba(0,0,0,.06); }
+    html[data-theme="light"] .lp2-rm-close:hover { background: rgba(0,0,0,.12); }
+    /* the panel is a plain container inside the dialog */
+    .lp2-rm-dialog .result-panel {
+      min-height: 320px; background: transparent; border: 0;
+      box-shadow: none; padding: 6px;
+    }
+
+    /* --- the rest of the page ---------------------------------------- */
+    .lp2-faq { max-width: 760px; margin: 0 auto; }
+    .lp2-faq details {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 0 16px; margin-bottom: 10px;
+    }
+    .lp2-faq summary {
+      cursor: pointer; font-weight: 700; padding: 14px 0; list-style: none;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .lp2-faq summary::-webkit-details-marker { display: none; }
+    .lp2-faq summary::after { content: "+"; color: var(--accent2); font-weight: 900; }
+    .lp2-faq details[open] summary::after { content: "\2013"; }
+    .lp2-faq p { color: var(--muted); margin: 0 0 14px; line-height: 1.55; }
+    .lp2-faq a { color: var(--accent2); }
+    #pack-grid-inline .pack-card { text-align: center; }
+
+    /* --- mobile: pitch first, then the generator --------------------- */
+    @media (max-width: 980px) {
+      .lp2-split { grid-template-columns: 1fr; gap: 18px; }
+      .lp2-col-right { position: static; order: -1; text-align: center; }
+      .lp2-proof { align-items: center; }
+      .lp2-col-right .lp2-trust { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .lp2-stage { padding-top: 16px; }
+      .lp2-col-right h1 { font-size: clamp(1.6rem, 7vw, 2.1rem); }
+      .lp2-col-right .lp2-trust { grid-template-columns: 1fr; }
+      .lp2-rm-dialog { padding: 12px; border-radius: 16px; }
+    }
+
+/* ===== Compaction — get the Generate button as close to the fold as the
+   form honestly allows. Scoped to the lp2 generator column so the control
+   page's spacing is untouched. ===================================== */
+.lp2-col-gen .login-box { padding: 12px 14px; margin-bottom: 12px; }
+.lp2-col-gen .login-box p { margin: 0 0 10px; font-size: .88rem; }
+.lp2-col-gen .upload-zone { padding: 16px 14px; }
+.lp2-col-gen .web-form { gap: 12px; }
+.lp2-col-gen .mode-row { margin: 0; }
+.lp2-col-gen .preset-picker { margin: 0; }
+.lp2-col-gen .preset-top { margin-bottom: 6px; }
+.lp2-col-gen .write-own-btn { margin: 0; }
+.lp2-col-gen .advanced-options { gap: 10px; margin: 0; }
+.lp2-col-gen .consent-line { margin: 2px 0 0; font-size: .8rem; }
+.lp2-col-gen #web-submit { margin-top: 2px; }
+.lp2-col-gen .form-status:empty { display: none; margin: 0; }
+
+/* ===== Mobile: get to the product fast ==============================
+   Tighten the pitch so the upload zone is reachable with one short
+   scroll; the trust strip is relocated below the generator by lp2.js. */
+@media (max-width: 980px) {
+  .lp2-col-right .badge { margin-bottom: 10px; }
+  .lp2-col-right h1 { margin-bottom: 8px; }
+  .lp2-cats { margin-bottom: 12px; font-size: .9rem; }
+  /* proof points become wrapping chips instead of a tall vertical list */
+  .lp2-proof {
+    flex-direction: row; flex-wrap: wrap; justify-content: center;
+    gap: 9px 15px; margin-bottom: 12px; font-size: .95rem;
+  }
+  .lp2-proof i, .lp2-proof svg { width: 18px; height: 18px; }
+  .lp2-col-right .free-note { margin-bottom: 6px; }
+  /* trust strip sits under the generator on small screens */
+  .lp2-pitch > .lp2-trust { display: none; }
+  .lp2-trust-mobile { display: block; min-height: 118px; margin-top: 16px; }
+  .lp2-trust-mobile .lp2-trust { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .lp2-trust-mobile { min-height: 238px; }
+  .lp2-trust-mobile .lp2-trust { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  /* inline links inside FAQ answers: keep them in the sentence but give the
+     tap a bit more height */
+  .lp2-faq p a { display: inline-block; padding: 4px 1px; }
+}
+
+
+/* ===== Result takes the stage =====================================
+   On generate the pitch slides down out of the way and the result rises
+   into the same spot, so the eye never leaves where it was looking. */
+.lp2-col-right { position: relative; }
+
+.lp2-pitch {
+  transition: opacity .28s ease, transform .28s ease;
+  will-change: opacity, transform;
+}
+.lp2-stage.is-generating .lp2-pitch {
+  opacity: 0;
+  transform: translateY(26px);
+  pointer-events: none;
+}
+/* collapsed after the fade so it stops taking up space */
+.lp2-stage.is-generating .lp2-pitch.is-gone { display: none; }
+
+.lp2-stage-result[hidden] { display: none; }
+.lp2-stage-result {
+  animation: lp2-result-in .38s cubic-bezier(.2, .7, .3, 1) both;
+}
+@keyframes lp2-result-in {
+  from { opacity: 0; transform: translateY(28px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+.lp2-stage-result .result-panel {
+  min-height: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+}
+/* the empty "your result appears here" copy is redundant once the panel only
+   shows up during/after a generation */
+.lp2-stage-result #web-result-empty { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp2-pitch, .lp2-stage-result { transition: none; animation: none; }
+  .lp2-preview-scan::before { animation: none; }
+}
+
+@media (max-width: 980px) {
+  /* stacked: the result appears under the generator, pitch drops below it */
+  .lp2-stage.is-generating .lp2-col-right { order: 1; }
+}
+
+/* bundled from conversion-r7.css */
+/* UndressGoon conversion funnel r7 — loaded by lp2.js */
+
+/* Simplify the lower example section: the section heading already says enough. */
+.ex-kicker { display: none !important; }
+
+/* Strong proof close to the promise, before the generator on mobile. */
+.hero-example {
+  width: min(520px, 100%);
+  margin: 14px 0 16px;
+}
+.hero-ex-label {
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 900;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.hero-ex-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.hero-ex-pane {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--surface2);
+}
+.hero-ex-pane img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-ex-pane figcaption {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(7,7,9,.76);
+  font-size: .62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.hero-ex-pane figcaption.after {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+/* The auth request now comes only after Generate. */
+.login-ready-title {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+/* Aggressive-but-clean upsell immediately after the free successful result. */
+.post-free-offer {
+  margin: 18px 0 4px;
+  padding: 20px 16px;
+  border: 1px solid rgba(255,45,85,.45);
+  border-radius: 17px;
+  text-align: center;
+  background:
+    linear-gradient(145deg, rgba(255,45,85,.15), rgba(180,76,255,.08)),
+    var(--surface2);
+  box-shadow: 0 18px 48px rgba(255,45,85,.14);
+}
+.post-free-kicker {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: var(--accent2);
+  font-size: .68rem;
+  font-weight: 950;
+  letter-spacing: .11em;
+}
+.post-free-offer h3 {
+  margin: 0 0 7px;
+  font-size: 1.22rem;
+  line-height: 1.2;
+}
+.post-free-offer > p {
+  max-width: 560px;
+  margin: 0 auto 13px;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.48;
+}
+.post-free-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px 14px;
+  margin: 0 0 15px;
+  color: var(--text);
+  font-size: .78rem;
+  font-weight: 800;
+}
+.post-free-offer .btn {
+  width: min(360px, 100%);
+  min-height: 48px;
+}
+.post-free-offer small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+/* The sticky bar remains useful outside the product, but should not eat a
+   large slice of a phone viewport. lp2.js hides it while the generator/auth/
+   result is active. */
+.sticky-cta {
+  padding: 6px 10px calc(6px + var(--safe-bottom)) !important;
+}
+.sticky-inner {
+  gap: 8px !important;
+}
+.sticky-copy strong {
+  font-size: .8rem !important;
+}
+.sticky-copy span {
+  font-size: .7rem !important;
+}
+.sticky-cta .btn {
+  padding: 8px 12px !important;
+  min-height: 38px !important;
+  font-size: .8rem !important;
+}
+
+/* Standard-preset locks are removed in JS for free users. Keep locked custom
+   prompt / scene controls visually clear. */
+.preset-grid button:not(.locked) .preset-lock { display: none !important; }
+
+@media (max-width: 980px) {
+  .hero-example {
+    margin: 10px auto 12px;
+  }
+}
+
+@media (max-width: 700px) {
+  body { padding-bottom: 64px; }
+  .sticky-copy span { display: none !important; }
+  .sticky-copy strong { font-size: .76rem !important; }
+  .sticky-cta .btn {
+    min-height: 36px !important;
+    padding: 7px 10px !important;
+    font-size: .76rem !important;
+  }
+  .post-free-offer {
+    padding: 18px 13px;
+  }
+  .post-free-benefits {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-ex-card { gap: 6px; }
+  .hero-ex-pane { border-radius: 11px; }
+  .hero-ex-pane figcaption {
+    left: 6px;
+    top: 6px;
+    padding: 3px 7px;
+    font-size: .58rem;
+  }
+}
+

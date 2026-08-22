@@ -193,8 +193,8 @@
         }, 'Example results');
       }
 
-      var trust = document.querySelector('.lp2-trust');
-      if (trust) {
+      var trusts = document.querySelectorAll('.lp2-trust');
+      if (trusts.length) {
         var items = [
           ['eye-off', copy({
             fr: 'Aucune galerie publique.',
@@ -233,11 +233,13 @@
             zh: '约 60 秒出结果。'
           }, 'Results in ~60s.')]
         ];
-        var nodes = trust.querySelectorAll(':scope > div');
-        nodes.forEach(function (node, idx) {
-          if (!items[idx]) return;
-          node.innerHTML = '<i data-lucide="' + items[idx][0] + '"></i><span><strong>' +
-            items[idx][1] + '</strong></span>';
+        trusts.forEach(function (trust) {
+          var nodes = trust.querySelectorAll(':scope > div');
+          nodes.forEach(function (node, idx) {
+            if (!items[idx]) return;
+            node.innerHTML = '<i data-lucide="' + items[idx][0] + '"></i><span><strong>' +
+              items[idx][1] + '</strong></span>';
+          });
         });
         if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
       }
@@ -270,6 +272,19 @@
     // ---- one strong before/after earlier ----------------------------------
     function paintHeroExample() {
       if (heroExamplePainted) return true;
+      var existing = document.querySelector('.lp2-pitch .hero-example');
+      if (existing) {
+        var label = existing.querySelector('.hero-ex-label');
+        var captions = existing.querySelectorAll('figcaption');
+        if (label) label.textContent = copy({
+          fr: 'Exemple réel', de: 'Beispiel', es: 'Ejemplo', pt: 'Exemplo',
+          ja: '生成例', ru: 'Пример', zh: '效果示例'
+        }, 'Example result');
+        if (captions[0]) captions[0].textContent = copy({fr:'Avant',de:'Vorher',es:'Antes',pt:'Antes',ja:'変換前',ru:'До',zh:'之前'}, 'Before');
+        if (captions[1]) captions[1].textContent = copy({fr:'Après',de:'Nachher',es:'Después',pt:'Depois',ja:'変換後',ru:'После',zh:'之后'}, 'After');
+        heroExamplePainted = true;
+        return true;
+      }
       var before = document.getElementById('ex-before');
       var after = document.getElementById('ex-after');
       if (!before || !after || !before.getAttribute('src') || !after.getAttribute('src')) return false;
@@ -466,25 +481,12 @@
     }
 
     // ---- mobile: trust strip stays below the generator --------------------
+    // The slot is present in the initial HTML and reserves its final height,
+    // so cloning into it cannot move the generator or the content below it.
     var trust = document.querySelector('.lp2-pitch .lp2-trust');
-    var genCol = document.querySelector('.lp2-col-gen');
-    var pitchHost = document.querySelector('.lp2-pitch');
-    if (trust && pitchHost && genCol && window.matchMedia) {
-      var slot = document.createElement('div');
-      slot.className = 'lp2-trust-mobile';
-      genCol.appendChild(slot);
-      var mq = window.matchMedia('(max-width: 980px)');
-      var place = function () {
-        if (mq.matches) {
-          if (trust.parentNode !== slot) slot.appendChild(trust);
-        } else if (trust.parentNode !== pitchHost) {
-          pitchHost.appendChild(trust);
-        }
-      };
-      place();
-      if (mq.addEventListener) mq.addEventListener('change', place);
-      else if (mq.addListener) mq.addListener(place);
-      window.addEventListener('resize', place);
+    var slot = document.getElementById('lp2-trust-mobile');
+    if (trust && slot && !slot.firstElementChild) {
+      slot.appendChild(trust.cloneNode(true));
     }
 
     // Final delayed passes after site.js has painted session/presets/examples.

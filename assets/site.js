@@ -742,9 +742,9 @@
     document.querySelectorAll('.logo img').forEach(function (img) {
       var src = img.getAttribute('src') || '';
       if (clean === 'light') {
-        img.setAttribute('src', src.replace('brand-logo-fast.png', 'brand-logo-light-fast.png').replace('brand-logo.png', 'brand-logo-light-fast.png'));
+        img.setAttribute('src', src.replace('brand-logo-fast.webp', 'brand-logo-light-fast.webp').replace('brand-logo-fast.png', 'brand-logo-light-fast.webp').replace('brand-logo.png', 'brand-logo-light-fast.webp'));
       } else {
-        img.setAttribute('src', src.replace('brand-logo-light-fast.png', 'brand-logo-fast.png').replace('brand-logo-light.png', 'brand-logo-fast.png'));
+        img.setAttribute('src', src.replace('brand-logo-light-fast.webp', 'brand-logo-fast.webp').replace('brand-logo-light-fast.png', 'brand-logo-fast.webp').replace('brand-logo-light.png', 'brand-logo-fast.webp'));
       }
     });
   }
@@ -1899,7 +1899,8 @@
         active = cats[0].key;
       }
       tabs.innerHTML = cats.map(function (cat) {
-        return '<button type="button" class="' + (cat.key === active ? 'active' : '') + '" data-cat="' + esc(cat.key) + '">' + esc(cat.label) + '</button>';
+        var selectedTab = cat.key === active;
+        return '<button type="button" role="tab" aria-selected="' + (selectedTab ? 'true' : 'false') + '" class="' + (selectedTab ? 'active' : '') + '" data-cat="' + esc(cat.key) + '">' + esc(cat.label) + '</button>';
       }).join('');
       tabs.querySelectorAll('button').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -2837,7 +2838,7 @@
       // A link from the pitch column down to the example. Built here, not in
       // the HTML, so it only ever exists when there is something to scroll to.
       var peek = document.getElementById('ex-peek');
-      if (peek) {
+      if (peek && !document.querySelector('.lp2-pitch .hero-example')) {
         var peekBtn = document.createElement('button');
         peekBtn.type = 'button';
         peekBtn.className = 'ex-peek-btn';
@@ -2972,7 +2973,6 @@
     // never got wired up. Report the failure and keep going.
     var steps = [
       ['presets', loadPresetCatalogue],
-      ['examples', initExamplePair],
       ['ctas', normalizeCtas],
       ['language', initLanguageSwitch],
       ['theme', initTheme],
@@ -2992,6 +2992,28 @@
           console.error('[boot] "' + steps[i][0] + '" failed; continuing', err);
         }
       }
+    }
+    // The hero contains an immediately discoverable, optimized comparison.
+    // Hydrate the larger shuffleable gallery only after critical rendering so
+    // its manifest and image requests cannot compete with the LCP resource.
+    var loadExamples = function () {
+      try { initExamplePair(); }
+      catch (err) {
+        if (window.console && console.error) console.error('[boot] "examples" failed; continuing', err);
+      }
+    };
+    var exampleTarget = document.getElementById('ex-heading') || document.getElementById('ex-mount');
+    if (exampleTarget && window.IntersectionObserver) {
+      var exampleObserver = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+        exampleObserver.disconnect();
+        loadExamples();
+      }, { rootMargin: '0px' });
+      exampleObserver.observe(exampleTarget);
+    } else if (window.requestIdleCallback) {
+      window.requestIdleCallback(loadExamples, { timeout: 2400 });
+    } else {
+      window.setTimeout(loadExamples, 1200);
     }
   }
 })();

@@ -5,6 +5,18 @@
     /* Black is the default arrival theme (site.css :root); the visitor can
        still switch to light with the header toggle. */
 
+    /* The signed-out header action is present in the initial HTML so revealing
+       it after session lookup cannot shift the navigation. */
+    .ug-header-login {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      min-height: 38px; padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 11px; background: transparent; color: var(--text);
+      font: inherit; font-size: .84rem; font-weight: 850; cursor: pointer;
+      white-space: nowrap;
+    }
+    .ug-header-login:hover { border-color: rgba(255,45,85,.58); background: rgba(255,45,85,.1); }
+    .ug-header-login i, .ug-header-login svg { display: block; width: 16px; height: 16px; flex: 0 0 16px; }
+
     /* --- the stage: product + pitch side by side --------------------- */
     .lp2-stage { padding: 26px 0 10px; }
     .lp2-split {
@@ -44,6 +56,7 @@
 
     /* trust strip, relocated into the pitch column */
     .lp2-col-right .lp2-trust { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .lp2-trust-mobile { display: none; }
     .lp2-trust {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px; margin: 0;
@@ -152,10 +165,12 @@
   .lp2-proof i, .lp2-proof svg { width: 18px; height: 18px; }
   .lp2-col-right .free-note { margin-bottom: 6px; }
   /* trust strip sits under the generator on small screens */
-  .lp2-trust-mobile { margin-top: 16px; }
+  .lp2-pitch > .lp2-trust { display: none; }
+  .lp2-trust-mobile { display: block; min-height: 118px; margin-top: 16px; }
   .lp2-trust-mobile .lp2-trust { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) {
+  .lp2-trust-mobile { min-height: 238px; }
   .lp2-trust-mobile .lp2-trust { grid-template-columns: 1fr; }
 }
 
