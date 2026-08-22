@@ -2816,7 +2816,6 @@
       mount.appendChild(section);
       var heading = document.getElementById('ex-heading');
       if (heading) heading.hidden = false;
-      emitUi('ug:examples-ready');
 
       // A link from the pitch column down to the example. Built here, not in
       // the HTML, so it only ever exists when there is something to scroll to.
@@ -2874,6 +2873,12 @@
           afterEl.classList.add('is-in');
           busy = false;
           moreBtn.disabled = false;
+          // The hero clone reads these two src attributes. Emitting when the
+          // empty shell was mounted raced the image preloads: on a cold request
+          // lp2-core checked too early, found no sources, and never retried.
+          // Signal only after both halves have real URLs so the comparison is
+          // deterministic on every visit.
+          emitUi('ug:examples-ready');
         }
         exTryLoad(pair.before, armed);
         exTryLoad(pair.after, armed);
