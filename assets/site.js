@@ -715,6 +715,19 @@
     try { document.dispatchEvent(new CustomEvent(name)); } catch (e) {}
   }
 
+  // Give page-specific UI layers first refusal on prompts that need richer
+  // presentation. A cancelled event means that layer displayed the prompt;
+  // pages without it keep the inline fallback below.
+  function requestUi(name, detail) {
+    try {
+      var event = new CustomEvent(name, { cancelable: true, detail: detail || {} });
+      document.dispatchEvent(event);
+      return event.defaultPrevented;
+    } catch (e) {
+      return false;
+    }
+  }
+
   function setTheme(theme) {
     var clean = theme === 'light' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', clean);
@@ -2317,14 +2330,16 @@
             // generation runs for real (resumePendingGeneration).
             track('website_generation_not_authenticated', {});
             stashPending(payloadPromise);
-            revealLoginPrompt();
-            paintResultNotice({
-              icon: '🔒',
-              title: t('signUpToGenerateTitle', 'Sign up to generate'),
-              message: signupCreditCopy() + ' ,  ' + t('noCardNeeded', 'no card needed.'),
-              actionLabel: t('continueGoogle', 'Continue with Google'),
-              onAction: goToGoogleLogin
-            });
+            if (!requestUi('ug:auth-required', { reason: 'generation' })) {
+              revealLoginPrompt();
+              paintResultNotice({
+                icon: '🔒',
+                title: t('signUpToGenerateTitle', 'Sign up to generate'),
+                message: signupCreditCopy() + ', ' + t('noCardNeeded', 'no card needed.'),
+                actionLabel: t('continueGoogle', 'Continue with Google'),
+                onAction: goToGoogleLogin
+              });
+            }
           } else {
             track('website_generation_error', { code: payload.code || 'unknown' });
             paintResultNotice({
@@ -2507,14 +2522,16 @@
       // Must be signed in to generate — save their work and prompt sign-up.
       if (!authed) {
         stashPending(payloadPromise);
-        revealLoginPrompt();
-        paintResultNotice({
-          icon: '🔒',
-          title: t('signUpToGenerateTitle', 'Sign up to generate'),
-          message: signupCreditCopy() + ' ,  ' + t('noCardNeeded', 'no card needed.'),
-          actionLabel: t('continueGoogle', 'Continue with Google'),
-          onAction: goToGoogleLogin
-        });
+        if (!requestUi('ug:auth-required', { reason: 'generation' })) {
+          revealLoginPrompt();
+          paintResultNotice({
+            icon: '🔒',
+            title: t('signUpToGenerateTitle', 'Sign up to generate'),
+            message: signupCreditCopy() + ', ' + t('noCardNeeded', 'no card needed.'),
+            actionLabel: t('continueGoogle', 'Continue with Google'),
+            onAction: goToGoogleLogin
+          });
+        }
         return;
       }
       runGeneration(payloadPromise);

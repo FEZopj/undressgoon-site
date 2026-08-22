@@ -26,7 +26,7 @@
     ready(enhance);
   } else {
     var core = document.createElement('script');
-    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r11';
+    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r13';
     core.async = false;
     core.onload = function () { ready(enhance); };
     document.head.appendChild(core);
@@ -65,7 +65,7 @@
     document.addEventListener('ug:session-updated', keepGeneratorActive);
 
     // If a saved generation resumes after auth, immediately reveal the existing
-    // working animation/result stage and scroll to it.
+    // working animation/result stage. The core owns the single settled scroll.
     function revealGenerationProgress() {
       if (!submit || submit.dataset.busy !== '1' || !resultWrap || !stage) return;
       var wasHidden = resultWrap.hidden;
@@ -73,16 +73,6 @@
       stage.classList.add('is-generating');
       if (wasHidden && pitch) {
         window.setTimeout(function () { pitch.classList.add('is-gone'); }, 300);
-      }
-      if (wasHidden) {
-        var land = function () {
-          var header = document.querySelector('header');
-          var offset = (header ? Math.ceil(header.getBoundingClientRect().height) : 0) + 12;
-          var top = resultWrap.getBoundingClientRect().top + window.pageYOffset - offset;
-          window.scrollTo(0, Math.max(0, top));
-        };
-        window.setTimeout(land, 25);
-        window.setTimeout(land, 320);
       }
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
     }
@@ -163,8 +153,8 @@
       });
     }, true);
 
-    // Returning-user login button + modal. Reuse the real Google/email controls
-    // so all existing auth handlers and pending-generation behavior stay intact.
+    // Returning-user login button + generation gate. Reuse the real Google/email
+    // controls so all existing auth handlers and pending-generation behavior stay intact.
     var style = document.createElement('style');
     style.id = 'ug-returning-login-style';
     style.textContent =
@@ -174,16 +164,29 @@
       '.ug-header-login svg{width:16px;height:16px}' +
       '.ug-login-open body{overflow:hidden}' +
       '.ug-login-modal[hidden]{display:none!important}' +
-      '.ug-login-modal{position:fixed;inset:0;z-index:900;display:grid;place-items:center;padding:18px}' +
-      '.ug-login-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px)}' +
-      '.ug-login-dialog{position:relative;width:min(440px,100%);padding:22px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:0 28px 90px rgba(0,0,0,.55)}' +
-      '.ug-login-close{position:absolute;right:11px;top:10px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.07);color:var(--text);font-size:1.2rem;cursor:pointer}' +
-      '.ug-login-dialog h2{margin:0 38px 5px 0;font-size:1.25rem}' +
-      '.ug-login-dialog>p{margin:0 0 16px;color:var(--muted);font-size:.9rem}' +
+      '.ug-login-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}' +
+      '.ug-login-backdrop{position:absolute;inset:0;background:rgba(3,3,6,.82);backdrop-filter:blur(8px)}' +
+      '.ug-login-dialog{box-sizing:border-box;position:relative;width:min(520px,100%);max-height:calc(100dvh - 36px);overflow-y:auto;padding:28px;border:1px solid rgba(255,48,101,.58);border-radius:22px;background:radial-gradient(circle at 92% 0,rgba(181,35,209,.16),transparent 35%),linear-gradient(145deg,#1b1119,#101014 68%);color:#fff;box-shadow:0 28px 100px rgba(0,0,0,.7),0 0 42px rgba(255,35,91,.17);overscroll-behavior:contain}' +
+      '.ug-login-dialog:before{content:"";position:absolute;left:28px;right:28px;top:0;height:3px;border-radius:0 0 8px 8px;background:linear-gradient(90deg,#ff174f,#ff3d74,#b52bd5)}' +
+      '.ug-login-close{position:absolute;right:13px;top:12px;width:36px;height:36px;border:1px solid rgba(255,255,255,.1);border-radius:50%;background:rgba(255,255,255,.07);color:#fff;font-size:1.25rem;line-height:1;cursor:pointer}' +
+      '.ug-login-close:hover{background:rgba(255,47,99,.18);border-color:rgba(255,47,99,.45)}' +
+      '.ug-login-kicker{display:inline-flex;align-items:center;gap:7px;margin:0 44px 13px 0;padding:7px 10px;border:1px solid rgba(255,63,116,.4);border-radius:999px;background:rgba(255,33,91,.11);color:#ff789c;font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}' +
+      '.ug-login-kicker svg{width:15px;height:15px}' +
+      '.ug-login-dialog h2{margin:0 38px 8px 0;color:#fff;font-size:clamp(1.35rem,4vw,1.65rem);line-height:1.15}' +
+      '.ug-login-description{margin:0 0 20px;color:#d8cfd8;font-size:.96rem;line-height:1.55}' +
       '.ug-login-body{display:grid;gap:10px}' +
-      '.ug-login-body .login-choices{display:grid;gap:9px}' +
+      '.ug-login-body .login-choices{display:grid;gap:10px;margin:0}' +
+      '.ug-login-body .email-auth{margin-top:0}' +
       '.ug-login-body .btn{width:100%}' +
-      '@media(max-width:560px){.ug-header-login{min-height:38px;padding:8px 9px;font-size:.78rem}.ug-login-dialog{padding:18px 14px}}';
+      '.ug-login-body .btn-email{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.24);color:#fff}' +
+      '.ug-login-body .btn-email:hover{background:rgba(255,47,99,.12);border-color:rgba(255,74,125,.58)}' +
+      '.ug-login-body .btn-email .mlogo{color:#ff789c}' +
+      '.ug-login-body .email-auth input{background:#17171c;border-color:rgba(255,255,255,.2);color:#fff}' +
+      '.ug-login-body .email-auth input::placeholder{color:#9f96a0}' +
+      '.ug-login-body .email-sent-copy,.ug-login-body .email-hint,.ug-login-body .link-btn{color:#c9c0ca}' +
+      '.ug-login-body .email-hint strong,.ug-login-body .link-btn:hover{color:#fff}' +
+      '.ug-login-modal.is-generation .ug-login-dialog{border-color:rgba(255,48,101,.72);box-shadow:0 28px 100px rgba(0,0,0,.72),0 0 54px rgba(255,35,91,.24)}' +
+      '@media(max-width:560px){.ug-header-login{min-height:38px;padding:8px 9px;font-size:.78rem}.ug-login-modal{padding:8px}.ug-login-dialog{max-height:calc(100dvh - 16px);padding:22px 17px 18px;border-radius:18px}.ug-login-dialog:before{left:17px;right:17px}.ug-login-kicker{margin-bottom:11px}.ug-login-description{font-size:.9rem;margin-bottom:16px}}';
     document.head.appendChild(style);
 
     var headerLogin = document.createElement('button');
@@ -203,26 +206,20 @@
     modal.hidden = true;
     modal.innerHTML =
       '<div class="ug-login-backdrop" data-ug-login-close></div>' +
-      '<div class="ug-login-dialog" role="dialog" aria-modal="true" aria-labelledby="ug-login-title">' +
+      '<div class="ug-login-dialog" role="dialog" aria-modal="true" aria-labelledby="ug-login-title" aria-describedby="ug-login-description">' +
         '<button type="button" class="ug-login-close" aria-label="Close" data-ug-login-close>×</button>' +
-        '<h2 id="ug-login-title">' + copy({
-          fr:'Bon retour', de:'Willkommen zurück', es:'Bienvenido de nuevo', pt:'Bem-vindo de volta',
-          ja:'おかえりなさい', ru:'С возвращением', zh:'欢迎回来'
-        }, 'Welcome back') + '</h2>' +
-        '<p>' + copy({
-          fr:'Connecte-toi pour retrouver tes crédits et continuer à générer.',
-          de:'Logge dich ein, um deine Credits zu nutzen und weiter zu generieren.',
-          es:'Inicia sesión para acceder a tus créditos y seguir generando.',
-          pt:'Entre para acessar seus créditos e continuar gerando.',
-          ja:'ログインしてクレジットを確認し、生成を続けましょう。',
-          ru:'Войдите, чтобы получить доступ к кредитам и продолжить генерацию.',
-          zh:'登录以使用你的点数并继续生成。'
-        }, 'Log in to access your credits and continue generating.') + '</p>' +
+        '<div class="ug-login-kicker"><i data-lucide="shield-check"></i><span id="ug-login-kicker"></span></div>' +
+        '<h2 id="ug-login-title"></h2>' +
+        '<p class="ug-login-description" id="ug-login-description"></p>' +
         '<div class="ug-login-body" id="ug-login-body"></div>' +
       '</div>';
     document.body.appendChild(modal);
 
     var modalBody = modal.querySelector('#ug-login-body');
+    var modalKicker = modal.querySelector('#ug-login-kicker');
+    var modalTitle = modal.querySelector('#ug-login-title');
+    var modalDescription = modal.querySelector('#ug-login-description');
+    var previousModalFocus = null;
     var authNodes = [
       login.querySelector('.login-choices'),
       document.getElementById('email-form'),
@@ -233,27 +230,73 @@
     function restoreAuthNodes() {
       authNodes.forEach(function (node) { login.appendChild(node); });
     }
-    function openLoginModal() {
-      if (isAuthed()) return;
+    function setLoginModalCopy(reason) {
+      var generation = reason === 'generation';
+      modal.classList.toggle('is-generation', generation);
+      modalKicker.textContent = generation ? copy({
+        fr:'Vérification sécurisée', de:'Sicherheitscheck', es:'Verificación segura', pt:'Verificação segura',
+        ja:'安全確認', ru:'Безопасная проверка', zh:'安全验证'
+      }, 'Secure verification') : copy({
+        fr:'Accès au compte', de:'Kontozugang', es:'Acceso a la cuenta', pt:'Acesso à conta',
+        ja:'アカウント', ru:'Доступ к аккаунту', zh:'账户登录'
+      }, 'Account access');
+      modalTitle.textContent = generation ? copy({
+        fr:'Confirme que tu n’es pas un robot', de:'Bestätige, dass du kein Roboter bist', es:'Confirma que no eres un robot', pt:'Confirme que você não é um robô',
+        ja:'ロボットではないことを確認', ru:'Подтвердите, что вы не робот', zh:'确认你不是机器人'
+      }, 'Confirm you are not a robot') : copy({
+        fr:'Bon retour', de:'Willkommen zurück', es:'Bienvenido de nuevo', pt:'Bem-vindo de volta',
+        ja:'おかえりなさい', ru:'С возвращением', zh:'欢迎回来'
+      }, 'Welcome back');
+      modalDescription.textContent = generation ? copy({
+        fr:'Connecte-toi pour lancer ta génération. Ta photo et tes réglages sont sauvegardés. Ta première génération est gratuite. Aucune carte requise.',
+        de:'Melde dich an, um deine Generierung zu starten. Dein Foto und deine Einstellungen sind gespeichert. Deine erste Generierung ist kostenlos. Keine Karte erforderlich.',
+        es:'Inicia sesión para empezar tu generación. Tu foto y tus ajustes están guardados. Tu primera generación es gratis. No se necesita tarjeta.',
+        pt:'Entre para iniciar sua geração. Sua foto e suas configurações estão salvas. Sua primeira geração é grátis. Não é necessário cartão.',
+        ja:'ログインして生成を開始してください。写真と設定は保存されています。初回生成は無料です。カードは不要です。',
+        ru:'Войдите, чтобы запустить генерацию. Фото и настройки сохранены. Первая генерация бесплатна. Карта не требуется.',
+        zh:'登录即可开始生成。你的照片和设置已保存。首次生成免费。无需信用卡。'
+      }, 'Sign in to start your generation. Your photo and settings are saved. Your first generation is free. No card required.') : copy({
+        fr:'Connecte-toi pour retrouver tes crédits et continuer à générer.',
+        de:'Logge dich ein, um deine Credits zu nutzen und weiter zu generieren.',
+        es:'Inicia sesión para acceder a tus créditos y seguir generando.',
+        pt:'Entre para acessar seus créditos e continuar gerando.',
+        ja:'ログインしてクレジットを確認し、生成を続けましょう。',
+        ru:'Войдите, чтобы получить доступ к кредитам и продолжить генерацию.',
+        zh:'登录以使用你的点数并继续生成。'
+      }, 'Log in to access your credits and continue generating.');
+    }
+    function openLoginModal(reason) {
+      if (isAuthed()) return false;
+      setLoginModalCopy(reason);
+      previousModalFocus = document.activeElement;
       authNodes.forEach(function (node) { modalBody.appendChild(node); });
+      login.hidden = true;
       modal.hidden = false;
       document.documentElement.classList.add('ug-login-open');
       var google = document.getElementById('google-login');
       if (google) window.setTimeout(function () { google.focus(); }, 30);
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
+      return true;
     }
-    function closeLoginModal() {
+    function closeLoginModal(restoreFocus) {
       if (modal.hidden) return;
       modal.hidden = true;
       document.documentElement.classList.remove('ug-login-open');
       restoreAuthNodes();
+      if (restoreFocus !== false && previousModalFocus && previousModalFocus.focus && document.contains(previousModalFocus)) {
+        previousModalFocus.focus();
+      }
+      previousModalFocus = null;
     }
     function syncHeaderLogin() {
       headerLogin.hidden = isAuthed();
-      if (isAuthed()) closeLoginModal();
+      if (isAuthed()) closeLoginModal(false);
     }
 
-    headerLogin.addEventListener('click', openLoginModal);
+    headerLogin.addEventListener('click', function () { openLoginModal('account'); });
+    document.addEventListener('ug:auth-required', function (event) {
+      if (openLoginModal('generation')) event.preventDefault();
+    });
     modal.addEventListener('click', function (event) {
       if (event.target && event.target.hasAttribute('data-ug-login-close')) closeLoginModal();
     });

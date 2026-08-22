@@ -54,6 +54,7 @@
     if (!stage || !resultWrap || !form) return;
 
     var pitchTimer = 0;
+    var resultScrollTimer = 0;
     var authRequested = false;
     var generationWasFree = false;
     var heroExamplePainted = false;
@@ -80,6 +81,10 @@
       return !isAuthed();
     }
 
+    function authModalAvailable() {
+      return !!document.getElementById('ug-returning-login-modal');
+    }
+
     function topBelowHeader(el) {
       if (!el) return;
       var header = document.querySelector('header');
@@ -97,30 +102,34 @@
 
     function styleLoginPrompt() {
       if (!login || isAuthed() || !authRequested) return;
+      if (authModalAvailable()) {
+        login.hidden = true;
+        return;
+      }
       login.hidden = false;
       var p = document.getElementById('login-box-copy');
       if (p) {
         p.innerHTML =
           '<strong class="login-ready-title">' +
           copy({
-            fr: 'Ta génération est prête.',
-            de: 'Deine Generierung ist bereit.',
-            es: 'Tu generación está lista.',
-            pt: 'Sua geração está pronta.',
-            ja: '生成の準備ができました。',
-            ru: 'Ваша генерация готова.',
-            zh: '你的生成已准备好。'
-          }, 'Your generation is ready.') +
+            fr: 'Vérification rapide',
+            de: 'Kurzer Sicherheitscheck',
+            es: 'Comprobación rápida',
+            pt: 'Verificação rápida',
+            ja: 'かんたん本人確認',
+            ru: 'Быстрая проверка',
+            zh: '快速安全验证'
+          }, 'Quick security check') +
           '</strong><span>' +
           copy({
-            fr: ' Inscris-toi pour la lancer — ta photo et tes réglages sont sauvegardés. Première génération gratuite, sans carte.',
-            de: ' Registriere dich, um sie zu starten — Foto und Einstellungen sind gespeichert. Erste Generierung gratis, keine Karte nötig.',
-            es: ' Regístrate para iniciarla — tu foto y ajustes están guardados. Primera generación gratis, sin tarjeta.',
-            pt: ' Cadastre-se para iniciar — sua foto e configurações estão salvas. Primeira geração grátis, sem cartão.',
-            ja: ' 開始するには登録してください。写真と設定は保存済みです。初回生成は無料、カード不要です。',
-            ru: ' Зарегистрируйтесь, чтобы запустить её — фото и настройки сохранены. Первая генерация бесплатна, карта не нужна.',
-            zh: ' 注册即可开始——照片和设置已保存。首次生成免费，无需信用卡。'
-          }, ' Sign up to start it — your photo and settings are saved. First generation free, no card required.') +
+            fr: ' Connecte-toi pour confirmer que tu n’es pas un robot et lancer ta génération. Ta photo et tes réglages sont sauvegardés. Ta première génération est gratuite. Aucune carte requise.',
+            de: ' Melde dich an, um zu bestätigen, dass du kein Roboter bist, und deine Generierung zu starten. Dein Foto und deine Einstellungen sind gespeichert. Deine erste Generierung ist kostenlos. Keine Karte erforderlich.',
+            es: ' Inicia sesión para confirmar que no eres un robot y empezar tu generación. Tu foto y tus ajustes están guardados. Tu primera generación es gratis. No se necesita tarjeta.',
+            pt: ' Entre para confirmar que você não é um robô e iniciar sua geração. Sua foto e suas configurações estão salvas. Sua primeira geração é grátis. Não é necessário cartão.',
+            ja: ' ログインしてロボットではないことを確認し、生成を開始してください。写真と設定は保存されています。初回生成は無料です。カードは不要です。',
+            ru: ' Войдите, чтобы подтвердить, что вы не робот, и запустить генерацию. Фото и настройки сохранены. Первая генерация бесплатна. Карта не требуется.',
+            zh: ' 登录以确认你不是机器人并开始生成。你的照片和设置已保存。首次生成免费。无需信用卡。'
+          }, ' Sign in to confirm you are not a robot and start your generation. Your photo and settings are saved. Your first generation is free. No card required.') +
           '</span>';
       }
       scrollLoginBox();
@@ -133,6 +142,8 @@
       enforcingLogin = true;
       if (isAuthed()) {
         authRequested = false;
+        if (!login.hidden) login.hidden = true;
+      } else if (authModalAvailable()) {
         if (!login.hidden) login.hidden = true;
       } else if (!authRequested) {
         if (!login.hidden) login.hidden = true;
@@ -147,6 +158,11 @@
     document.addEventListener('ug:session-updated', function () {
       syncLoginVisibility();
       unlockStandardPresets();
+    });
+    document.addEventListener('ug:auth-required', function () {
+      authRequested = true;
+      generationWasFree = true;
+      if (login) login.hidden = true;
     });
 
     // ---- headline + trust -------------------------------------------------
@@ -304,17 +320,25 @@
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
     }
 
-    function scrollToResult() {
-      var top = function () {
-        return resultWrap.getBoundingClientRect().top + window.pageYOffset - 72;
-      };
-      try { window.scrollTo({ top: top(), behavior: 'smooth' }); }
-      catch (e) { window.scrollTo(0, top()); }
-      window.setTimeout(function () {
-        var r = resultWrap.getBoundingClientRect();
-        if (r.top > window.innerHeight * 0.9 || r.bottom < 0) window.scrollTo(0, top());
-      }, 450);
+    function scrollToResultOnce() {
+      window.clearTimeout(resultScrollTimer);
+      var reduced = false;
+      try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+      var waitingForPitch = pitch && !pitch.classList.contains('is-gone');
+      resultScrollTimer = window.setTimeout(function () {
+        var header = document.querySelector('header');
+        var offset = (header ? Math.ceil(header.getBoundingClientRect().height) : 0) + 12;
+        var top = resultWrap.getBoundingClientRect().top + window.pageYOffset - offset;
+        top = Math.max(0, top);
+        try { window.scrollTo({ top: top, behavior: reduced ? 'auto' : 'smooth' }); }
+        catch (e) { window.scrollTo(0, top); }
+      }, reduced ? 0 : (waitingForPitch ? 330 : 20));
     }
+
+    document.addEventListener('ug:generation-started', function () {
+      showResultStage();
+      scrollToResultOnce();
+    });
 
     function removeDuplicateSignupNotice() {
       if (!results || !isSignedOut() || !authRequested) return false;
@@ -396,7 +420,6 @@
           paintPostFreeOffer();
           generationWasFree = false;
         }
-        scrollToResult();
       } else if (!isSignedOut()) {
         showResultStage();
       }
@@ -414,22 +437,10 @@
       if (isSignedOut()) {
         authRequested = true;
         generationWasFree = true;
-        window.setTimeout(function () {
-          syncLoginVisibility();
-          styleLoginPrompt();
-          removeDuplicateSignupNotice();
-        }, 30);
-        window.setTimeout(function () {
-          syncLoginVisibility();
-          styleLoginPrompt();
-          removeDuplicateSignupNotice();
-        }, 320);
         return;
       }
 
       generationWasFree = freeUserSignal();
-      showResultStage();
-      scrollToResult();
     }, true);
 
     // ---- sticky CTA -------------------------------------------------------
