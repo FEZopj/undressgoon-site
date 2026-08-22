@@ -2,10 +2,25 @@
 (function () {
   'use strict';
 
+  function scriptBase() {
+    var scripts = document.getElementsByTagName('script');
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      var src = scripts[i].getAttribute('src') || '';
+      if (src.indexOf('lp2.js') !== -1) return src.replace(/lp2\.js(?:\?.*)?$/, '');
+    }
+    return 'assets/';
+  }
+
   function ready(fn) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, { once: true });
     else fn();
   }
+
+  var core = document.createElement('script');
+  core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r7';
+  core.async = false;
+  core.onload = function () { ready(enhance); };
+  document.head.appendChild(core);
 
   function enhance() {
     var form = document.getElementById('web-generate-form');
@@ -271,6 +286,4 @@
 
     if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
   }
-
-  ready(enhance);
 })();

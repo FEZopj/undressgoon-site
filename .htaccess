@@ -5,8 +5,8 @@
   ExpiresByType image/png "access plus 7 days"
   ExpiresByType image/x-icon "access plus 7 days"
   ExpiresByType application/manifest+json "access plus 7 days"
-  ExpiresByType text/css "access plus 30 days"
-  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType text/css "access plus 5 minutes"
+  ExpiresByType application/javascript "access plus 5 minutes"
   ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
 
@@ -15,7 +15,7 @@
     Header set Cache-Control "public, max-age=604800, immutable"
   </FilesMatch>
   <FilesMatch "\.(css|js)$">
-    Header set Cache-Control "public, max-age=2592000, immutable"
+    Header set Cache-Control "public, max-age=300, must-revalidate"
   </FilesMatch>
   <FilesMatch "\.(html)$">
     Header set Cache-Control "public, max-age=300"

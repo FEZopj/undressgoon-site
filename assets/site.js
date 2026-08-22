@@ -348,22 +348,6 @@
     document.querySelectorAll('.lang-switch select').forEach(function (select) {
       if (select.dataset.bound) return;
       select.dataset.bound = '1';
-
-      function warmLanguagePages() {
-        if (select.dataset.warmed === '1') return;
-        select.dataset.warmed = '1';
-        Array.prototype.forEach.call(select.options, function (option) {
-          if (!option.value || option.selected) return;
-          var link = document.createElement('link');
-          link.rel = 'prefetch';
-          link.as = 'document';
-          link.href = new URL(option.value, location.href).href;
-          document.head.appendChild(link);
-        });
-      }
-
-      select.addEventListener('pointerdown', warmLanguagePages, { once: true, passive: true });
-      select.addEventListener('focus', warmLanguagePages, { once: true, passive: true });
       select.addEventListener('change', function () {
         if (!select.value) return;
         // Remember the manual choice so auto-detect never overrides it again,
@@ -372,10 +356,9 @@
           var m = select.value.match(/\/(es|pt|zh|ja|ru|fr|de)\//i);
           localStorage.setItem('ug_lang', m ? m[1].toLowerCase() : 'en');
         } catch (e) {}
-        var target = new URL(select.value, location.href);
-        target.search = location.search;
-        target.hash = location.hash;
-        window.location.assign(target.href);
+        var join = select.value.indexOf('?') === -1 ? '?' : '&';
+        var qs = (location.search || '').replace(/^\?/, '');
+        window.location.href = qs ? select.value + join + qs : select.value;
       });
     });
   }
