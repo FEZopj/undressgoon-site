@@ -2034,6 +2034,47 @@ footer {
   color: var(--accent2);
   opacity: 1;
 }
+.footer-more {
+  width: fit-content;
+  max-width: 100%;
+  margin: -4px auto 14px;
+  color: var(--muted);
+}
+.footer-more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 8px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.footer-more summary::-webkit-details-marker { display: none; }
+.footer-more summary::after {
+  content: "+";
+  color: var(--accent2);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+.footer-more[open] summary::after { transform: rotate(45deg); }
+.footer-secondary-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px 14px;
+  max-width: 680px;
+  margin: 4px auto 2px;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+.footer-secondary-links a {
+  color: var(--muted);
+  transition: color 0.18s;
+}
+.footer-secondary-links a:hover { color: var(--accent2); }
 .operator-line {
   color: var(--muted);
   font-size: 0.82rem;
@@ -2547,7 +2588,9 @@ html[data-theme="light"] .toast {
   .login-choices .btn,
   .account-menu a,
   .account-menu button,
-  .footer-links a {
+  .footer-links a,
+  .footer-more summary,
+  .footer-secondary-links a {
     min-height: 44px;
   }
   .theme-toggle { width: 44px; height: 44px; flex-basis: 44px; }
