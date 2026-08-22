@@ -16,11 +16,21 @@
     else fn();
   }
 
-  var core = document.createElement('script');
-  core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r7';
-  core.async = false;
-  core.onload = function () { ready(enhance); };
-  document.head.appendChild(core);
+  // The core ships as a real <script defer> tag ahead of this file, so it has
+  // already executed (defer preserves document order) and was fetched in
+  // parallel with the page instead of after it. Injecting it here cost a full
+  // serialized round trip on every visit - the page painted, then the core
+  // arrived and visibly rearranged it. Keep the injection only as a fallback
+  // for cached HTML that predates the static tag.
+  if (window.__LP2_CORE_READY) {
+    ready(enhance);
+  } else {
+    var core = document.createElement('script');
+    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r8';
+    core.async = false;
+    core.onload = function () { ready(enhance); };
+    document.head.appendChild(core);
+  }
 
   function enhance() {
     var form = document.getElementById('web-generate-form');

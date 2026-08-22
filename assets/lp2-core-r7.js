@@ -14,6 +14,11 @@
     else fn();
   }
 
+  // Real <script> tags in the HTML load this file in parallel with everything
+  // else; lp2.js checks this flag and only falls back to injecting the script
+  // for stale cached HTML that predates the static tags.
+  window.__LP2_CORE_READY = true;
+
   ready(function () {
     // Keep conversion-only CSS separate from the large shared stylesheet.
     (function loadConversionStyles() {
