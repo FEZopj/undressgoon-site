@@ -8,6 +8,10 @@
      on the English root so there are no loops. */
   (function(){try{
     var LANGS={es:'/es/',pt:'/pt/',zh:'/zh/',ja:'/ja/',ru:'/ru/',fr:'/fr/',de:'/de/'};
+    if(/\/index\.html$/i.test(location.pathname)){
+      try{localStorage.setItem('ug_lang','en');}catch(e){}
+      return;
+    }
     if(localStorage.getItem('ug_lang'))return;
     if(sessionStorage.getItem('ug_lang_redirected'))return;
     if(/^\/(es|pt|zh|ja|ru|fr|de)\//i.test(location.pathname))return;
