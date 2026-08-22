@@ -9,6 +9,39 @@
 (function () {
   'use strict';
 
+  // Every observer in this file reacts to nodes that site.js also writes to.
+  // When the two scripts disagree about a value, each rewrite wakes the other
+  // and the page locks up with the main thread pinned - it opens, refuses every
+  // click, then the tab dies. No real interaction needs more than a handful of
+  // callbacks per second, so each observer gets a budget and disconnects rather
+  // than freezing the page. Losing one enhancement beats losing the whole site.
+  var OBS_BUDGET = 60;       // callbacks allowed per window
+  var OBS_WINDOW_MS = 1000;
+
+  function guardObserver(name, target, opts, fn) {
+    if (!target || !window.MutationObserver) return null;
+    var fires = 0;
+    var since = 0;
+    var mo;
+    try {
+      mo = new MutationObserver(function (records) {
+        var now = (window.Date && Date.now) ? Date.now() : 0;
+        if (now - since > OBS_WINDOW_MS) { since = now; fires = 0; }
+        if (++fires > OBS_BUDGET) {
+          mo.disconnect();
+          if (window.console && console.warn) {
+            console.warn('[lp2] observer "' + name + '" ran away; disconnected to keep the page usable');
+          }
+          return;
+        }
+        fn(records);
+      });
+      mo.observe(target, opts);
+    } catch (e) { return null; }
+    return mo;
+  }
+
+
   function ready(fn) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
     else fn();
@@ -140,14 +173,15 @@
     syncLoginVisibility();
     try {
       if (login) {
-        new MutationObserver(function () { syncLoginVisibility(); })
-          .observe(login, { attributes: true, attributeFilter: ['hidden'] });
+        guardObserver('login-hidden', login, { attributes: true, attributeFilter: ['hidden'] },
+          function () { syncLoginVisibility(); });
       }
       if (siteAccount) {
-        new MutationObserver(function () {
-          syncLoginVisibility();
-          unlockStandardPresets();
-        }).observe(siteAccount, { attributes: true, attributeFilter: ['hidden'] });
+        guardObserver('account-hidden', siteAccount, { attributes: true, attributeFilter: ['hidden'] },
+          function () {
+            syncLoginVisibility();
+            unlockStandardPresets();
+          });
       }
     } catch (e) { /* old browser */ }
 
@@ -247,9 +281,8 @@
     var presetGrid = document.getElementById('preset-grid');
     if (presetGrid) {
       try {
-        new MutationObserver(function () {
-          window.setTimeout(unlockStandardPresets, 0);
-        }).observe(presetGrid, { childList: true, subtree: true });
+        guardObserver('preset-grid', presetGrid, { childList: true, subtree: true },
+          function () { window.setTimeout(unlockStandardPresets, 0); });
       } catch (e) {}
       unlockStandardPresets();
     }
@@ -297,10 +330,12 @@
     var exampleMount = document.getElementById('ex-mount');
     if (exampleMount) {
       try {
-        new MutationObserver(function () {
-          window.setTimeout(paintHeroExample, 20);
-          window.setTimeout(paintHeroExample, 250);
-        }).observe(exampleMount, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
+        guardObserver('hero-example', exampleMount,
+          { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] },
+          function () {
+            window.setTimeout(paintHeroExample, 20);
+            window.setTimeout(paintHeroExample, 250);
+          });
       } catch (e) {}
       paintHeroExample();
     }
@@ -404,7 +439,7 @@
 
     if (results) {
       try {
-        new MutationObserver(function () {
+        guardObserver('results', results, { childList: true, subtree: true }, function () {
           if (removeDuplicateSignupNotice()) return;
           if (!results.children.length) return;
           if (resultLooksSuccessful()) {
@@ -417,7 +452,7 @@
           } else if (!isSignedOut()) {
             showResultStage();
           }
-        }).observe(results, { childList: true, subtree: true });
+        });
       } catch (e) {}
     }
 
@@ -470,7 +505,7 @@
       window.addEventListener('scroll', enforceSticky, { passive: true });
       window.addEventListener('resize', enforceSticky);
       try {
-        new MutationObserver(enforceSticky).observe(sticky, { attributes: true, attributeFilter: ['class'] });
+        guardObserver('sticky', sticky, { attributes: true, attributeFilter: ['class'] }, enforceSticky);
       } catch (e) {}
       enforceSticky();
     }
