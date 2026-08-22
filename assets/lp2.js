@@ -173,7 +173,8 @@
       '.ug-login-kicker{display:inline-flex;align-items:center;gap:7px;margin:0 44px 13px 0;padding:7px 10px;border:1px solid rgba(255,63,116,.4);border-radius:999px;background:rgba(255,33,91,.11);color:#ff789c;font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}' +
       '.ug-login-kicker svg{width:15px;height:15px}' +
       '.ug-login-dialog h2{margin:0 38px 8px 0;color:#fff;font-size:clamp(1.35rem,4vw,1.65rem);line-height:1.15}' +
-      '.ug-login-description{margin:0 0 20px;color:#d8cfd8;font-size:.96rem;line-height:1.55}' +
+      '.ug-login-description{margin:0 0 20px;color:#fff;font-size:1.03rem;font-weight:600;line-height:1.55}' +
+      '.ug-free-word{color:#5cf59a;font-weight:950;text-shadow:0 0 16px rgba(92,245,154,.24)}' +
       '.ug-login-body{display:grid;gap:10px}' +
       '.ug-login-body .login-choices{display:grid;gap:10px;margin:0}' +
       '.ug-login-body .email-auth{margin-top:0}' +
@@ -186,7 +187,7 @@
       '.ug-login-body .email-sent-copy,.ug-login-body .email-hint,.ug-login-body .link-btn{color:#c9c0ca}' +
       '.ug-login-body .email-hint strong,.ug-login-body .link-btn:hover{color:#fff}' +
       '.ug-login-modal.is-generation .ug-login-dialog{border-color:rgba(255,48,101,.72);box-shadow:0 28px 100px rgba(0,0,0,.72),0 0 54px rgba(255,35,91,.24)}' +
-      '@media(max-width:560px){.ug-header-login{min-height:38px;padding:8px 9px;font-size:.78rem}.ug-login-modal{padding:8px}.ug-login-dialog{max-height:calc(100dvh - 16px);padding:22px 17px 18px;border-radius:18px}.ug-login-dialog:before{left:17px;right:17px}.ug-login-kicker{margin-bottom:11px}.ug-login-description{font-size:.9rem;margin-bottom:16px}}';
+      '@media(max-width:560px){.ug-header-login{min-height:38px;padding:8px 9px;font-size:.78rem}.ug-login-modal{padding:8px}.ug-login-dialog{max-height:calc(100dvh - 16px);padding:22px 17px 18px;border-radius:18px}.ug-login-dialog:before{left:17px;right:17px}.ug-login-kicker{margin-bottom:11px}.ug-login-description{font-size:.96rem;margin-bottom:16px}}';
     document.head.appendChild(style);
 
     var headerLogin = document.createElement('button');
@@ -247,23 +248,27 @@
         fr:'Bon retour', de:'Willkommen zurück', es:'Bienvenido de nuevo', pt:'Bem-vindo de volta',
         ja:'おかえりなさい', ru:'С возвращением', zh:'欢迎回来'
       }, 'Welcome back');
-      modalDescription.textContent = generation ? copy({
-        fr:'Connecte-toi pour lancer ta génération. Ta photo et tes réglages sont sauvegardés. Ta première génération est gratuite. Aucune carte requise.',
-        de:'Melde dich an, um deine Generierung zu starten. Dein Foto und deine Einstellungen sind gespeichert. Deine erste Generierung ist kostenlos. Keine Karte erforderlich.',
-        es:'Inicia sesión para empezar tu generación. Tu foto y tus ajustes están guardados. Tu primera generación es gratis. No se necesita tarjeta.',
-        pt:'Entre para iniciar sua geração. Sua foto e suas configurações estão salvas. Sua primeira geração é grátis. Não é necessário cartão.',
-        ja:'ログインして生成を開始してください。写真と設定は保存されています。初回生成は無料です。カードは不要です。',
-        ru:'Войдите, чтобы запустить генерацию. Фото и настройки сохранены. Первая генерация бесплатна. Карта не требуется.',
-        zh:'登录即可开始生成。你的照片和设置已保存。首次生成免费。无需信用卡。'
-      }, 'Sign in to start your generation. Your photo and settings are saved. Your first generation is free. No card required.') : copy({
-        fr:'Connecte-toi pour retrouver tes crédits et continuer à générer.',
-        de:'Logge dich ein, um deine Credits zu nutzen und weiter zu generieren.',
-        es:'Inicia sesión para acceder a tus créditos y seguir generando.',
-        pt:'Entre para acessar seus créditos e continuar gerando.',
-        ja:'ログインしてクレジットを確認し、生成を続けましょう。',
-        ru:'Войдите, чтобы получить доступ к кредитам и продолжить генерацию.',
-        zh:'登录以使用你的点数并继续生成。'
-      }, 'Log in to access your credits and continue generating.');
+      if (generation) {
+        modalDescription.innerHTML = copy({
+          fr:'Connecte-toi pour lancer ta génération. Ta photo et tes réglages sont sauvegardés. Ta génération <strong class="ug-free-word">gratuite</strong> est prête.',
+          de:'Melde dich an, um deine Generierung zu starten. Dein Foto und deine Einstellungen sind gespeichert. Deine <strong class="ug-free-word">kostenlose</strong> Generierung ist bereit.',
+          es:'Inicia sesión para empezar tu generación. Tu foto y tus ajustes están guardados. Tu generación <strong class="ug-free-word">gratis</strong> está lista.',
+          pt:'Entre para iniciar sua geração. Sua foto e suas configurações estão salvas. Sua geração <strong class="ug-free-word">grátis</strong> está pronta.',
+          ja:'ログインして生成を開始してください。写真と設定は保存されています。<strong class="ug-free-word">無料</strong>生成の準備ができています。',
+          ru:'Войдите, чтобы запустить генерацию. Фото и настройки сохранены. Ваша <strong class="ug-free-word">бесплатная</strong> генерация готова.',
+          zh:'登录即可开始生成。你的照片和设置已保存。你的<strong class="ug-free-word">免费</strong>生成已准备好。'
+        }, 'Sign in to start your generation. Your photo and settings are saved. Your <strong class="ug-free-word">free</strong> generation is ready.');
+      } else {
+        modalDescription.textContent = copy({
+          fr:'Connecte-toi pour retrouver tes crédits et continuer à générer.',
+          de:'Logge dich ein, um deine Credits zu nutzen und weiter zu generieren.',
+          es:'Inicia sesión para acceder a tus créditos y seguir generando.',
+          pt:'Entre para acessar seus créditos e continuar gerando.',
+          ja:'ログインしてクレジットを確認し、生成を続けましょう。',
+          ru:'Войдите, чтобы получить доступ к кредитам и продолжить генерацию.',
+          zh:'登录以使用你的点数并继续生成。'
+        }, 'Log in to access your credits and continue generating.');
+      }
     }
     function openLoginModal(reason) {
       if (isAuthed()) return false;
