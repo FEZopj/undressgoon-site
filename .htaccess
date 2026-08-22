@@ -42,14 +42,6 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-
-  # Force HTTPS without looping behind a reverse proxy/CDN. If the public
-  # request already arrived over HTTPS, proxies normally forward that fact in
-  # X-Forwarded-Proto even when Apache itself sees an internal HTTP hop.
-  RewriteCond %{HTTPS} !=on
-  RewriteCond %{HTTP:X-Forwarded-Proto} !^https$ [NC]
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
-
   RewriteRule ^terms/?$ terms.html [L]
   RewriteRule ^privacy/?$ privacy.html [L]
   RewriteRule ^acceptable-use/?$ acceptable-use.html [L]
