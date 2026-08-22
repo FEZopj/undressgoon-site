@@ -693,12 +693,27 @@
     setTimeout(function () { panel.hidden = true; }, 180);
   }
 
+  var iconPassBusy = false;
   function refreshIcons() {
-    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    // Lucide walks the whole document. Re-entering from a MutationObserver
+    // while icons are being swapped used to pin the main thread so the tab
+    // painted but refused every click. Skip if a pass is already running or
+    // there is nothing left to replace.
+    if (iconPassBusy) return;
+    if (!window.lucide || typeof window.lucide.createIcons !== 'function') return;
+    if (!document.querySelector('[data-lucide]')) return;
+    iconPassBusy = true;
+    try {
       window.lucide.createIcons();
+    } finally {
+      iconPassBusy = false;
     }
   }
   window.UG_REFRESH_ICONS = refreshIcons;
+
+  function emitUi(name) {
+    try { document.dispatchEvent(new CustomEvent(name)); } catch (e) {}
+  }
 
   function setTheme(theme) {
     var clean = theme === 'light' ? 'light' : 'dark';
@@ -889,10 +904,12 @@
     if (balance) balance.textContent = authed ? formatCredits(user.credits) : signupCreditCopy();
     var loginCopy = document.getElementById('login-box-copy');
     if (loginCopy && !authed) loginCopy.textContent = signupCreditCopy() + '. ' + t('noCardNeeded', 'No card needed.');
-    // Must be signed in to generate — show the login box when signed out.
-    if (login) login.hidden = authed;
+    // Conversion landing hides signup until Generate. Never force-show the
+    // login box from a session refresh — that fought lp2-core's visibility
+    // observer and froze the page. Reveal happens in revealLoginPrompt().
+    if (login && authed) login.hidden = true;
     if (logout) logout.hidden = !authed;
-    if (form) form.classList.toggle('is-locked', !authed);
+    if (form) form.classList.remove('is-locked');
     // Multi-image / credits selector is for signed-in users only.
     var variationRow = document.getElementById('variation-row');
     if (variationRow) variationRow.hidden = !authed;
@@ -1475,6 +1492,7 @@
     // Bring the finished result into view — on desktop this is the only
     // scroll; scrollResultIntoView no-ops when it is already on screen.
     if (list.length) scrollResultIntoView(document.querySelector('.result-panel'));
+    emitUi('ug:results-updated');
   }
 
   function goToGoogleLogin() {
@@ -1514,6 +1532,7 @@
       if (a) a.addEventListener('click', opts.onAction);
     }
     try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+    emitUi('ug:results-updated');
   }
 
   function ensureGeneratorEnhancements(root) {
@@ -1885,7 +1904,10 @@
         return p.category === active;
       }).map(function (p) {
         var icon = mode === 'scene' ? '' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt'));
-        var locked = !buyer && p.key !== FREE_PRESET_KEY;
+        // Outfit-edit presets are included in the free generation. Scene mode
+        // and custom prompts stay paywalled. Locking outfit buttons here while
+        // lp2-core unlocked them on every mutation froze the landing page.
+        var locked = !buyer && mode === 'scene';
         return '<button type="button" class="' + (p.key === selected ? 'active' : '') + (locked ? ' locked' : '') + '" data-key="' + esc(p.key) + '"' + (locked ? ' data-locked="1"' : '') + '><i data-lucide="' + icon + '"></i>' + esc(p.label) + (locked ? '<span class="preset-lock"><i data-lucide="lock"></i></span>' : '') + '</button>';
       }).join('');
       refreshIcons();
@@ -2226,6 +2248,7 @@
 
     function runGeneration(payloadPromise) {
       if (submit) { submit.disabled = true; submit.dataset.busy = '1'; }
+      emitUi('ug:generation-started');
       setStatus(t('readingUpload', 'Reading upload...'), 'working');
       paintResults([]);
       updateGenerationLoader('preparing', Date.now());
@@ -2793,6 +2816,7 @@
       mount.appendChild(section);
       var heading = document.getElementById('ex-heading');
       if (heading) heading.hidden = false;
+      emitUi('ug:examples-ready');
 
       // A link from the pitch column down to the example. Built here, not in
       // the HTML, so it only ever exists when there is something to scroll to.

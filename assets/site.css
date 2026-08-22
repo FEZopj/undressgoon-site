@@ -27,6 +27,11 @@ html[data-theme="light"] {
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 [hidden] { display: none !important; }
+/* Opacity-0 overlays still capture clicks. Closed dialogs must not. */
+.topup-modal:not(.is-open),
+.ug-notice:not(.is-open) {
+  pointer-events: none !important;
+}
 
 html { scroll-behavior: smooth; }
 

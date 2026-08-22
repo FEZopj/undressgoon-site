@@ -26,7 +26,7 @@
     ready(enhance);
   } else {
     var core = document.createElement('script');
-    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r10';
+    core.src = scriptBase() + 'lp2-core-r7.js?v=20260822-r11';
     core.async = false;
     core.onload = function () { ready(enhance); };
     document.head.appendChild(core);
@@ -55,14 +55,14 @@
 
     // Keep the acquisition form looking fully usable before signup.
     function keepGeneratorActive() {
-      form.classList.remove('is-locked');
-      form.style.opacity = '1';
+      if (form.classList.contains('is-locked')) form.classList.remove('is-locked');
+      if (form.style.opacity !== '1') form.style.opacity = '1';
     }
     keepGeneratorActive();
-    try {
-      new MutationObserver(keepGeneratorActive)
-        .observe(form, { attributes: true, attributeFilter: ['class'] });
-    } catch (e) {}
+    // site.js announces the completed auth/session repaint. This is the only
+    // moment that can restore is-locked, so observing every class mutation was
+    // both unnecessary and the source of a startup feedback loop.
+    document.addEventListener('ug:session-updated', keepGeneratorActive);
 
     // If a saved generation resumes after auth, immediately reveal the existing
     // working animation/result stage and scroll to it.
@@ -86,13 +86,9 @@
       }
       if (window.UG_REFRESH_ICONS) window.UG_REFRESH_ICONS();
     }
-    if (submit) {
-      try {
-        new MutationObserver(revealGenerationProgress)
-          .observe(submit, { attributes: true, attributeFilter: ['data-busy', 'disabled'] });
-      } catch (e) {}
-      revealGenerationProgress();
-    }
+    document.addEventListener('ug:generation-started', revealGenerationProgress);
+    document.addEventListener('ug:session-updated', revealGenerationProgress);
+    revealGenerationProgress();
 
     // Sell the breadth of the product instead of a short outfit list.
     var cats = document.querySelector('.lp2-cats');
@@ -136,16 +132,6 @@
         window.setTimeout(patchFreeNotice, 40);
       }
     }, true);
-
-    try {
-      new MutationObserver(function () {
-        var msg = document.querySelector('#ug-notice:not([hidden]) .ug-notice-msg');
-        if (!msg) return;
-        if (/Fully Nude|free generation|génération gratuite|generación gratis|geração grátis/i.test(String(msg.textContent || ''))) {
-          patchFreeNotice();
-        }
-      }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
-    } catch (e) {}
 
     // Deterministic logout: stop the legacy handler before it can navigate or
     // leave the UI half-reset. POST the API, then reload the clean landing page.
@@ -275,15 +261,12 @@
       if (event.key === 'Escape' && !modal.hidden) closeLoginModal();
     });
 
-    try {
-      if (account) {
-        new MutationObserver(function () {
-          syncHeaderLogin();
-          window.setTimeout(revealGenerationProgress, 0);
-          window.setTimeout(revealGenerationProgress, 80);
-        }).observe(account, { attributes: true, attributeFilter: ['hidden'] });
-      }
-    } catch (e) {}
+    function syncAfterSession() {
+      syncHeaderLogin();
+      window.setTimeout(revealGenerationProgress, 0);
+      window.setTimeout(revealGenerationProgress, 80);
+    }
+    document.addEventListener('ug:session-updated', syncAfterSession);
 
     window.setTimeout(function () {
       syncHeaderLogin();
