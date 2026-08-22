@@ -1,10 +1,9 @@
 # The site-wide rule marks images "immutable" for a week, which is right for
-# assets whose URL changes when they change. These do NOT: an example pair is
-# swapped in place under the same a1/a2 names, so an immutable cache keeps
-# serving the old picture (and shows before/after reversed) for days.
+# assets whose URL changes when they change. Example URLs receive the site's
+# version query string, so they can use the same fast immutable policy.
 <IfModule mod_headers.c>
   <FilesMatch "\.(jpe?g|png|webp)$">
-    Header set Cache-Control "public, max-age=300, must-revalidate"
+    Header set Cache-Control "public, max-age=2592000, immutable"
   </FilesMatch>
   <FilesMatch "^(manifest\.json|list\.php)$">
     Header set Cache-Control "public, max-age=300, must-revalidate"
@@ -12,8 +11,8 @@
 </IfModule>
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType image/png "access plus 5 minutes"
-  ExpiresByType image/jpeg "access plus 5 minutes"
-  ExpiresByType image/webp "access plus 5 minutes"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
   ExpiresByType application/json "access plus 5 minutes"
 </IfModule>

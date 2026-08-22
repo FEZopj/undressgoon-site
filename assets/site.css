@@ -28,6 +28,14 @@ html[data-theme="light"] {
 
 [hidden] { display: none !important; }
 
+/* Reserve icon geometry before the async icon bundle replaces <i> nodes. */
+[data-lucide] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+}
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -2813,6 +2821,13 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
 
 /* .section sets display, so the UA's [hidden] rule needs the help */
 .section[hidden] { display: none; }
+
+/* Skip below-the-fold layout and paint until it nears the viewport. */
+body > .section,
+body > footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
 
 /* a slow gloss travelling across the link, so it reads as something to press */
 .ex-peek-btn::after {

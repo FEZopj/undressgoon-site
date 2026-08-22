@@ -15,23 +15,6 @@
   }
 
   ready(function () {
-    // Keep conversion-only CSS separate from the large shared stylesheet.
-    (function loadConversionStyles() {
-      if (document.getElementById('ug-conversion-r7-css')) return;
-      var scripts = document.getElementsByTagName('script');
-      for (var i = scripts.length - 1; i >= 0; i--) {
-        var src = scripts[i].getAttribute('src') || '';
-        if (src.indexOf('lp2.js') === -1) continue;
-        var href = src.replace(/lp2\.js(?:\?.*)?$/, 'conversion-r7.css?v=20260822-r7');
-        var link = document.createElement('link');
-        link.id = 'ug-conversion-r7-css';
-        link.rel = 'stylesheet';
-        link.href = href;
-        document.head.appendChild(link);
-        break;
-      }
-    })();
-
     var stage = document.querySelector('.lp2-stage');
     var pitch = document.querySelector('.lp2-pitch');
     var resultWrap = document.getElementById('lp2-stage-result');
