@@ -60,7 +60,28 @@
   </script>
 
   <link rel="preconnect" href="https://api.undressgoon.app" crossorigin />
-  <link rel="preload" href="/assets/hero-before.webp?v=20260822-r15" imagesrcset="/assets/hero-before-240.webp?v=20260822-r15 240w, /assets/hero-before.webp?v=20260822-r15 480w" imagesizes="(max-width: 980px) calc(50vw - 18px), 260px" as="image" type="image/webp" fetchpriority="high" />
+  <script>
+  (function () {
+    var pairs = ['a', 'c', 'g', 'j', 'r', 'z'];
+    var random = window.crypto && window.crypto.getRandomValues
+      ? window.crypto.getRandomValues(new Uint32Array(1))[0]
+      : Math.floor(Math.random() * 4294967296);
+    var index = random % pairs.length;
+    try {
+      var previous = window.sessionStorage.getItem('ug-hero-example');
+      if (pairs[index] === previous) index = (index + 1 + (random % (pairs.length - 1))) % pairs.length;
+      window.sessionStorage.setItem('ug-hero-example', pairs[index]);
+    } catch (error) {}
+    var pair = pairs[index];
+    var before = '/assets/hero-examples/' + pair + '1';
+    window.UG_HERO_EXAMPLE = pair;
+    window.UG_WRITE_HERO_IMAGE = function (side, alt, highPriority) {
+      var base = '/assets/hero-examples/' + pair + side;
+      document.write('<img src="' + base + '-480.webp?v=20260823-r16" srcset="' + base + '-240.webp?v=20260823-r16 240w, ' + base + '-480.webp?v=20260823-r16 480w" sizes="(max-width: 980px) calc(50vw - 18px), 260px" width="480" height="600" alt="' + alt + '" decoding="async"' + (highPriority ? ' fetchpriority="high"' : '') + '>');
+    };
+    document.write('<link rel="preload" href="' + before + '-480.webp?v=20260823-r16" imagesrcset="' + before + '-240.webp?v=20260823-r16 240w, ' + before + '-480.webp?v=20260823-r16 480w" imagesizes="(max-width: 980px) calc(50vw - 18px), 260px" as="image" type="image/webp" fetchpriority="high">');
+  })();
+  </script>
   <link rel="preload" href="../assets/brand-logo-fast.webp" as="image" type="image/webp" />
   <link id="ug-conversion-r7-css" rel="stylesheet" href="../assets/landing.css?v=20260822-r15" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
@@ -237,8 +258,8 @@
       <div class="hero-example" data-static-example>
         <div class="hero-ex-label">Example result</div>
         <div class="hero-ex-card">
-          <figure class="hero-ex-pane"><img src="/assets/hero-before.webp?v=20260822-r15" srcset="/assets/hero-before-240.webp?v=20260822-r15 240w, /assets/hero-before.webp?v=20260822-r15 480w" sizes="(max-width: 980px) calc(50vw - 18px), 260px" width="480" height="600" alt="Example before AI edit" decoding="async" fetchpriority="high"><figcaption>Before</figcaption></figure>
-          <figure class="hero-ex-pane"><img src="/assets/hero-after.webp?v=20260822-r15" srcset="/assets/hero-after-240.webp?v=20260822-r15 240w, /assets/hero-after.webp?v=20260822-r15 480w" sizes="(max-width: 980px) calc(50vw - 18px), 260px" width="480" height="600" alt="Example AI-generated result" decoding="async"><figcaption class="after">After</figcaption></figure>
+          <figure class="hero-ex-pane"><script>window.UG_WRITE_HERO_IMAGE('1', 'Example before AI edit', true);</script><figcaption>Before</figcaption></figure>
+          <figure class="hero-ex-pane"><script>window.UG_WRITE_HERO_IMAGE('2', 'Example AI-generated result', false);</script><figcaption class="after">After</figcaption></figure>
         </div>
       </div>
 <div class="lp2-trust">
