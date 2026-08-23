@@ -1,5 +1,12 @@
 /* Shared search-intent pages: intentionally lightweight and content-first. */
-.seo-page { background: var(--bg); color: var(--text); }
+.seo-page {
+  background: var(--bg);
+  color: var(--text);
+  /* landing.css reserves space for the homepage's fixed CTA. Search-intent
+     pages do not have that CTA, so the inherited space appeared below the
+     footer as an empty black strip. */
+  padding-bottom: 0;
+}
 .seo-page * { box-sizing: border-box; }
 .seo-page a { color: inherit; }
 .seo-page .btn-primary {
