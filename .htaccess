@@ -1,3 +1,9 @@
+# Never expose a browsable directory listing. This previously made the obsolete
+# /results/ and /results/thumbs/ directories public.
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
+
 # Performance: long-cache heavy media, keep CSS/JS easy to refresh during launches
 <IfModule mod_expires.c>
   ExpiresActive On
@@ -42,6 +48,21 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # One public URL per page: HTTPS, apex domain, directory form (no index.html).
+  # Handle index.html first so even http://www/.../index.html reaches the final
+  # canonical URL in a single permanent redirect.
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html(?:[?\s]) [NC]
+  RewriteRule ^(.*/)?index\.html$ https://undressgoon.app/$1 [R=301,L,NE]
+
+  RewriteCond %{HTTPS} !=on [OR]
+  RewriteCond %{HTTP_HOST} !^undressgoon\.app$ [NC]
+  RewriteRule ^ https://undressgoon.app%{REQUEST_URI} [R=301,L,NE]
+
+  # The old public result gallery is gone. A real 410 prevents auto-index query
+  # variants such as ?MD, ?MA and /thumbs/?NA from becoming crawlable pages.
+  RewriteRule ^results(?:/|$) - [G,L,NC]
+
   RewriteRule ^terms/?$ terms.html [L]
   RewriteRule ^privacy/?$ privacy.html [L]
   RewriteRule ^acceptable-use/?$ acceptable-use.html [L]

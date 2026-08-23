@@ -1986,6 +1986,21 @@
       renderWriteOwn();
     });
 
+    // SEO tool pages deep-link into a real preset instead of dropping every
+    // search visitor onto the generic default. Unknown values are ignored.
+    var requestedPreset = null;
+    try {
+      var requestedKey = new URLSearchParams(location.search || '').get('seo_preset') || '';
+      requestedPreset = presets.find(function (p) { return p.key === requestedKey; }) || null;
+    } catch (e) {}
+    if (requestedPreset) {
+      active = requestedPreset.category;
+      selected = requestedPreset.key;
+      selectedPresetKey = requestedPreset.key;
+      prompt.value = requestedPreset.prompt || requestedPreset.key;
+      showCustomPrompt(false);
+    }
+
     syncModeCopy();
     renderTabs();
     renderGrid();

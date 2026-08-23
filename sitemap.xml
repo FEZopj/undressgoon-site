@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://undressgoon.app/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://undressgoon.app/" />
@@ -12,9 +13,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>1.0</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/es/</loc>
@@ -27,9 +26,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/pt/</loc>
@@ -42,9 +39,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/zh/</loc>
@@ -57,9 +52,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/ja/</loc>
@@ -72,9 +65,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/ru/</loc>
@@ -87,9 +78,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/fr/</loc>
@@ -102,9 +91,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/de/</loc>
@@ -117,9 +104,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://undressgoon.app/fr/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://undressgoon.app/de/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
-    <lastmod>2026-08-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://undressgoon.app/terms.html</loc>
@@ -174,5 +159,65 @@
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/tools/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/ai-clothes-remover/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://undressgoon.app/assets/hero-examples/a2-480.webp</image:loc><image:title>Example AI clothes remover result</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/ai-undress-generator/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://undressgoon.app/assets/hero-examples/c2-480.webp</image:loc><image:title>Example AI undress generator result</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/nudify-photo/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://undressgoon.app/assets/hero-examples/g2-480.webp</image:loc><image:title>Example AI nudify photo result</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/ai-nude-generator/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://undressgoon.app/assets/hero-examples/j2-480.webp</image:loc><image:title>Example AI nude generator result</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/custom-nsfw-image-editor/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://undressgoon.app/assets/hero-examples/r2-480.webp</image:loc><image:title>Example custom NSFW AI image edit</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/ai-outfit-editor/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://undressgoon.app/assets/hero-examples/z2-480.webp</image:loc><image:title>Example AI outfit editor result</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/guides/better-ai-photo-results/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://undressgoon.app/affiliate-program/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>

@@ -177,7 +177,7 @@
           ja: '写真をアップロード。AIヌードなどを約60秒で生成。',
           ru: 'Загрузите фото. Получите AI-нюд и другие образы примерно за 60 секунд.',
           zh: '上传照片。约 60 秒生成 AI 裸照及更多效果。'
-        }, 'Upload a photo. Get an AI nude & more in ~60 seconds.');
+        }, 'Free AI Clothes Remover and Undress Generator');
       }
 
       var heading = document.querySelector('#ex-heading .section-title');

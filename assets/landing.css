@@ -2895,6 +2895,33 @@ html[data-theme="light"] .ex-peek-btn::after {
   .ex-peek-btn::after { animation: none; opacity: 0; }
 }
 
+/* Compact internal-discovery block. It uses ordinary crawlable links and sits
+   below the generator, preserving the landing page's primary action. */
+.discovery-section { padding-top: 18px; }
+.discovery-intro {
+  max-width: 690px; margin: -18px auto 26px; text-align: center;
+  color: var(--muted); line-height: 1.65;
+}
+.discovery-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px;
+}
+.discovery-grid a {
+  min-width: 0; padding: 19px; border: 1px solid var(--border); border-radius: 17px;
+  background: var(--surface); color: var(--text); text-decoration: none;
+  transition: transform .18s ease, border-color .18s ease;
+}
+.discovery-grid a:hover { transform: translateY(-2px); border-color: rgba(255,45,85,.55); }
+.discovery-grid svg { width: 21px; height: 21px; margin-bottom: 11px; color: var(--accent2); }
+.discovery-grid strong { display: block; margin-bottom: 6px; font-size: .98rem; }
+.discovery-grid span { display: block; color: var(--muted); font-size: .86rem; line-height: 1.48; }
+.discovery-all { margin: 22px 0 0; text-align: center; }
+.discovery-all a { color: var(--accent2); font-weight: 850; text-decoration: none; }
+@media (max-width: 850px) { .discovery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) {
+  .discovery-grid { grid-template-columns: 1fr; }
+  .discovery-intro { margin-top: -12px; }
+}
+
 /* bundled from scenes.css */
 /* ==========================================================================
    UndressGoon — site announcement banner styles (rendered by assets/scenes.js).

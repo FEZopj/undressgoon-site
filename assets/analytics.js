@@ -62,8 +62,55 @@
 
   var campaign = computeCampaign();
 
+  // Preserve the actual entry page and external source for the entire visit.
+  // This lets an SEO article -> generator -> purchase journey remain attached
+  // to the article even after document.referrer becomes an internal URL.
+  var SESS_LANDING = 'ug_ph_landing';
+  var FIRST_LANDING = 'ug_ph_landing_first';
+
+  function classifyChannel(referrer) {
+    var medium = String(campaign.utm_medium || '').toLowerCase();
+    if (/cpc|ppc|paid|display|banner|native/.test(medium)) return 'paid';
+    if (/email|newsletter/.test(medium)) return 'email';
+    if (/affiliate|partner|referral/.test(medium)) return 'affiliate';
+    if (Object.keys(campaign).length) return 'campaign';
+    if (!referrer) return 'direct';
+    try {
+      var hostName = new URL(referrer).hostname.toLowerCase();
+      if (hostName === location.hostname.toLowerCase()) return 'internal';
+      if (/(^|\.)(google|bing|yahoo|duckduckgo|yandex|baidu)\./.test(hostName)) return 'organic';
+      return 'referral';
+    } catch (e) { return 'unknown'; }
+  }
+
+  function computeLandingAttribution() {
+    try {
+      var saved = sessionStorage.getItem(SESS_LANDING);
+      if (saved) return JSON.parse(saved) || {};
+    } catch (e) {}
+    var entry = {
+      landing_path: location.pathname || '/',
+      landing_url: location.href.split('#')[0].slice(0, 500),
+      landing_referrer: String(document.referrer || '').slice(0, 500),
+      traffic_channel: classifyChannel(document.referrer || '')
+    };
+    if (window.UG_SEO_TOPIC) entry.landing_seo_topic = String(window.UG_SEO_TOPIC).slice(0, 80);
+    try {
+      sessionStorage.setItem(SESS_LANDING, JSON.stringify(entry));
+      if (!localStorage.getItem(FIRST_LANDING)) localStorage.setItem(FIRST_LANDING, JSON.stringify(entry));
+    } catch (e) {}
+    return entry;
+  }
+
+  var landingAttribution = computeLandingAttribution();
+
   function firstTouchCampaign() {
     try { return JSON.parse(localStorage.getItem(FIRST_CAMPAIGN) || '{}') || {}; }
+    catch (e) { return {}; }
+  }
+
+  function firstTouchLanding() {
+    try { return JSON.parse(localStorage.getItem(FIRST_LANDING) || '{}') || {}; }
     catch (e) { return {}; }
   }
 
@@ -76,6 +123,8 @@
       title: document.title || '',
       referrer: document.referrer || '',
       language: document.documentElement.lang || navigator.language || '',
+      page_type: window.UG_PAGE_TYPE || 'landing',
+      seo_topic: window.UG_SEO_TOPIC || '',
       // Landing identifier, kept so historical variant_b data still lines up
       // with today's. The lp2 design won and became the index, so nothing sets
       // UG_VARIANT any more; a page can still set it for the next test.
@@ -84,6 +133,7 @@
     // Attach campaign attribution to every event so email-driven visits and the
     // conversions that follow can be segmented by utm_campaign in PostHog.
     Object.keys(campaign).forEach(function (k) { out[k] = campaign[k]; });
+    Object.keys(landingAttribution).forEach(function (k) { out[k] = landingAttribution[k]; });
     Object.keys(input).forEach(function (key) {
       var value = input[key];
       if (value == null) return;
@@ -141,24 +191,36 @@
     var pv = { url: location.href.split('#')[0] };
     if (Object.keys(campaign).length) {
       pv.$set = campaign;  // latest-touch campaign on the person
-      var first = firstTouchCampaign();
-      var once = {};
-      Object.keys(first).forEach(function (k) { once['initial_' + k] = first[k]; });
-      pv.$set_once = once;  // first-touch, never overwritten
     }
+    // Organic/direct visits often have no UTM campaign at all. Persist their
+    // first landing page too, otherwise only paid/campaign visitors would get
+    // person-level first-touch properties in PostHog.
+    var first = firstTouchCampaign();
+    var firstLanding = firstTouchLanding();
+    var once = {};
+    Object.keys(first).forEach(function (k) { once['initial_' + k] = first[k]; });
+    Object.keys(firstLanding).forEach(function (k) { once['initial_' + k] = firstLanding[k]; });
+    if (Object.keys(once).length) pv.$set_once = once;  // never overwritten
     send('$pageview', pv);
     // Explicit funnel entry event (same data as $pageview, but named so the
     // A/B funnel "landing_view -> ... -> purchase" is easy to build in PostHog).
     send('landing_view', { url: location.href.split('#')[0] });
     document.addEventListener('click', function (event) {
       var target = event.target && event.target.closest && event.target.closest(
-        '[data-generate-cta], #google-login, #account-topup, #account-link-telegram, #telegram-link, #copy-referral'
+        '[data-generate-cta], [data-seo-cta], [data-affiliate-cta], #google-login, #account-topup, #account-link-telegram, #telegram-link, #copy-referral'
       );
       if (!target) return;
       send('website_click', {
         action: target.id || target.getAttribute('data-generate-cta') || 'cta',
-        text: (target.textContent || '').trim().slice(0, 80)
+        text: (target.textContent || '').trim().slice(0, 80),
+        destination: String(target.getAttribute('href') || '').slice(0, 240)
       });
+      if (target.hasAttribute('data-seo-cta')) {
+        send('seo_cta_click', {
+          topic: window.UG_SEO_TOPIC || '',
+          destination: String(target.getAttribute('href') || '').slice(0, 240)
+        });
+      }
     }, { passive: true });
   }
 })();
