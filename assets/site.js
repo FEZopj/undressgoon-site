@@ -1745,7 +1745,7 @@
     ];
     var presetPromptUpgrades = {
       nude: 'completely naked, fully exposed, no clothing at all, bare breasts with natural visible nipples and areolas, natural skin texture, same pose and same camera framing, clear recognizable face, realistic shadows on the body',
-      oily: 'completely nude body covered in shiny oil, glistening skin, bare breasts with natural visible nipples and areolas, oil highlights on chest stomach hips and thighs, no clothing, clear face, realistic bedroom lighting',
+      oily: 'completely nude body covered in shiny oil, glistening skin, bare breasts with natural visible nipples and areolas, oil highlights on chest stomach hips and thighs, no clothing, clear face, preserve the original setting and background, lighting consistent with the original photo',
       bondage: 'completely nude body in a consensual shibari-style rope harness, rope framing the chest waist hips and thighs, bare breasts with natural visible nipples and areolas, no other clothing, clear face, full body visible, dramatic warm light',
       lingerie: 'tiny sheer black lingerie that barely covers anything, transparent fabric, nipples visible through the fabric, high-cut panties, straps hugging the body, same pose and face, realistic fabric tension and shadows',
       crotchless: 'crotchless panties and open-cup bra, exposed lingerie look, bare breasts visible through the open cups, straps and lace framing the body, same pose and camera angle, realistic skin and fabric detail',
