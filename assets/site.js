@@ -1798,9 +1798,7 @@
       var locked = !isBuyer();
       writeOwn.classList.toggle('locked', locked);
       writeOwn.innerHTML = (locked ? '<i data-lucide="lock"></i> ' : '<i data-lucide="pencil"></i> ')
-        + esc(activeMode() === 'video'
-          ? t('writeOwnVideoPrompt', 'Write my own video prompt')
-          : t('writeOwnPrompt', 'Write my own prompt'));
+        + esc(t('writeOwnPrompt', 'Write my own prompt'));
       refreshIcons();
     }
     if (writeOwn && !writeOwn.dataset.bound) {
@@ -1847,8 +1845,7 @@
       { key: 'oiled_body_caress', category: 'solo', label: t('videoOil', 'Oiled') },
       { key: 'black_lingerie_dance', category: 'outfits', label: t('videoLingerieDance', 'Lingerie dance') },
       { key: 'white_pantyhose_tease', category: 'outfits', label: t('videoPantyhose', 'Pantyhose') },
-      { key: 'latex_hip_sway', category: 'outfits', label: t('videoLatex', 'Latex') },
-      { key: 'bdsm_whipped', category: 'fetish', label: t('videoWhipped', 'Whipped') }
+      { key: 'latex_hip_sway', category: 'outfits', label: t('videoLatex', 'Latex') }
     ];
 
     function videoCats() {
@@ -1857,7 +1854,13 @@
     }
 
     function videoPresets() {
-      if (remoteVideos) return remoteVideos.presets || [];
+      if (remoteVideos) {
+        // Keep newly staged recipes out of production until their worker build
+        // has been explicitly approved and deployed.
+        return (remoteVideos.presets || []).filter(function (preset) {
+          return preset.key !== 'bdsm_whipped';
+        });
+      }
       return [];
     }
     var presetPromptUpgrades = {
@@ -1991,34 +1994,25 @@
         : (scene
           ? t('chooseSceneLabel', 'PICK A SCENE')
           : t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT'));
-      if (promptLabel) promptLabel.textContent = video
-        ? t('videoPromptLabel', 'Video prompt')
-        : (scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt'));
+      if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
       prompt.required = true;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
         help.hidden = !(scene || video);
         help.textContent = video
-          ? t('videoHelp', 'Choose a preset or write your own video prompt. Each private video costs 2 credits.')
+          ? t('videoHelp', 'Choose a video preset. Each private video costs 2 credits.')
           : t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
-      prompt.placeholder = video
-        ? t('videoPromptPlaceholder', 'Describe one continuous 8-second video, including movement and camera direction')
-        : (scene
-          ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
-          : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie'));
-      // Scene/video modes hide the undress body controls. Their custom text is
-      // still moderated server-side before entering the generation pipeline.
+      prompt.placeholder = scene
+        ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
+        : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
+      // Scene/video modes hide the undress body controls.
       var adv = document.getElementById('advanced-options');
       if (adv) adv.style.display = (scene || video) ? 'none' : '';
       showSubject(scene);
-      // The backend advertises custom video support only to accounts that can
-      // actually access it; don't expose a dead control to everyone else.
-      if (writeOwn) {
-        var customVideoAllowed = !!(remoteVideos && remoteVideos.customPrompt === true);
-        writeOwn.style.display = video && !customVideoAllowed ? 'none' : '';
-      }
+      // Custom video prompts stay staged until the matching worker build is live.
+      if (writeOwn) writeOwn.style.display = video ? 'none' : '';
       renderWriteOwn();
       // Only close the box when a catalogue scene is selected — closing it on
       // every mode sync would wipe a scene someone is mid-way through typing.
