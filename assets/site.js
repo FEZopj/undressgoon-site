@@ -2778,6 +2778,58 @@
   function initVideoExamples() {
     var imageHeading = document.getElementById('ex-heading');
     if (!imageHeading || document.getElementById('video-examples-heading')) return;
+    var heroMount = document.querySelector('[data-hero-video-mount]');
+
+    function paintVideoHero(examples) {
+      if (!heroMount) return;
+      if (!examples || !examples.length) {
+        heroMount.innerHTML =
+          '<div class="hero-video-loading"><i data-lucide="video"></i><span>' +
+            esc(t('videoExamplesSoonTitle', 'Video examples coming soon')) +
+          '</span></div>';
+        refreshIcons();
+        return;
+      }
+      var item = examples.filter(function (candidate) { return candidate.id === 'd1'; })[0] || examples[0];
+      videoExampleMarkSeen(item.id);
+      heroMount.innerHTML =
+        '<div class="hero-video-frame">' +
+          '<video muted loop playsinline controls preload="metadata"' +
+            (item.poster ? (' poster="' + esc(item.poster) + '"') : '') + '></video>' +
+          (item.source ? (
+            '<figure class="hero-video-source">' +
+              '<img src="' + esc(item.source) + '" alt="' +
+                esc(t('videoExamplesSourceAlt', 'Source image for this AI video')) + '" decoding="async" />' +
+              '<figcaption>' + esc(t('videoExamplesSource', 'Before')) + '</figcaption>' +
+            '</figure>') : '') +
+          '<span class="hero-video-sound"><i data-lucide="volume-2"></i>' +
+            esc(t('videoExamplesSound', 'Includes sound')) + '</span>' +
+        '</div>';
+      var heroVideo = heroMount.querySelector('video');
+      heroVideo.src = item.video;
+      heroVideo.load();
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var saveData = navigator.connection && navigator.connection.saveData;
+      var visible = false;
+      function playHero() {
+        if (!visible || reduceMotion || saveData) return;
+        var attempt = heroVideo.play();
+        if (attempt && attempt.catch) attempt.catch(function () {});
+      }
+      heroVideo.addEventListener('canplay', playHero);
+      if (window.IntersectionObserver) {
+        var observer = new IntersectionObserver(function (entries) {
+          visible = !!(entries[0] && entries[0].isIntersecting);
+          if (visible) playHero(); else heroVideo.pause();
+        }, { threshold: 0.35 });
+        observer.observe(heroVideo);
+      } else {
+        visible = true;
+        playHero();
+      }
+      refreshIcons();
+      track('hero_video_example_shown', { id: item.id });
+    }
 
     var heading = document.createElement('section');
     heading.className = 'section video-examples-heading';
@@ -2799,6 +2851,7 @@
     imageHeading.parentNode.insertBefore(mount, imageHeading);
 
     function showEmpty() {
+      paintVideoHero([]);
       mount.className = 'video-examples-mount is-empty';
       mount.innerHTML =
         '<section class="video-ex-wrap"><div class="container">' +
@@ -2831,6 +2884,7 @@
           });
         }
         if (!examples.length) { showEmpty(); return; }
+        paintVideoHero(examples);
 
         mount.className = 'video-examples-mount has-examples';
         mount.innerHTML =

@@ -170,14 +170,14 @@
       var h1 = document.querySelector('.lp2-pitch h1');
       if (h1) {
         h1.textContent = copy({
-          fr: 'Importe une photo. Obtiens un nude IA et plus en ~60 secondes.',
-          de: 'Foto hochladen. KI-Nacktbild & mehr in ~60 Sekunden.',
-          es: 'Sube una foto. Obtén un desnudo con IA y más en ~60 segundos.',
-          pt: 'Envie uma foto. Gere um nude com IA e muito mais em ~60 segundos.',
-          ja: '写真をアップロード。AIヌードなどを約60秒で生成。',
-          ru: 'Загрузите фото. Получите AI-нюд и другие образы примерно за 60 секунд.',
-          zh: '上传照片。约 60 秒生成 AI 裸照及更多效果。'
-        }, 'Free AI Clothes Remover and Undress Generator');
+          fr: 'Importe une photo. Crée des images et vidéos IA pour adultes.',
+          de: 'Foto hochladen. KI-Bilder und Videos für Erwachsene erstellen.',
+          es: 'Sube una foto. Crea imágenes y vídeos IA para adultos.',
+          pt: 'Envie uma foto. Crie imagens e vídeos de IA para adultos.',
+          ja: '写真をアップロード。AIアダルト画像と動画を生成。',
+          ru: 'Загрузите фото. Создавайте взрослые ИИ-изображения и видео.',
+          zh: '上传照片。生成 AI 成人图像和视频。'
+        }, 'Free AI Clothes Remover, Undress and Video Generator');
       }
 
       var heading = document.querySelector('#ex-heading .section-title');
@@ -275,6 +275,19 @@
       var existing = document.querySelector('.lp2-pitch .hero-example');
       if (existing) {
         var label = existing.querySelector('.hero-ex-label');
+        if (existing.hasAttribute('data-video-example')) {
+          if (label) label.textContent = copy({
+            fr: 'Exemple de résultat vidéo',
+            de: 'Beispiel für ein Videoergebnis',
+            es: 'Ejemplo de resultado de vídeo',
+            pt: 'Exemplo de resultado em vídeo',
+            ja: '動画の生成結果例',
+            ru: 'Пример видеорезультата',
+            zh: '视频结果示例'
+          }, 'Video example result');
+          heroExamplePainted = true;
+          return true;
+        }
         var captions = existing.querySelectorAll('figcaption');
         if (label) label.textContent = copy({
           fr: 'Exemple réel', de: 'Beispiel', es: 'Ejemplo', pt: 'Exemplo',

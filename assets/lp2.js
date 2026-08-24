@@ -84,14 +84,14 @@
     var cats = document.querySelector('.lp2-cats');
     if (cats) {
       cats.textContent = copy({
-        fr: 'Nudes · Retouches de tenues · Scènes sexuelles · Looks fétiche · Prompts personnalisés',
-        de: 'Nudes · Outfit-Edits · Sexszenen · Fetisch-Looks · Eigene Prompts',
-        es: 'Desnudos · Edición de outfits · Escenas sexuales · Looks fetiche · Prompts personalizados',
-        pt: 'Nudes · Edições de roupa · Cenas de sexo · Looks fetiche · Prompts personalizados',
-        ja: 'ヌード · 衣装編集 · セックスシーン · フェティッシュ · カスタムプロンプト',
-        ru: 'Нюд · Смена образа · Секс-сцены · Фетиш-образы · Свои промпты',
-        zh: '裸照 · 服装编辑 · 性爱场景 · 情趣造型 · 自定义提示词'
-      }, 'Nudes · Outfit edits · Sex scenes · Fetish looks · Custom prompts');
+        fr: 'Nudes · Retouches de tenues · Scènes sexuelles · Vidéos IA · Looks fétiche',
+        de: 'Nudes · Outfit-Edits · Sexszenen · KI-Videos · Fetisch-Looks',
+        es: 'Desnudos · Edición de outfits · Escenas sexuales · Vídeos IA · Looks fetiche',
+        pt: 'Nudes · Edições de roupa · Cenas de sexo · Vídeos de IA · Looks fetiche',
+        ja: 'ヌード · 衣装編集 · セックスシーン · AI動画 · フェティッシュ',
+        ru: 'Нюд · Смена образа · Секс-сцены · ИИ-видео · Фетиш-образы',
+        zh: '裸照 · 服装编辑 · 性爱场景 · AI 视频 · 情趣造型'
+      }, 'Nudes · Outfit edits · Sex scenes · AI videos · Fetish looks');
     }
 
     // Correct stale Fully-Nude-only lock copy from cached site.js/locales.

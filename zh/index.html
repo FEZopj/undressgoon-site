@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon | AI 脱衣生成器 | 全裸、微型比基尼、BDSM、乳胶</title>
-  <meta name="description" content="直接在网站上进行 AI 成人图像生成。上传你拥有使用权的照片，选择预设，生成私密的成人幻想图像。" />
+  <title>UndressGoon | AI 脱衣、图像与视频生成器</title>
+  <meta name="description" content="上传照片，生成 AI 脱衣图像、成人场景和带声音的 8 秒 AI 视频，支持服装编辑和图生视频。" />
   <meta name="rating" content="adult" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="keywords" content="AI脱衣, undress AI, 脱衣机器人, telegram脱衣, undressgoon" />
@@ -13,8 +13,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon，AI 脱衣生成器" />
-  <meta property="og:description" content="上传照片，选择预设，直接在网站上生成。" />
+  <meta property="og:title" content="UndressGoon，AI 脱衣、图像与视频生成器" />
+  <meta property="og:description" content="从照片生成 AI 脱衣图像和带声音的 8 秒 AI 视频。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/zh/" />
   <meta property="og:image" content="https://undressgoon.app/assets/og-image.jpg" />
@@ -31,8 +31,8 @@
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="UndressGoon，AI 脱衣生成器" />
-  <meta name="twitter:description" content="上传照片，选择预设，直接在网站上生成。" />
+  <meta name="twitter:title" content="UndressGoon，AI 脱衣、图像与视频生成器" />
+  <meta name="twitter:description" content="从照片生成 AI 脱衣图像和带声音的 8 秒 AI 视频。" />
   <meta name="twitter:image" content="https://undressgoon.app/assets/og-image.jpg" />
 
   <script type="application/ld+json">
@@ -44,7 +44,7 @@
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any (web browser)",
   "inLanguage": "zh",
-  "description": "在网页上进行 AI 成人图像生成。上传你拥有使用权的照片，选择预设，生成私密的成人图像。",
+  "description": "AI 脱衣、成人场景和带声音的 8 秒图生视频生成器。",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -64,6 +64,7 @@
   <link rel="preconnect" href="https://api.undressgoon.app" crossorigin />
   <script>
   (function () {
+    return; // Legacy image hero disabled; site.js hydrates the curated d/d1 video hero.
     var pairs = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'z'];
     function randomIndex(max) {
       var value = window.crypto && window.crypto.getRandomValues
@@ -111,7 +112,7 @@
   })();
   </script>
   <link rel="preload" href="../assets/brand-logo-fast.webp" as="image" type="image/webp" />
-  <link id="ug-conversion-r7-css" rel="stylesheet" href="../assets/landing.css?v=20260824-videoexamples4" />
+  <link id="ug-conversion-r7-css" rel="stylesheet" href="../assets/landing.css?v=20260824-videohero1" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -277,18 +278,17 @@
         <div class="lp2-pitch">
 
       <div class="badge">AI 脱衣生成器 · 18+</div>
-      <h1>上传照片。约 60 秒生成 AI 裸照及更多效果。</h1>
-      <p class="lp2-cats">裸照 · 服装编辑 · 性爱场景 · 情趣造型 · 自定义提示词</p>
+      <h1>上传照片。生成 AI 成人图像和视频。</h1>
+      <p class="lp2-cats">裸照 · 服装编辑 · 性爱场景 · AI 视频 · 情趣造型</p>
       <div class="lp2-proof">
         <span><i data-lucide="ticket"></i> 1 次免费生成</span>
         <span><i data-lucide="credit-card"></i> 无需银行卡</span>
-        <span><i data-lucide="timer"></i> 60 秒出图</span>
+        <span><i data-lucide="timer"></i> 图片约 60 秒 · 视频最长 3 分钟</span>
       </div>
-      <div class="hero-example" data-static-example>
-        <div class="hero-ex-label">Example result</div>
-        <div class="hero-ex-card">
-          <figure class="hero-ex-pane"><script>window.UG_WRITE_HERO_IMAGE('1', 'Example before AI edit', true);</script><figcaption>Before</figcaption></figure>
-          <figure class="hero-ex-pane"><script>window.UG_WRITE_HERO_IMAGE('2', 'Example AI-generated result', false);</script><figcaption class="after">After</figcaption></figure>
+      <div class="hero-example" data-video-example>
+        <div class="hero-ex-label">视频结果示例</div>
+        <div class="hero-video-mount" data-hero-video-mount aria-live="polite">
+          <div class="hero-video-loading"><i data-lucide="video"></i><span>正在加载视频示例...</span></div>
         </div>
       </div>
 <div class="lp2-trust">
@@ -619,10 +619,10 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260823-r17" defer></script>
-  <script src="../assets/site.js?v=20260824-videoexamples5" defer></script>
+  <script src="../assets/site.js?v=20260824-videohero1" defer></script>
   <script src="../assets/scenes.js?v=20260824-r12" defer></script>
-  <script src="../assets/lp2-core-r7.js?v=20260823-r17" defer></script>
-  <script src="../assets/lp2.js?v=20260823-r17" defer></script>
+  <script src="../assets/lp2-core-r7.js?v=20260824-videohero1" defer></script>
+  <script src="../assets/lp2.js?v=20260824-videohero1" defer></script>
 
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>UndressGoon | AI脱衣ジェネレーター | ヌード・マイクロビキニ・BDSM・ラテックス</title>
-  <meta name="description" content="サイト上で直接、AIによるアダルト画像を生成。使用権のある写真をアップロードし、プリセットを選んで、プライベートなアダルト加工を作成できます。" />
+  <title>UndressGoon | AI脱衣・画像・動画ジェネレーター</title>
+  <meta name="description" content="写真からAI脱衣画像、アダルトシーン、音声付き8秒AI動画を生成。衣装編集や画像から動画への変換に対応。" />
   <meta name="rating" content="adult" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="keywords" content="AI脱衣, undress AI, ヌード生成, telegram undress, undressgoon" />
@@ -13,8 +13,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
   <link rel="manifest" href="../assets/site.webmanifest" />
-  <meta property="og:title" content="UndressGoon、AI脱衣ジェネレーター" />
-  <meta property="og:description" content="写真をアップロードし、プリセットを選んでサイト上で直接生成。" />
+  <meta property="og:title" content="UndressGoon、AI脱衣・画像・動画ジェネレーター" />
+  <meta property="og:description" content="AI脱衣画像と音声付き8秒AI動画を写真から生成。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://undressgoon.app/ja/" />
   <meta property="og:image" content="https://undressgoon.app/assets/og-image.jpg" />
@@ -31,8 +31,8 @@
   <link rel="alternate" hreflang="x-default" href="https://undressgoon.app/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="UndressGoon、AI脱衣ジェネレーター" />
-  <meta name="twitter:description" content="写真をアップロードし、プリセットを選んでサイト上で直接生成。" />
+  <meta name="twitter:title" content="UndressGoon、AI脱衣・画像・動画ジェネレーター" />
+  <meta name="twitter:description" content="AI脱衣画像と音声付き8秒AI動画を写真から生成。" />
   <meta name="twitter:image" content="https://undressgoon.app/assets/og-image.jpg" />
 
   <script type="application/ld+json">
@@ -44,7 +44,7 @@
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any (web browser)",
   "inLanguage": "ja",
-  "description": "Web上で直接、AIによるアダルト画像を生成。使用権のある写真をアップロードし、プリセットを選んで、プライベートなアダルト加工を作成できます。",
+  "description": "AI脱衣画像、アダルトシーン、音声付き8秒の画像から動画への生成に対応。",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -64,6 +64,7 @@
   <link rel="preconnect" href="https://api.undressgoon.app" crossorigin />
   <script>
   (function () {
+    return; // Legacy image hero disabled; site.js hydrates the curated d/d1 video hero.
     var pairs = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'z'];
     function randomIndex(max) {
       var value = window.crypto && window.crypto.getRandomValues
@@ -111,7 +112,7 @@
   })();
   </script>
   <link rel="preload" href="../assets/brand-logo-fast.webp" as="image" type="image/webp" />
-  <link id="ug-conversion-r7-css" rel="stylesheet" href="../assets/landing.css?v=20260824-videoexamples4" />
+  <link id="ug-conversion-r7-css" rel="stylesheet" href="../assets/landing.css?v=20260824-videohero1" />
   <script src="../assets/lucide.min.js" async onload="window.UG_REFRESH_ICONS && window.UG_REFRESH_ICONS()"></script>
 </head>
 <body>
@@ -277,18 +278,17 @@
         <div class="lp2-pitch">
 
       <div class="badge">AI脱衣ジェネレーター · 18+</div>
-      <h1>写真をアップロード。AIヌードなどを約60秒で生成。</h1>
-      <p class="lp2-cats">ヌード · 衣装編集 · セックスシーン · フェティッシュ · カスタムプロンプト</p>
+      <h1>写真をアップロード。AIアダルト画像と動画を生成。</h1>
+      <p class="lp2-cats">ヌード · 衣装編集 · セックスシーン · AI動画 · フェティッシュ</p>
       <div class="lp2-proof">
         <span><i data-lucide="ticket"></i> 無料生成1回</span>
         <span><i data-lucide="credit-card"></i> カード不要</span>
-        <span><i data-lucide="timer"></i> 60秒で結果</span>
+        <span><i data-lucide="timer"></i> 画像は約60秒 · 動画は最大3分</span>
       </div>
-      <div class="hero-example" data-static-example>
-        <div class="hero-ex-label">Example result</div>
-        <div class="hero-ex-card">
-          <figure class="hero-ex-pane"><script>window.UG_WRITE_HERO_IMAGE('1', 'Example before AI edit', true);</script><figcaption>Before</figcaption></figure>
-          <figure class="hero-ex-pane"><script>window.UG_WRITE_HERO_IMAGE('2', 'Example AI-generated result', false);</script><figcaption class="after">After</figcaption></figure>
+      <div class="hero-example" data-video-example>
+        <div class="hero-ex-label">動画の生成結果例</div>
+        <div class="hero-video-mount" data-hero-video-mount aria-live="polite">
+          <div class="hero-video-loading"><i data-lucide="video"></i><span>動画の例を読み込み中...</span></div>
         </div>
       </div>
 <div class="lp2-trust">
@@ -619,10 +619,10 @@
     };
   </script>
   <script src="../assets/analytics.js?v=20260823-r17" defer></script>
-  <script src="../assets/site.js?v=20260824-videoexamples5" defer></script>
+  <script src="../assets/site.js?v=20260824-videohero1" defer></script>
   <script src="../assets/scenes.js?v=20260824-r12" defer></script>
-  <script src="../assets/lp2-core-r7.js?v=20260823-r17" defer></script>
-  <script src="../assets/lp2.js?v=20260823-r17" defer></script>
+  <script src="../assets/lp2-core-r7.js?v=20260824-videohero1" defer></script>
+  <script src="../assets/lp2.js?v=20260824-videohero1" defer></script>
 
 </body>
 </html>
