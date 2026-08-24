@@ -2002,7 +2002,7 @@
       if (help) {
         help.hidden = !(scene || video);
         help.textContent = video
-          ? t('videoHelp', 'Choose a video preset. Each private video costs 2 credits.')
+          ? t('videoHelp', 'Choose a video preset. More presets will be added soon.')
           : t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
       prompt.placeholder = scene
