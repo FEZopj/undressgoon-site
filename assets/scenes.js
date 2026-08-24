@@ -45,10 +45,12 @@
     label.classList.toggle("scene-coming-soon", !enabled);
     label.title = enabled ? "" : "Coming soon";
     if (badge) {
-      badge.textContent = enabled ? (beta ? "BETA" : "NEW") : "SOON";
-      badge.style.background = enabled
-        ? "linear-gradient(135deg,var(--accent),var(--accent2))"
-        : "var(--muted,#9b9ba8)";
+      if (enabled) {
+        badge.remove();
+      } else {
+        badge.textContent = "SOON";
+        badge.style.background = "var(--muted,#9b9ba8)";
+      }
     }
     if (!enabled && radio.checked) {
       var prompt = document.querySelector('input[name="mode"][value="prompt"]');

@@ -1272,56 +1272,6 @@ html[data-theme="light"] .upload-preview {
   letter-spacing: 0.06em;
   line-height: 1.2;
 }
-.mode-row label.video-live .video-soon-badge {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 16px rgba(255, 45, 85, 0.32);
-}
-.mode-row label.video-live {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  border-color: rgba(255, 45, 112, 0.92);
-  background:
-    linear-gradient(120deg, rgba(255, 45, 85, 0.3), rgba(180, 76, 255, 0.24) 52%, rgba(255, 45, 133, 0.3)),
-    var(--surface2);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
-    0 10px 26px rgba(255, 45, 85, 0.24),
-    0 0 22px rgba(180, 76, 255, 0.18);
-  animation: video-live-pulse 2.4s ease-in-out infinite;
-}
-.mode-row label.video-live::after {
-  content: "";
-  position: absolute;
-  inset: -50% -35%;
-  z-index: 2;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.7) 50%, transparent 62%);
-  transform: translateX(-75%) rotate(4deg);
-  animation: video-live-shine 2.8s ease-in-out infinite;
-}
-.mode-row label.video-live:hover {
-  transform: translateY(-2px) scale(1.012);
-  border-color: rgba(255, 78, 150, 1);
-  box-shadow: 0 14px 34px rgba(255, 45, 85, 0.34), 0 0 28px rgba(180, 76, 255, 0.25);
-}
-.mode-row label.video-live:has(input:checked) {
-  background: linear-gradient(125deg, rgba(255, 31, 93, 0.46), rgba(180, 76, 255, 0.35)), var(--surface2);
-  box-shadow: 0 14px 36px rgba(255, 45, 85, 0.38), 0 0 32px rgba(180, 76, 255, 0.3);
-}
-@keyframes video-live-pulse {
-  0%, 100% { box-shadow: 0 10px 26px rgba(255, 45, 85, 0.22), 0 0 18px rgba(180, 76, 255, 0.14); }
-  50% { box-shadow: 0 12px 32px rgba(255, 45, 85, 0.38), 0 0 30px rgba(180, 76, 255, 0.28); }
-}
-@keyframes video-live-shine {
-  0%, 34% { transform: translateX(-75%) rotate(4deg); opacity: 0; }
-  45% { opacity: 0.85; }
-  66%, 100% { transform: translateX(75%) rotate(4deg); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mode-row label.video-live,
-  .mode-row label.video-live::after { animation: none; }
-}
 .preset-picker {
   display: grid;
   gap: 8px;
