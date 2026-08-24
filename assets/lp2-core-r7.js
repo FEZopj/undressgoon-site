@@ -410,14 +410,14 @@
         '</h3>' +
         '<p>' +
           copy({
-            fr:'Génère encore avec tous les presets, débloque les prompts personnalisés et crée jusqu’à 4 images à la fois.',
-            de:'Nutze weiter alle Presets, schalte eigene Prompts frei und generiere bis zu 4 Bilder auf einmal.',
-            es:'Sigue usando todos los presets, desbloquea prompts personalizados y genera hasta 4 imágenes a la vez.',
-            pt:'Continue com todos os presets, desbloqueie prompts personalizados e gere até 4 imagens de uma vez.',
-            ja:'すべてのプリセットを使い続け、カスタムプロンプトを解放し、一度に最大4枚生成。',
-            ru:'Продолжайте со всеми пресетами, откройте свои промпты и генерируйте до 4 изображений за раз.',
-            zh:'继续使用全部预设，解锁自定义提示词，并一次生成最多 4 张图片。'
-          }, 'Keep using every preset, unlock custom prompts, and generate up to 4 images at once.') +
+            fr:'Recharge pour débloquer les scènes, les vidéos, les prompts personnalisés et générer jusqu’à 4 images à la fois.',
+            de:'Lade Credits auf, um Szenen, Videos und eigene Prompts freizuschalten und bis zu 4 Bilder auf einmal zu generieren.',
+            es:'Recarga para desbloquear escenas, vídeos y prompts personalizados, y generar hasta 4 imágenes a la vez.',
+            pt:'Recarregue para desbloquear cenas, vídeos e prompts personalizados e gerar até 4 imagens de uma vez.',
+            ja:'チャージすると、シーン、動画、カスタムプロンプトが解放され、一度に最大4枚生成できます。',
+            ru:'Пополните баланс, чтобы открыть сцены, видео и свои промпты, а также генерировать до 4 изображений за раз.',
+            zh:'充值即可解锁场景、视频和自定义提示词，并一次生成最多 4 张图片。'
+          }, 'Top up to unlock scenes, videos, custom prompts, and generate up to 4 images at once.') +
         '</p>' +
         '<div class="post-free-benefits">' +
           '<span>✓ ' + copy({fr:'Packs à achat unique',de:'Einmalige Credit-Pakete',es:'Packs de pago único',pt:'Pacotes de compra única',ja:'買い切りクレジット',ru:'Разовые пакеты кредитов',zh:'一次性点数包'}, 'One-time credit packs') + '</span>' +

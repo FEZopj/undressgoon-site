@@ -26,7 +26,7 @@
     ready(enhance);
   } else {
     var core = document.createElement('script');
-    core.src = scriptBase() + 'lp2-core-r7.js?v=20260824-image-heading1';
+    core.src = scriptBase() + 'lp2-core-r7.js?v=20260824-unlocks-video1';
     core.async = false;
     core.onload = function () { ready(enhance); };
     document.head.appendChild(core);
@@ -101,14 +101,14 @@
       var msg = notice.querySelector('.ug-notice-msg');
       if (!msg) return;
       var desired = copy({
-        fr: 'Ta génération gratuite couvre tous les presets Outfit Edit. Les scènes et les prompts personnalisés se débloquent dès que tu recharges.',
-        de: 'Deine kostenlose Generierung gilt für alle Outfit-Edit-Presets. Szenen und eigene Prompts werden nach dem ersten Aufladen freigeschaltet.',
-        es: 'Tu generación gratis cubre todos los presets de Outfit Edit. Las escenas y los prompts personalizados se desbloquean al recargar.',
-        pt: 'Sua geração grátis cobre todos os presets de Outfit Edit. Cenas e prompts personalizados são desbloqueados ao recarregar.',
-        ja: '無料生成ではすべての Outfit Edit プリセットを利用できます。シーンとカスタムプロンプトはチャージ後に解放されます。',
-        ru: 'Бесплатная генерация доступна для всех пресетов Outfit Edit. Сцены и свои промпты открываются после пополнения.',
-        zh: '免费生成可使用全部 Outfit Edit 预设。充值后可解锁场景和自定义提示词。'
-      }, 'Your free generation covers all Outfit Edit presets. Scenes and custom prompts unlock whenever you top up.');
+        fr: 'Ta génération gratuite couvre tous les presets Outfit Edit. Les scènes, les vidéos et les prompts personnalisés se débloquent dès que tu recharges.',
+        de: 'Deine kostenlose Generierung gilt für alle Outfit-Edit-Presets. Szenen, Videos und eigene Prompts werden nach dem ersten Aufladen freigeschaltet.',
+        es: 'Tu generación gratis cubre todos los presets de Outfit Edit. Las escenas, los vídeos y los prompts personalizados se desbloquean al recargar.',
+        pt: 'Sua geração grátis cobre todos os presets de Outfit Edit. Cenas, vídeos e prompts personalizados são desbloqueados ao recarregar.',
+        ja: '無料生成ではすべての Outfit Edit プリセットを利用できます。シーン、動画、カスタムプロンプトはチャージ後に解放されます。',
+        ru: 'Бесплатная генерация доступна для всех пресетов Outfit Edit. Сцены, видео и свои промпты открываются после пополнения.',
+        zh: '免费生成可使用全部 Outfit Edit 预设。充值后可解锁场景、视频和自定义提示词。'
+      }, 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.');
       if (msg.textContent !== desired) msg.textContent = desired;
     }
 

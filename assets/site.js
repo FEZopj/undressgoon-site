@@ -1804,7 +1804,7 @@
     if (writeOwn && !writeOwn.dataset.bound) {
       writeOwn.dataset.bound = '1';
       writeOwn.addEventListener('click', function () {
-        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers the Fully Nude preset. Custom prompts unlock whenever you top up.')); return; }
+        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.')); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';
@@ -2061,7 +2061,7 @@
               mode === 'video' ? t('videoUnlockTitle', 'Unlock AI video') : t('lockedPresetTitle', 'Your free generation'),
               mode === 'video'
                 ? t('videoUnlockHint', 'Video is available after your first top-up and costs 2 credits per generation.')
-                : t('lockedPresetHint', 'Your free generation covers the Fully Nude preset. The other looks unlock whenever you top up.')
+                : t('lockedPresetHint', 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.')
             );
             return;
           }
@@ -2084,7 +2084,7 @@
 
     if (clear) {
       clear.addEventListener('click', function () {
-        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers the Fully Nude preset. Custom prompts unlock whenever you top up.')); return; }
+        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.')); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';
@@ -2517,7 +2517,7 @@
             paintResultNotice({
               tone: 'warn', icon: '🔓',
               title: t('topUpUnlockTitle', 'Top up to unlock this'),
-              message: t('topUpUnlockMsg', 'Your free generation runs the Fully Nude preset. Top up to unlock all presets and custom prompts.'),
+              message: t('topUpUnlockMsg', 'Your free generation covers all Outfit Edit presets. Top up to unlock scenes, videos, and custom prompts.'),
               actionLabel: t('unlockGetCredits', 'Unlock, get credits'),
               onAction: function () { showCheckout(true, 'locked_feature'); }
             });
