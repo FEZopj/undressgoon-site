@@ -2794,16 +2794,19 @@
       videoExampleMarkSeen(item.id);
       heroMount.innerHTML =
         '<div class="hero-video-frame">' +
-          '<video muted loop playsinline controls preload="metadata"' +
-            (item.poster ? (' poster="' + esc(item.poster) + '"') : '') + '></video>' +
           (item.source ? (
             '<figure class="hero-video-source">' +
               '<img src="' + esc(item.source) + '" alt="' +
                 esc(t('videoExamplesSourceAlt', 'Source image for this AI video')) + '" decoding="async" />' +
               '<figcaption>' + esc(t('videoExamplesSource', 'Before')) + '</figcaption>' +
             '</figure>') : '') +
-          '<span class="hero-video-sound"><i data-lucide="volume-2"></i>' +
-            esc(t('videoExamplesSound', 'Includes sound')) + '</span>' +
+          '<div class="hero-video-after">' +
+            '<video muted loop playsinline controls preload="metadata"' +
+              (item.poster ? (' poster="' + esc(item.poster) + '"') : '') + '></video>' +
+            '<span class="hero-video-after-label">' + esc(t('exAfter', 'After')) + '</span>' +
+            '<span class="hero-video-sound"><i data-lucide="volume-2"></i>' +
+              esc(t('videoExamplesSound', 'Includes sound')) + '</span>' +
+          '</div>' +
         '</div>';
       var heroVideo = heroMount.querySelector('video');
       heroVideo.src = item.video;
