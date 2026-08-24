@@ -1645,11 +1645,11 @@
     return fetch(apiUrl('/web/video-presets'), { credentials: 'include' })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
-        if (!data || !data.ok || !data.presets || !data.presets.length) return;
+        if (!data || !data.ok) return;
         remoteVideos = data;
         if (rerenderPresets) rerenderPresets();
       })
-      .catch(function () { /* use the reviewed built-in key/label fallback */ });
+      .catch(function () { /* leave Video marked SOON if availability is unknown */ });
   }
 
   // Backend key list + local (translated) labels. Falls back to the hardcoded
@@ -1726,20 +1726,27 @@
     var presets = localPresets;
     if (!tabs || !grid || !prompt || !presets.length) return;
 
-    // Video is live and preset-only. The HTML stays backward-compatible for a
-    // cached script, while this release enables the control as soon as JS boots.
     var videoInput = document.querySelector('input[name="mode"][value="video"]');
-    if (videoInput) {
-      videoInput.disabled = false;
+    function applyVideoAvailability() {
+      if (!videoInput) return;
+      var enabled = !!(remoteVideos && remoteVideos.enabled === true);
+      videoInput.disabled = !enabled;
       var videoLabel = videoInput.parentElement;
       if (videoLabel) {
-        videoLabel.classList.remove('video-coming-soon');
-        videoLabel.classList.add('video-live');
-        videoLabel.title = t('videoLiveTitle', 'Create an AI video from your photo');
+        videoLabel.classList.toggle('video-coming-soon', !enabled);
+        videoLabel.classList.toggle('video-live', enabled);
+        videoLabel.title = enabled
+          ? t('videoLiveTitle', 'Create an AI video from your photo')
+          : t('videoSoonTitle', 'AI video is coming soon');
         var videoBadge = videoLabel.querySelector('.video-soon-badge');
-        if (videoBadge) videoBadge.textContent = 'NEW';
+        if (videoBadge) videoBadge.textContent = enabled ? 'NEW' : 'SOON';
+      }
+      if (!enabled && videoInput.checked) {
+        var promptInput = document.querySelector('input[name="mode"][value="prompt"]');
+        if (promptInput) promptInput.checked = true;
       }
     }
+    applyVideoAvailability();
 
     // Prompt is hidden by default — presets fill it invisibly (users never see
     // our prompt text). A "Write my own prompt" button reveals an empty field.
@@ -1814,13 +1821,13 @@
     ];
 
     function videoCats() {
-      return remoteVideos && remoteVideos.categories && remoteVideos.categories.length
-        ? remoteVideos.categories : videoCatsFallback;
+      if (remoteVideos) return remoteVideos.categories || [];
+      return [];
     }
 
     function videoPresets() {
-      return remoteVideos && remoteVideos.presets && remoteVideos.presets.length
-        ? remoteVideos.presets : videoPresetsFallback;
+      if (remoteVideos) return remoteVideos.presets || [];
+      return [];
     }
     var presetPromptUpgrades = {
       nude: 'completely naked, fully exposed, no clothing at all, bare breasts with natural visible nipples and areolas, natural skin texture, same pose and same camera framing, clear recognizable face, realistic shadows on the body',
@@ -2097,7 +2104,12 @@
     renderTabs();
     renderGrid();
     renderWriteOwn();
-    rerenderPresets = function () { renderTabs(); renderGrid(); };
+    rerenderPresets = function () {
+      applyVideoAvailability();
+      syncModeCopy();
+      renderTabs();
+      renderGrid();
+    };
 
     // First load: preselect the free Fully Nude preset so a new visitor lands
     // on a ready-to-run look — the one their free credit actually covers.
@@ -2136,7 +2148,9 @@
 
     initGoogleLogin();
     initEmailLogin();
-    refreshWebSession().then(resumePendingGeneration);
+    refreshWebSession().then(function (session) {
+      return loadVideoCatalogue().then(function () { return session; });
+    }).then(resumePendingGeneration);
     initPresets();
     loadPacks();
     initAccountControls();
@@ -2656,7 +2670,7 @@
             if (!res.ok || !res.d.ok) { showError(res.d.message || 'Verification failed.'); return; }
             track('website_email_verified', {});
             updateWebAccount(res.d);
-            resumePendingGeneration();
+            loadVideoCatalogue().then(resumePendingGeneration);
           })
           .catch(function () { if (verifyBtn) verifyBtn.disabled = false; showError('Network error. Try again.'); });
       });
