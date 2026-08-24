@@ -1798,7 +1798,9 @@
       var locked = !isBuyer();
       writeOwn.classList.toggle('locked', locked);
       writeOwn.innerHTML = (locked ? '<i data-lucide="lock"></i> ' : '<i data-lucide="pencil"></i> ')
-        + esc(t('writeOwnPrompt', 'Write my own prompt'));
+        + esc(activeMode() === 'video'
+          ? t('writeOwnVideoPrompt', 'Write my own video prompt')
+          : t('writeOwnPrompt', 'Write my own prompt'));
       refreshIcons();
     }
     if (writeOwn && !writeOwn.dataset.bound) {
@@ -1832,7 +1834,7 @@
     ];
     var videoCatsFallback = [
       { key: 'popular', label: t('videoTabPopular', 'Popular') },
-      { key: 'fetish', label: t('videoTabFetish', 'Feet & fetish') },
+      { key: 'fetish', label: t('videoTabFetish', 'Fetish') },
       { key: 'solo', label: t('videoTabSolo', 'Solo') },
       { key: 'outfits', label: t('videoTabOutfits', 'Outfits') }
     ];
@@ -1988,28 +1990,35 @@
         : (scene
           ? t('chooseSceneLabel', 'PICK A SCENE')
           : t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT'));
-      if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
+      if (promptLabel) promptLabel.textContent = video
+        ? t('videoPromptLabel', 'Video prompt')
+        : (scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt'));
       prompt.required = true;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
         help.hidden = !(scene || video);
         help.textContent = video
-          ? t('videoHelp', 'Choose a motion preset. Each private video costs 2 credits.')
+          ? t('videoHelp', 'Choose a preset or write your own video prompt. Each private video costs 2 credits.')
           : t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
-      prompt.placeholder = scene ?
-        t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below') :
-        t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
-      // Scene mode is preset-only (no free-text prompt, no custom-prompt button)
-      // and shows the subject selectors instead of the undress body options.
+      prompt.placeholder = video
+        ? t('videoPromptPlaceholder', 'Describe one continuous 8-second video, including movement and camera direction')
+        : (scene
+          ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
+          : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie'));
+      // Scene/video modes hide the undress body controls. Their custom text is
+      // still moderated server-side before entering the generation pipeline.
       var adv = document.getElementById('advanced-options');
       if (adv) adv.style.display = (scene || video) ? 'none' : '';
       showSubject(scene);
-      // Scenes used to be catalogue-only. A written scene is allowed now, so the
-      // button stays; the backend runs user text through moderation, which the
-      // vetted catalogue prompts skip.
-      if (writeOwn) writeOwn.style.display = video ? 'none' : '';
+      // The backend advertises custom video support only to accounts that can
+      // actually access it; don't expose a dead control to everyone else.
+      if (writeOwn) {
+        var customVideoAllowed = !!(remoteVideos && remoteVideos.customPrompt === true);
+        writeOwn.style.display = video && !customVideoAllowed ? 'none' : '';
+      }
+      renderWriteOwn();
       // Only close the box when a catalogue scene is selected — closing it on
       // every mode sync would wipe a scene someone is mid-way through typing.
       if (scene && selected) showCustomPrompt(false);
@@ -2373,7 +2382,8 @@
       payload.append('variations', String(variations));
       if (modeValue === 'video') {
         payload.set('variations', '1');
-        payload.append('video_preset', selectedPresetKey);
+        if (selectedPresetKey) payload.append('video_preset', selectedPresetKey);
+        else payload.append('video_prompt', prompt ? prompt.value.trim() : '');
       } else if (modeValue === 'scene') {
         // The invisible-prompt bridge holds the chosen scene KEY; send it as
         // `scene` and attach the subject attribute picks (skip the undress body
@@ -2553,6 +2563,8 @@
       payload.append('variations', String(snap.variations || 1));
       if (snap.mode === 'video' && snap.presetKey) {
         payload.append('video_preset', snap.presetKey);
+      } else if (snap.mode === 'video') {
+        payload.append('video_prompt', snap.prompt || '');
       } else if (snap.presetKey) {
         payload.append('preset', snap.presetKey);
       }
