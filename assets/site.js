@@ -1499,6 +1499,7 @@
       var card = document.createElement('div');
       card.className = 'ug-result ug-video-result';
       var video = document.createElement('video');
+      video.crossOrigin = 'use-credentials';
       video.src = url;
       video.controls = true;
       video.playsInline = true;
