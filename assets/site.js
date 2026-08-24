@@ -2825,6 +2825,7 @@
           examples.push({
             id: String(item.id || item.video || ('video-' + i)),
             video: video,
+            source: videoExampleAsset(item.source),
             poster: videoExampleAsset(item.poster),
             title: String(item.title || t('videoExamplesDefaultTitle', 'AI video transformation'))
           });
@@ -2837,6 +2838,11 @@
             '<div class="video-ex-card">' +
               '<div class="video-ex-player">' +
                 '<video id="video-example-player" muted loop playsinline controls preload="metadata"></video>' +
+                '<figure class="video-ex-source" id="video-example-source-wrap">' +
+                  '<img id="video-example-source" alt="' +
+                    esc(t('videoExamplesSourceAlt', 'Source image for this AI video')) + '" decoding="async" />' +
+                  '<figcaption>' + esc(t('videoExamplesSource', 'Before')) + '</figcaption>' +
+                '</figure>' +
                 '<span class="video-ex-badge"><i data-lucide="sparkles"></i>' +
                   esc(t('videoExamplesBadge', 'AI video')) + '</span>' +
               '</div>' +
@@ -2858,6 +2864,8 @@
           '</div></section>';
 
         var player = mount.querySelector('#video-example-player');
+        var sourceWrap = mount.querySelector('#video-example-source-wrap');
+        var sourceImage = mount.querySelector('#video-example-source');
         var name = mount.querySelector('#video-example-name');
         var count = mount.querySelector('#video-example-count');
         var more = mount.querySelector('#video-example-more');
@@ -2895,6 +2903,13 @@
           player.removeAttribute('src');
           player.removeAttribute('poster');
           if (item.poster) player.poster = item.poster;
+          if (item.source) {
+            sourceImage.src = item.source;
+            sourceWrap.hidden = false;
+          } else {
+            sourceImage.removeAttribute('src');
+            sourceWrap.hidden = true;
+          }
           player.src = item.video;
           player.load();
           current = idx;
