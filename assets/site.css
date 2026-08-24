@@ -1271,6 +1271,10 @@ html[data-theme="light"] .upload-preview {
   letter-spacing: 0.06em;
   line-height: 1.2;
 }
+.mode-row label.video-live .video-soon-badge {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 16px rgba(255, 45, 85, 0.32);
+}
 .preset-picker {
   display: grid;
   gap: 8px;
@@ -1703,6 +1707,15 @@ html[data-theme="light"] .gen-progress {
 .web-results img {
   width: 100%;
   display: block;
+}
+.ug-video-result video {
+  display: block;
+  width: 100%;
+  max-height: min(72vh, 760px);
+  aspect-ratio: 2 / 3;
+  object-fit: contain;
+  border-radius: 14px 14px 0 0;
+  background: #050507;
 }
 
 @keyframes gen-spin {
@@ -2519,7 +2532,8 @@ html[data-theme="light"] .toast {
   .account-row { align-items: flex-start; }
   .referral-actions { grid-template-columns: 1fr; }
   .mode-row { grid-template-columns: 1fr 1fr; }
-  .mode-row label.video-coming-soon { grid-column: 1 / -1; }
+  .mode-row label.video-coming-soon,
+  .mode-row label.video-live { grid-column: 1 / -1; }
   .pack-grid { grid-template-columns: 1fr; }
   .topup-modal { padding: 12px; align-items: end; }
   .topup-dialog {

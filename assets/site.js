@@ -588,11 +588,13 @@
     var title = document.getElementById('gen-loader-title');
     var sub = document.getElementById('gen-loader-sub');
     var bar = document.getElementById('gen-progress-bar');
-    var label = t('genRunningTitle', 'Generating your image');
+    var videoMode = selectedModeValue() === 'video';
+    var eta = videoMode ? Number(CFG.videoEtaSeconds || 240) : ETA_SECONDS;
+    var label = videoMode ? t('videoRunningTitle', 'Generating your video') : t('genRunningTitle', 'Generating your image');
     var detail = t('genRunningSub', '{elapsed}s elapsed. Typical wait is {eta}s, sometimes a little longer.')
       .replace('{elapsed}', String(elapsed))
-      .replace('{eta}', String(ETA_SECONDS));
-    var progress = Math.min(96, 18 + Math.round((elapsed / Math.max(ETA_SECONDS, 1)) * 72));
+      .replace('{eta}', String(eta));
+    var progress = Math.min(96, 18 + Math.round((elapsed / Math.max(eta, 1)) * 72));
     if (phase === 'preparing') {
       label = t('genPreparingTitle', 'Preparing your upload');
       detail = t('genPreparingSub', 'Reading your photo and starting the AI job.');
@@ -1449,12 +1451,13 @@
     sync();
   }
 
-  function paintResults(images) {
+  function paintResults(images, videos) {
     var empty = document.getElementById('web-result-empty');
     var target = document.getElementById('web-results');
     if (!target) return;
     target.innerHTML = '';
     var list = images || [];
+    var videoList = videos || [];
 
     var gallery = document.createElement('div');
     gallery.className = 'ug-gallery';
@@ -1488,23 +1491,45 @@
       track.appendChild(card);
     });
 
-    if (list.length) {
+    videoList.forEach(function (item, idx) {
+      var url = typeof item === 'string' ? item : (item && item.url) || '';
+      if (!url) return;
+      if (!/^https?:\/\//i.test(url) && url.charAt(0) === '/') url = apiUrl(url);
+      var name = 'undressgoon-video-' + (idx + 1) + '.mp4';
+      var card = document.createElement('div');
+      card.className = 'ug-result ug-video-result';
+      var video = document.createElement('video');
+      video.src = url;
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      var dl = document.createElement('a');
+      dl.className = 'result-download';
+      dl.href = url;
+      dl.download = name;
+      dl.innerHTML = '<i data-lucide="download"></i> ' + esc(t('downloadVideo', 'Download video'));
+      card.appendChild(video);
+      card.appendChild(dl);
+      track.appendChild(card);
+    });
+
+    var resultCount = list.length + videoList.length;
+    if (resultCount) {
       target.appendChild(gallery);
-      if (list.length > 1) buildGalleryNav(gallery, track, list.length);
+      if (resultCount > 1) buildGalleryNav(gallery, track, resultCount);
       // results live in this response only; nothing is stored server-side
       var note = document.createElement('p');
       note.className = 'result-save-note';
-      note.textContent = t(
-        'saveNote',
-        'We do not store your images. Download them now if you want to keep them.'
-      );
+      note.textContent = videoList.length
+        ? t('saveVideoNote', 'We do not keep your video permanently. Download it now if you want to keep it.')
+        : t('saveNote', 'We do not store your images. Download them now if you want to keep them.');
       target.appendChild(note);
     }
     refreshIcons();
-    if (empty) empty.hidden = !!list.length;
+    if (empty) empty.hidden = !!resultCount;
     // Bring the finished result into view — on desktop this is the only
     // scroll; scrollResultIntoView no-ops when it is already on screen.
-    if (list.length) scrollResultIntoView(document.querySelector('.result-panel'));
+    if (resultCount) scrollResultIntoView(document.querySelector('.result-panel'));
     emitUi('ug:results-updated');
   }
 
@@ -1600,6 +1625,7 @@
   // time. Labels stay local because each locale page ships translated ones.
   var remoteCatalogue = null;
   var remoteScenes = null;      // /web/scenes catalogue, so the picker never drifts
+  var remoteVideos = null;      // reviewed production H3 catalogue
   var rerenderPresets = null;   // set by initPresets so a late fetch can repaint
   var selectedPresetKey = '';   // sent as `preset` on submit
 
@@ -1613,6 +1639,17 @@
         if (rerenderPresets) rerenderPresets();
       })
       .catch(function () { /* keep the built-in list as a fallback */ });
+  }
+
+  function loadVideoCatalogue() {
+    return fetch(apiUrl('/web/video-presets'), { credentials: 'include' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (!data || !data.ok || !data.presets || !data.presets.length) return;
+        remoteVideos = data;
+        if (rerenderPresets) rerenderPresets();
+      })
+      .catch(function () { /* use the reviewed built-in key/label fallback */ });
   }
 
   // Backend key list + local (translated) labels. Falls back to the hardcoded
@@ -1689,6 +1726,21 @@
     var presets = localPresets;
     if (!tabs || !grid || !prompt || !presets.length) return;
 
+    // Video is live and preset-only. The HTML stays backward-compatible for a
+    // cached script, while this release enables the control as soon as JS boots.
+    var videoInput = document.querySelector('input[name="mode"][value="video"]');
+    if (videoInput) {
+      videoInput.disabled = false;
+      var videoLabel = videoInput.parentElement;
+      if (videoLabel) {
+        videoLabel.classList.remove('video-coming-soon');
+        videoLabel.classList.add('video-live');
+        videoLabel.title = t('videoLiveTitle', 'Create an AI video from your photo');
+        var videoBadge = videoLabel.querySelector('.video-soon-badge');
+        if (videoBadge) videoBadge.textContent = 'NEW';
+      }
+    }
+
     // Prompt is hidden by default — presets fill it invisibly (users never see
     // our prompt text). A "Write my own prompt" button reveals an empty field.
     prompt.removeAttribute('required');
@@ -1743,6 +1795,33 @@
       { key: 'cosplay', label: t('tabCosplay', 'Cosplay') },
       { key: 'bdsm', label: t('tabBdsm', 'BDSM') }
     ];
+    var videoCatsFallback = [
+      { key: 'popular', label: t('videoTabPopular', 'Popular') },
+      { key: 'fetish', label: t('videoTabFetish', 'Feet & fetish') },
+      { key: 'solo', label: t('videoTabSolo', 'Solo') },
+      { key: 'outfits', label: t('videoTabOutfits', 'Outfits') }
+    ];
+    var videoPresetsFallback = [
+      { key: 'oral_pov', category: 'popular', label: t('videoOral', 'Oral POV') },
+      { key: 'foot_play_pov_type_b', category: 'popular', label: t('videoFootjob', 'Footjob POV') },
+      { key: 'topless_reveal', category: 'popular', label: t('videoTopless', 'Topless reveal') },
+      { key: 'feet_pantyhose_closeup', category: 'fetish', label: t('videoFeet', 'Pantyhose feet tease') },
+      { key: 'post_workout_sweat', category: 'solo', label: t('videoSweat', 'Post-workout sweat') },
+      { key: 'oiled_body_caress', category: 'solo', label: t('videoOil', 'Oiled body caress') },
+      { key: 'black_lingerie_dance', category: 'outfits', label: t('videoLingerieDance', 'Black lingerie dance') },
+      { key: 'white_pantyhose_tease', category: 'outfits', label: t('videoPantyhose', 'White pantyhose tease') },
+      { key: 'latex_hip_sway', category: 'outfits', label: t('videoLatex', 'Latex hip sway') }
+    ];
+
+    function videoCats() {
+      return remoteVideos && remoteVideos.categories && remoteVideos.categories.length
+        ? remoteVideos.categories : videoCatsFallback;
+    }
+
+    function videoPresets() {
+      return remoteVideos && remoteVideos.presets && remoteVideos.presets.length
+        ? remoteVideos.presets : videoPresetsFallback;
+    }
     var presetPromptUpgrades = {
       nude: 'completely naked, fully exposed, no clothing at all, bare breasts with natural visible nipples and areolas, natural skin texture, same pose and same camera framing, clear recognizable face, realistic shadows on the body',
       oily: 'completely nude body covered in shiny oil, glistening skin, bare breasts with natural visible nipples and areolas, oil highlights on chest stomach hips and thighs, no clothing, clear face, preserve the original setting and background, lighting consistent with the original photo',
@@ -1842,11 +1921,14 @@
     }
 
     function activeCats() {
-      return activeMode() === 'scene' ? sceneCategories(sceneCats) : outfitCats;
+      if (activeMode() === 'scene') return sceneCategories(sceneCats);
+      if (activeMode() === 'video') return videoCats();
+      return outfitCats;
     }
 
     function activePresets() {
       if (activeMode() === 'scene') return sceneCatalogue(scenePresets);
+      if (activeMode() === 'video') return videoPresets();
       return cataloguePresets(presets);
     }
 
@@ -1861,20 +1943,25 @@
     function syncModeCopy() {
       var mode = activeMode();
       var scene = mode === 'scene';
+      var video = mode === 'video';
       modeInputs.forEach(function (input) {
         if (input.parentElement) input.parentElement.classList.toggle('active', input.checked);
       });
       if (picker) picker.hidden = false;
-      if (label) label.textContent = scene
-        ? t('chooseSceneLabel', 'PICK A SCENE')
-        : t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT');
+      if (label) label.textContent = video
+        ? t('chooseVideoLabel', 'PICK A VIDEO')
+        : (scene
+          ? t('chooseSceneLabel', 'PICK A SCENE')
+          : t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT'));
       if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
       prompt.required = true;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
-        help.hidden = !scene;
-        help.textContent = t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
+        help.hidden = !(scene || video);
+        help.textContent = video
+          ? t('videoHelp', 'Choose a motion preset. Each private video costs 2 credits.')
+          : t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
       prompt.placeholder = scene ?
         t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below') :
@@ -1882,12 +1969,12 @@
       // Scene mode is preset-only (no free-text prompt, no custom-prompt button)
       // and shows the subject selectors instead of the undress body options.
       var adv = document.getElementById('advanced-options');
-      if (adv) adv.style.display = scene ? 'none' : '';
+      if (adv) adv.style.display = (scene || video) ? 'none' : '';
       showSubject(scene);
       // Scenes used to be catalogue-only. A written scene is allowed now, so the
       // button stays; the backend runs user text through moderation, which the
       // vetted catalogue prompts skip.
-      if (writeOwn) writeOwn.style.display = '';
+      if (writeOwn) writeOwn.style.display = video ? 'none' : '';
       // Only close the box when a catalogue scene is selected — closing it on
       // every mode sync would wipe a scene someone is mid-way through typing.
       if (scene && selected) showCustomPrompt(false);
@@ -1917,11 +2004,11 @@
       grid.innerHTML = activePresets().filter(function (p) {
         return p.category === active;
       }).map(function (p) {
-        var icon = mode === 'scene' ? '' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt'));
+        var icon = mode === 'video' ? 'video' : (mode === 'scene' ? '' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt')));
         // Outfit-edit presets are included in the free generation. Scene mode
         // and custom prompts stay paywalled. Locking outfit buttons here while
         // lp2-core unlocked them on every mutation froze the landing page.
-        var locked = !buyer && mode === 'scene';
+        var locked = !buyer && (mode === 'scene' || mode === 'video');
         return '<button type="button" class="' + (p.key === selected ? 'active' : '') + (locked ? ' locked' : '') + '" data-key="' + esc(p.key) + '"' + (locked ? ' data-locked="1"' : '') + '><i data-lucide="' + icon + '"></i>' + esc(p.label) + (locked ? '<span class="preset-lock"><i data-lucide="lock"></i></span>' : '') + '</button>';
       }).join('');
       refreshIcons();
@@ -1931,8 +2018,10 @@
             // The status line sits below the fold, so the explanation was
             // invisible. Say it in a popup instead, without pushing packs.
             showNotice(
-              t('lockedPresetTitle', 'Your free generation'),
-              t('lockedPresetHint', 'Your free generation covers the Fully Nude preset. The other looks unlock whenever you top up.')
+              mode === 'video' ? t('videoUnlockTitle', 'Unlock AI video') : t('lockedPresetTitle', 'Your free generation'),
+              mode === 'video'
+                ? t('videoUnlockHint', 'Video is available after your first top-up and costs 2 credits per generation.')
+                : t('lockedPresetHint', 'Your free generation covers the Fully Nude preset. The other looks unlock whenever you top up.')
             );
             return;
           }
@@ -1946,7 +2035,7 @@
           // catalogue is in use there is no prompt text to carry here.
           prompt.value = preset.prompt || preset.key;
           showCustomPrompt(false);
-          var modeInput = document.querySelector('input[name="mode"][value="' + (mode === 'scene' ? 'scene' : 'prompt') + '"]');
+          var modeInput = document.querySelector('input[name="mode"][value="' + mode + '"]');
           if (modeInput) modeInput.checked = true;
           renderGrid();
         });
@@ -1971,8 +2060,11 @@
     });
     modeInputs.forEach(function (input) {
       input.addEventListener('change', function () {
-        active = activeMode() === 'scene' ? sceneCats[0].key : outfitCats[0].key;
+        active = activeMode() === 'scene'
+          ? sceneCats[0].key
+          : (activeMode() === 'video' ? videoCats()[0].key : outfitCats[0].key);
         selected = '';
+        selectedPresetKey = '';
         prompt.value = '';
         showCustomPrompt(false);
         syncModeCopy();
@@ -2009,7 +2101,7 @@
 
     // First load: preselect the free Fully Nude preset so a new visitor lands
     // on a ready-to-run look — the one their free credit actually covers.
-    if (!selected && activeMode() !== 'scene') {
+    if (!selected && activeMode() !== 'scene' && activeMode() !== 'video') {
       var freePreset = presets.find(function (p) { return p.key === FREE_PRESET_KEY; });
       if (freePreset) {
         selected = freePreset.key;
@@ -2063,6 +2155,7 @@
     }
 
     function selectedVariations() {
+      if (selectedModeValue() === 'video') return 1;
       var n = variationSelect ? Number(variationSelect.value || 1) : 1;
       return Math.max(1, Math.min(maxVariations(), Number.isFinite(n) ? n : 1));
     }
@@ -2076,6 +2169,25 @@
       if (!variationSelect) return;
       var variationRow = document.getElementById('variation-row');
       var authed = !!(currentSession && currentSession.user);
+      var video = selectedModeValue() === 'video';
+      if (video) {
+        variationSelect.value = '1';
+        Array.prototype.forEach.call(variationSelect.options, function (option) {
+          option.disabled = option.value !== '1';
+          option.hidden = option.value !== '1';
+        });
+        var videoOption = variationSelect.querySelector('option[value="1"]');
+        if (videoOption) videoOption.textContent = t('oneVideo', '1 video');
+        var variationLabel = variationRow && variationRow.querySelector('label > span');
+        if (variationLabel) variationLabel.textContent = t('videoLabel', 'Video');
+        if (variationRow) variationRow.hidden = false;
+        if (variationCost) variationCost.textContent = '2 ' + t('creditsWord', 'credits');
+        if (submit && submit.dataset.busy !== '1') {
+          submit.innerHTML = '<i data-lucide="video"></i> ' + t('generateVideo', 'Generate video') + ' · 2 ' + t('creditsWord', 'credits');
+          refreshIcons();
+        }
+        return;
+      }
       var perImage = costPerImage();
       // Only offer as many images as the user can actually pay for right now.
       var affordable = Math.floor(availableCredits() / perImage);
@@ -2089,6 +2201,10 @@
       // With 0-1 credits there's nothing to choose (it's always a single image),
       // so hide the whole selector rather than show a pointless "1 image".
       if (variationRow) variationRow.hidden = !authed || affordable < 2;
+      var imageOption = variationSelect.querySelector('option[value="1"]');
+      if (imageOption) imageOption.textContent = '1 ' + t('imageSingular', 'image');
+      var imageLabel = variationRow && variationRow.querySelector('label > span');
+      if (imageLabel) imageLabel.textContent = t('imagesLabel', 'Images');
       var count = selectedVariations();
       var totalCost = count * perImage;
       if (variationCost) {
@@ -2213,7 +2329,10 @@
       payload.append('mode', modeValue);
       payload.append('terms_accepted', '1');
       payload.append('variations', String(variations));
-      if (modeValue === 'scene') {
+      if (modeValue === 'video') {
+        payload.set('variations', '1');
+        payload.append('video_preset', selectedPresetKey);
+      } else if (modeValue === 'scene') {
         // The invisible-prompt bridge holds the chosen scene KEY; send it as
         // `scene` and attach the subject attribute picks (skip the undress body
         // options — the subject selectors replace them here).
@@ -2261,6 +2380,9 @@
     }
 
     if (variationSelect) variationSelect.addEventListener('change', syncVariationControl);
+    document.querySelectorAll('input[name="mode"]').forEach(function (input) {
+      input.addEventListener('change', syncVariationControl);
+    });
     document.addEventListener('ug:session-updated', syncVariationControl);
     syncVariationControl();
 
@@ -2279,14 +2401,19 @@
       if (submit) { submit.disabled = true; submit.dataset.busy = '1'; }
       emitUi('ug:generation-started');
       setStatus(t('readingUpload', 'Reading upload...'), 'working');
-      paintResults([]);
+      paintResults([], []);
       updateGenerationLoader('preparing', Date.now());
       // site.js owns the generation, so it owns the preview lifecycle too
       startWorkingPreview(selectedPersonFile());
       payloadPromise
         .then(function (payload) {
           updateGenerationLoader('preparing', Date.now());
-          setStatus(t('generating', 'Generating... this usually takes under a minute.'), 'working');
+          setStatus(
+            selectedModeValue() === 'video'
+              ? t('generatingVideo', 'Generating your video. This can take a few minutes.')
+              : t('generating', 'Generating... this usually takes under a minute.'),
+            'working'
+          );
           return fetch(apiUrl('/web/generate'), { method: 'POST', credentials: 'include', body: payload });
         })
         .then(function (res) {
@@ -2313,8 +2440,13 @@
             armExitOffer();
           }
           stopWorkingPreview(true);
-          paintResults(data.images || []);
-          track('website_generation_success', { image_count: (data.images || []).length, balance: data.balance });
+          paintResults(data.images || [], data.videos || []);
+          track('website_generation_success', {
+            mode: selectedModeValue(),
+            image_count: (data.images || []).length,
+            video_count: (data.videos || []).length,
+            balance: data.balance
+          });
           setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
           return refreshWebSession();
         })
@@ -2377,6 +2509,11 @@
       payload.append('mode', snap.mode || 'prompt');
       payload.append('terms_accepted', '1');
       payload.append('variations', String(snap.variations || 1));
+      if (snap.mode === 'video' && snap.presetKey) {
+        payload.append('video_preset', snap.presetKey);
+      } else if (snap.presetKey) {
+        payload.append('preset', snap.presetKey);
+      }
       payload.append('breast_size', snap.breastSize || 'natural');
       payload.append('pubic_hair', snap.pubicHair || 'natural');
       payload.append('person_name', 'upload.jpg');
@@ -2397,6 +2534,7 @@
           prompt: prompt ? prompt.value.trim() : '',
           mode: mode ? mode.value : 'prompt',
           variations: variations ? Number(variations.value || 1) : 1,
+          presetKey: selectedPresetKey,
           breastSize: breastSize ? breastSize.value : 'natural',
           pubicHair: pubicHair ? pubicHair.value : 'natural',
           dataUrl: ''
@@ -2988,6 +3126,7 @@
     // never got wired up. Report the failure and keep going.
     var steps = [
       ['presets', loadPresetCatalogue],
+      ['video-presets', loadVideoCatalogue],
       ['ctas', normalizeCtas],
       ['language', initLanguageSwitch],
       ['theme', initTheme],
