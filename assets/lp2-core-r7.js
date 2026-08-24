@@ -183,14 +183,14 @@
       var heading = document.querySelector('#ex-heading .section-title');
       if (heading) {
         heading.textContent = copy({
-          fr: 'Exemples de résultats',
-          de: 'Beispielergebnisse',
-          es: 'Ejemplos de resultados',
-          pt: 'Exemplos de resultados',
-          ja: '生成例',
-          ru: 'Примеры результатов',
-          zh: '效果示例'
-        }, 'Example results');
+          fr: 'Exemples de résultats d’images',
+          de: 'Beispiele für Bildergebnisse',
+          es: 'Ejemplos de resultados de imágenes',
+          pt: 'Exemplos de resultados de imagens',
+          ja: '画像生成結果の例',
+          ru: 'Примеры результатов изображений',
+          zh: '图像结果示例'
+        }, 'Image results examples');
       }
 
       var trusts = document.querySelectorAll('.lp2-trust');
