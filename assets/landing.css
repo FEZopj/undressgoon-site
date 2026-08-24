@@ -3159,14 +3159,14 @@ html[data-theme="light"] .ex-peek-btn::after {
       display: grid;
       grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
       gap: 32px;
-      align-items: center;   /* pitch column centred against the generator */
+      align-items: start;   /* keep the pitch fixed when generator controls change height */
     }
     /* the generator shell was a 2-col grid (form + result); it is a single
        column here because the result now lives in the popup */
     .lp2-col-gen .generator-app { display: block; padding: 10px; }
     .lp2-col-gen .generator-panel { margin: 0; }
 
-    .lp2-col-right { align-self: center; }
+    .lp2-col-right { align-self: start; }
     .lp2-col-right .badge { margin-bottom: 14px; }
     .lp2-col-right h1 {
       margin: 0 0 10px;
