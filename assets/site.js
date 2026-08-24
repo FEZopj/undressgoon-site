@@ -1845,7 +1845,8 @@
       { key: 'oiled_body_caress', category: 'solo', label: t('videoOil', 'Oiled') },
       { key: 'black_lingerie_dance', category: 'outfits', label: t('videoLingerieDance', 'Lingerie dance') },
       { key: 'white_pantyhose_tease', category: 'outfits', label: t('videoPantyhose', 'Pantyhose') },
-      { key: 'latex_hip_sway', category: 'outfits', label: t('videoLatex', 'Latex') }
+      { key: 'latex_hip_sway', category: 'outfits', label: t('videoLatex', 'Latex') },
+      { key: 'bdsm_whipped', category: 'fetish', label: t('videoWhipped', 'Whipped') }
     ];
 
     function videoCats() {
@@ -1854,13 +1855,7 @@
     }
 
     function videoPresets() {
-      if (remoteVideos) {
-        // Keep newly staged recipes out of production until their worker build
-        // has been explicitly approved and deployed.
-        return (remoteVideos.presets || []).filter(function (preset) {
-          return preset.key !== 'bdsm_whipped';
-        });
-      }
+      if (remoteVideos) return remoteVideos.presets || [];
       return [];
     }
     var presetPromptUpgrades = {
