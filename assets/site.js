@@ -1840,6 +1840,7 @@
       { key: 'oral_pov', category: 'popular', label: t('videoDeepthroat', 'Deepthroat') },
       { key: 'foot_play_pov', category: 'popular', label: t('videoFootjob', 'Footjob') },
       { key: 'topless_reveal', category: 'popular', label: t('videoTopless', 'Show boobs') },
+      { key: 'hands_on_breast_play', category: 'popular', label: t('videoSqueezeBoobs', 'Squeeze boobs') },
       { key: 'feet_pantyhose_closeup', category: 'fetish', label: t('videoFeet', 'Feet') },
       { key: 'post_workout_sweat', category: 'solo', label: t('videoSweat', 'Sweaty') },
       { key: 'oiled_body_caress', category: 'solo', label: t('videoOil', 'Oiled') },
