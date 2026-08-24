@@ -2786,7 +2786,7 @@
     heading.innerHTML =
       '<div class="container">' +
         '<h2 class="section-title" id="video-examples-title">' +
-          esc(t('videoExamplesTitle', 'Video examples')) +
+          esc(t('videoExamplesTitle', 'Video result examples')) +
         '</h2>' +
         '<p class="video-examples-intro">' +
           esc(t('videoExamplesIntro', 'Watch our latest AI video results and shuffle through the collection.')) +
