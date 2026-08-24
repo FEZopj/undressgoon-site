@@ -438,6 +438,12 @@
   ];
 
   function previewStatus(elapsed) {
+    if (selectedModeValue() === 'video') {
+      return t(
+        'videoPatientWait',
+        'Video generation can take up to 3 minutes, so please be patient.'
+      );
+    }
     // past the advertised wait, say why rather than counting on in silence
     if (elapsed > ETA_SECONDS) {
       return t(
@@ -454,11 +460,12 @@
 
   function tickPreview() {
     var elapsed = (Date.now() - _pvStarted) / 1000;
+    var previewEta = selectedModeValue() === 'video' ? 180 : ETA_SECONDS;
     // fill towards 92% over the expected wait, then creep, so it never sits
     // still and never claims to be finished early
-    var pct = elapsed <= ETA_SECONDS
-      ? (elapsed / ETA_SECONDS) * 92
-      : 92 + Math.min(6, (elapsed - ETA_SECONDS) * 0.25);
+    var pct = elapsed <= previewEta
+      ? (elapsed / previewEta) * 92
+      : 92 + Math.min(6, (elapsed - previewEta) * 0.25);
     var fill = document.getElementById('ug-preview-fill');
     if (fill) fill.style.width = Math.min(98, Math.max(2, pct)).toFixed(1) + '%';
     var label = document.getElementById('ug-preview-label');
@@ -589,7 +596,7 @@
     var sub = document.getElementById('gen-loader-sub');
     var bar = document.getElementById('gen-progress-bar');
     var videoMode = selectedModeValue() === 'video';
-    var eta = videoMode ? Number(CFG.videoEtaSeconds || 240) : ETA_SECONDS;
+    var eta = videoMode ? 180 : ETA_SECONDS;
     var label = videoMode ? t('videoRunningTitle', 'Generating your video') : t('genRunningTitle', 'Generating your image');
     var detail = t('genRunningSub', '{elapsed}s elapsed. Typical wait is {eta}s, sometimes a little longer.')
       .replace('{elapsed}', String(elapsed))
@@ -1499,10 +1506,31 @@
       var card = document.createElement('div');
       card.className = 'ug-result ug-video-result';
       var video = document.createElement('video');
-      video.src = url;
       video.controls = true;
       video.playsInline = true;
       video.preload = 'metadata';
+      // Loading the cross-origin endpoint directly works as a download but some
+      // browsers refuse to seek its protected FileResponse inside <video>.
+      // Materialize the signed response as a same-document blob for reliable
+      // metadata, duration and playback; retain the URL as a graceful fallback.
+      fetch(url, { credentials: 'omit', cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Video fetch failed: ' + response.status);
+          return response.blob();
+        })
+        .then(function (blob) {
+          if (!blob.size) throw new Error('Video response was empty');
+          var objectUrl = URL.createObjectURL(blob);
+          video.src = objectUrl;
+          video.load();
+          window.addEventListener('beforeunload', function () {
+            URL.revokeObjectURL(objectUrl);
+          }, { once: true });
+        })
+        .catch(function () {
+          video.src = url;
+          video.load();
+        });
       var dl = document.createElement('a');
       dl.className = 'result-download';
       dl.href = url;
