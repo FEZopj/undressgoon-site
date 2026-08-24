@@ -2848,7 +2848,8 @@
               '</div>' +
               '<div class="video-ex-meta">' +
                 '<strong id="video-example-name"></strong>' +
-                '<span id="video-example-count"></span>' +
+                '<span class="video-ex-sound"><i data-lucide="volume-2"></i>' +
+                  esc(t('videoExamplesSound', 'Includes sound')) + '</span>' +
               '</div>' +
               '<p class="video-ex-note">' +
                 esc(t('videoExamplesNote', 'Curated AI-generated examples. Customer uploads are never used for promotion.')) +
@@ -2867,7 +2868,6 @@
         var sourceWrap = mount.querySelector('#video-example-source-wrap');
         var sourceImage = mount.querySelector('#video-example-source');
         var name = mount.querySelector('#video-example-name');
-        var count = mount.querySelector('#video-example-count');
         var more = mount.querySelector('#video-example-more');
         var tryBtn = mount.querySelector('#video-example-try');
         var current = -1;
@@ -2915,7 +2915,6 @@
           current = idx;
           videoExampleMarkSeen(item.id);
           name.textContent = item.title;
-          count.textContent = (idx + 1) + ' / ' + examples.length;
           more.hidden = examples.length < 2;
           tryPlay();
           track('video_example_shown', { id: item.id, index: idx, total: examples.length });

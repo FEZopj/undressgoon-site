@@ -2933,6 +2933,8 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
 }
 .video-ex-meta strong { min-width: 0; color: var(--text); font-size: .94rem; }
 .video-ex-meta span { flex: 0 0 auto; color: var(--muted); font-size: .78rem; font-weight: 800; }
+.video-ex-sound { display: inline-flex; align-items: center; gap: 5px; }
+.video-ex-sound svg, .video-ex-sound i { width: 15px; height: 15px; color: var(--accent); }
 .video-ex-note {
   margin: 8px 2px 0; color: var(--muted); font-size: .77rem; line-height: 1.45;
 }
