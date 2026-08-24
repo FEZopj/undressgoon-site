@@ -2882,6 +2882,71 @@ html[data-theme="light"] .ug-preview-bar { background: rgba(17,19,26,.08); }
   .ug-preview-bar span { transition: none; }
 }
 
+/* ===== Curated video examples ======================================== */
+.video-examples-heading { padding-bottom: 0; }
+.video-examples-intro {
+  max-width: 650px; margin: -18px auto 0; text-align: center;
+  color: var(--muted); font-size: .94rem; line-height: 1.55;
+}
+.video-ex-wrap { padding: 24px 0 34px; }
+.video-ex-card {
+  width: min(460px, 100%); margin: 0 auto; padding: 14px;
+  border: 1px solid var(--border); border-radius: 22px;
+  background: var(--surface); box-shadow: 0 20px 56px rgba(7, 7, 12, .12);
+}
+.video-ex-player {
+  position: relative; overflow: hidden; width: 100%; aspect-ratio: 9 / 16;
+  border-radius: 16px; background: #09090c;
+}
+.video-ex-player video {
+  display: block; width: 100%; height: 100%; object-fit: contain;
+  background: #09090c;
+}
+.video-ex-badge {
+  position: absolute; z-index: 2; left: 10px; top: 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: 999px;
+  color: #fff; background: linear-gradient(90deg, var(--accent), var(--accent2));
+  box-shadow: 0 8px 22px rgba(255, 45, 85, .25);
+  font-size: .68rem; font-weight: 900; letter-spacing: .06em;
+  text-transform: uppercase; pointer-events: none;
+}
+.video-ex-badge svg, .video-ex-badge i { width: 14px; height: 14px; }
+.video-ex-meta {
+  display: flex; align-items: center; gap: 12px; justify-content: space-between;
+  padding: 13px 2px 0;
+}
+.video-ex-meta strong { min-width: 0; color: var(--text); font-size: .94rem; }
+.video-ex-meta span { flex: 0 0 auto; color: var(--muted); font-size: .78rem; font-weight: 800; }
+.video-ex-note {
+  margin: 8px 2px 0; color: var(--muted); font-size: .77rem; line-height: 1.45;
+}
+.video-ex-actions { margin-top: 13px; }
+.video-ex-actions .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.video-ex-actions svg, .video-ex-actions i { width: 17px; height: 17px; }
+.video-ex-empty {
+  width: min(620px, 100%); min-height: 180px; margin: 0 auto; padding: 30px 22px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 7px; text-align: center; border: 1px dashed var(--border); border-radius: 22px;
+  background: linear-gradient(145deg, rgba(255,45,85,.07), rgba(180,76,255,.05)), var(--surface);
+}
+.video-ex-empty-icon {
+  width: 44px; height: 44px; margin-bottom: 4px; display: grid; place-items: center;
+  border-radius: 14px; color: var(--accent); background: rgba(255,45,85,.11);
+}
+.video-ex-empty-icon svg, .video-ex-empty-icon i { width: 23px; height: 23px; }
+.video-ex-empty strong { color: var(--text); font-size: 1.03rem; }
+.video-ex-empty > span:last-child { color: var(--muted); font-size: .88rem; line-height: 1.5; }
+@media (max-width: 520px) {
+  .video-examples-intro { margin-top: -13px; font-size: .86rem; }
+  .video-ex-wrap { padding: 18px 0 26px; }
+  .video-ex-card { padding: 9px; border-radius: 18px; }
+  .video-ex-player { border-radius: 13px; }
+  .video-ex-actions { flex-direction: column; }
+  .video-ex-actions .btn { width: 100%; }
+  .video-ex-empty { min-height: 150px; padding: 24px 18px; border-radius: 18px; }
+}
+
 /* ===== "Example of result": before / after ==========================
    Replaced the sliding marquee: one comparison a visitor can actually study
    beats a strip nobody can pause. */

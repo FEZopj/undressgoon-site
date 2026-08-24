@@ -23,6 +23,7 @@ deployment:
     - /bin/cp -R assets $DEPLOYPATH
     - /bin/cp -R results $DEPLOYPATH
     - /bin/cp -R examples $DEPLOYPATH
+    - /bin/cp -R video-examples $DEPLOYPATH
     - /bin/cp -R de $DEPLOYPATH
     - /bin/cp -R es $DEPLOYPATH
     - /bin/cp -R fr $DEPLOYPATH

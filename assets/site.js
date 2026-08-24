@@ -2742,6 +2742,205 @@
     });
   }
 
+  // ===== Video examples ==================================================
+  // Curated marketing videos live outside generated user results. Add files
+  // to video-examples/ and name them in manifest.json; the homepage upgrades
+  // from a clean "coming soon" state without any HTML changes.
+  var VIDEO_EX_BASE = SITE_BASE + 'video-examples/';
+  var VIDEO_EX_SEEN_KEY = 'ug_seen_video_examples';
+
+  function videoExampleAsset(name) {
+    var clean = String(name || '').replace(/\\/g, '/').replace(/^\/+/, '');
+    // Keep manifest assets on our own origin and inside the dedicated folder.
+    if (!clean || clean.indexOf('..') !== -1 || clean.indexOf('://') !== -1) return '';
+    var src = VIDEO_EX_BASE + clean;
+    return SITE_VERSION ? (src + '?v=' + encodeURIComponent(SITE_VERSION)) : src;
+  }
+
+  function videoExampleSeen() {
+    try {
+      var raw = window.sessionStorage.getItem(VIDEO_EX_SEEN_KEY);
+      return raw ? String(raw).split(',') : [];
+    } catch (e) { return []; }
+  }
+
+  function videoExampleMarkSeen(id) {
+    if (!id) return;
+    var seen = videoExampleSeen();
+    if (seen.indexOf(id) === -1) seen.push(id);
+    try { window.sessionStorage.setItem(VIDEO_EX_SEEN_KEY, seen.join(',')); } catch (e) {}
+  }
+
+  function videoExampleResetSeen(keep) {
+    try { window.sessionStorage.setItem(VIDEO_EX_SEEN_KEY, keep || ''); } catch (e) {}
+  }
+
+  function initVideoExamples() {
+    var imageHeading = document.getElementById('ex-heading');
+    if (!imageHeading || document.getElementById('video-examples-heading')) return;
+
+    var heading = document.createElement('section');
+    heading.className = 'section video-examples-heading';
+    heading.id = 'video-examples-heading';
+    heading.setAttribute('aria-labelledby', 'video-examples-title');
+    heading.innerHTML =
+      '<div class="container">' +
+        '<h2 class="section-title" id="video-examples-title">' +
+          esc(t('videoExamplesTitle', 'Video examples')) +
+        '</h2>' +
+        '<p class="video-examples-intro">' +
+          esc(t('videoExamplesIntro', 'Watch our latest AI video results and shuffle through the collection.')) +
+        '</p>' +
+      '</div>';
+
+    var mount = document.createElement('div');
+    mount.id = 'video-examples-mount';
+    imageHeading.parentNode.insertBefore(heading, imageHeading);
+    imageHeading.parentNode.insertBefore(mount, imageHeading);
+
+    function showEmpty() {
+      mount.className = 'video-examples-mount is-empty';
+      mount.innerHTML =
+        '<section class="video-ex-wrap"><div class="container">' +
+          '<div class="video-ex-empty">' +
+            '<span class="video-ex-empty-icon"><i data-lucide="video"></i></span>' +
+            '<strong>' + esc(t('videoExamplesSoonTitle', 'Video examples coming soon')) + '</strong>' +
+            '<span>' + esc(t('videoExamplesSoonCopy', 'We are preparing our best video results for this gallery.')) + '</span>' +
+          '</div>' +
+        '</div></section>';
+      refreshIcons();
+    }
+
+    if (!window.fetch) { showEmpty(); return; }
+    var manifestUrl = videoExampleAsset('manifest.json');
+    fetch(manifestUrl, { credentials: 'same-origin' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (body) {
+        var raw = body && Array.isArray(body.examples) ? body.examples : [];
+        var examples = [];
+        for (var i = 0; i < raw.length; i++) {
+          var item = raw[i] || {};
+          var video = videoExampleAsset(item.video);
+          if (!video) continue;
+          examples.push({
+            id: String(item.id || item.video || ('video-' + i)),
+            video: video,
+            poster: videoExampleAsset(item.poster),
+            title: String(item.title || t('videoExamplesDefaultTitle', 'AI video transformation'))
+          });
+        }
+        if (!examples.length) { showEmpty(); return; }
+
+        mount.className = 'video-examples-mount has-examples';
+        mount.innerHTML =
+          '<section class="video-ex-wrap"><div class="container">' +
+            '<div class="video-ex-card">' +
+              '<div class="video-ex-player">' +
+                '<video id="video-example-player" muted loop playsinline controls preload="metadata"></video>' +
+                '<span class="video-ex-badge"><i data-lucide="sparkles"></i>' +
+                  esc(t('videoExamplesBadge', 'AI video')) + '</span>' +
+              '</div>' +
+              '<div class="video-ex-meta">' +
+                '<strong id="video-example-name"></strong>' +
+                '<span id="video-example-count"></span>' +
+              '</div>' +
+              '<p class="video-ex-note">' +
+                esc(t('videoExamplesNote', 'Curated AI-generated examples. Customer uploads are never used for promotion.')) +
+              '</p>' +
+              '<div class="ex-actions video-ex-actions">' +
+                '<button type="button" class="btn btn-accent" id="video-example-try">' +
+                  esc(t('videoExamplesTry', 'Create my video')) + '</button>' +
+                '<button type="button" class="btn ex-more" id="video-example-more">' +
+                  '<i data-lucide="shuffle"></i>' + esc(t('videoExamplesShuffle', 'Show another video')) +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div></section>';
+
+        var player = mount.querySelector('#video-example-player');
+        var name = mount.querySelector('#video-example-name');
+        var count = mount.querySelector('#video-example-count');
+        var more = mount.querySelector('#video-example-more');
+        var tryBtn = mount.querySelector('#video-example-try');
+        var current = -1;
+        var visible = false;
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var saveData = navigator.connection && navigator.connection.saveData;
+
+        function canAutoplay() { return visible && !reduceMotion && !saveData; }
+        function tryPlay() {
+          if (!canAutoplay()) return;
+          var attempt = player.play();
+          if (attempt && attempt.catch) attempt.catch(function () {});
+        }
+
+        function chooseIndex() {
+          var seen = videoExampleSeen();
+          var choices = [];
+          for (var idx = 0; idx < examples.length; idx++) {
+            if (idx !== current && seen.indexOf(examples[idx].id) === -1) choices.push(idx);
+          }
+          if (!choices.length) {
+            videoExampleResetSeen(current > -1 ? examples[current].id : '');
+            for (var j = 0; j < examples.length; j++) if (j !== current) choices.push(j);
+          }
+          if (!choices.length) return current > -1 ? current : 0;
+          return choices[Math.floor(Math.random() * choices.length)];
+        }
+
+        function paint(idx) {
+          var item = examples[idx];
+          if (!item) return;
+          player.pause();
+          player.removeAttribute('src');
+          player.removeAttribute('poster');
+          if (item.poster) player.poster = item.poster;
+          player.src = item.video;
+          player.load();
+          current = idx;
+          videoExampleMarkSeen(item.id);
+          name.textContent = item.title;
+          count.textContent = (idx + 1) + ' / ' + examples.length;
+          more.hidden = examples.length < 2;
+          tryPlay();
+          track('video_example_shown', { id: item.id, index: idx, total: examples.length });
+        }
+
+        player.addEventListener('canplay', tryPlay);
+        player.addEventListener('error', function () {
+          name.textContent = t('videoExamplesUnavailable', 'This video is temporarily unavailable.');
+        });
+        more.addEventListener('click', function () {
+          var next = chooseIndex();
+          track('video_example_shuffle', { from: current, to: next, total: examples.length });
+          paint(next);
+        });
+        tryBtn.addEventListener('click', function () {
+          track('video_example_try_click', {});
+          var gen = document.getElementById('generate') ||
+            document.querySelector('[data-web-generator]') ||
+            document.querySelector('.generator-app');
+          scrollToElement(gen, 'start');
+          var videoMode = document.querySelector('input[name="mode"][value="video"]');
+          if (videoMode && !videoMode.checked) videoMode.click();
+        });
+
+        if (window.IntersectionObserver) {
+          var observer = new IntersectionObserver(function (entries) {
+            visible = !!(entries[0] && entries[0].isIntersecting);
+            if (visible) tryPlay(); else player.pause();
+          }, { threshold: 0.45 });
+          observer.observe(player);
+        } else {
+          visible = true;
+        }
+
+        refreshIcons();
+        paint(chooseIndex());
+      })
+      .catch(showEmpty);
+  }
+
   // ===== "Example of result": one before / after pair ==================
   // Pairs are dropped into examples/ as a1 + a2, b1 + b2, ... where 1 is the
   // original and 2 is the result. A generated static manifest names the files
@@ -3186,6 +3385,7 @@
       ['sticky', initSticky],
       ['counter', initLiveCounter],
       ['toast', initToast],
+      ['video-examples', initVideoExamples],
       ['icons', refreshIcons]
     ];
     for (var i = 0; i < steps.length; i++) {
