@@ -3,6 +3,7 @@
   "examples": [
     { "id": "b1", "source": "b.webp", "video": "b1.mp4", "poster": "b.webp" },
     { "id": "b2", "source": "b.webp", "video": "b2.mp4", "poster": "b.webp" },
+    { "id": "b3", "source": "b.webp", "video": "b3.mp4", "poster": "b.webp" },
     { "id": "c1", "source": "c.webp", "video": "c1.mp4", "poster": "c.webp" },
     { "id": "d1", "source": "d.webp", "video": "d1.mp4", "poster": "d.webp" },
     { "id": "d2", "source": "d.webp", "video": "d2.mp4", "poster": "d.webp" },
