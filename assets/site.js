@@ -1837,7 +1837,7 @@
       { key: 'outfits', label: t('videoTabOutfits', 'Outfits') }
     ];
     var videoPresetsFallback = [
-      { key: 'oral_pov', category: 'popular', label: t('videoOral', 'Oral') },
+      { key: 'oral_pov', category: 'popular', label: t('videoDeepthroat', 'Deepthroat') },
       { key: 'foot_play_pov', category: 'popular', label: t('videoFootjob', 'Footjob') },
       { key: 'topless_reveal', category: 'popular', label: t('videoTopless', 'Show boobs') },
       { key: 'feet_pantyhose_closeup', category: 'fetish', label: t('videoFeet', 'Feet') },
@@ -1855,7 +1855,12 @@
     }
 
     function videoPresets() {
-      if (remoteVideos) return remoteVideos.presets || [];
+      if (remoteVideos) {
+        return (remoteVideos.presets || []).map(function (preset) {
+          if (preset.key !== 'oral_pov') return preset;
+          return Object.assign({}, preset, { label: t('videoDeepthroat', 'Deepthroat') });
+        });
+      }
       return [];
     }
     var presetPromptUpgrades = {
