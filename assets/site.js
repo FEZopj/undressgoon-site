@@ -1841,10 +1841,7 @@
       { key: 'foot_play_pov', category: 'popular', label: t('videoFootjob', 'Footjob') },
       { key: 'topless_reveal', category: 'popular', label: t('videoTopless', 'Show boobs') },
       { key: 'hands_on_breast_play', category: 'popular', label: t('videoSqueezeBoobs', 'Squeeze boobs') },
-      { key: 'pussy_reveal', category: 'popular', label: t('videoPussyReveal', 'Show pussy'), supportsPubicHair: true },
-      { key: 'pov_cock_caress', category: 'popular', label: t('videoCockCaress', 'Cock caress') },
       { key: 'feet_pantyhose_closeup', category: 'fetish', label: t('videoFeet', 'Feet') },
-      { key: 'asshole_reveal', category: 'fetish', label: t('videoAssholeReveal', 'Show asshole'), supportsPubicHair: true },
       { key: 'post_workout_sweat', category: 'solo', label: t('videoSweat', 'Sweaty') },
       { key: 'oiled_body_caress', category: 'solo', label: t('videoOil', 'Oiled') },
       { key: 'black_lingerie_dance', category: 'outfits', label: t('videoLingerieDance', 'Lingerie dance') },
@@ -1985,32 +1982,6 @@
       return sceneHelp;
     }
 
-    function syncBodyOptions() {
-      var mode = activeMode();
-      var adv = document.getElementById('advanced-options');
-      if (!adv) return;
-      var labels = adv.querySelectorAll('label');
-      var breast = labels.length ? labels[0] : null;
-      var pubic = labels.length > 1 ? labels[1] : null;
-      if (mode === 'scene') {
-        adv.style.display = 'none';
-        return;
-      }
-      if (mode === 'video') {
-        var preset = videoPresets().find(function (item) { return item.key === selected; });
-        var supportsPubicHair = !!(preset && preset.supportsPubicHair);
-        adv.style.display = supportsPubicHair ? 'grid' : 'none';
-        adv.style.gridTemplateColumns = '1fr';
-        if (breast) breast.style.display = 'none';
-        if (pubic) pubic.style.display = supportsPubicHair ? 'grid' : 'none';
-        return;
-      }
-      adv.style.display = '';
-      adv.style.gridTemplateColumns = '';
-      if (breast) breast.style.display = '';
-      if (pubic) pubic.style.display = '';
-    }
-
     function syncModeCopy() {
       var mode = activeMode();
       var scene = mode === 'scene';
@@ -2037,9 +2008,9 @@
       prompt.placeholder = scene
         ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
         : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
-      // Only the two anatomy-reveal video presets expose the pubic-hair option;
-      // breast controls remain specific to image generation.
-      syncBodyOptions();
+      // Scene/video modes hide the undress body controls.
+      var adv = document.getElementById('advanced-options');
+      if (adv) adv.style.display = (scene || video) ? 'none' : '';
       showSubject(scene);
       // Custom video prompts stay staged until the matching worker build is live.
       if (writeOwn) writeOwn.style.display = video ? 'none' : '';
@@ -2107,7 +2078,6 @@
           var modeInput = document.querySelector('input[name="mode"][value="' + mode + '"]');
           if (modeInput) modeInput.checked = true;
           renderGrid();
-          syncBodyOptions();
         });
       });
     }
@@ -2410,7 +2380,6 @@
         payload.set('variations', '1');
         if (selectedPresetKey) payload.append('video_preset', selectedPresetKey);
         else payload.append('video_prompt', prompt ? prompt.value.trim() : '');
-        payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
       } else if (modeValue === 'scene') {
         // The invisible-prompt bridge holds the chosen scene KEY; send it as
         // `scene` and attach the subject attribute picks (skip the undress body
