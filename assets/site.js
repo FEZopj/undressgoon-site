@@ -3316,8 +3316,7 @@
           // nobody should mistake an example for a real customer's photo
           '<p class="ex-note">' + esc(t('exNote',
             'Everyone in these examples is AI generated and does not exist. ' +
-            'We never store your photos, and we would never use them to ' +
-            'promote anything.')) + '</p>' +
+            'We never store your photos.')) + '</p>' +
           '<div class="ex-actions">' +
             '<button type="button" class="btn btn-accent ex-try" id="ex-try">' +
               esc(t('exTry', 'Let me try')) + '</button>' +
