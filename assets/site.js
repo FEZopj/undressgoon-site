@@ -1867,6 +1867,21 @@
       }
       return [];
     }
+    var requestedMode = '';
+    var requestedModeApplied = false;
+    try {
+      requestedMode = new URLSearchParams(location.search || '').get('mode') || '';
+    } catch (e) {}
+    function applyRequestedMode() {
+      if (requestedModeApplied || requestedMode !== 'video' || !videoInput || videoInput.disabled) return;
+      videoInput.checked = true;
+      active = (videoCats()[0] && videoCats()[0].key) || 'popular';
+      selected = '';
+      selectedPresetKey = '';
+      prompt.value = '';
+      showCustomPrompt(false);
+      requestedModeApplied = true;
+    }
     var presetPromptUpgrades = {
       nude: 'completely naked, fully exposed, no clothing at all, bare breasts with natural visible nipples and areolas, natural skin texture, same pose and same camera framing, clear recognizable face, realistic shadows on the body',
       oily: 'completely nude body covered in shiny oil, glistening skin, bare breasts with natural visible nipples and areolas, oil highlights on chest stomach hips and thighs, no clothing, clear face, preserve the original setting and background, lighting consistent with the original photo',
@@ -2138,12 +2153,14 @@
       showCustomPrompt(false);
     }
 
+    applyRequestedMode();
     syncModeCopy();
     renderTabs();
     renderGrid();
     renderWriteOwn();
     rerenderPresets = function () {
       applyVideoAvailability();
+      applyRequestedMode();
       syncModeCopy();
       renderTabs();
       renderGrid();
