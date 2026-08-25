@@ -33,7 +33,7 @@
     else document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  // Show the "Scene v2" generator mode as a greyed-out "SOON" that can't be selected
+  // Show the Scene generator mode as a greyed-out "SOON" that can't be selected
   // until the backend reports the feature live (SCENE_ENABLED=true). Flip the env
   // to enable/disable without any redeploy.
   function applySceneAvailability(enabled, beta) {
