@@ -1798,7 +1798,9 @@
       var locked = !isBuyer();
       writeOwn.classList.toggle('locked', locked);
       writeOwn.innerHTML = (locked ? '<i data-lucide="lock"></i> ' : '<i data-lucide="pencil"></i> ')
-        + esc(t('writeOwnPrompt', 'Write my own prompt'));
+        + esc(activeMode() === 'video'
+          ? t('writeOwnVideoPrompt', 'Write my own video prompt')
+          : t('writeOwnPrompt', 'Write my own prompt'));
       refreshIcons();
     }
     if (writeOwn && !writeOwn.dataset.bound) {
@@ -1843,8 +1845,12 @@
       { key: 'hands_on_breast_play', category: 'popular', label: t('videoSqueezeBoobs', 'Squeeze boobs') },
       { key: 'pussy_reveal', category: 'popular', label: t('videoPussyReveal', 'Show pussy'), supportsPubicHair: true },
       { key: 'pov_cock_caress', category: 'popular', label: t('videoCockCaress', 'Cock caress') },
+      { key: 'cowgirl_pov', category: 'popular', label: t('videoCowgirl', 'Cowgirl') },
+      { key: 'bbc_worship', category: 'popular', label: t('videoBbcWorship', 'BBC worship') },
       { key: 'feet_pantyhose_closeup', category: 'fetish', label: t('videoFeet', 'Feet') },
       { key: 'asshole_reveal', category: 'fetish', label: t('videoAssholeReveal', 'Show asshole'), supportsPubicHair: true },
+      { key: 'bukkake_pov', category: 'fetish', label: t('videoBukkake', 'Bukkake') },
+      { key: 'collar_begging', category: 'fetish', label: t('videoCollarBegging', 'Collar begging') },
       { key: 'post_workout_sweat', category: 'solo', label: t('videoSweat', 'Sweaty') },
       { key: 'oiled_body_caress', category: 'solo', label: t('videoOil', 'Oiled') },
       { key: 'black_lingerie_dance', category: 'outfits', label: t('videoLingerieDance', 'Lingerie dance') },
@@ -1960,6 +1966,40 @@
     }
     function showSubject(on) { if (subjectBox) subjectBox.style.display = on ? '' : 'none'; }
 
+    var videoOptions = document.getElementById('video-options');
+    if (!videoOptions && picker) {
+      videoOptions = document.createElement('div');
+      videoOptions.id = 'video-options';
+      videoOptions.className = 'advanced-options';
+      videoOptions.style.display = 'none';
+      videoOptions.innerHTML =
+        '<label id="video-partner-skin-wrap"><span>Partner</span><select id="video-partner-skin">' +
+          '<option value="">Auto</option><option value="black">Black</option><option value="white">White</option>' +
+        '</select></label>' +
+        '<label id="video-penis-size-wrap"><span>Penis size</span><select id="video-penis-size">' +
+          '<option value="">Auto</option><option value="small">Small</option><option value="average">Average</option><option value="large">Large</option>' +
+        '</select></label>' +
+        '<label style="grid-column:1/-1"><span>Optional voice line <small>(max 120 characters)</small></span>' +
+          '<input id="video-voice-line" type="text" maxlength="120" placeholder="Anything you want her to say"></label>';
+      picker.insertAdjacentElement('afterend', videoOptions);
+    }
+
+    function syncVideoOptions() {
+      if (!videoOptions) return;
+      var video = activeMode() === 'video';
+      videoOptions.style.display = video ? 'grid' : 'none';
+      var preset = videoPresets().find(function (item) { return item.key === selected; });
+      var partner = !!(preset && preset.supportsPartnerOptions);
+      var skinWrap = document.getElementById('video-partner-skin-wrap');
+      var sizeWrap = document.getElementById('video-penis-size-wrap');
+      if (skinWrap) skinWrap.style.display = partner ? 'grid' : 'none';
+      if (sizeWrap) sizeWrap.style.display = partner ? 'grid' : 'none';
+      var voice = document.getElementById('video-voice-line');
+      if (voice && remoteVideos && remoteVideos.voiceLineMaxChars) {
+        voice.maxLength = Number(remoteVideos.voiceLineMaxChars) || 120;
+      }
+    }
+
     function activeMode() {
       var checked = document.querySelector('input[name="mode"]:checked');
       return checked ? checked.value : 'prompt';
@@ -2026,23 +2066,26 @@
           : t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT'));
       if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
       prompt.required = true;
+      prompt.maxLength = video ? 4000 : 900;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
         help.hidden = !(scene || video);
         help.textContent = video
-          ? t('videoHelp', 'Choose a video preset. More presets will be added soon.')
+          ? t('videoHelp', 'Choose a video preset or write your own. Be as detailed as you want, including anything you want her to say. More presets will be added soon.')
           : t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
-      prompt.placeholder = scene
-        ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
-        : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
+      prompt.placeholder = video
+        ? t('videoPromptPlaceholder', 'Describe the action, camera, pace, sound, and anything you want her to say…')
+        : (scene
+          ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
+          : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie'));
       // Only the two anatomy-reveal video presets expose the pubic-hair option;
       // breast controls remain specific to image generation.
       syncBodyOptions();
+      syncVideoOptions();
       showSubject(scene);
-      // Custom video prompts stay staged until the matching worker build is live.
-      if (writeOwn) writeOwn.style.display = video ? 'none' : '';
+      if (writeOwn) writeOwn.style.display = '';
       renderWriteOwn();
       // Only close the box when a catalogue scene is selected — closing it on
       // every mode sync would wipe a scene someone is mid-way through typing.
@@ -2108,6 +2151,7 @@
           if (modeInput) modeInput.checked = true;
           renderGrid();
           syncBodyOptions();
+          syncVideoOptions();
         });
       });
     }
@@ -2411,6 +2455,12 @@
         if (selectedPresetKey) payload.append('video_preset', selectedPresetKey);
         else payload.append('video_prompt', prompt ? prompt.value.trim() : '');
         payload.append('pubic_hair', pubicHair ? pubicHair.value : 'natural');
+        var videoVoice = document.getElementById('video-voice-line');
+        var videoPartnerSkin = document.getElementById('video-partner-skin');
+        var videoPenisSize = document.getElementById('video-penis-size');
+        payload.append('video_voice_line', videoVoice ? videoVoice.value.trim() : '');
+        payload.append('video_partner_skin', videoPartnerSkin ? videoPartnerSkin.value : '');
+        payload.append('video_penis_size', videoPenisSize ? videoPenisSize.value : '');
       } else if (modeValue === 'scene') {
         // The invisible-prompt bridge holds the chosen scene KEY; send it as
         // `scene` and attach the subject attribute picks (skip the undress body

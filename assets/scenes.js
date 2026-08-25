@@ -33,7 +33,7 @@
     else document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  // Show the "Scene v2" generator mode as a greyed-out "SOON" that can't be selected
+  // Show the Scene generator mode as a greyed-out "SOON" that can't be selected
   // until the backend reports the feature live (SCENE_ENABLED=true). Flip the env
   // to enable/disable without any redeploy.
   function applySceneAvailability(enabled, beta) {
@@ -46,8 +46,7 @@
     label.title = enabled ? "" : "Coming soon";
     if (badge) {
       if (enabled) {
-        badge.textContent = "NEW";
-        badge.style.background = "var(--accent,#ff3d6e)";
+        badge.remove();
       } else {
         badge.textContent = "SOON";
         badge.style.background = "var(--muted,#9b9ba8)";
