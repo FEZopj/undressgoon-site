@@ -1798,7 +1798,9 @@
       var locked = !isBuyer();
       writeOwn.classList.toggle('locked', locked);
       writeOwn.innerHTML = (locked ? '<i data-lucide="lock"></i> ' : '<i data-lucide="pencil"></i> ')
-        + esc(t('writeOwnPrompt', 'Write my own prompt'));
+        + esc(activeMode() === 'video'
+          ? t('writeOwnVideoPrompt', 'Write my own video prompt')
+          : t('writeOwnPrompt', 'Write my own prompt'));
       refreshIcons();
     }
     if (writeOwn && !writeOwn.dataset.bound) {
@@ -1837,6 +1839,7 @@
       { key: 'outfits', label: t('videoTabOutfits', 'Outfits') }
     ];
     var videoPresetsFallback = [
+      { key: 'hmpussy_open_reveal', category: 'popular', label: t('videoShowPussy', 'Show pussy') },
       { key: 'oral_pov', category: 'popular', label: t('videoDeepthroat', 'Deepthroat') },
       { key: 'foot_play_pov', category: 'popular', label: t('videoFootjob', 'Footjob') },
       { key: 'topless_reveal', category: 'popular', label: t('videoTopless', 'Show boobs') },
@@ -1996,24 +1999,26 @@
           ? t('chooseSceneLabel', 'PICK A SCENE')
           : t('presetPromptInstruction', 'CHOOSE A PRESET OR JUST DIRECTLY WRITE YOUR OWN PROMPT'));
       if (promptLabel) promptLabel.textContent = scene ? t('scenePromptLabel', 'Scene prompt') : t('promptLabel', 'Prompt');
+      if (promptLabel && video) promptLabel.textContent = t('videoPromptLabel', 'Video prompt');
       prompt.required = true;
       if (clear) clear.hidden = true;
       var help = ensureSceneHelp();
       if (help) {
         help.hidden = !(scene || video);
         help.textContent = video
-          ? t('videoHelp', 'Choose a video preset. More presets will be added soon.')
+          ? t('videoHelp', 'Choose a video preset or write a detailed custom prompt. You can also describe anything you want the subject to say. More presets will be added soon.')
           : t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
-      prompt.placeholder = scene
-        ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
-        : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie');
+      prompt.placeholder = video
+        ? t('videoPromptPlaceholder', 'Describe the movement, camera, framing, appearance, timing, sound, and any exact words you want the subject to say.')
+        : (scene
+          ? t('scenePromptPlaceholder', 'Example: riding him reverse cowgirl on a bed, POV from below')
+          : t('promptPlaceholder', 'Example: tiny black micro bikini, glossy skin, bedroom mirror selfie'));
       // Scene/video modes hide the undress body controls.
       var adv = document.getElementById('advanced-options');
       if (adv) adv.style.display = (scene || video) ? 'none' : '';
       showSubject(scene);
-      // Custom video prompts stay staged until the matching worker build is live.
-      if (writeOwn) writeOwn.style.display = video ? 'none' : '';
+      if (writeOwn) writeOwn.style.display = '';
       renderWriteOwn();
       // Only close the box when a catalogue scene is selected — closing it on
       // every mode sync would wipe a scene someone is mid-way through typing.
