@@ -38,5 +38,6 @@ deployment:
     - /bin/cp -R ai-nude-generator $DEPLOYPATH
     - /bin/cp -R custom-nsfw-image-editor $DEPLOYPATH
     - /bin/cp -R ai-outfit-editor $DEPLOYPATH
+    - /bin/cp -R ai-video-generator $DEPLOYPATH
     - /bin/cp -R guides $DEPLOYPATH
     - /bin/cp -R affiliate-program $DEPLOYPATH
