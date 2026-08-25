@@ -2931,7 +2931,7 @@
                   esc(t('videoExamplesSound', 'Includes sound')) + '</span>' +
               '</div>' +
               '<p class="video-ex-note">' +
-                esc(t('videoExamplesNote', 'Curated AI-generated examples. Customer uploads are never used for promotion.')) +
+                esc(t('videoExamplesNote', 'Curated AI-generated examples.')) +
               '</p>' +
               '<div class="ex-actions video-ex-actions">' +
                 '<button type="button" class="btn btn-accent" id="video-example-try">' +
