@@ -3162,10 +3162,6 @@ html[data-theme="light"] .ex-peek-btn::after {
    just tightens the optional helper line above them. */
 #scene-subject .scene-subject-head { line-height: 1.35; }
 
-/* "Coming soon" state for the Scene generator mode — greyed + unselectable. */
-.mode-row label.scene-coming-soon { opacity: .5; cursor: not-allowed; }
-.mode-row label.scene-coming-soon input { cursor: not-allowed; pointer-events: none; }
-
 /* bundled from lp2.css */
 /* ===== lp2 (variant B) — conversion layout ==========================
        Generator left, pitch right, results in a popup. Everything else

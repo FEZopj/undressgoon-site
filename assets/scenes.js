@@ -33,29 +33,13 @@
     else document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  // Scene is a public production feature. The API can still explicitly disable
-  // it, but a slow availability request must not cause a false coming-soon flash.
-  function applySceneAvailability(enabled, beta) {
+  // Scene is a public production feature. Keep it selectable from first paint;
+  // the catalogue request only refreshes presets and announcements.
+  function applySceneAvailability() {
     var radio = document.querySelector('input[name="mode"][value="scene"]');
     var label = document.getElementById("scene-mode-label");
-    var badge = document.getElementById("scene-mode-badge");
     if (!radio || !label) return;
-    radio.disabled = !enabled;
-    label.classList.toggle("scene-coming-soon", !enabled);
-    label.title = enabled ? "" : "Scene generation is unavailable";
-    if (badge) {
-      if (enabled) {
-        badge.textContent = "NEW";
-        badge.style.background = "var(--accent,#ff3d6e)";
-      } else {
-        badge.textContent = "OFF";
-        badge.style.background = "var(--muted,#9b9ba8)";
-      }
-    }
-    if (!enabled && radio.checked) {
-      var prompt = document.querySelector('input[name="mode"][value="prompt"]');
-      if (prompt) { prompt.checked = true; prompt.dispatchEvent(new Event("change", { bubbles: true })); }
-    }
+    radio.disabled = false;
   }
 
   var announced = false;
@@ -64,7 +48,7 @@
     return fetch(API + "/web/scenes", { credentials: "include" })
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        applySceneAvailability(!!(d && d.enabled), !!(d && d.beta));
+        applySceneAvailability();
         // Hand the catalogue to site.js so its picker is always the server's
         // list — otherwise a preset removed server-side lingers as a dead button.
         if (window.UG_APPLY_SCENE_CATALOGUE) window.UG_APPLY_SCENE_CATALOGUE(d);
@@ -78,7 +62,7 @@
   window.UG_RECHECK_SCENES = check;
 
   function boot() {
-    applySceneAvailability(true);
+    applySceneAvailability();
     check();
   }
 
