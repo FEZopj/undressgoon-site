@@ -33,9 +33,8 @@
     else document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  // Show the Scene generator mode as a greyed-out "SOON" that can't be selected
-  // until the backend reports the feature live (SCENE_ENABLED=true). Flip the env
-  // to enable/disable without any redeploy.
+  // Scene is a public production feature. The API can still explicitly disable
+  // it, but a slow availability request must not cause a false coming-soon flash.
   function applySceneAvailability(enabled, beta) {
     var radio = document.querySelector('input[name="mode"][value="scene"]');
     var label = document.getElementById("scene-mode-label");
@@ -43,13 +42,13 @@
     if (!radio || !label) return;
     radio.disabled = !enabled;
     label.classList.toggle("scene-coming-soon", !enabled);
-    label.title = enabled ? "" : "Coming soon";
+    label.title = enabled ? "" : "Scene generation is unavailable";
     if (badge) {
       if (enabled) {
         badge.textContent = "NEW";
         badge.style.background = "var(--accent,#ff3d6e)";
       } else {
-        badge.textContent = "SOON";
+        badge.textContent = "OFF";
         badge.style.background = "var(--muted,#9b9ba8)";
       }
     }
@@ -71,7 +70,7 @@
         if (window.UG_APPLY_SCENE_CATALOGUE) window.UG_APPLY_SCENE_CATALOGUE(d);
         if (!announced) { renderAnnouncement(d && d.announcement); announced = true; }
       })
-      .catch(function () { /* silent — Scene mode stays hidden */ });
+      .catch(function () { /* keep the production-first state */ });
   }
 
   // Availability is per-account while scenes are in beta, and this runs before
@@ -79,7 +78,7 @@
   window.UG_RECHECK_SCENES = check;
 
   function boot() {
-    applySceneAvailability(false); // default hidden until the backend confirms
+    applySceneAvailability(true);
     check();
   }
 

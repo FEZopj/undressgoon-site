@@ -1677,7 +1677,7 @@
         remoteVideos = data;
         if (rerenderPresets) rerenderPresets();
       })
-      .catch(function () { /* leave Video marked SOON if availability is unknown */ });
+      .catch(function () { /* keep the built-in production video catalogue */ });
   }
 
   // Backend key list + local (translated) labels. Falls back to the hardcoded
@@ -1757,21 +1757,17 @@
     var videoInput = document.querySelector('input[name="mode"][value="video"]');
     function applyVideoAvailability() {
       if (!videoInput) return;
-      var enabled = !!(remoteVideos && remoteVideos.enabled === true);
-      videoInput.disabled = !enabled;
+      // Video is a public production feature. Render it live immediately and
+      // let the backend remain the authority for authentication and credits.
+      // A slow/unavailable catalogue request must never regress the UI to SOON.
+      videoInput.disabled = false;
       var videoLabel = videoInput.parentElement;
       if (videoLabel) {
-        videoLabel.classList.toggle('video-coming-soon', !enabled);
-        videoLabel.classList.toggle('video-live', enabled);
-        videoLabel.title = enabled
-          ? t('videoLiveTitle', 'Create an AI video from your photo')
-          : t('videoSoonTitle', 'AI video is coming soon');
+        videoLabel.classList.remove('video-coming-soon');
+        videoLabel.classList.add('video-live');
+        videoLabel.title = t('videoLiveTitle', 'Create an AI video from your photo');
         var videoBadge = videoLabel.querySelector('.video-soon-badge');
-        if (videoBadge) videoBadge.textContent = enabled ? 'NEW' : 'SOON';
-      }
-      if (!enabled && videoInput.checked) {
-        var promptInput = document.querySelector('input[name="mode"][value="prompt"]');
-        if (promptInput) promptInput.checked = true;
+        if (videoBadge) videoBadge.textContent = 'NEW';
       }
     }
     applyVideoAvailability();
@@ -1834,28 +1830,33 @@
     ];
     var videoCatsFallback = [
       { key: 'popular', label: t('videoTabPopular', 'Popular') },
-      { key: 'fetish', label: t('videoTabFetish', 'Fetish') },
+      { key: 'couples', label: t('videoTabCouples', 'Couples') },
       { key: 'solo', label: t('videoTabSolo', 'Solo') },
+      { key: 'fetish', label: t('videoTabFetish', 'Fetish') },
       { key: 'outfits', label: t('videoTabOutfits', 'Outfits') }
     ];
     var videoPresetsFallback = [
       { key: 'hmpussy_open_reveal', category: 'popular', label: t('videoShowPussy', 'Show pussy') },
-      { key: 'oral_pov', category: 'popular', label: t('videoDeepthroat', 'Deepthroat') },
-      { key: 'foot_play_pov', category: 'popular', label: t('videoFootjob', 'Footjob') },
       { key: 'topless_reveal', category: 'popular', label: t('videoTopless', 'Show boobs') },
       { key: 'hands_on_breast_play', category: 'popular', label: t('videoSqueezeBoobs', 'Squeeze boobs') },
-      { key: 'feet_pantyhose_closeup', category: 'fetish', label: t('videoFeet', 'Feet') },
+      { key: 'ass_squeeze', category: 'popular', label: t('videoAssSqueeze', 'Ass squeeze') },
+      { key: 'two_women_oral', category: 'couples', label: t('videoTwoWomenOral', 'Two Girls Oral') },
+      { key: 'h3_native_doggy_visible_face', category: 'couples', label: t('videoDoggyStyle', 'Doggy Style') },
+      { key: 'oral_pov', category: 'couples', label: t('videoDeepthroat', 'Deepthroat') },
+      { key: 'submissive_begging', category: 'solo', label: t('videoSubmissive', 'Beg for It') },
       { key: 'post_workout_sweat', category: 'solo', label: t('videoSweat', 'Sweaty') },
       { key: 'oiled_body_caress', category: 'solo', label: t('videoOil', 'Oiled') },
+      { key: 'feet_pantyhose_closeup', category: 'fetish', label: t('videoFeet', 'Feet') },
+      { key: 'foot_play_pov', category: 'fetish', label: t('videoFootjob', 'Footjob') },
+      { key: 'bdsm_whipped', category: 'fetish', label: t('videoWhipped', 'Whipped') },
       { key: 'black_lingerie_dance', category: 'outfits', label: t('videoLingerieDance', 'Lingerie dance') },
       { key: 'white_pantyhose_tease', category: 'outfits', label: t('videoPantyhose', 'Pantyhose') },
-      { key: 'latex_hip_sway', category: 'outfits', label: t('videoLatex', 'Latex') },
-      { key: 'bdsm_whipped', category: 'fetish', label: t('videoWhipped', 'Whipped') }
+      { key: 'latex_hip_sway', category: 'outfits', label: t('videoLatex', 'Latex') }
     ];
 
     function videoCats() {
       if (remoteVideos) return remoteVideos.categories || [];
-      return [];
+      return videoCatsFallback;
     }
 
     function videoPresets() {
@@ -1865,7 +1866,7 @@
           return Object.assign({}, preset, { label: t('videoDeepthroat', 'Deepthroat') });
         });
       }
-      return [];
+      return videoPresetsFallback;
     }
     var requestedMode = '';
     var requestedModeApplied = false;
@@ -2021,7 +2022,7 @@
       if (help) {
         help.hidden = !(scene || video);
         help.textContent = video
-          ? t('videoHelp', 'Choose a video preset or write a detailed custom prompt. You can also describe anything you want the subject to say. More presets will be added soon.')
+          ? t('videoHelp', 'Choose a video preset or write a detailed custom prompt. You can also describe anything you want the subject to say. More presets are on the way.')
           : t('sceneHelp', 'Pick a scene, then set your body details below so it comes out looking like you.');
       }
       prompt.placeholder = video
@@ -2767,7 +2768,7 @@
   // ===== Video examples ==================================================
   // Curated marketing videos live outside generated user results. Add files
   // to video-examples/ and name them in manifest.json; the homepage upgrades
-  // from a clean "coming soon" state without any HTML changes.
+  // from a clean unavailable state without any HTML changes.
   var VIDEO_EX_BASE = SITE_BASE + 'video-examples/';
   var VIDEO_EX_SEEN_KEY = 'ug_seen_video_examples';
 
@@ -2807,7 +2808,7 @@
       if (!examples || !examples.length) {
         heroMount.innerHTML =
           '<div class="hero-video-loading"><i data-lucide="video"></i><span>' +
-            esc(t('videoExamplesSoonTitle', 'Video examples coming soon')) +
+            esc(t('videoExamplesSoonTitle', 'Video examples are temporarily unavailable')) +
           '</span></div>';
         refreshIcons();
         return;
@@ -2882,8 +2883,8 @@
         '<section class="video-ex-wrap"><div class="container">' +
           '<div class="video-ex-empty">' +
             '<span class="video-ex-empty-icon"><i data-lucide="video"></i></span>' +
-            '<strong>' + esc(t('videoExamplesSoonTitle', 'Video examples coming soon')) + '</strong>' +
-            '<span>' + esc(t('videoExamplesSoonCopy', 'We are preparing our best video results for this gallery.')) + '</span>' +
+            '<strong>' + esc(t('videoExamplesSoonTitle', 'Video examples are temporarily unavailable')) + '</strong>' +
+            '<span>' + esc(t('videoExamplesSoonCopy', 'Refresh the page to try loading the video gallery again.')) + '</span>' +
           '</div>' +
         '</div></section>';
       refreshIcons();
