@@ -2813,7 +2813,9 @@
         refreshIcons();
         return;
       }
-      var item = examples.filter(function (candidate) { return candidate.id === 'c2'; })[0] || examples[0];
+      // Keep the homepage proof fixed to the curated c → c2 pair, independent
+      // of a visitor's cached examples manifest.
+      var item = { id: 'c2', source: 'c.webp', video: 'c2.mp4', poster: 'c.webp' };
       videoExampleMarkSeen(item.id);
       heroMount.innerHTML =
         '<div class="hero-video-frame">' +
