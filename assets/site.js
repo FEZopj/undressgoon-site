@@ -2813,7 +2813,7 @@
         refreshIcons();
         return;
       }
-      var item = examples.filter(function (candidate) { return candidate.id === 'd1'; })[0] || examples[0];
+      var item = examples.filter(function (candidate) { return candidate.id === 'c2'; })[0] || examples[0];
       videoExampleMarkSeen(item.id);
       heroMount.innerHTML =
         '<div class="hero-video-frame">' +
