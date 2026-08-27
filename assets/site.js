@@ -2815,7 +2815,12 @@
       }
       // Keep the homepage proof fixed to the curated c → c2 pair, independent
       // of a visitor's cached examples manifest.
-      var item = { id: 'c2', source: 'c.webp', video: 'c2.mp4', poster: 'c.webp' };
+      var item = {
+        id: 'c2',
+        source: videoExampleAsset('c.webp'),
+        video: videoExampleAsset('c2.mp4'),
+        poster: videoExampleAsset('c.webp')
+      };
       videoExampleMarkSeen(item.id);
       heroMount.innerHTML =
         '<div class="hero-video-frame">' +
