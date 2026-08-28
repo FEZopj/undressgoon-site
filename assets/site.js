@@ -673,12 +673,26 @@
       track('website_pricing_viewed', { surface: 'modal' });
       var title = document.getElementById('topup-title');
       var copy = document.getElementById('topup-copy');
+      var costs = document.getElementById('topup-costs');
+      if (!costs && copy) {
+        costs = document.createElement('div');
+        costs.id = 'topup-costs';
+        costs.className = 'topup-costs';
+        copy.insertAdjacentElement('afterend', costs);
+      }
+      if (costs) {
+        costs.innerHTML =
+          '<span><b>' + esc(t('topupImagesLabel', 'Images:')) + '</b> ' + esc(t('topupImagesCost', '1 credit')) + '</span>' +
+          '<span><b>' + esc(t('topupVideosLabel', 'Videos:')) + '</b> ' + esc(t('topupVideosCost', '2 credits')) + '</span>' +
+          '<span class="topup-costs-starter"><b>' + esc(t('topupStarterLabel', 'Starter pack:')) + '</b> ' +
+            esc(t('topupStarterValue', '12 credits = up to 12 images or 6 videos')) + '</span>';
+      }
       if (reason === 'exit_post_gen') {
         if (title) title.textContent = t('exitOfferTitle', 'Wait - your first result unlocked a private deal');
         if (copy) copy.textContent = t('exitOfferCopy', 'Keep going now and get bonus credits added automatically to every pack.');
       } else {
-        if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready for another image?');
-        if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Pick a pack and keep generating on the website.');
+        if (title) title.textContent = reason === 'empty' ? t('topupEmptyTitle', 'You are out of credits') : t('topupTitle', 'Ready to create more?');
+        if (copy) copy.textContent = reason === 'empty' ? t('topupEmptyCopy', 'Choose a pack and keep generating in seconds.') : t('topupCopy', 'Choose a credit pack and keep creating.');
       }
       // Start each checkout with an empty discount field — a typed code from a
       // previous open should not linger (campaign/URL codes are kept).
@@ -1802,7 +1816,7 @@
     if (writeOwn && !writeOwn.dataset.bound) {
       writeOwn.dataset.bound = '1';
       writeOwn.addEventListener('click', function () {
-        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.')); return; }
+        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation works with the Fully Nude preset. Top up to unlock every other outfit preset, scenes, videos, and custom prompts.')); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';
@@ -2066,10 +2080,10 @@
         return p.category === active;
       }).map(function (p) {
         var icon = mode === 'video' ? 'video' : (mode === 'scene' ? '' : (p.category === 'hot' ? 'flame' : (p.category === 'fantasy' ? 'sparkles' : 'shirt')));
-        // Outfit-edit presets are included in the free generation. Scene mode
-        // and custom prompts stay paywalled. Locking outfit buttons here while
-        // lp2-core unlocked them on every mutation froze the landing page.
-        var locked = !buyer && (mode === 'scene' || mode === 'video');
+        // Before the first top-up, only the backend-designated free outfit
+        // preset is available. Everything else is visibly locked here so the
+        // UI matches the server entitlement instead of failing after submit.
+        var locked = !buyer && (mode !== 'outfit' || p.key !== FREE_PRESET_KEY);
         return '<button type="button" class="' + (p.key === selected ? 'active' : '') + (locked ? ' locked' : '') + '" data-key="' + esc(p.key) + '"' + (locked ? ' data-locked="1"' : '') + '><i data-lucide="' + icon + '"></i>' + esc(p.label) + (locked ? '<span class="preset-lock"><i data-lucide="lock"></i></span>' : '') + '</button>';
       }).join('');
       refreshIcons();
@@ -2082,7 +2096,7 @@
               mode === 'video' ? t('videoUnlockTitle', 'Unlock AI video') : t('lockedPresetTitle', 'Your free generation'),
               mode === 'video'
                 ? t('videoUnlockHint', 'Video is available after your first top-up and costs 2 credits per generation.')
-                : t('lockedPresetHint', 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.')
+                : t('lockedPresetHint', 'Your free generation works with the Fully Nude preset. Top up to unlock every other outfit preset, scenes, videos, and custom prompts.')
             );
             return;
           }
@@ -2105,7 +2119,7 @@
 
     if (clear) {
       clear.addEventListener('click', function () {
-        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.')); return; }
+        if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation works with the Fully Nude preset. Top up to unlock every other outfit preset, scenes, videos, and custom prompts.')); return; }
         selected = '';
         selectedPresetKey = '';
         prompt.value = '';
@@ -2540,7 +2554,7 @@
             paintResultNotice({
               tone: 'warn', icon: '🔓',
               title: t('topUpUnlockTitle', 'Top up to unlock this'),
-              message: t('topUpUnlockMsg', 'Your free generation covers all Outfit Edit presets. Top up to unlock scenes, videos, and custom prompts.'),
+              message: t('topUpUnlockMsg', 'Your free generation works with the Fully Nude preset. Top up to unlock every other outfit preset, scenes, videos, and custom prompts.'),
               actionLabel: t('unlockGetCredits', 'Unlock, get credits'),
               onAction: function () { showCheckout(true, 'locked_feature'); }
             });

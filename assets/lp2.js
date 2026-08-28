@@ -94,21 +94,22 @@
       }, 'Nudes · Outfit edits · Sex scenes · AI videos · Fetish looks');
     }
 
-    // Correct stale Fully-Nude-only lock copy from cached site.js/locales.
+    // Keep free-entitlement copy aligned with the backend: Fully Nude is the
+    // only preset available before the first top-up.
     function patchFreeNotice() {
       var notice = document.getElementById('ug-notice');
       if (!notice || notice.hidden) return;
       var msg = notice.querySelector('.ug-notice-msg');
       if (!msg) return;
       var desired = copy({
-        fr: 'Ta génération gratuite couvre tous les presets Outfit Edit. Les scènes, les vidéos et les prompts personnalisés se débloquent dès que tu recharges.',
-        de: 'Deine kostenlose Generierung gilt für alle Outfit-Edit-Presets. Szenen, Videos und eigene Prompts werden nach dem ersten Aufladen freigeschaltet.',
-        es: 'Tu generación gratis cubre todos los presets de Outfit Edit. Las escenas, los vídeos y los prompts personalizados se desbloquean al recargar.',
-        pt: 'Sua geração grátis cobre todos os presets de Outfit Edit. Cenas, vídeos e prompts personalizados são desbloqueados ao recarregar.',
-        ja: '無料生成ではすべての Outfit Edit プリセットを利用できます。シーン、動画、カスタムプロンプトはチャージ後に解放されます。',
-        ru: 'Бесплатная генерация доступна для всех пресетов Outfit Edit. Сцены, видео и свои промпты открываются после пополнения.',
-        zh: '免费生成可使用全部 Outfit Edit 预设。充值后可解锁场景、视频和自定义提示词。'
-      }, 'Your free generation covers all Outfit Edit presets. Scenes, videos, and custom prompts unlock whenever you top up.');
+        fr: 'Ta génération gratuite fonctionne avec le preset Fully Nude. Recharge pour débloquer tous les autres presets de tenue, les scènes, les vidéos et les prompts personnalisés.',
+        de: 'Deine kostenlose Generierung funktioniert mit dem Preset Fully Nude. Lade Credits auf, um alle anderen Outfit-Presets, Szenen, Videos und eigene Prompts freizuschalten.',
+        es: 'Tu generación gratis funciona con el preset Fully Nude. Recarga para desbloquear los demás presets de Outfit Edit, las escenas, los vídeos y los prompts personalizados.',
+        pt: 'Sua geração grátis funciona com o preset Fully Nude. Recarregue para desbloquear os outros presets de roupa, cenas, vídeos e prompts personalizados.',
+        ja: '無料生成で利用できるのは Fully Nude プリセットです。チャージすると、その他の衣装プリセット、シーン、動画、カスタムプロンプトが解放されます。',
+        ru: 'Бесплатная генерация работает с пресетом Fully Nude. Пополни баланс, чтобы открыть остальные пресеты одежды, сцены, видео и свои промпты.',
+        zh: '免费生成可使用 Fully Nude 预设。充值后可解锁其他服装预设、场景、视频和自定义提示词。'
+      }, 'Your free generation works with the Fully Nude preset. Top up to unlock every other outfit preset, scenes, videos, and custom prompts.');
       if (msg.textContent !== desired) msg.textContent = desired;
     }
 

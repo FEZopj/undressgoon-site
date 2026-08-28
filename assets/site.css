@@ -1074,6 +1074,28 @@ html[data-theme="light"] .topup-dialog {
 .topup-note {
   color: var(--muted);
 }
+.topup-costs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: var(--muted);
+  background: rgba(255,255,255,0.04);
+  font-size: 0.88rem;
+}
+.topup-costs span { display: block; }
+.topup-costs b { color: var(--text); }
+.topup-costs-starter { grid-column: 1 / -1; }
+html[data-theme="light"] .topup-costs {
+  border-color: rgba(17,19,26,0.1);
+  background: rgba(17,19,26,0.035);
+}
+@media (max-width: 520px) {
+  .topup-costs { grid-template-columns: 1fr; }
+  .topup-costs-starter { grid-column: auto; }
+}
 .modal-close {
   position: absolute;
   right: 12px;
