@@ -828,26 +828,19 @@ html[data-theme="light"] .discount-box {
 }
 .pack-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  align-items: stretch;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 .pack-card {
   position: relative;
   display: grid;
-  grid-template-rows: auto auto auto auto auto 1fr auto;
-  gap: 8px;
-  min-width: 0;
-  min-height: 330px;
-  padding: 22px 16px 16px;
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 50% -10%, rgba(255,255,255,.07), transparent 42%),
-    linear-gradient(160deg, var(--surface2), rgba(16,16,22,.95));
+  gap: 6px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  background: var(--surface2);
   border: 1px solid var(--border);
   text-align: center;
   justify-items: center;
-  isolation: isolate;
 }
 .pack-card > svg {
   color: var(--green);
@@ -870,12 +863,8 @@ html[data-theme="light"] .discount-box {
   z-index: 3;
 }
 .pack-card.featured {
-  border: 2px solid rgba(255, 45, 115, 0.98);
-  background:
-    radial-gradient(circle at 50% -5%, rgba(255,45,85,.32), transparent 44%),
-    linear-gradient(160deg, rgba(41,18,36,.98), rgba(18,13,26,.98));
-  box-shadow: 0 18px 52px rgba(255, 45, 85, 0.31), 0 0 0 1px rgba(180,76,255,.2);
-  transform: translateY(-8px);
+  border: 1.5px solid rgba(255, 45, 85, 0.9);
+  box-shadow: 0 12px 38px rgba(255, 45, 85, 0.22);
 }
 .pack-card.featured::before {
   content: "";
@@ -902,7 +891,7 @@ html[data-theme="light"] .discount-box {
 @keyframes pack-glow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
 @keyframes pack-shine { 0% { background-position: 160% 0; } 55%, 100% { background-position: -60% 0; } }
 .pack-card strong {
-  font-size: 1.02rem;
+  font-size: 0.95rem;
 }
 .pack-bonus {
   display: inline-block;
@@ -912,7 +901,7 @@ html[data-theme="light"] .discount-box {
   font-weight: 950;
 }
 .pack-card .pack-badge.pop { background: var(--accent2); }
-.pack-card .pack-credits { font-size: 1.3rem; font-weight: 950; margin-top: 5px; letter-spacing: -.02em; }
+.pack-card .pack-credits { font-size: 1.05rem; font-weight: 900; margin-top: 4px; }
 .pack-card .pack-save {
   position: absolute; top: -9px; left: 8px; padding: 3px 7px; border-radius: 999px;
   background: var(--green); color: #fff; font-size: 0.66rem; font-weight: 950;
@@ -927,33 +916,7 @@ html[data-theme="light"] .discount-box {
 /* Save pill top-right so it never collides with the now-centered ribbon. */
 .pack-card .pack-save { left: auto; right: 8px; }
 .pack-card { transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease; }
-.pack-card:hover { transform: translateY(-4px); box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34); }
-.pack-card.featured:hover { transform: translateY(-11px); }
-.pack-card.value-anchor {
-  border-color: rgba(43,190,255,.55);
-  background:
-    radial-gradient(circle at 50% -8%, rgba(42,171,238,.19), transparent 42%),
-    linear-gradient(160deg, rgba(15,29,41,.98), rgba(14,17,27,.98));
-  box-shadow: 0 15px 38px rgba(42,171,238,.14);
-}
-.pack-card.pro-card {
-  border-color: rgba(180,76,255,.38);
-  background:
-    radial-gradient(circle at 50% -8%, rgba(180,76,255,.13), transparent 42%),
-    linear-gradient(160deg, var(--surface2), rgba(18,15,27,.96));
-}
-html[data-theme="light"] .pack-card {
-  background: linear-gradient(160deg, #fff, #f2f4fa);
-}
-html[data-theme="light"] .pack-card.featured {
-  background: linear-gradient(160deg, #fff7fb, #f6effd);
-}
-html[data-theme="light"] .pack-card.pro-card {
-  background: linear-gradient(160deg, #fff, #f7f3ff);
-}
-html[data-theme="light"] .pack-card.value-anchor {
-  background: linear-gradient(160deg, #f8fdff, #eff7ff);
-}
+.pack-card:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3); }
 /* Cards stagger in each time the checkout modal opens. */
 #checkout-panel.is-open .pack-card {
   animation: pack-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
@@ -968,20 +931,17 @@ html[data-theme="light"] .pack-card.value-anchor {
   #checkout-panel.is-open .pack-card { animation: none !important; }
 }
 .pack-card .pack-perks {
-  list-style: none; margin: 7px 0 4px; padding: 10px 0 0; display: grid; gap: 7px;
+  list-style: none; margin: 4px 0 2px; padding: 0; display: grid; gap: 3px;
   width: 100%;
-  align-content: start;
-  border-top: 1px solid rgba(127,127,127,.18);
 }
 .pack-card .pack-perks li {
-  display: flex; align-items: flex-start; gap: 6px; justify-content: flex-start;
-  text-align: left; font-size: 0.73rem; color: var(--muted); line-height: 1.35;
+  display: flex; align-items: center; gap: 5px; justify-content: center;
+  font-size: 0.72rem; color: var(--muted); line-height: 1.3;
 }
 .pack-card .pack-perks svg { width: 13px; height: 13px; color: var(--green); flex: none; }
 .pack-card .pack-price {
   color: var(--green);
-  font-size: 1.18rem;
-  font-weight: 950;
+  font-weight: 900;
 }
 .pack-card .pack-price.discounted {
   display: inline-flex;
@@ -1003,8 +963,6 @@ html[data-theme="light"] .pack-card.value-anchor {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  align-self: end;
-  margin-top: auto;
 }
 .pack-actions button:only-child {
   grid-column: 1 / -1;
@@ -1044,18 +1002,6 @@ html[data-theme="light"] .pack-card.value-anchor {
   opacity: 0.6;
   cursor: wait;
 }
-.pack-more-toggle {
-  justify-self: center;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  font-weight: 850;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-  padding: 5px 10px;
-}
-.pack-more-toggle:hover { color: var(--text); }
 .card-fallback {
   display: block;
   text-align: center;
@@ -1063,80 +1009,6 @@ html[data-theme="light"] .pack-card.value-anchor {
   font-size: 0.86rem;
   font-weight: 800;
 }
-/* Contextual refill prompts shown at the moment purchase intent is highest. */
-.low-credit-nudge {
-  display: grid;
-  gap: 14px;
-  margin-top: 16px;
-  padding: 16px;
-  border: 1px solid rgba(255,45,85,.42);
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(255,45,85,.13), rgba(180,76,255,.09));
-  box-shadow: 0 12px 34px rgba(255,45,85,.12);
-}
-.low-credit-nudge.urgent {
-  border-color: rgba(255,45,85,.78);
-  box-shadow: 0 14px 38px rgba(255,45,85,.2);
-}
-.low-credit-copy { display: flex; align-items: flex-start; gap: 10px; }
-.low-credit-icon { font-size: 1.35rem; line-height: 1; }
-.low-credit-copy strong { display: block; margin-bottom: 4px; font-size: 1rem; }
-.low-credit-copy p { margin: 0; color: var(--muted); font-size: .84rem; line-height: 1.45; }
-.low-credit-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.low-credit-actions button {
-  min-height: 44px;
-  padding: 9px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  color: var(--text);
-  background: var(--surface2);
-  font-weight: 900;
-}
-.low-credit-actions button.recommended {
-  border-color: transparent;
-  color: #fff;
-  background: linear-gradient(135deg, #ff174f, #ff2d55 48%, #b44cff);
-  box-shadow: 0 8px 22px rgba(255,45,85,.28);
-}
-.low-credit-actions button:hover { transform: translateY(-1px); filter: brightness(1.06); }
-.low-credit-actions button span,
-.low-credit-actions button b,
-.low-credit-actions button small { display: block; }
-.low-credit-actions button small { margin-top: 2px; opacity: .8; font-size: .66rem; }
-
-.upsell-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 620;
-  display: grid;
-  place-items: center;
-  padding: 18px;
-}
-.upsell-backdrop { position: absolute; inset: 0; border: 0; background: rgba(0,0,0,.72); backdrop-filter: blur(9px); }
-.upsell-card {
-  position: relative;
-  width: min(460px, 100%);
-  padding: 30px;
-  border: 1px solid rgba(255,45,85,.65);
-  border-radius: 22px;
-  text-align: center;
-  background:
-    radial-gradient(circle at 50% 0, rgba(255,45,85,.25), transparent 42%),
-    linear-gradient(155deg, #19141c, #0f1015);
-  box-shadow: 0 28px 100px rgba(0,0,0,.62), 0 0 45px rgba(255,45,85,.18);
-}
-html[data-theme="light"] .upsell-card { background: linear-gradient(155deg, #fff8fb, #f3f4fa); }
-.upsell-close { position: absolute; top: 10px; right: 12px; border: 0; background: transparent; color: var(--muted); font-size: 1.7rem; cursor: pointer; }
-.upsell-success { display: inline-flex; padding: 5px 10px; border-radius: 999px; color: var(--green); background: rgba(39,209,127,.12); font-weight: 900; font-size: .78rem; }
-.upsell-card h3 { margin: 14px 0 8px; font-size: 1.8rem; }
-.upsell-card p { margin: 0 auto 20px; color: var(--muted); line-height: 1.55; }
-.upsell-card p strong { color: var(--text); }
-.upsell-accept,
-.upsell-skip { width: 100%; min-height: 48px; border-radius: 13px; font-weight: 900; cursor: pointer; }
-.upsell-accept { border: 0; color: #fff; background: linear-gradient(135deg, #ff174f, #ff2d55 48%, #b44cff); box-shadow: 0 10px 28px rgba(255,45,85,.3); }
-.upsell-skip { margin-top: 8px; border: 0; color: var(--muted); background: transparent; }
-.upsell-accept:hover { transform: translateY(-1px); filter: brightness(1.06); }
 .modal-open {
   overflow: hidden;
 }
@@ -1168,7 +1040,7 @@ html[data-theme="light"] .topup-backdrop {
 .topup-dialog {
   position: relative;
   z-index: 1;
-  width: min(1120px, calc(100vw - 32px));
+  width: min(620px, calc(100vw - 32px));
   max-height: calc(100vh - 40px);
   overflow: auto;
   display: grid;
@@ -2638,13 +2510,6 @@ html[data-theme="light"] .toast {
   .legal-grid { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 980px) and (min-width: 701px) {
-  .topup-dialog { width: min(780px, calc(100vw - 32px)); }
-  .pack-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .pack-card.featured { transform: none; }
-  .pack-card.featured:hover { transform: translateY(-4px); }
-}
-
 @media (max-width: 700px) {
   .container { padding: 0 12px; }
   .lang-switch select { width: 62px; min-height: 38px; padding: 8px 24px 8px 10px; }
@@ -2688,10 +2553,6 @@ html[data-theme="light"] .toast {
   .mode-row label.video-coming-soon,
   .mode-row label.video-live { grid-column: 1 / -1; }
   .pack-grid { grid-template-columns: 1fr; }
-  .pack-card { min-height: 0; }
-  .pack-card.featured { transform: none; }
-  .pack-card.featured:hover { transform: translateY(-4px); }
-  .low-credit-actions { grid-template-columns: 1fr; }
   .topup-modal { padding: 12px; align-items: end; }
   .topup-dialog {
     width: min(100%, 520px);
