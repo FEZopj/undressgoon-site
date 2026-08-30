@@ -18,6 +18,7 @@
   var discountFromUrl = false;  // URL/campaign codes persist; typed codes are session-only
   var firstGenerationDone = false;
   var exitOfferArmed = false;
+  var checkoutReason = 'manual';
 
   function track(event, properties) {
     if (typeof window.ugTrack === 'function') {
@@ -87,7 +88,20 @@
   function checkoutPayload(code) {
     var payload = { code: code };
     if (discountCode) payload.discountCode = discountCode;
+    if (packOffer) {
+      payload.pricingVersion = packOffer.pricingVersion || '';
+      payload.pricingVariant = packOffer.pricingVariant || '';
+    }
     return payload;
+  }
+
+  function pricingTrackProps(extra) {
+    var props = {
+      pricing_version: packOffer && packOffer.pricingVersion || 'unknown',
+      pricing_variant: packOffer && packOffer.pricingVariant || 'unknown'
+    };
+    Object.keys(extra || {}).forEach(function (key) { props[key] = extra[key]; });
+    return props;
   }
 
   function updateDiscountUi(message, tone) {
@@ -669,24 +683,11 @@
     var panel = document.getElementById('checkout-panel');
     if (!panel) return;
     if (show) {
-      track('website_topup_opened', { reason: reason || 'manual' });
-      track('website_pricing_viewed', { surface: 'modal' });
+      checkoutReason = reason || 'manual';
+      track('website_topup_opened', pricingTrackProps({ reason: checkoutReason }));
+      track('website_pricing_viewed', pricingTrackProps({ surface: 'modal', reason: checkoutReason }));
       var title = document.getElementById('topup-title');
       var copy = document.getElementById('topup-copy');
-      var costs = document.getElementById('topup-costs');
-      if (!costs && copy) {
-        costs = document.createElement('div');
-        costs.id = 'topup-costs';
-        costs.className = 'topup-costs';
-        copy.insertAdjacentElement('afterend', costs);
-      }
-      if (costs) {
-        costs.innerHTML =
-          '<span><b>' + esc(t('topupImagesLabel', 'Images:')) + '</b> ' + esc(t('topupImagesCost', '1 credit')) + '</span>' +
-          '<span><b>' + esc(t('topupVideosLabel', 'Videos:')) + '</b> ' + esc(t('topupVideosCost', '2 credits')) + '</span>' +
-          '<span class="topup-costs-starter"><b>' + esc(t('topupStarterLabel', 'Starter pack:')) + '</b> ' +
-            esc(t('topupStarterValue', '12 credits = up to 12 images or 6 videos')) + '</span>';
-      }
       if (reason === 'exit_post_gen') {
         if (title) title.textContent = t('exitOfferTitle', 'Wait - your first result unlocked a private deal');
         if (copy) copy.textContent = t('exitOfferCopy', 'Keep going now and get bonus credits added automatically to every pack.');
@@ -705,6 +706,7 @@
         if (dNote) { dNote.textContent = ''; dNote.className = 'discount-note'; }
       }
       updateModalPromo(reason);
+      applyCheckoutPackFocus();
       panel.hidden = false;
       document.body.classList.add('modal-open');
       setTimeout(function () { panel.classList.add('is-open'); }, 20);
@@ -1044,6 +1046,48 @@
       });
   }
 
+  function applyCheckoutPackFocus() {
+    var grid = document.getElementById('pack-grid');
+    if (!grid) return;
+    var focused = ['empty', 'insufficient', 'low_1'].indexOf(checkoutReason) !== -1;
+    grid.classList.toggle('pack-grid-focused', focused);
+    grid.querySelectorAll('.pack-card[data-pack-code]').forEach(function (card) {
+      var code = card.getAttribute('data-pack-code');
+      card.hidden = focused && code !== 'pack_50' && code !== 'pack_200';
+    });
+    var more = grid.querySelector('.pack-more-toggle');
+    if (more) more.hidden = !focused;
+  }
+
+  function packPerkLines(pack, baseline) {
+    var code = String(pack.code || '');
+    var base = Number(pack.baseCredits || pack.credits || 0);
+    var bonus = Number(pack.bonusCredits || 0);
+    var credits = Number(pack.credits || 0);
+    var starterValue = baseline * credits;
+    var saveDollars = Math.max(0, starterValue - (Number(pack.priceCents || 0) / 100));
+    if (code === 'pack_50') return [
+      base + ' + ' + bonus + ' bonus credits',
+      t('perkUnlock', 'All presets + custom prompts'),
+      t('perkScenesVideos', 'Scenes + videos unlocked')
+    ];
+    if (code === 'pack_200') return [
+      base + ' + ' + bonus + ' bonus credits',
+      '20 more credits than Starter',
+      'The easiest step up from Starter'
+    ];
+    if (code === 'pack_500') return [
+      base + ' + ' + bonus + ' bonus credits',
+      '38 more credits than Popular',
+      'More room for video experiments'
+    ];
+    return [
+      base + ' + ' + bonus + ' bonus credits',
+      'Save $' + Math.round(saveDollars) + ' vs Starter rate',
+      '25% lower cost per credit'
+    ];
+  }
+
   function loadPacks() {
     var grid = document.getElementById('pack-grid');
     if (!grid) return;
@@ -1062,12 +1106,14 @@
           var credits = Number(pack.credits || pack.baseCredits || 0);
           var perCredit = credits ? ((Number(pack.priceCents || 0) / credits) / 100) : 0;
           var savings = (baseline && perCredit) ? Math.round((1 - (perCredit / baseline)) * 100) : 0;
-          // Badges from the numbers, not the title: biggest pack = best $/credit,
-          // the one below it is the "popular" anchor that pulls buyers up.
-          var isBest = idx === packs.length - 1;
-          var isPopular = !isBest && idx === packs.length - 2;
-          var ribbon = isBest ? '<em class="pack-badge best">' + esc(t('bestValue', 'BEST VALUE')) + '</em>'
-                    : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'MOST POPULAR')) + '</em>' : '';
+          // Merchandising roles are stable product decisions, not inferred from
+          // array position: 32 credits is the attainable step-up; 160 anchors value.
+          var isPopular = String(pack.code) === 'pack_200';
+          var isBest = String(pack.code) === 'pack_1000';
+          var isPro = String(pack.code) === 'pack_500';
+          var ribbon = isPopular ? '<em class="pack-badge pop">🔥 ' + esc(t('mostPopular', 'MOST POPULAR')) + '</em>'
+                    : isBest ? '<em class="pack-badge best">💎 ' + esc(t('bestValue', 'BEST VALUE')) + '</em>'
+                    : isPro ? '<em class="pack-badge pro">PRO</em>' : '';
           var saveBadge = savings >= 5 ? '<span class="pack-save">−' + savings + '%</span>' : '';
           var creditLine = credits + ' ' + esc(t('creditsWord', 'credits'));
           // Per-credit price stays accurate for both one-credit images and
@@ -1082,25 +1128,40 @@
           var cardButton = data.cardEnabled ?
             '<button type="button" class="pay-card-pack" data-card-pack="' + esc(pack.code) + '"><i data-lucide="credit-card"></i> ' + esc(t('payCard', 'Card')) + '</button>' :
             '';
+          var perks = packPerkLines(pack, baseline).map(function (line) {
+            return '<li><i data-lucide="check"></i> ' + esc(line) + '</li>';
+          }).join('');
+          var cardClass = isPopular ? 'featured popular-card' : (isBest ? 'value-anchor' : (isPro ? 'pro-card' : 'starter-card'));
           return (
-            '<div class="pack-card ' + (isBest ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '" style="--i:' + idx + '">' +
+            '<div class="pack-card ' + cardClass + '" data-pack-code="' + esc(pack.code) + '" style="--i:' + idx + '">' +
               ribbon + saveBadge +
               '<strong class="pack-credits">' + creditLine + '</strong>' +
               packPriceHtml(pack) +
               perCreditLine +
-              '<ul class="pack-perks">' +
-                '<li><i data-lucide="check"></i> ' + esc(t('perkUnlock', 'Unlocks all presets + custom prompts')) + '</li>' +
-                '<li><i data-lucide="check"></i> ' + esc(t('perkScenesVideos', 'Unlocks scenes + videos')) + '</li>' +
-              '</ul>' +
+              '<ul class="pack-perks">' + perks + '</ul>' +
               '<div class="pack-actions">' + cardButton + cryptoButton + '</div>' +
             '</div>'
           );
         }).join('');
+        var more = document.createElement('button');
+        more.type = 'button';
+        more.className = 'pack-more-toggle';
+        more.textContent = t('viewAllPacks', 'View all packs');
+        more.hidden = true;
+        more.addEventListener('click', function () {
+          checkoutReason = 'manual';
+          applyCheckoutPackFocus();
+          track('website_all_packs_revealed', pricingTrackProps({ surface: 'low_credit_offer' }));
+        });
+        grid.appendChild(more);
+        applyCheckoutPackFocus();
         refreshIcons();
         grid.querySelectorAll('button[data-crypto-pack]').forEach(function (button) {
           button.addEventListener('click', function () {
             var code = button.getAttribute('data-crypto-pack');
-            track('website_checkout_started', { method: 'crypto', code: code });
+            var pack = packs.find(function (item) { return String(item.code) === String(code); }) || {};
+            track('website_pack_selected', pricingTrackProps({ method: 'crypto', code: code, price_cents: Number(pack.priceCents || 0), credits: Number(pack.credits || 0), reason: checkoutReason }));
+            track('website_checkout_started', pricingTrackProps({ method: 'crypto', code: code, reason: checkoutReason }));
             var original = button.innerHTML;
             button.disabled = true;
             button.textContent = t('opening', 'Opening...');
@@ -1138,6 +1199,79 @@
       .catch(function () {});
   }
 
+  function closeUpsell() {
+    var modal = document.getElementById('post-purchase-upsell');
+    if (modal) modal.remove();
+  }
+
+  function startUpsellCheckout(offer, button) {
+    var checkoutWindow = window.open('about:blank', '_blank');
+    if (!checkoutWindow) {
+      setStatus(t('popupBlocked', 'Popup blocked. Allow popups and try again.'), 'error');
+      return;
+    }
+    var original = button.innerHTML;
+    button.disabled = true;
+    button.textContent = t('opening', 'Opening...');
+    track('website_upsell_accepted', pricingTrackProps({
+      source_pack_code: offer.sourcePackCode, code: offer.code,
+      credits: Number(offer.credits || 0), amount_cents: Number(offer.priceCents || 0)
+    }));
+    fetch(apiUrl('/web/card/upsell'), {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sourceOrderId: offer.sourceOrderId })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (payload) {
+        if (!res.ok || !payload.ok) throw new Error(payload.message || 'Could not create upgrade checkout.');
+        return payload;
+      });
+    }).then(function (payload) {
+      checkoutWindow.location.replace(payload.checkoutUrl);
+      closeUpsell();
+      setStatus('Upgrade checkout opened. Return here after payment.', 'success');
+      pollCreditsAfterCheckout(currentSession && currentSession.user && currentSession.user.credits);
+    }).catch(function (err) {
+      try { checkoutWindow.close(); } catch (e) {}
+      setStatus(err.message || 'Could not create upgrade checkout.', 'error');
+    }).finally(function () {
+      button.disabled = false;
+      button.innerHTML = original;
+    });
+  }
+
+  function showPostPurchaseUpsell() {
+    return fetch(apiUrl('/web/upsell'), { credentials: 'include' })
+      .then(function (res) { return res.json(); })
+      .then(function (payload) {
+        var offer = payload && payload.offer;
+        if (!offer || document.getElementById('post-purchase-upsell')) return;
+        var modal = document.createElement('div');
+        modal.id = 'post-purchase-upsell';
+        modal.className = 'upsell-modal';
+        modal.innerHTML =
+          '<button class="upsell-backdrop" type="button" aria-label="Close"></button>' +
+          '<section class="upsell-card" role="dialog" aria-modal="true" aria-labelledby="upsell-title">' +
+            '<button class="upsell-close" type="button" aria-label="Close">×</button>' +
+            '<span class="upsell-success">✓ Payment successful</span>' +
+            '<h3 id="upsell-title">Want more credits?</h3>' +
+            '<p>Upgrade this purchase with <strong>+' + esc(offer.credits) + ' credits</strong> for just <strong>' + esc(offer.price) + '</strong>.</p>' +
+            '<button class="upsell-accept" type="button">Add ' + esc(offer.credits) + ' credits · ' + esc(offer.price) + '</button>' +
+            '<button class="upsell-skip" type="button">No thanks, continue generating</button>' +
+          '</section>';
+        document.body.appendChild(modal);
+        modal.querySelector('.upsell-backdrop').addEventListener('click', closeUpsell);
+        modal.querySelector('.upsell-close').addEventListener('click', closeUpsell);
+        modal.querySelector('.upsell-skip').addEventListener('click', closeUpsell);
+        modal.querySelector('.upsell-accept').addEventListener('click', function () {
+          startUpsellCheckout(offer, this);
+        });
+        track('website_upsell_shown', pricingTrackProps({
+          source_pack_code: offer.sourcePackCode, code: offer.code,
+          credits: Number(offer.credits || 0), amount_cents: Number(offer.priceCents || 0)
+        }));
+      }).catch(function () {});
+  }
+
   function pollCreditsAfterCheckout(startCredits) {
     if (checkoutCreditPoll) window.clearInterval(checkoutCreditPoll);
     var tries = 0;
@@ -1150,6 +1284,7 @@
           checkoutCreditPoll = 0;
           showCheckout(false);
           setStatus(t('cardCreditsAdded', 'Payment complete. Credits added to your account.'), 'success');
+          showPostPurchaseUpsell();
         } else if (tries >= 100) {
           window.clearInterval(checkoutCreditPoll);
           checkoutCreditPoll = 0;
@@ -1188,7 +1323,12 @@
       checkoutWindow.document.close();
     } catch (e) {}
     setStatus(t('creatingCardCheckout', 'Opening secure card checkout...'), 'working');
-    track('website_checkout_started', { method: 'card', code: code });
+    var selectedPack = packOffer && (packOffer.packs || []).find(function (item) { return String(item.code) === String(code); }) || {};
+    track('website_pack_selected', pricingTrackProps({
+      method: 'card', code: code, price_cents: Number(selectedPack.priceCents || 0),
+      credits: Number(selectedPack.credits || 0), reason: checkoutReason
+    }));
+    track('website_checkout_started', pricingTrackProps({ method: 'card', code: code, reason: checkoutReason }));
     return fetch(apiUrl('/web/card/create'), {
       method: 'POST',
       credentials: 'include',
@@ -1203,7 +1343,7 @@
       })
       .then(function (payload) {
         checkoutWindow.location.replace(payload.checkoutUrl);
-        track('website_card_checkout_opened', { code: code });
+        track('website_card_checkout_opened', pricingTrackProps({ code: code, reason: checkoutReason }));
         setStatus(t('cardCheckoutOpened', 'Card checkout opened. Return here after payment.'), 'success');
         pollCreditsAfterCheckout(currentSession && currentSession.user && currentSession.user.credits);
       })
@@ -1573,6 +1713,44 @@
     // scroll; scrollResultIntoView no-ops when it is already on screen.
     if (resultCount) scrollResultIntoView(document.querySelector('.result-panel'));
     emitUi('ug:results-updated');
+  }
+
+  function showLowCreditPrompt(balance) {
+    var target = document.getElementById('web-results');
+    if (!target) return;
+    var existing = document.getElementById('low-credit-nudge');
+    if (existing) existing.remove();
+    var remaining = Number(balance);
+    if (!Number.isFinite(remaining) || remaining > 3) return;
+    var urgent = remaining <= 1;
+    var card = document.createElement('div');
+    card.id = 'low-credit-nudge';
+    card.className = 'low-credit-nudge' + (urgent ? ' urgent' : '');
+    var title = remaining <= 0 ? 'You’re out of credits' :
+      (remaining === 1 ? 'You’re almost out of credits' : 'Only ' + remaining + ' credits left');
+    var copy = urgent ? 'Keep your next generation moving. The 32-credit pack is the recommended refill.' :
+      'Top up before your next idea has to wait.';
+    card.innerHTML =
+      '<div class="low-credit-copy"><span class="low-credit-icon">' + (urgent ? '🔥' : '⚡') + '</span><div><strong>' + esc(title) + '</strong><p>' + esc(copy) + '</p></div></div>' +
+      '<div class="low-credit-actions">' +
+        '<button type="button" class="low-pack recommended" data-low-pack="pack_200"><span>🔥 32 credits</span><b>$24.99</b><small>Recommended</small></button>' +
+        (urgent ? '<button type="button" class="low-pack" data-low-pack="pack_50"><span>12 credits</span><b>$9.99</b></button>' : '') +
+        '<button type="button" class="low-pack-more">View all packs</button>' +
+      '</div>';
+    target.appendChild(card);
+    track('website_low_credit_prompt_shown', pricingTrackProps({ balance: remaining, urgency: urgent ? 'strong' : 'passive' }));
+    card.querySelectorAll('[data-low-pack]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var code = button.getAttribute('data-low-pack');
+        track('website_low_credit_offer_clicked', pricingTrackProps({ balance: remaining, code: code }));
+        checkoutReason = remaining <= 1 ? 'low_1' : 'low_3';
+        if (packOffer && packOffer.cardEnabled) startCardCheckout(code, button);
+        else showCheckout(true, checkoutReason);
+      });
+    });
+    var more = card.querySelector('.low-pack-more');
+    if (more) more.addEventListener('click', function () { showCheckout(true, remaining <= 1 ? 'low_1' : 'low_3'); });
+    refreshIcons();
   }
 
   function goToGoogleLogin() {
@@ -2533,6 +2711,7 @@
             balance: data.balance
           });
           setStatus(t('doneBalance', 'Done. Balance: {balance}.').replace('{balance}', formatCredits(data.balance)), 'success');
+          showLowCreditPrompt(data.balance);
           return refreshWebSession();
         })
         .catch(function (err) {
@@ -2541,13 +2720,16 @@
           setStatus('', '');  // errors are shown in the results window instead
           var payload = err.payload || {};
           if (payload.code === 'insufficient_credits') {
-            track('website_generation_out_of_credits', {});
+            var missing = Number(payload.missing || 0);
+            var required = Number(payload.required || 0);
+            var available = Number(payload.balance || 0);
+            track('website_generation_out_of_credits', { balance: available, required: required, missing: missing });
             paintResultNotice({
               tone: 'warn', icon: '💳',
-              title: t('outOfCreditsTitle', 'You are out of credits'),
-              message: t('outOfCreditsMsg', 'Pick a pack to keep generating.'),
+              title: available > 0 ? ('You need ' + missing + ' more credit' + (missing === 1 ? '' : 's')) : t('outOfCreditsTitle', 'You are out of credits'),
+              message: required > 0 ? ('This generation costs ' + required + ' credits. Choose a pack and continue.') : t('outOfCreditsMsg', 'Pick a pack to keep generating.'),
               actionLabel: t('getCredits', 'Get credits'),
-              onAction: function () { showCheckout(true, 'empty'); }
+              onAction: function () { showCheckout(true, available > 0 ? 'insufficient' : 'empty'); }
             });
           } else if (payload.code === 'top_up_required') {
             track('website_generation_top_up_required', {});
