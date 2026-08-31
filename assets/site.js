@@ -1060,12 +1060,15 @@
           var credits = Number(pack.credits || pack.baseCredits || 0);
           var perCredit = credits ? ((Number(pack.priceCents || 0) / credits) / 100) : 0;
           var savings = (baseline && perCredit) ? Math.round((1 - (perCredit / baseline)) * 100) : 0;
-          // Badges from the numbers, not the title: biggest pack = best $/credit,
-          // the one below it is the "popular" anchor that pulls buyers up.
-          var isBest = idx === packs.length - 1;
-          var isPopular = !isBest && idx === packs.length - 2;
+          // These are deliberate conversion anchors, not inferred from list
+          // position. The Mega tier is for volume; the $99.99 tier remains the
+          // highlighted value choice.
+          var isPopular = pack.code === 'pack_200';
+          var isBest = pack.code === 'pack_1000';
+          var isMega = pack.code === 'pack_2000';
           var ribbon = isBest ? '<em class="pack-badge best">' + esc(t('bestValue', 'BEST VALUE')) + '</em>'
-                    : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'MOST POPULAR')) + '</em>' : '';
+                    : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'MOST POPULAR')) + '</em>'
+                    : isMega ? '<em class="pack-badge max">MAX CREDITS</em>' : '';
           var saveBadge = savings >= 5 ? '<span class="pack-save">−' + savings + '%</span>' : '';
           var creditLine = credits + ' ' + esc(t('creditsWord', 'credits'));
           // Per-credit price stays accurate for both one-credit images and

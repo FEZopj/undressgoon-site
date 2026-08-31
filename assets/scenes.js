@@ -55,7 +55,7 @@
     style.id = "ug-topup-redesign-r1";
     style.textContent = `
       #checkout-panel .topup-dialog {
-        width: min(1180px, calc(100vw - 34px));
+        width: min(1400px, calc(100vw - 34px));
         padding: 30px 32px 24px;
         border-radius: 28px;
         border: 1px solid rgba(255,255,255,.12);
@@ -76,7 +76,7 @@
         margin-top: 7px;
       }
       #checkout-panel .pack-grid {
-        grid-template-columns: repeat(4,minmax(0,1fr));
+        grid-template-columns: repeat(5,minmax(0,1fr));
         gap: 15px;
         align-items: stretch;
         margin-top: 20px;
@@ -279,6 +279,17 @@
         box-shadow: 0 8px 22px rgba(243,184,63,.24);
       }
       #checkout-panel .pack-card.value-anchor .pack-price { color: #ffe4a0; }
+      #checkout-panel .pack-card.mega-anchor {
+        border-color: rgba(137,102,255,.58);
+        background:
+          radial-gradient(circle at 50% 0,rgba(137,102,255,.14),transparent 42%),
+          linear-gradient(165deg,rgba(82,55,140,.20),rgba(23,18,40,.25));
+      }
+      #checkout-panel .pack-card .pack-badge.max {
+        background: linear-gradient(90deg,#7354e8,#a78bfa);
+        color: #fff;
+        box-shadow: 0 8px 22px rgba(124,92,240,.28);
+      }
       #checkout-panel .topup-note {
         display: block;
         text-align: center;
@@ -325,6 +336,11 @@
           linear-gradient(165deg,#fffdf6,#fff);
       }
       html[data-theme='light'] #checkout-panel .pack-card.value-anchor .pack-price { color: #8a5b00; }
+      html[data-theme='light'] #checkout-panel .pack-card.mega-anchor {
+        background:
+          radial-gradient(circle at 50% 0,rgba(137,102,255,.13),transparent 42%),
+          linear-gradient(165deg,#fbfaff,#fff);
+      }
 
       @media(max-width:900px) {
         #checkout-panel.topup-modal { padding: 12px; align-items: center; }
@@ -386,15 +402,16 @@
     if (!grid) return;
 
     var popular = grid.querySelector('[data-pack-code="pack_200"]');   // $24.99 / 32 credits
-    var oldPopular = grid.querySelector('[data-pack-code="pack_500"]'); // former $49.99 popular tier
     var best = grid.querySelector('[data-pack-code="pack_1000"]');      // $99.99 / 160 credits
-    if (!popular || !best) return;
+    var mega = grid.querySelector('[data-pack-code="pack_2000"]');      // $199.99 / 360 credits
+    if (!popular || !best || !mega) return;
 
     grid.querySelectorAll(".pack-card").forEach(function (card) {
-      card.classList.remove("featured", "popular-hero", "value-anchor");
+      card.classList.remove("featured", "popular-hero", "value-anchor", "mega-anchor");
     });
     popular.classList.add("featured", "popular-hero");
     best.classList.add("value-anchor");
+    mega.classList.add("mega-anchor");
 
     // Move the localized MOST POPULAR ribbon rather than recreating English copy.
     var popularBadges = Array.prototype.slice.call(grid.querySelectorAll(".pack-badge.pop"));
@@ -406,7 +423,6 @@
     }
     if (ribbon.parentNode !== popular) popular.insertBefore(ribbon, popular.firstChild);
     popularBadges.slice(1).forEach(function (badge) { badge.remove(); });
-    if (oldPopular) oldPopular.querySelectorAll(".pack-badge.pop").forEach(function (badge) { badge.remove(); });
 
     // Preserve BEST VALUE on the high-price anchor even if upstream rendering changes.
     var bestBadge = best.querySelector(".pack-badge.best");
@@ -419,6 +435,18 @@
       bestBadge.className = "pack-badge best";
       bestBadge.textContent = "BEST VALUE";
       best.insertBefore(bestBadge, best.firstChild);
+    }
+
+    var maxBadge = mega.querySelector(".pack-badge.max");
+    if (!maxBadge) {
+      maxBadge = grid.querySelector(".pack-badge.max");
+      if (maxBadge) mega.insertBefore(maxBadge, mega.firstChild);
+    }
+    if (!maxBadge) {
+      maxBadge = document.createElement("em");
+      maxBadge.className = "pack-badge max";
+      maxBadge.textContent = "MAX CREDITS";
+      mega.insertBefore(maxBadge, mega.firstChild);
     }
   }
 
