@@ -2842,6 +2842,30 @@ html[data-theme="light"] .toast {
 .ug-recipe-name-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
 .ug-recipe-name-actions button { min-height: 42px; padding: 0 15px; }
 
+/* Saved-recipe delete confirmation: same native product modal, never the
+   browser's generic confirm sheet. */
+.ug-recipe-delete-dialog {
+  position: fixed; inset: 0; z-index: 170;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; transition: opacity .18s ease;
+}
+.ug-recipe-delete-dialog.is-open { opacity: 1; }
+.ug-recipe-delete-dialog[hidden] { display: none; }
+.ug-recipe-delete-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.64); }
+.ug-recipe-delete-box {
+  position: relative; width: min(430px, 100%); padding: 24px;
+  border: 1px solid var(--border); border-radius: 20px; background: var(--surface);
+  box-shadow: 0 28px 75px rgba(0,0,0,.48); transform: translateY(9px) scale(.98);
+  transition: transform .18s ease;
+}
+.ug-recipe-delete-dialog.is-open .ug-recipe-delete-box { transform: none; }
+.ug-recipe-delete-box > strong { display: block; font-size: 1.12rem; }
+.ug-recipe-delete-copy { margin: 7px 0 18px; color: var(--muted); font-size: .9rem; line-height: 1.45; }
+.ug-recipe-delete-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.ug-recipe-delete-actions button { min-height: 42px; padding: 0 15px; }
+.ug-recipe-delete-confirm { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ug-recipe-delete-confirm:hover { filter: brightness(1.06); }
+
 /* ===== "Working on your photo" preview =============================
    Shown in the result panel on BOTH landing pages while a job runs.
    The uploaded photo, heavily pixelated and slowly resolving, under a

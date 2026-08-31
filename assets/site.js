@@ -732,6 +732,60 @@
     if (resolve) resolve(value);
   }
 
+  // Deleting a private recipe deserves the same product-native confirmation as
+  // saving one. This avoids Chrome/Safari's generic security-looking confirm
+  // dialog and makes the destructive action explicit.
+  function confirmSavedVideoRecipeDelete(label) {
+    return new Promise(function (resolve) {
+      var el = document.getElementById('ug-recipe-delete-dialog');
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'ug-recipe-delete-dialog';
+        el.id = 'ug-recipe-delete-dialog';
+        el.hidden = true;
+        el.innerHTML =
+          '<div class="ug-recipe-delete-backdrop" data-close-recipe-delete></div>' +
+          '<div class="ug-recipe-delete-box" aria-modal="true" role="dialog" aria-labelledby="ug-recipe-delete-title">' +
+            '<strong id="ug-recipe-delete-title">Delete saved prompt?</strong>' +
+            '<p class="ug-recipe-delete-copy"></p>' +
+            '<div class="ug-recipe-delete-actions">' +
+              '<button type="button" class="btn ug-recipe-delete-cancel" data-close-recipe-delete>Keep it</button>' +
+              '<button type="button" class="btn ug-recipe-delete-confirm">Delete prompt</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(el);
+        el.addEventListener('click', function (ev) {
+          if (ev.target.hasAttribute('data-close-recipe-delete')) closeSavedVideoRecipeDelete(false);
+          if (ev.target.classList.contains('ug-recipe-delete-confirm')) closeSavedVideoRecipeDelete(true);
+        });
+        document.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Escape' && !el.hidden) closeSavedVideoRecipeDelete(false);
+        });
+      }
+      el._resolveRecipeDelete = resolve;
+      var copy = el.querySelector('.ug-recipe-delete-copy');
+      if (copy) copy.textContent = 'Remove “' + (label || 'this saved prompt') + '” from your saved prompts? This cannot be undone.';
+      el.hidden = false;
+      document.body.classList.add('modal-open');
+      setTimeout(function () {
+        el.classList.add('is-open');
+        var cancel = el.querySelector('.ug-recipe-delete-cancel');
+        if (cancel) cancel.focus();
+      }, 20);
+    });
+  }
+
+  function closeSavedVideoRecipeDelete(approved) {
+    var el = document.getElementById('ug-recipe-delete-dialog');
+    if (!el || el.hidden) return;
+    var resolve = el._resolveRecipeDelete;
+    el._resolveRecipeDelete = null;
+    el.classList.remove('is-open');
+    document.body.classList.remove('modal-open');
+    setTimeout(function () { el.hidden = true; }, 180);
+    if (resolve) resolve(Boolean(approved));
+  }
+
   function showCheckout(show, reason) {
     var panel = document.getElementById('checkout-panel');
     if (!panel) return;
@@ -2426,19 +2480,21 @@
         remove.setAttribute('aria-label', t('deleteSavedVideoPrompt', 'Delete saved video prompt'));
         remove.innerHTML = '<i data-lucide="trash-2"></i>';
         remove.addEventListener('click', function () {
-          if (!window.confirm(t('deleteSavedVideoPromptConfirm', 'Delete this saved video prompt?'))) return;
-          remove.disabled = true;
-          fetch(apiUrl('/web/video-recipes/' + encodeURIComponent(String(recipe.id))), {
-            method: 'DELETE', credentials: 'include'
-          }).then(function (res) {
-            return res.json().catch(function () { return {}; }).then(function (data) {
-              if (!res.ok || !data.ok) throw new Error(data.message || 'Could not delete this prompt.');
-              if (selectedSavedVideoRecipeId === Number(recipe.id)) selectedSavedVideoRecipeId = 0;
-              return loadSavedVideoRecipes();
+          confirmSavedVideoRecipeDelete(recipe.label).then(function (approved) {
+            if (!approved) return;
+            remove.disabled = true;
+            fetch(apiUrl('/web/video-recipes/' + encodeURIComponent(String(recipe.id))), {
+              method: 'DELETE', credentials: 'include'
+            }).then(function (res) {
+              return res.json().catch(function () { return {}; }).then(function (data) {
+                if (!res.ok || !data.ok) throw new Error(data.message || 'Could not delete this prompt.');
+                if (selectedSavedVideoRecipeId === Number(recipe.id)) selectedSavedVideoRecipeId = 0;
+                return loadSavedVideoRecipes();
+              });
+            }).catch(function (err) {
+              remove.disabled = false;
+              setStatus(err.message || 'Could not delete this prompt.', 'error');
             });
-          }).catch(function (err) {
-            remove.disabled = false;
-            setStatus(err.message || 'Could not delete this prompt.', 'error');
           });
         });
         actions.appendChild(use);
