@@ -1740,6 +1740,7 @@
         if (!data || !data.ok) return;
         remoteVideos = data;
         if (rerenderPresets) rerenderPresets();
+        document.dispatchEvent(new Event('ug:video-catalogue-updated'));
       })
       .catch(function () { /* keep the built-in production video catalogue */ });
   }
@@ -2430,9 +2431,15 @@
       var variationRow = document.getElementById('variation-row');
       var authed = !!(currentSession && currentSession.user);
       var video = selectedModeValue() === 'video';
+      var doubleLengthAvailable = !!(
+        remoteVideos && (remoteVideos.durationOptions || []).some(function (option) {
+          return Number(option && option.seconds || 0) >= 16 && Number(option.costCredits || 0) >= 4;
+        })
+      );
+      if (!doubleLengthAvailable && doubleVideoLength) doubleVideoLength.checked = false;
       if (video) {
         var isDoubleLength = !!(doubleVideoLength && doubleVideoLength.checked);
-        if (doubleVideoLengthRow) doubleVideoLengthRow.hidden = false;
+        if (doubleVideoLengthRow) doubleVideoLengthRow.hidden = !doubleLengthAvailable;
         variationSelect.value = '1';
         Array.prototype.forEach.call(variationSelect.options, function (option) {
           option.disabled = option.value !== '1';
@@ -2659,6 +2666,7 @@
       syncVariationControl();
       syncSavedVideoRecipesVisibility();
     });
+    document.addEventListener('ug:video-catalogue-updated', syncVariationControl);
     syncVariationControl();
 
     if (logout) {
