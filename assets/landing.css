@@ -144,6 +144,119 @@ html[data-theme="light"] .ug-recipe-name-cancel {
   background: #f2f4f8;
 }
 
+/* Checkout hierarchy override: MOST POPULAR remains a label on $24.99, while
+   BEST VALUE ($99.99) gets the raised/glowing hero treatment. scenes.js injects
+   its checkout rules after this stylesheet, hence the deliberate !important
+   declarations for the handful of properties being reassigned. */
+#checkout-panel .pack-card.popular-hero {
+  z-index: auto !important;
+  border: 1px solid rgba(255,255,255,.11) !important;
+  background: linear-gradient(165deg,rgba(255,255,255,.065),rgba(255,255,255,.018) 45%,rgba(0,0,0,.08)) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.25) !important;
+  transform: none !important;
+}
+
+#checkout-panel .pack-card.popular-hero:hover {
+  transform: translateY(-5px) !important;
+  border-color: rgba(255,255,255,.22) !important;
+  box-shadow: 0 22px 48px rgba(0,0,0,.42) !important;
+}
+
+#checkout-panel .pack-card.popular-hero:before {
+  display: none !important;
+}
+
+#checkout-panel .pack-card.popular-hero .pack-credits {
+  font-size: 1.3rem !important;
+}
+
+#checkout-panel .pack-card.popular-hero .pack-price,
+#checkout-panel .pack-card.popular-hero .pack-price b {
+  font-size: 2rem !important;
+  text-shadow: none !important;
+}
+
+#checkout-panel .pack-card.popular-hero .pack-actions .pay-card-pack {
+  min-height: 43px !important;
+  background: linear-gradient(135deg,rgba(255,45,85,.92),rgba(205,39,124,.92)) !important;
+  border-color: rgba(255,74,116,.48) !important;
+  box-shadow: 0 9px 24px rgba(255,45,85,.19) !important;
+}
+
+#checkout-panel .pack-card.value-anchor {
+  z-index: 5 !important;
+  border: 2px solid #f3b83f !important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(255,217,118,.22),transparent 42%),
+    linear-gradient(165deg,rgba(246,196,90,.13),rgba(35,29,18,.74) 50%,rgba(18,15,11,.96)) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,217,118,.18),
+    0 20px 55px rgba(243,184,63,.26),
+    0 0 54px rgba(255,190,69,.16) !important;
+  transform: translateY(-7px) scale(1.025) !important;
+}
+
+#checkout-panel.is-open .pack-card.value-anchor {
+  animation: none !important;
+}
+
+#checkout-panel .pack-card.value-anchor:hover {
+  transform: translateY(-10px) scale(1.035) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,224,145,.26),
+    0 28px 68px rgba(243,184,63,.34),
+    0 0 66px rgba(255,190,69,.22) !important;
+}
+
+#checkout-panel .pack-card.value-anchor:before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  inset: -2px !important;
+  z-index: -1 !important;
+  border-radius: 21px !important;
+  background: linear-gradient(135deg,rgba(243,184,63,.56),rgba(255,217,118,.30),rgba(255,172,57,.50)) !important;
+  filter: blur(15px) !important;
+  opacity: .46 !important;
+  pointer-events: none !important;
+}
+
+#checkout-panel .pack-card.value-anchor .pack-credits {
+  font-size: 1.38rem !important;
+}
+
+#checkout-panel .pack-card.value-anchor .pack-price,
+#checkout-panel .pack-card.value-anchor .pack-price b {
+  font-size: 2.18rem !important;
+  text-shadow: 0 0 24px rgba(255,217,118,.18) !important;
+}
+
+#checkout-panel .pack-card.value-anchor .pack-actions .pay-card-pack {
+  min-height: 47px !important;
+  box-shadow: 0 11px 30px rgba(243,184,63,.18), 0 10px 28px rgba(255,23,79,.20) !important;
+}
+
+html[data-theme="light"] #checkout-panel .pack-card.popular-hero {
+  border-color: rgba(17,19,26,.11) !important;
+  background: linear-gradient(165deg,#fff,#f7f7fb) !important;
+  box-shadow: 0 14px 32px rgba(34,40,60,.09) !important;
+}
+
+html[data-theme="light"] #checkout-panel .pack-card.value-anchor {
+  border-color: #e2a92f !important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(246,196,90,.20),transparent 42%),
+    linear-gradient(165deg,#fffaf0,#fff 58%,#fffdf7) !important;
+  box-shadow: 0 20px 55px rgba(213,158,38,.20),0 0 45px rgba(246,196,90,.12) !important;
+}
+
+@media (max-width: 900px) {
+  #checkout-panel .pack-card.value-anchor,
+  #checkout-panel .pack-card.value-anchor:hover {
+    transform: none !important;
+  }
+}
+
 @media (max-width: 520px) {
   .ug-recipe-name-dialog {
     place-items: end center;
@@ -170,5 +283,14 @@ html[data-theme="light"] .ug-recipe-name-cancel {
   .ug-recipe-name-dialog,
   .ug-recipe-name-box {
     transition: none;
+  }
+
+  #checkout-panel .pack-card.value-anchor,
+  #checkout-panel .pack-card.value-anchor:hover {
+    transform: none !important;
+  }
+
+  #checkout-panel .pack-card.value-anchor:before {
+    display: none !important;
   }
 }
