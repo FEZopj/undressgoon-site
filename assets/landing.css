@@ -1469,6 +1469,15 @@ html[data-theme="light"] .preset-grid button.active svg { color: #fff; }
 .saved-video-recipe-actions .saved-video-recipe-delete { padding: 6px 8px; color: var(--muted); }
 .saved-video-recipe-delete svg, .save-video-recipe-btn svg { width: 15px; height: 15px; }
 .save-video-recipe-btn { margin: 10px auto 0; color: var(--accent2); }
+.video-double-length-row {
+  display: flex; align-items: center; gap: 10px; margin: 8px 0 2px;
+  padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px;
+  cursor: pointer; background: var(--surface2, #18181d);
+}
+.video-double-length-row input { width: 17px; height: 17px; accent-color: var(--accent2); }
+.video-double-length-row span { display: grid; gap: 2px; }
+.video-double-length-row strong { color: var(--text); font-size: .86rem; }
+.video-double-length-row small { color: var(--muted); font-size: .76rem; }
 @media (max-width: 480px) {
   .saved-video-recipe { align-items: flex-start; flex-direction: column; }
   .saved-video-recipe span { max-width: 100%; }

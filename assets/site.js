@@ -1691,6 +1691,18 @@
       if (promptField) promptField.insertAdjacentElement('afterend', saved);
       else form.appendChild(saved);
     }
+    if (!document.getElementById('video-double-length-row')) {
+      var duration = document.createElement('label');
+      duration.id = 'video-double-length-row';
+      duration.className = 'video-double-length-row';
+      duration.hidden = true;
+      duration.innerHTML =
+        '<input id="video-double-length" type="checkbox" />' +
+        '<span><strong>' + esc(t('doubleVideoLength', 'Double video length')) + '</strong><small>' + esc(t('doubleVideoLengthHint', '16 seconds · 4 credits')) + '</small></span>';
+      var variationAnchor = document.getElementById('variation-row');
+      if (variationAnchor) variationAnchor.insertAdjacentElement('afterend', duration);
+      else form.appendChild(duration);
+    }
   }
 
   // Free (never-purchased) users may only run the Fully Nude preset; everything
@@ -2284,6 +2296,8 @@
     var submit = document.getElementById('web-submit');
     var variationSelect = document.getElementById('variation-count');
     var variationCost = document.getElementById('variation-cost');
+    var doubleVideoLengthRow = document.getElementById('video-double-length-row');
+    var doubleVideoLength = document.getElementById('video-double-length');
     var previewUrl = '';
     var selectedPersonSnapshot = null;
     var pendingGeneration = null;
@@ -2327,6 +2341,7 @@
           if (clear) clear.click();
           selectedPresetKey = '';
           selectedSavedVideoRecipeId = Number(recipe.id || 0);
+          if (doubleVideoLength) doubleVideoLength.checked = Number(recipe.seconds || 8) >= 16;
           var prompt = document.getElementById('web-prompt');
           if (prompt) {
             prompt.value = recipe.originalPrompt || '';
@@ -2416,6 +2431,8 @@
       var authed = !!(currentSession && currentSession.user);
       var video = selectedModeValue() === 'video';
       if (video) {
+        var isDoubleLength = !!(doubleVideoLength && doubleVideoLength.checked);
+        if (doubleVideoLengthRow) doubleVideoLengthRow.hidden = false;
         variationSelect.value = '1';
         Array.prototype.forEach.call(variationSelect.options, function (option) {
           option.disabled = option.value !== '1';
@@ -2426,13 +2443,15 @@
         var variationLabel = variationRow && variationRow.querySelector('label > span');
         if (variationLabel) variationLabel.textContent = t('videoLabel', 'Video');
         if (variationRow) variationRow.hidden = false;
-        if (variationCost) variationCost.textContent = '2 ' + t('creditsWord', 'credits');
+        var videoCost = isDoubleLength ? 4 : 2;
+        if (variationCost) variationCost.textContent = videoCost + ' ' + t('creditsWord', 'credits');
         if (submit && submit.dataset.busy !== '1') {
-          submit.innerHTML = '<i data-lucide="video"></i> ' + t('generateVideo', 'Generate video') + ' · 2 ' + t('creditsWord', 'credits');
+          submit.innerHTML = '<i data-lucide="video"></i> ' + t('generateVideo', 'Generate video') + ' · ' + videoCost + ' ' + t('creditsWord', 'credits');
           refreshIcons();
         }
         return;
       }
+      if (doubleVideoLengthRow) doubleVideoLengthRow.hidden = true;
       var perImage = costPerImage();
       // Only offer as many images as the user can actually pay for right now.
       var affordable = Math.floor(availableCredits() / perImage);
@@ -2576,6 +2595,7 @@
       payload.append('variations', String(variations));
       if (modeValue === 'video') {
         payload.set('variations', '1');
+        if (doubleVideoLength && doubleVideoLength.checked) payload.append('double_video_length', '1');
         if (selectedSavedVideoRecipeId) payload.append('saved_video_recipe_id', String(selectedSavedVideoRecipeId));
         else if (selectedPresetKey) payload.append('video_preset', selectedPresetKey);
         else payload.append('video_prompt', prompt ? prompt.value.trim() : '');
@@ -2627,6 +2647,7 @@
     }
 
     if (variationSelect) variationSelect.addEventListener('change', syncVariationControl);
+    if (doubleVideoLength) doubleVideoLength.addEventListener('change', syncVariationControl);
     document.querySelectorAll('input[name="mode"]').forEach(function (input) {
       input.addEventListener('change', function () {
         selectedSavedVideoRecipeId = 0;
@@ -2763,6 +2784,7 @@
       payload.append('mode', snap.mode || 'prompt');
       payload.append('terms_accepted', '1');
       payload.append('variations', String(snap.variations || 1));
+      if (snap.mode === 'video' && snap.doubleVideoLength) payload.append('double_video_length', '1');
       if (snap.mode === 'video' && snap.savedVideoRecipeId) {
         payload.append('saved_video_recipe_id', String(snap.savedVideoRecipeId));
       } else if (snap.mode === 'video' && snap.presetKey) {
@@ -2794,6 +2816,7 @@
           variations: variations ? Number(variations.value || 1) : 1,
           presetKey: selectedPresetKey,
           savedVideoRecipeId: selectedSavedVideoRecipeId,
+          doubleVideoLength: !!(doubleVideoLength && doubleVideoLength.checked),
           breastSize: breastSize ? breastSize.value : 'natural',
           pubicHair: pubicHair ? pubicHair.value : 'natural',
           dataUrl: ''
