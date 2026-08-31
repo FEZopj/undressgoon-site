@@ -1128,6 +1128,7 @@
                     : isPopular ? '<em class="pack-badge pop">' + esc(t('mostPopular', 'MOST POPULAR')) + '</em>'
                     : isMega ? '<em class="pack-badge max">MAX CREDITS</em>' : '';
           var saveBadge = savings >= 5 ? '<span class="pack-save">−' + savings + '%</span>' : '';
+          var planName = pack.title ? '<span class="pack-plan-name">' + esc(pack.title) + '</span>' : '';
           var creditLine = credits + ' ' + esc(t('creditsWord', 'credits'));
           // Per-credit price stays accurate for both one-credit images and
           // two-credit videos. Strike through the smallest pack's rate so the
@@ -1143,7 +1144,7 @@
             '';
           return (
             '<div class="pack-card ' + (isBest ? 'featured' : '') + '" data-pack-code="' + esc(pack.code) + '" style="--i:' + idx + '">' +
-              ribbon + saveBadge +
+              ribbon + saveBadge + planName +
               '<strong class="pack-credits">' + creditLine + '</strong>' +
               packPriceHtml(pack) +
               perCreditLine +

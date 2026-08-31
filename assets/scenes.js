@@ -105,6 +105,14 @@
         letter-spacing: -.02em;
         margin-top: 4px;
       }
+      #checkout-panel .pack-card .pack-plan-name {
+        color: #a7a8b7;
+        font-size: .77rem;
+        font-weight: 950;
+        letter-spacing: .1em;
+        line-height: 1;
+        text-transform: uppercase;
+      }
       #checkout-panel .pack-card .pack-price {
         display: flex;
         align-items: baseline;
@@ -279,12 +287,14 @@
         box-shadow: 0 8px 22px rgba(243,184,63,.24);
       }
       #checkout-panel .pack-card.value-anchor .pack-price { color: #ffe4a0; }
+      #checkout-panel .pack-card.value-anchor .pack-plan-name { color: #f7cb64; }
       #checkout-panel .pack-card.mega-anchor {
         border-color: rgba(137,102,255,.58);
         background:
           radial-gradient(circle at 50% 0,rgba(137,102,255,.14),transparent 42%),
           linear-gradient(165deg,rgba(82,55,140,.20),rgba(23,18,40,.25));
       }
+      #checkout-panel .pack-card.mega-anchor .pack-plan-name { color: #c6b6ff; }
       #checkout-panel .pack-card .pack-badge.max {
         background: linear-gradient(90deg,#7354e8,#a78bfa);
         color: #fff;
@@ -331,17 +341,20 @@
       }
       html[data-theme='light'] #checkout-panel .pack-card.popular-hero .pack-price { color: #15151b; }
       html[data-theme='light'] #checkout-panel .pack-card.popular-hero .pack-credits { color: #15151b; }
+      html[data-theme='light'] #checkout-panel .pack-card .pack-plan-name { color: #646778; }
       html[data-theme='light'] #checkout-panel .pack-card.value-anchor {
         background:
           radial-gradient(circle at 50% 0,rgba(246,196,90,.15),transparent 42%),
           linear-gradient(165deg,#fffdf6,#fff);
       }
       html[data-theme='light'] #checkout-panel .pack-card.value-anchor .pack-price { color: #8a5b00; }
+      html[data-theme='light'] #checkout-panel .pack-card.value-anchor .pack-plan-name { color: #9a6800; }
       html[data-theme='light'] #checkout-panel .pack-card.mega-anchor {
         background:
           radial-gradient(circle at 50% 0,rgba(137,102,255,.13),transparent 42%),
           linear-gradient(165deg,#fbfaff,#fff);
       }
+      html[data-theme='light'] #checkout-panel .pack-card.mega-anchor .pack-plan-name { color: #6545bf; }
 
       @media(max-width:900px) {
         #checkout-panel.topup-modal { padding: 12px; align-items: center; }
