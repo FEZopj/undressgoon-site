@@ -1437,6 +1437,42 @@ html[data-theme="light"] .preset-grid button.active svg { color: #fff; }
 .write-own-btn svg { width: 16px; height: 16px; color: var(--accent2); }
 .write-own-btn.locked { opacity: 0.7; }
 .write-own-btn.locked svg { color: var(--muted); }
+.saved-video-recipes {
+  margin: 8px 0 2px; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface2, #18181d);
+}
+.saved-video-recipes summary {
+  display: flex; align-items: center; gap: 7px; cursor: pointer;
+  color: var(--text); font-size: .88rem; font-weight: 750;
+}
+.saved-video-recipes summary svg { width: 16px; height: 16px; color: var(--accent2); }
+.saved-video-recipes-copy, .saved-video-recipes-empty {
+  margin: 8px 0; color: var(--muted); font-size: .8rem; line-height: 1.4;
+}
+.saved-video-recipes-list { display: grid; gap: 8px; }
+.saved-video-recipe {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 9px; border-radius: 9px; background: var(--surface, #111116);
+}
+.saved-video-recipe strong, .saved-video-recipe span { display: block; }
+.saved-video-recipe strong { font-size: .84rem; color: var(--text); }
+.saved-video-recipe span { max-width: 380px; margin-top: 2px; color: var(--muted); font-size: .75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.saved-video-recipe-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.saved-video-recipe-actions button, .save-video-recipe-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 34px; padding: 6px 10px; border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer; background: transparent; color: var(--text);
+  font: inherit; font-size: .78rem; font-weight: 700;
+}
+.saved-video-recipe-actions button:hover, .save-video-recipe-btn:hover { border-color: var(--accent2); }
+.saved-video-recipe-actions .saved-video-recipe-delete { padding: 6px 8px; color: var(--muted); }
+.saved-video-recipe-delete svg, .save-video-recipe-btn svg { width: 15px; height: 15px; }
+.save-video-recipe-btn { margin: 10px auto 0; color: var(--accent2); }
+@media (max-width: 480px) {
+  .saved-video-recipe { align-items: flex-start; flex-direction: column; }
+  .saved-video-recipe span { max-width: 100%; }
+}
 .field-label {
   color: var(--muted);
   font-size: 0.8rem;

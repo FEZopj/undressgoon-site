@@ -1470,7 +1470,7 @@
     sync();
   }
 
-  function paintResults(images, videos) {
+  function paintResults(images, videos, resultMeta) {
     var empty = document.getElementById('web-result-empty');
     var target = document.getElementById('web-results');
     if (!target) return;
@@ -1564,6 +1564,30 @@
         ? t('saveVideoNote', 'We do not keep your video permanently. Download it now if you want to keep it.')
         : t('saveNote', 'We do not store your images. Download them now if you want to keep them.');
       target.appendChild(note);
+      if (resultMeta && resultMeta.canSaveCustomRecipe && resultMeta.jobId) {
+        var saveRecipe = document.createElement('button');
+        saveRecipe.type = 'button';
+        saveRecipe.className = 'save-video-recipe-btn';
+        saveRecipe.innerHTML = '<i data-lucide="bookmark-plus"></i> ' + esc(t('saveVideoRecipe', 'Save this custom prompt'));
+        saveRecipe.addEventListener('click', function () {
+          var title = window.prompt(
+            t('saveVideoRecipeName', 'Name this saved video prompt:'),
+            t('saveVideoRecipeDefault', 'My custom video')
+          );
+          if (title === null) return;
+          saveRecipe.disabled = true;
+          saveRecipe.textContent = t('savingVideoRecipe', 'Saving...');
+          saveCustomVideoRecipe(resultMeta.jobId, title).then(function () {
+            saveRecipe.textContent = t('videoRecipeSaved', 'Saved to My saved video prompts');
+          }).catch(function (err) {
+            saveRecipe.disabled = false;
+            saveRecipe.innerHTML = '<i data-lucide="bookmark-plus"></i> ' + esc(t('saveVideoRecipe', 'Save this custom prompt'));
+            setStatus(err.message || 'Could not save this prompt.', 'error');
+            refreshIcons();
+          });
+        });
+        target.appendChild(saveRecipe);
+      }
     }
     refreshIcons();
     if (empty) empty.hidden = !!resultCount;
@@ -1654,6 +1678,19 @@
       if (consentLine) consentLine.insertAdjacentElement('beforebegin', variation);
       else form.appendChild(variation);
     }
+    if (!document.getElementById('saved-video-recipes')) {
+      var promptField = document.getElementById('web-prompt');
+      var saved = document.createElement('details');
+      saved.id = 'saved-video-recipes';
+      saved.className = 'saved-video-recipes';
+      saved.hidden = true;
+      saved.innerHTML =
+        '<summary><i data-lucide="bookmark"></i> ' + esc(t('savedVideoPrompts', 'My saved video prompts')) + '</summary>' +
+        '<p class="saved-video-recipes-copy">' + esc(t('savedVideoPromptsHint', 'Reuse an exact custom recipe with a new photo. It will not be rewritten.')) + '</p>' +
+        '<div class="saved-video-recipes-list"></div>';
+      if (promptField) promptField.insertAdjacentElement('afterend', saved);
+      else form.appendChild(saved);
+    }
   }
 
   // Free (never-purchased) users may only run the Fully Nude preset; everything
@@ -1668,6 +1705,9 @@
   var remoteVideos = null;      // reviewed production H3 catalogue
   var rerenderPresets = null;   // set by initPresets so a late fetch can repaint
   var selectedPresetKey = '';   // sent as `preset` on submit
+  var selectedSavedVideoRecipeId = 0;
+  var savedVideoRecipes = [];
+  var renderSavedVideoRecipes = null;
 
   function loadPresetCatalogue() {
     return fetch(apiUrl('/web/presets'), { credentials: 'include' })
@@ -1690,6 +1730,40 @@
         if (rerenderPresets) rerenderPresets();
       })
       .catch(function () { /* keep the built-in production video catalogue */ });
+  }
+
+  function loadSavedVideoRecipes() {
+    if (!(currentSession && currentSession.user)) {
+      savedVideoRecipes = [];
+      if (renderSavedVideoRecipes) renderSavedVideoRecipes();
+      return Promise.resolve(savedVideoRecipes);
+    }
+    return fetch(apiUrl('/web/video-recipes'), { credentials: 'include' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        savedVideoRecipes = data && data.ok && Array.isArray(data.recipes) ? data.recipes : [];
+        if (renderSavedVideoRecipes) renderSavedVideoRecipes();
+        return savedVideoRecipes;
+      })
+      .catch(function () {
+        savedVideoRecipes = [];
+        if (renderSavedVideoRecipes) renderSavedVideoRecipes();
+        return savedVideoRecipes;
+      });
+  }
+
+  function saveCustomVideoRecipe(jobId, label) {
+    return fetch(apiUrl('/web/video-recipes'), {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobId: jobId, label: label || '' })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok || !data.ok) throw new Error(data.message || 'Could not save this prompt.');
+        return loadSavedVideoRecipes().then(function () { return data.recipe; });
+      });
+    });
   }
 
   // Backend key list + local (translated) labels. Falls back to the hardcoded
@@ -1817,6 +1891,7 @@
         if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation works with the Fully Nude preset. Top up to unlock every other outfit preset, scenes, videos, and custom prompts.')); return; }
         selected = '';
         selectedPresetKey = '';
+        selectedSavedVideoRecipeId = 0;
         prompt.value = '';
         showCustomPrompt(true);
         renderGrid();
@@ -2120,6 +2195,7 @@
         if (!isBuyer()) { showNotice(t('lockedCustomTitle', 'Your free generation'), t('lockedCustomHint', 'Your free generation works with the Fully Nude preset. Top up to unlock every other outfit preset, scenes, videos, and custom prompts.')); return; }
         selected = '';
         selectedPresetKey = '';
+        selectedSavedVideoRecipeId = 0;
         prompt.value = '';
         showCustomPrompt(true);
         renderGrid();
@@ -2129,6 +2205,7 @@
     prompt.addEventListener('input', function () {
       selected = '';
       selectedPresetKey = '';
+      selectedSavedVideoRecipeId = 0;
       renderGrid();
     });
     modeInputs.forEach(function (input) {
@@ -2138,6 +2215,7 @@
           : (activeMode() === 'video' ? videoCats()[0].key : outfitCats[0].key);
         selected = '';
         selectedPresetKey = '';
+        selectedSavedVideoRecipeId = 0;
         prompt.value = '';
         showCustomPrompt(false);
         syncModeCopy();
@@ -2209,6 +2287,86 @@
     var previewUrl = '';
     var selectedPersonSnapshot = null;
     var pendingGeneration = null;
+    var savedRecipesBox = document.getElementById('saved-video-recipes');
+    var savedRecipesList = savedRecipesBox && savedRecipesBox.querySelector('.saved-video-recipes-list');
+
+    function syncSavedVideoRecipesVisibility() {
+      if (!savedRecipesBox) return;
+      savedRecipesBox.hidden = selectedModeValue() !== 'video' || !isBuyer();
+    }
+
+    renderSavedVideoRecipes = function () {
+      if (!savedRecipesBox || !savedRecipesList) return;
+      syncSavedVideoRecipesVisibility();
+      savedRecipesList.innerHTML = '';
+      if (!savedVideoRecipes.length) {
+        var empty = document.createElement('p');
+        empty.className = 'saved-video-recipes-empty';
+        empty.textContent = t('noSavedVideoPrompts', 'No saved prompts yet. Save one after a custom video you like.');
+        savedRecipesList.appendChild(empty);
+        refreshIcons();
+        return;
+      }
+      savedVideoRecipes.forEach(function (recipe) {
+        var row = document.createElement('div');
+        row.className = 'saved-video-recipe';
+        var copy = document.createElement('div');
+        var name = document.createElement('strong');
+        name.textContent = recipe.label || 'Saved video prompt';
+        var preview = document.createElement('span');
+        preview.textContent = recipe.originalPrompt || '';
+        copy.appendChild(name);
+        copy.appendChild(preview);
+        var actions = document.createElement('div');
+        actions.className = 'saved-video-recipe-actions';
+        var use = document.createElement('button');
+        use.type = 'button';
+        use.textContent = t('useSavedVideoPrompt', 'Use');
+        use.addEventListener('click', function () {
+          var clear = document.getElementById('preset-clear');
+          if (clear) clear.click();
+          selectedPresetKey = '';
+          selectedSavedVideoRecipeId = Number(recipe.id || 0);
+          var prompt = document.getElementById('web-prompt');
+          if (prompt) {
+            prompt.value = recipe.originalPrompt || '';
+            prompt.style.display = '';
+            prompt.classList.add('is-open');
+          }
+          var promptLabel = document.querySelector('label[for="web-prompt"]');
+          if (promptLabel) promptLabel.style.display = '';
+          syncSavedVideoRecipesVisibility();
+          setStatus(t('savedRecipeSelected', 'Saved recipe selected. Upload a photo, then generate.'), 'success');
+        });
+        var remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'saved-video-recipe-delete';
+        remove.setAttribute('aria-label', t('deleteSavedVideoPrompt', 'Delete saved video prompt'));
+        remove.innerHTML = '<i data-lucide="trash-2"></i>';
+        remove.addEventListener('click', function () {
+          if (!window.confirm(t('deleteSavedVideoPromptConfirm', 'Delete this saved video prompt?'))) return;
+          remove.disabled = true;
+          fetch(apiUrl('/web/video-recipes/' + encodeURIComponent(String(recipe.id))), {
+            method: 'DELETE', credentials: 'include'
+          }).then(function (res) {
+            return res.json().catch(function () { return {}; }).then(function (data) {
+              if (!res.ok || !data.ok) throw new Error(data.message || 'Could not delete this prompt.');
+              if (selectedSavedVideoRecipeId === Number(recipe.id)) selectedSavedVideoRecipeId = 0;
+              return loadSavedVideoRecipes();
+            });
+          }).catch(function (err) {
+            remove.disabled = false;
+            setStatus(err.message || 'Could not delete this prompt.', 'error');
+          });
+        });
+        actions.appendChild(use);
+        actions.appendChild(remove);
+        row.appendChild(copy);
+        row.appendChild(actions);
+        savedRecipesList.appendChild(row);
+      });
+      refreshIcons();
+    };
 
     if (!CFG.apiBase && location.protocol === 'file:') {
       setStatus(t('apiMissing', 'Set UG_CONFIG.apiBase to your bot backend URL before uploading to cPanel.'), 'error');
@@ -2220,10 +2378,13 @@
       return validateSavedDiscountAfterLogin(session).then(function () {
         return loadVideoCatalogue().then(function () { return session; });
       });
+    }).then(function (session) {
+      return loadSavedVideoRecipes().then(function () { return session; });
     }).then(resumePendingGeneration);
     initPresets();
     loadPacks();
     initAccountControls();
+    renderSavedVideoRecipes();
 
     function maxVariations() {
       var fromSession = currentSession && Number(currentSession.maxVariations || 0);
@@ -2415,7 +2576,8 @@
       payload.append('variations', String(variations));
       if (modeValue === 'video') {
         payload.set('variations', '1');
-        if (selectedPresetKey) payload.append('video_preset', selectedPresetKey);
+        if (selectedSavedVideoRecipeId) payload.append('saved_video_recipe_id', String(selectedSavedVideoRecipeId));
+        else if (selectedPresetKey) payload.append('video_preset', selectedPresetKey);
         else payload.append('video_prompt', prompt ? prompt.value.trim() : '');
       } else if (modeValue === 'scene') {
         // The invisible-prompt bridge holds the chosen scene KEY; send it as
@@ -2466,9 +2628,16 @@
 
     if (variationSelect) variationSelect.addEventListener('change', syncVariationControl);
     document.querySelectorAll('input[name="mode"]').forEach(function (input) {
-      input.addEventListener('change', syncVariationControl);
+      input.addEventListener('change', function () {
+        selectedSavedVideoRecipeId = 0;
+        syncVariationControl();
+        syncSavedVideoRecipesVisibility();
+      });
     });
-    document.addEventListener('ug:session-updated', syncVariationControl);
+    document.addEventListener('ug:session-updated', function () {
+      syncVariationControl();
+      syncSavedVideoRecipesVisibility();
+    });
     syncVariationControl();
 
     if (logout) {
@@ -2525,7 +2694,7 @@
             armExitOffer();
           }
           stopWorkingPreview(true);
-          paintResults(data.images || [], data.videos || []);
+          paintResults(data.images || [], data.videos || [], data);
           track('website_generation_success', {
             mode: selectedModeValue(),
             image_count: (data.images || []).length,
@@ -2594,7 +2763,9 @@
       payload.append('mode', snap.mode || 'prompt');
       payload.append('terms_accepted', '1');
       payload.append('variations', String(snap.variations || 1));
-      if (snap.mode === 'video' && snap.presetKey) {
+      if (snap.mode === 'video' && snap.savedVideoRecipeId) {
+        payload.append('saved_video_recipe_id', String(snap.savedVideoRecipeId));
+      } else if (snap.mode === 'video' && snap.presetKey) {
         payload.append('video_preset', snap.presetKey);
       } else if (snap.mode === 'video') {
         payload.append('video_prompt', snap.prompt || '');
@@ -2622,6 +2793,7 @@
           mode: mode ? mode.value : 'prompt',
           variations: variations ? Number(variations.value || 1) : 1,
           presetKey: selectedPresetKey,
+          savedVideoRecipeId: selectedSavedVideoRecipeId,
           breastSize: breastSize ? breastSize.value : 'natural',
           pubicHair: pubicHair ? pubicHair.value : 'natural',
           dataUrl: ''
