@@ -740,17 +740,19 @@
       var el = document.getElementById('ug-recipe-delete-dialog');
       if (!el) {
         el = document.createElement('div');
-        el.className = 'ug-recipe-delete-dialog';
+        // Reuse the proven saved-recipe naming modal shell. The landing page
+        // ships this stylesheet, unlike the legacy site.css file.
+        el.className = 'ug-recipe-name-dialog';
         el.id = 'ug-recipe-delete-dialog';
         el.hidden = true;
         el.innerHTML =
-          '<div class="ug-recipe-delete-backdrop" data-close-recipe-delete></div>' +
-          '<div class="ug-recipe-delete-box" aria-modal="true" role="dialog" aria-labelledby="ug-recipe-delete-title">' +
+          '<div class="ug-recipe-name-backdrop" data-close-recipe-delete></div>' +
+          '<div class="ug-recipe-name-box" aria-modal="true" role="dialog" aria-labelledby="ug-recipe-delete-title">' +
             '<strong id="ug-recipe-delete-title">Delete saved prompt?</strong>' +
             '<p class="ug-recipe-delete-copy"></p>' +
-            '<div class="ug-recipe-delete-actions">' +
-              '<button type="button" class="btn ug-recipe-delete-cancel" data-close-recipe-delete>Keep it</button>' +
-              '<button type="button" class="btn ug-recipe-delete-confirm">Delete prompt</button>' +
+            '<div class="ug-recipe-name-actions">' +
+              '<button type="button" class="btn ug-recipe-name-cancel ug-recipe-delete-cancel" data-close-recipe-delete>Keep it</button>' +
+              '<button type="button" class="btn btn-accent ug-recipe-delete-confirm">Delete prompt</button>' +
             '</div>' +
           '</div>';
         document.body.appendChild(el);
