@@ -2814,6 +2814,34 @@ html[data-theme="light"] .toast {
 .ug-notice-msg { color: var(--muted); margin: 0 0 18px; line-height: 1.5; font-size: .93rem; }
 .ug-notice-ok { width: 100%; min-height: 44px; }
 
+/* Saved-recipe naming modal. This deliberately matches the app instead of
+   exposing the browser's generic security prompt. */
+.ug-recipe-name-dialog {
+  position: fixed; inset: 0; z-index: 170;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; transition: opacity .18s ease;
+}
+.ug-recipe-name-dialog.is-open { opacity: 1; }
+.ug-recipe-name-dialog[hidden] { display: none; }
+.ug-recipe-name-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.64); }
+.ug-recipe-name-box {
+  position: relative; width: min(440px, 100%); padding: 24px;
+  border: 1px solid var(--border); border-radius: 20px; background: var(--surface);
+  box-shadow: 0 28px 75px rgba(0,0,0,.48); transform: translateY(9px) scale(.98);
+  transition: transform .18s ease;
+}
+.ug-recipe-name-dialog.is-open .ug-recipe-name-box { transform: none; }
+.ug-recipe-name-box > strong { display: block; font-size: 1.12rem; }
+.ug-recipe-name-box > p { margin: 7px 0 18px; color: var(--muted); font-size: .9rem; line-height: 1.45; }
+.ug-recipe-name-box label { display: block; margin-bottom: 7px; font-size: .8rem; font-weight: 850; color: var(--muted); }
+.ug-recipe-name-box input {
+  width: 100%; min-height: 46px; padding: 0 12px; border: 1px solid var(--border);
+  border-radius: 11px; color: var(--text); background: var(--surface2); font: inherit;
+}
+.ug-recipe-name-box input:focus { outline: none; border-color: rgba(255,45,85,.75); box-shadow: 0 0 0 3px rgba(255,45,85,.13); }
+.ug-recipe-name-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+.ug-recipe-name-actions button { min-height: 42px; padding: 0 15px; }
+
 /* ===== "Working on your photo" preview =============================
    Shown in the result panel on BOTH landing pages while a job runs.
    The uploaded photo, heavily pixelated and slowly resolving, under a

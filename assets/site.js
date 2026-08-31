@@ -674,6 +674,64 @@
     setTimeout(function () { el.hidden = true; }, 180);
   }
 
+  // Keep naming a saved recipe inside the product instead of invoking the
+  // browser's security-styled `window.prompt()` dialog.
+  function askSavedVideoRecipeName(defaultValue) {
+    return new Promise(function (resolve) {
+      var el = document.getElementById('ug-recipe-name-dialog');
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'ug-recipe-name-dialog';
+        el.id = 'ug-recipe-name-dialog';
+        el.hidden = true;
+        el.innerHTML =
+          '<div class="ug-recipe-name-backdrop" data-close-recipe-name></div>' +
+          '<form class="ug-recipe-name-box" aria-modal="true" role="dialog">' +
+            '<strong>Save custom prompt</strong>' +
+            '<p>Give this recipe a short name so you can find it again.</p>' +
+            '<label for="ug-recipe-name-input">Prompt name</label>' +
+            '<input id="ug-recipe-name-input" type="text" maxlength="80" autocomplete="off" required />' +
+            '<div class="ug-recipe-name-actions">' +
+              '<button type="button" class="btn ug-recipe-name-cancel" data-close-recipe-name>Cancel</button>' +
+              '<button type="submit" class="btn btn-accent">Save prompt</button>' +
+            '</div>' +
+          '</form>';
+        document.body.appendChild(el);
+        el.addEventListener('click', function (ev) {
+          if (ev.target.hasAttribute('data-close-recipe-name')) closeSavedVideoRecipeName(null);
+        });
+        el.querySelector('form').addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var input = el.querySelector('#ug-recipe-name-input');
+          closeSavedVideoRecipeName(input ? input.value : '');
+        });
+        document.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Escape' && !el.hidden) closeSavedVideoRecipeName(null);
+        });
+      }
+      el._resolveRecipeName = resolve;
+      var input = el.querySelector('#ug-recipe-name-input');
+      if (input) input.value = defaultValue || '';
+      el.hidden = false;
+      document.body.classList.add('modal-open');
+      setTimeout(function () {
+        el.classList.add('is-open');
+        if (input) { input.focus(); input.select(); }
+      }, 20);
+    });
+  }
+
+  function closeSavedVideoRecipeName(value) {
+    var el = document.getElementById('ug-recipe-name-dialog');
+    if (!el || el.hidden) return;
+    var resolve = el._resolveRecipeName;
+    el._resolveRecipeName = null;
+    el.classList.remove('is-open');
+    document.body.classList.remove('modal-open');
+    setTimeout(function () { el.hidden = true; }, 180);
+    if (resolve) resolve(value);
+  }
+
   function showCheckout(show, reason) {
     var panel = document.getElementById('checkout-panel');
     if (!panel) return;
@@ -1573,20 +1631,20 @@
         saveRecipe.className = 'save-video-recipe-btn';
         saveRecipe.innerHTML = '<i data-lucide="bookmark-plus"></i> ' + esc(t('saveVideoRecipe', 'Save this custom prompt'));
         saveRecipe.addEventListener('click', function () {
-          var title = window.prompt(
-            t('saveVideoRecipeName', 'Name this saved video prompt:'),
-            t('saveVideoRecipeDefault', 'My custom video')
-          );
-          if (title === null) return;
-          saveRecipe.disabled = true;
-          saveRecipe.textContent = t('savingVideoRecipe', 'Saving...');
-          saveCustomVideoRecipe(resultMeta.jobId, title).then(function () {
-            saveRecipe.textContent = t('videoRecipeSaved', 'Saved to My saved video prompts');
-          }).catch(function (err) {
-            saveRecipe.disabled = false;
-            saveRecipe.innerHTML = '<i data-lucide="bookmark-plus"></i> ' + esc(t('saveVideoRecipe', 'Save this custom prompt'));
-            setStatus(err.message || 'Could not save this prompt.', 'error');
-            refreshIcons();
+          askSavedVideoRecipeName(t('saveVideoRecipeDefault', 'My custom video')).then(function (title) {
+            if (title === null) return;
+            saveRecipe.disabled = true;
+            saveRecipe.textContent = t('savingVideoRecipe', 'Saving...');
+            saveCustomVideoRecipe(resultMeta.jobId, title).then(function () {
+              var savedBox = document.getElementById('saved-video-recipes');
+              if (savedBox) { savedBox.hidden = false; savedBox.open = true; }
+              saveRecipe.textContent = t('videoRecipeSaved', 'Saved to My saved video prompts');
+            }).catch(function (err) {
+              saveRecipe.disabled = false;
+              saveRecipe.innerHTML = '<i data-lucide="bookmark-plus"></i> ' + esc(t('saveVideoRecipe', 'Save this custom prompt'));
+              setStatus(err.message || 'Could not save this prompt.', 'error');
+              refreshIcons();
+            });
           });
         });
         target.appendChild(saveRecipe);
@@ -2310,7 +2368,7 @@
 
     function syncSavedVideoRecipesVisibility() {
       if (!savedRecipesBox) return;
-      savedRecipesBox.hidden = selectedModeValue() !== 'video' || !isBuyer();
+      savedRecipesBox.hidden = selectedModeValue() !== 'video' || !(currentSession && currentSession.user);
     }
 
     renderSavedVideoRecipes = function () {
@@ -2325,6 +2383,9 @@
         refreshIcons();
         return;
       }
+      // A saved recipe is useful only if it is discoverable. Keep the section
+      // expanded whenever this account has recipes, including after reload.
+      savedRecipesBox.open = true;
       savedVideoRecipes.forEach(function (recipe) {
         var row = document.createElement('div');
         row.className = 'saved-video-recipe';
