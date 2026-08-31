@@ -1698,7 +1698,7 @@
       duration.hidden = true;
       duration.innerHTML =
         '<input id="video-double-length" type="checkbox" />' +
-        '<span><strong>' + esc(t('doubleVideoLength', 'Double video length')) + '</strong><small>' + esc(t('doubleVideoLengthHint', '16 seconds · 4 credits')) + '</small></span>';
+        '<span><strong>' + esc(t('doubleVideoLength', 'Double video length')) + '</strong><small>' + esc(t('doubleVideoLengthHint', '16 seconds · 4 credits · choose for this render')) + '</small></span>';
       var variationAnchor = document.getElementById('variation-row');
       if (variationAnchor) variationAnchor.insertAdjacentElement('afterend', duration);
       else form.appendChild(duration);
@@ -2342,7 +2342,7 @@
           if (clear) clear.click();
           selectedPresetKey = '';
           selectedSavedVideoRecipeId = Number(recipe.id || 0);
-          if (doubleVideoLength) doubleVideoLength.checked = Number(recipe.seconds || 8) >= 16;
+          if (doubleVideoLength) doubleVideoLength.checked = false;
           var prompt = document.getElementById('web-prompt');
           if (prompt) {
             prompt.value = recipe.originalPrompt || '';
@@ -2351,6 +2351,7 @@
           }
           var promptLabel = document.querySelector('label[for="web-prompt"]');
           if (promptLabel) promptLabel.style.display = '';
+          syncVariationControl();
           syncSavedVideoRecipesVisibility();
           setStatus(t('savedRecipeSelected', 'Saved recipe selected. Upload a photo, then generate.'), 'success');
         });
