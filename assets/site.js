@@ -1701,7 +1701,7 @@
       duration.hidden = true;
       duration.innerHTML =
         '<input id="video-double-length" type="checkbox" />' +
-        '<span><strong>' + esc(t('doubleVideoLength', 'Double video length')) + '</strong><small>' + esc(t('doubleVideoLengthHint', '16 seconds · 4 credits · choose for this render')) + '</small></span>';
+        '<span><strong>' + esc(t('doubleVideoLength', 'Double video length')) + '</strong><small>for +2 credits</small></span>';
       var variationAnchor = document.getElementById('variation-row');
       if (variationAnchor) variationAnchor.insertAdjacentElement('afterend', duration);
       else form.appendChild(duration);
