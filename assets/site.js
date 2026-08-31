@@ -164,6 +164,15 @@
     );
   }
 
+  function validateSavedDiscountAfterLogin(session) {
+    // Campaign links may be opened while logged out. Once OAuth/email login
+    // establishes the session, validate the carried code so the customer sees
+    // the actual bonus before they choose a pack. Checkout still validates on
+    // the server as the authoritative final gate.
+    if (!discountCode || !session || !session.ok || !session.user) return Promise.resolve(false);
+    return saveDiscountCode(discountCode);
+  }
+
   function formatMoneyFromCents(cents) {
     var amount = Math.max(0, Number(cents || 0)) / 100;
     return '$' + amount.toFixed(2);
@@ -879,7 +888,10 @@
       // to another page before logging in (params-less URL would otherwise lose it).
       var saved = storedTracking();
       Object.keys(saved).forEach(function (k) { if (!params.get(k)) params.set(k, saved[k]); });
-      params.set('return_to', location.origin + location.pathname);
+      // Keep email offer/referral query parameters and the intended section
+      // through OAuth. The backend safely merges google_login into this URL on
+      // the way back instead of replacing its existing query.
+      params.set('return_to', location.origin + location.pathname + location.search + location.hash);
       var fp = deviceFingerprint();
       if (fp) params.set('ug_fp', fp);
       link.href = apiUrl('/web/auth/google/start') + '?' + params.toString();
@@ -2205,7 +2217,9 @@
     initGoogleLogin();
     initEmailLogin();
     refreshWebSession().then(function (session) {
-      return loadVideoCatalogue().then(function () { return session; });
+      return validateSavedDiscountAfterLogin(session).then(function () {
+        return loadVideoCatalogue().then(function () { return session; });
+      });
     }).then(resumePendingGeneration);
     initPresets();
     loadPacks();
