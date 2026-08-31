@@ -330,6 +330,7 @@
         box-shadow: 0 20px 55px rgba(255,45,85,.20),0 0 45px rgba(181,43,213,.10);
       }
       html[data-theme='light'] #checkout-panel .pack-card.popular-hero .pack-price { color: #15151b; }
+      html[data-theme='light'] #checkout-panel .pack-card.popular-hero .pack-credits { color: #15151b; }
       html[data-theme='light'] #checkout-panel .pack-card.value-anchor {
         background:
           radial-gradient(circle at 50% 0,rgba(246,196,90,.15),transparent 42%),
