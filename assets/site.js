@@ -2449,10 +2449,7 @@
         var copy = document.createElement('div');
         var name = document.createElement('strong');
         name.textContent = recipe.label || 'Saved video prompt';
-        var preview = document.createElement('span');
-        preview.textContent = recipe.originalPrompt || '';
         copy.appendChild(name);
-        copy.appendChild(preview);
         var actions = document.createElement('div');
         actions.className = 'saved-video-recipe-actions';
         var use = document.createElement('button');
