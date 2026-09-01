@@ -114,6 +114,12 @@ html[data-theme="light"] .ug-recipe-name-cancel { background: #f2f4f8; }
 /* Checkout hierarchy: Popular = static label, Ultimate = restrained hero,
    Mega = premium-volume accent. scenes.js injects its rules later, so these
    hierarchy overrides intentionally use !important. */
+
+/* The base stylesheet staggers cards by 70ms * index. With Popular/Ultimate
+   intentionally opting out of that animation, Plus appeared to arrive late.
+   A pricing modal should paint as one unit, so disable the stagger for all tiers. */
+#checkout-panel.is-open .pack-card { animation: none !important; }
+
 #checkout-panel .pack-card.popular-hero {
   z-index: auto !important;
   border: 1px solid rgba(255,255,255,.11) !important;
@@ -121,7 +127,6 @@ html[data-theme="light"] .ug-recipe-name-cancel { background: #f2f4f8; }
   box-shadow: 0 14px 34px rgba(0,0,0,.25) !important;
   transform: none !important;
 }
-#checkout-panel.is-open .pack-card.popular-hero { animation: none !important; }
 #checkout-panel .pack-card.popular-hero:hover {
   transform: translateY(-3px) !important;
   border-color: rgba(255,255,255,.20) !important;
@@ -141,11 +146,19 @@ html[data-theme="light"] .ug-recipe-name-cancel { background: #f2f4f8; }
   font-size: 2rem !important;
   text-shadow: none !important;
 }
+/* Keep Popular's payment controls identical to every other tier, including
+   the hover state. The later scenes.js rules otherwise give Popular a bespoke
+   CTA hover because of the more-specific popular-hero selector. */
 #checkout-panel .pack-card.popular-hero .pack-actions .pay-card-pack {
   min-height: 43px !important;
   background: linear-gradient(135deg,rgba(255,45,85,.92),rgba(205,39,124,.92)) !important;
   border-color: rgba(255,74,116,.48) !important;
-  box-shadow: 0 9px 24px rgba(255,45,85,.16) !important;
+  box-shadow: 0 9px 24px rgba(255,45,85,.19) !important;
+}
+#checkout-panel .pack-card.popular-hero .pack-actions button:hover {
+  transform: translateY(-1px) !important;
+  border-color: rgba(255,91,130,.55) !important;
+  background: rgba(255,45,85,.13) !important;
 }
 
 #checkout-panel .pack-card.value-anchor {
@@ -159,7 +172,6 @@ html[data-theme="light"] .ug-recipe-name-cancel { background: #f2f4f8; }
     0 0 24px rgba(246,196,90,.09) !important;
   transform: translateY(-4px) scale(1.012) !important;
 }
-#checkout-panel.is-open .pack-card.value-anchor { animation: none !important; }
 #checkout-panel .pack-card.value-anchor:hover {
   transform: translateY(-6px) scale(1.018) !important;
   box-shadow:
