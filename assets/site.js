@@ -3279,7 +3279,9 @@
             poster: apiUrl(item.sourceUrl), title: String(item.title || 'AI video transformation'), hero: !!item.hero
           };
         });
-        if (uploadedVideos.length) examples = uploadedVideos;
+        // Admin uploads extend the curated cPanel collection; they must never
+        // replace it. The featured flag only controls the homepage hero.
+        if (uploadedVideos.length) examples = uploadedVideos.concat(examples);
         if (!examples.length) { showEmpty(); return; }
         var featured = uploadedVideos.filter(function (item) { return item.hero; })[0] || null;
         paintVideoHero(examples, featured);
