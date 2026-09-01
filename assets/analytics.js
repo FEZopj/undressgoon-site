@@ -184,6 +184,49 @@
     });
   }
 
+  /*
+   * Generator state guard.
+   *
+   * A saved video recipe is stored in site.js as selectedSavedVideoRecipeId.
+   * Selecting a normal video preset updates selectedPresetKey but older builds
+   * did not clear that saved-recipe id. site.js then preferred the stale recipe
+   * id when building /web/generate, so the visible preset and actual generation
+   * could disagree. analytics.js executes before site.js on every localized
+   * landing, so guard the request boundary until the state reset lives directly
+   * beside the preset picker code.
+   */
+  (function installVideoPresetRequestGuard() {
+    var nativeFetch = window.fetch;
+    if (!nativeFetch || nativeFetch.__ugVideoPresetGuard) return;
+
+    function guardedFetch(input, init) {
+      try {
+        var url = typeof input === 'string' ? input : (input && input.url) || '';
+        var opts = init || {};
+        var body = opts.body;
+        if (/\/web\/generate(?:[?#]|$)/.test(String(url)) &&
+            typeof FormData !== 'undefined' && body instanceof FormData) {
+          var mode = document.querySelector('input[name="mode"]:checked');
+          var activePreset = document.querySelector('#preset-grid button.active[data-key]');
+          if (mode && mode.value === 'video' && activePreset && activePreset.dataset.locked !== '1') {
+            var key = activePreset.getAttribute('data-key');
+            if (key) {
+              body.delete('saved_video_recipe_id');
+              body.delete('video_prompt');
+              body.set('video_preset', key);
+            }
+          }
+        }
+      } catch (e) {
+        // Never let a defensive request guard block generation.
+      }
+      return nativeFetch.apply(this, arguments);
+    }
+
+    guardedFetch.__ugVideoPresetGuard = true;
+    window.fetch = guardedFetch;
+  })();
+
   window.ugTrack = send;
   window.ugIdentify = identify;
 
