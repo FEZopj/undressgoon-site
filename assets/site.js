@@ -3109,6 +3109,19 @@
   // from a clean unavailable state without any HTML changes.
   var VIDEO_EX_BASE = SITE_BASE + 'video-examples/';
   var VIDEO_EX_SEEN_KEY = 'ug_seen_video_examples';
+  var SHOWCASE_EXAMPLES_PROMISE = null;
+
+  function loadShowcaseExamples() {
+    if (SHOWCASE_EXAMPLES_PROMISE) return SHOWCASE_EXAMPLES_PROMISE;
+    if (!window.fetch || !CFG.apiBase) return Promise.resolve([]);
+    SHOWCASE_EXAMPLES_PROMISE = fetch(apiUrl('/web/showcase'), { credentials: 'omit' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (body) {
+        return body && Array.isArray(body.examples) ? body.examples : [];
+      })
+      .catch(function () { return []; });
+    return SHOWCASE_EXAMPLES_PROMISE;
+  }
 
   function videoExampleAsset(name) {
     var clean = String(name || '').replace(/\\/g, '/').replace(/^\/+/, '');
@@ -3141,7 +3154,7 @@
     if (!imageHeading || document.getElementById('video-examples-heading')) return;
     var heroMount = document.querySelector('[data-hero-video-mount]');
 
-    function paintVideoHero(examples) {
+    function paintVideoHero(examples, featured) {
       if (!heroMount) return;
       if (!examples || !examples.length) {
         heroMount.innerHTML =
@@ -3151,9 +3164,9 @@
         refreshIcons();
         return;
       }
-      // Keep the homepage proof fixed to the curated c → c2 pair, independent
-      // of a visitor's cached examples manifest.
-      var item = {
+      // The Admin-selected featured upload replaces the legacy c → c2 pair.
+      // Keep c → c2 as a safe fallback until the first upload is published.
+      var item = featured || {
         id: 'c2',
         source: videoExampleAsset('c.webp'),
         video: videoExampleAsset('c2.mp4'),
@@ -3237,9 +3250,13 @@
 
     if (!window.fetch) { showEmpty(); return; }
     var manifestUrl = videoExampleAsset('manifest.json');
-    fetch(manifestUrl, { credentials: 'same-origin' })
-      .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (body) {
+    Promise.all([
+      fetch(manifestUrl, { credentials: 'same-origin' }).then(function (res) { return res.ok ? res.json() : null; }),
+      loadShowcaseExamples()
+    ])
+      .then(function (loaded) {
+        var body = loaded[0];
+        var uploaded = loaded[1] || [];
         var raw = body && Array.isArray(body.examples) ? body.examples : [];
         var examples = [];
         for (var i = 0; i < raw.length; i++) {
@@ -3254,8 +3271,18 @@
             title: String(item.title || t('videoExamplesDefaultTitle', 'AI video transformation'))
           });
         }
+        var uploadedVideos = uploaded.filter(function (item) {
+          return item && item.category === 'video' && item.sourceUrl && item.resultUrl;
+        }).map(function (item) {
+          return {
+            id: String(item.id), video: apiUrl(item.resultUrl), source: apiUrl(item.sourceUrl),
+            poster: apiUrl(item.sourceUrl), title: String(item.title || 'AI video transformation'), hero: !!item.hero
+          };
+        });
+        if (uploadedVideos.length) examples = uploadedVideos;
         if (!examples.length) { showEmpty(); return; }
-        paintVideoHero(examples);
+        var featured = uploadedVideos.filter(function (item) { return item.hero; })[0] || null;
+        paintVideoHero(examples, featured);
 
         mount.className = 'video-examples-mount has-examples';
         mount.innerHTML =
@@ -3378,6 +3405,37 @@
         paint(chooseIndex());
       })
       .catch(showEmpty);
+  }
+
+  // ===== Admin-managed scene examples ==================================
+  function initSceneExamples() {
+    var imageHeading = document.getElementById('ex-heading');
+    if (!imageHeading || document.getElementById('scene-examples-heading')) return;
+    loadShowcaseExamples().then(function (items) {
+      var scenes = (items || []).filter(function (item) {
+        return item && item.category === 'scene' && item.sourceUrl && item.resultUrl;
+      });
+      if (!scenes.length) return;
+      var heading = document.createElement('section');
+      heading.className = 'section scene-examples-heading';
+      heading.id = 'scene-examples-heading';
+      heading.innerHTML = '<div class="container"><h2 class="section-title">' +
+        esc(t('sceneExamplesTitle', 'Scene result examples')) + '</h2></div>';
+      var mount = document.createElement('section');
+      mount.className = 'scene-examples-wrap';
+      mount.innerHTML = '<div class="container"><div class="scene-examples-grid">' +
+        scenes.map(function (item) {
+          return '<article class="scene-example-card"><div class="scene-example-media">' +
+            '<figure><img src="' + esc(apiUrl(item.sourceUrl)) + '" alt="' +
+              esc(t('videoExamplesSourceAlt', 'Source image for this AI result')) + '" loading="lazy"><figcaption>' +
+              esc(t('videoExamplesSource', 'Before')) + '</figcaption></figure>' +
+            '<figure><img src="' + esc(apiUrl(item.resultUrl)) + '" alt="' + esc(item.title || 'Generated scene') + '" loading="lazy"><figcaption>' +
+              esc(t('exAfter', 'After')) + '</figcaption></figure>' +
+            '</div><strong>' + esc(item.title || 'AI scene transformation') + '</strong></article>';
+        }).join('') + '</div></div>';
+      imageHeading.parentNode.insertBefore(heading, imageHeading);
+      imageHeading.parentNode.insertBefore(mount, imageHeading);
+    }).catch(function () {});
   }
 
   // ===== "Example of result": one before / after pair ==================
@@ -3823,6 +3881,7 @@
       ['sticky', initSticky],
       ['counter', initLiveCounter],
       ['toast', initToast],
+      ['scene-examples', initSceneExamples],
       ['video-examples', initVideoExamples],
       ['icons', refreshIcons]
     ];
