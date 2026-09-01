@@ -969,14 +969,14 @@
     } catch (e) { return ''; }
   }
 
-  // Ad attribution (TrafficStars click_id, campaign, utm_*). Captured on landing
-  // and persisted, so it survives navigation AND reaches the email-signup flow —
-  // not just the Google link. Last ad click wins; organic returns don't clear it.
+  // Ad attribution (TrafficStars/JuicyAds click tokens, ExoClick tracker,
+  // campaign, utm_*). Captured on landing and persisted, so it survives
+  // navigation AND reaches both the Google and email-signup flows.
   var TRACKING_KEYS = ['click_id', 'clickid', 'campaign', 'campaign_id', 'creative_id',
     'site_id', 'spot_id', 'adspot_id', 'adspot_name', 'device', 'device_type', 'os',
     'browser', 'geo', 'country', 'region', 'lang', 'format_id', 'format', 'pricing_model',
     'utm_source', 'utm_campaign', 'utm_medium', 'utm_content', 'utm_term',
-    'juicy_s2s', 's2s'];
+    'juicy_s2s', 's2s', 'tracker', 'exoclick_tag'];
   function captureTracking() {
     try {
       var p = new URLSearchParams(location.search || '');
