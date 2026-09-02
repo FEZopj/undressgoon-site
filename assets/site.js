@@ -976,7 +976,7 @@
     'site_id', 'spot_id', 'adspot_id', 'adspot_name', 'device', 'device_type', 'os',
     'browser', 'geo', 'country', 'region', 'lang', 'format_id', 'format', 'pricing_model',
     'utm_source', 'utm_campaign', 'utm_medium', 'utm_content', 'utm_term',
-    'juicy_s2s', 's2s', 'tracker', 'exoclick_tag'];
+    'juicy_s2s', 's2s', 'tracker', 'exoclick_tag', 'aclid'];
   function captureTracking() {
     try {
       var p = new URLSearchParams(location.search || '');
