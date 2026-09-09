@@ -1454,6 +1454,12 @@
 
   function accountSettingsCopy(key) {
     var language = String(document.documentElement.lang || 'en').toLowerCase().split('-')[0];
+    var deleteMenu = {
+      en: 'Delete my account', fr: 'Supprimer mon compte', de: 'Mein Konto löschen',
+      es: 'Eliminar mi cuenta', pt: 'Excluir minha conta', ja: 'アカウントを削除',
+      ru: 'Удалить мой аккаунт', zh: '删除我的账户'
+    };
+    if (key === 'menu') return deleteMenu[language] || deleteMenu.en;
     var copy = {
       en: { menu: 'Account settings', title: 'Are you sure?', signed: 'Signed in as', danger: 'Permanently delete account', credits: 'Unused credit balance: {n}. Any remaining credits will be permanently lost.', warning: 'This permanently deletes your generations, saved prompts, purchase history, linked sessions, and account data. It cannot be undone.', confirm: 'To confirm, type the exact phrase below:', guard: 'To prevent free-credit abuse, a one-way anti-abuse marker is retained. Creating another account will not grant another free credit.', cancel: 'Keep my account', remove: 'Delete my account', deleting: 'Deleting account…', failed: 'Could not delete your account.' },
       fr: { menu: 'Paramètres du compte', title: 'Êtes-vous sûr ?', signed: 'Connecté en tant que', danger: 'Supprimer définitivement le compte', credits: 'Solde de crédits inutilisés : {n}. Tous les crédits restants seront définitivement perdus.', warning: 'Cette action supprime définitivement vos générations, prompts enregistrés, historique d’achats, sessions liées et données de compte. Elle est irréversible.', confirm: 'Pour confirmer, saisissez exactement la phrase ci-dessous :', guard: 'Pour éviter les abus, un marqueur anti-abus à sens unique est conservé. Un nouveau compte ne recevra pas un autre crédit gratuit.', cancel: 'Garder mon compte', remove: 'Supprimer mon compte', deleting: 'Suppression du compte…', failed: 'Impossible de supprimer votre compte.' },
@@ -1513,8 +1519,6 @@
         '<p class="ug-account-settings-email">' + esc(accountSettingsCopy('signed')) + ': <strong>' + esc(email) + '</strong></p>' +
         '<section class="ug-account-danger"><h3>' + esc(accountSettingsCopy('danger')) + '</h3>' +
           '<p class="ug-account-credit-loss">' + esc(creditWarning) + '</p>' +
-          '<p>' + esc(accountSettingsCopy('warning')) + '</p>' +
-          '<p class="ug-account-danger-note">' + esc(accountSettingsCopy('guard')) + '</p>' +
           '<label class="ug-account-confirm" for="ug-account-delete-confirm">' + esc(accountSettingsCopy('confirm')) + '<strong>delete my account</strong>' +
             '<input id="ug-account-delete-confirm" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="delete my account"></label></section>' +
         '<p class="ug-account-settings-error" id="ug-account-settings-error" hidden></p>' +
