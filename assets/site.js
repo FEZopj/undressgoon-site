@@ -1452,6 +1452,104 @@
     setStatus(t('checkoutFail', 'Could not create checkout.'), 'error');
   }
 
+  function accountSettingsCopy(key) {
+    var language = String(document.documentElement.lang || 'en').toLowerCase().split('-')[0];
+    var copy = {
+      en: { menu: 'Account settings', title: 'Account settings', signed: 'Signed in as', danger: 'Delete account', warning: 'This permanently deletes your credits, generations, saved prompts, purchase history, linked sessions, and account data. It cannot be undone.', guard: 'To prevent free-credit abuse, a one-way anti-abuse marker is retained. Creating another account will not grant another free credit.', cancel: 'Keep my account', remove: 'Delete my account', deleting: 'Deleting account…', failed: 'Could not delete your account.' },
+      fr: { menu: 'Paramètres du compte', title: 'Paramètres du compte', signed: 'Connecté en tant que', danger: 'Supprimer le compte', warning: 'Cette action supprime définitivement vos crédits, générations, prompts enregistrés, historique d’achats, sessions liées et données de compte. Elle est irréversible.', guard: 'Pour éviter les abus, un marqueur anti-abus à sens unique est conservé. Un nouveau compte ne recevra pas un autre crédit gratuit.', cancel: 'Garder mon compte', remove: 'Supprimer mon compte', deleting: 'Suppression du compte…', failed: 'Impossible de supprimer votre compte.' },
+      de: { menu: 'Kontoeinstellungen', title: 'Kontoeinstellungen', signed: 'Angemeldet als', danger: 'Konto löschen', warning: 'Dadurch werden Guthaben, Generierungen, gespeicherte Prompts, Kaufverlauf, verknüpfte Sitzungen und Kontodaten dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.', guard: 'Zum Schutz vor Missbrauch bleibt eine nicht umkehrbare Markierung erhalten. Ein neues Konto erhält kein weiteres Gratis-Guthaben.', cancel: 'Konto behalten', remove: 'Mein Konto löschen', deleting: 'Konto wird gelöscht…', failed: 'Das Konto konnte nicht gelöscht werden.' },
+      es: { menu: 'Configuración de cuenta', title: 'Configuración de cuenta', signed: 'Sesión iniciada como', danger: 'Eliminar cuenta', warning: 'Esto elimina permanentemente tus créditos, generaciones, prompts guardados, historial de compras, sesiones vinculadas y datos de cuenta. No se puede deshacer.', guard: 'Para evitar abusos, se conserva un marcador irreversible. Una cuenta nueva no recibirá otro crédito gratis.', cancel: 'Conservar mi cuenta', remove: 'Eliminar mi cuenta', deleting: 'Eliminando cuenta…', failed: 'No se pudo eliminar tu cuenta.' },
+      pt: { menu: 'Configurações da conta', title: 'Configurações da conta', signed: 'Conectado como', danger: 'Excluir conta', warning: 'Isso exclui permanentemente seus créditos, gerações, prompts salvos, histórico de compras, sessões vinculadas e dados da conta. Não pode ser desfeito.', guard: 'Para evitar abusos, um marcador irreversível é mantido. Uma nova conta não receberá outro crédito grátis.', cancel: 'Manter minha conta', remove: 'Excluir minha conta', deleting: 'Excluindo conta…', failed: 'Não foi possível excluir sua conta.' },
+      ja: { menu: 'アカウント設定', title: 'アカウント設定', signed: 'ログイン中', danger: 'アカウントを削除', warning: 'クレジット、生成履歴、保存したプロンプト、購入履歴、連携セッション、アカウントデータが完全に削除されます。この操作は元に戻せません。', guard: '無料クレジットの不正利用防止のため、復元不可能な識別記録のみ保持されます。新しいアカウントを作成しても無料クレジットは再付与されません。', cancel: 'アカウントを残す', remove: 'アカウントを削除', deleting: '削除しています…', failed: 'アカウントを削除できませんでした。' },
+      ru: { menu: 'Настройки аккаунта', title: 'Настройки аккаунта', signed: 'Выполнен вход', danger: 'Удалить аккаунт', warning: 'Кредиты, генерации, сохранённые промпты, история покупок, связанные сессии и данные аккаунта будут удалены навсегда. Это действие нельзя отменить.', guard: 'Для защиты от злоупотреблений сохраняется необратимая отметка. Новый аккаунт не получит ещё один бесплатный кредит.', cancel: 'Оставить аккаунт', remove: 'Удалить мой аккаунт', deleting: 'Удаление аккаунта…', failed: 'Не удалось удалить аккаунт.' },
+      zh: { menu: '账户设置', title: '账户设置', signed: '登录账户', danger: '删除账户', warning: '这将永久删除您的积分、生成记录、已保存提示词、购买记录、关联会话和账户数据，且无法撤销。', guard: '为防止免费积分滥用，系统会保留不可逆的防滥用标记。重新创建账户不会再次获得免费积分。', cancel: '保留账户', remove: '删除我的账户', deleting: '正在删除账户…', failed: '无法删除您的账户。' }
+    };
+    return (copy[language] || copy.en)[key] || copy.en[key] || key;
+  }
+
+  function openAccountSettings() {
+    var old = document.getElementById('ug-account-settings-modal');
+    if (old) old.remove();
+    if (!document.getElementById('ug-account-settings-style')) {
+      var style = document.createElement('style');
+      style.id = 'ug-account-settings-style';
+      style.textContent =
+        '.ug-account-settings-open body{overflow:hidden}' +
+        '.ug-account-settings-modal{position:fixed;inset:0;z-index:1400;display:grid;place-items:center;padding:18px}' +
+        '.ug-account-settings-backdrop{position:absolute;inset:0;background:rgba(2,2,5,.84);backdrop-filter:blur(7px)}' +
+        '.ug-account-settings-dialog{position:relative;box-sizing:border-box;width:min(520px,100%);padding:26px;border:1px solid rgba(255,255,255,.14);border-radius:22px;background:linear-gradient(145deg,#1b171c,#0e0e12);color:#fff;box-shadow:0 28px 100px rgba(0,0,0,.72)}' +
+        '.ug-account-settings-dialog h2{margin:0 42px 7px 0;font-size:1.45rem}' +
+        '.ug-account-settings-email{margin:0 0 22px;color:#aaa0aa;word-break:break-word}' +
+        '.ug-account-settings-close{position:absolute;right:13px;top:12px;width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:rgba(255,255,255,.06);color:#fff;font-size:1.25rem;cursor:pointer}' +
+        '.ug-account-danger{padding:18px;border:1px solid rgba(239,68,68,.48);border-radius:16px;background:rgba(127,29,29,.17)}' +
+        '.ug-account-danger h3{margin:0 0 9px;color:#ff8c96;font-size:1.05rem}' +
+        '.ug-account-danger p{margin:8px 0;color:#e8e1e7;line-height:1.5}' +
+        '.ug-account-danger-note{font-size:.86rem;color:#bfb5be!important}' +
+        '.ug-account-settings-error{margin:12px 0 0;color:#ff8c96;font-weight:700}' +
+        '.ug-account-settings-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:18px}' +
+        '.ug-account-settings-actions button{min-height:42px;padding:9px 15px;border-radius:11px;font:inherit;font-weight:850;cursor:pointer}' +
+        '.ug-account-settings-cancel{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff}' +
+        '.ug-account-settings-delete{border:1px solid #ef4444;background:#dc2626;color:#fff}' +
+        '.ug-account-settings-delete:disabled{opacity:.58;cursor:wait}' +
+        '@media(max-width:560px){.ug-account-settings-modal{padding:8px}.ug-account-settings-dialog{padding:22px 17px;border-radius:18px}.ug-account-settings-actions{display:grid}.ug-account-settings-actions button{width:100%}}';
+      document.head.appendChild(style);
+    }
+    var modal = document.createElement('div');
+    modal.id = 'ug-account-settings-modal';
+    modal.className = 'ug-account-settings-modal';
+    var email = currentSession && currentSession.user ? (currentSession.user.email || currentSession.user.name || currentSession.user.id) : '';
+    modal.innerHTML =
+      '<div class="ug-account-settings-backdrop" data-account-settings-close></div>' +
+      '<div class="ug-account-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="ug-account-settings-title">' +
+        '<button type="button" class="ug-account-settings-close" aria-label="Close" data-account-settings-close>×</button>' +
+        '<h2 id="ug-account-settings-title">' + esc(accountSettingsCopy('title')) + '</h2>' +
+        '<p class="ug-account-settings-email">' + esc(accountSettingsCopy('signed')) + ': <strong>' + esc(email) + '</strong></p>' +
+        '<section class="ug-account-danger"><h3>' + esc(accountSettingsCopy('danger')) + '</h3>' +
+          '<p>' + esc(accountSettingsCopy('warning')) + '</p>' +
+          '<p class="ug-account-danger-note">' + esc(accountSettingsCopy('guard')) + '</p></section>' +
+        '<p class="ug-account-settings-error" id="ug-account-settings-error" hidden></p>' +
+        '<div class="ug-account-settings-actions"><button type="button" class="ug-account-settings-cancel" data-account-settings-close>' + esc(accountSettingsCopy('cancel')) + '</button>' +
+          '<button type="button" class="ug-account-settings-delete" id="ug-account-settings-delete">' + esc(accountSettingsCopy('remove')) + '</button></div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    document.documentElement.classList.add('ug-account-settings-open');
+    function close() {
+      document.documentElement.classList.remove('ug-account-settings-open');
+      modal.remove();
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(event) { if (event.key === 'Escape') close(); }
+    modal.querySelectorAll('[data-account-settings-close]').forEach(function (button) { button.addEventListener('click', close); });
+    document.addEventListener('keydown', onKey);
+    var remove = modal.querySelector('#ug-account-settings-delete');
+    remove.addEventListener('click', function () {
+      var error = modal.querySelector('#ug-account-settings-error');
+      remove.disabled = true;
+      remove.textContent = accountSettingsCopy('deleting');
+      error.hidden = true;
+      fetch(apiUrl('/web/account'), {
+        method: 'DELETE', credentials: 'include',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmation: 'DELETE' })
+      }).then(function (response) {
+        return response.json().catch(function () { return {}; }).then(function (payload) {
+          if (!response.ok || !payload.ok) throw new Error(payload.message || accountSettingsCopy('failed'));
+          return payload;
+        });
+      }).then(function () {
+        try { sessionStorage.removeItem('ug_pending'); } catch (e) {}
+        var language = String(document.documentElement.lang || 'en').toLowerCase().split('-')[0];
+        var localized = ['fr','de','es','pt','ja','ru','zh'].indexOf(language) !== -1;
+        window.location.replace(localized ? '/' + language + '/' : '/');
+      }).catch(function (reason) {
+        remove.disabled = false;
+        remove.textContent = accountSettingsCopy('remove');
+        error.textContent = reason.message || accountSettingsCopy('failed');
+        error.hidden = false;
+      });
+    });
+  }
+
   function initAccountControls() {
     var trigger = document.getElementById('site-account-trigger');
     var menu = document.getElementById('site-account-menu');
@@ -1460,6 +1558,15 @@
     var modalLink = document.getElementById('telegram-link');
     var close = document.getElementById('topup-close');
     var logout = document.getElementById('account-logout');
+    var accountSettings = document.getElementById('account-settings');
+
+    if (!accountSettings && menu) {
+      accountSettings = document.createElement('button');
+      accountSettings.type = 'button';
+      accountSettings.id = 'account-settings';
+      accountSettings.innerHTML = '<i data-lucide="settings"></i> ' + esc(accountSettingsCopy('menu'));
+      menu.insertBefore(accountSettings, logout || null);
+    }
 
     if (topup) topup.innerHTML = '<i data-lucide="coins"></i> ' + t('getCredits', 'Get credits');
     var support = document.querySelector('.account-menu a[href*="start=support"]');
@@ -1484,6 +1591,12 @@
       topup.addEventListener('click', function () {
         closeMenu();
         showCheckout(true);
+      });
+    }
+    if (accountSettings) {
+      accountSettings.addEventListener('click', function () {
+        closeMenu();
+        openAccountSettings();
       });
     }
     if (linkTelegram) {
