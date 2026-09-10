@@ -1297,7 +1297,7 @@
         '<p style="margin:0 0 10px;color:var(--accent2)">A little extra?</p><div style="font-size:36px;font-weight:800;color:var(--text)">+' + Number(offer.credits) + ' credits</div>' +
         '<p style="margin:10px 0 0;color:var(--muted)">For just <strong style="color:var(--text)">' + price + ' more</strong></p></div>' +
         '<button type="button" data-upgrade style="border:0;border-radius:14px;padding:17px 12px;width:100%;background:linear-gradient(135deg,#ff174f,#ff2d55 48%,#b44cff);color:#fff;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 7px 24px var(--glow)">Add ' + Number(offer.credits) + ' credits · ' + price + '</button>' +
-        '<p style="font-size:13px;color:var(--muted)">Opens a separate checkout. No automatic charge.</p>' : '') +
+        '' : '') +
       '<p data-error role="alert" style="color:var(--accent2)"></p>' +
       '<button type="button" data-dismiss style="border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);padding:12px;font:inherit;cursor:pointer">' + (offer ? 'No thanks, continue' : 'Continue') + '</button></div>';
     dialog.id = 'ug-purchase';
