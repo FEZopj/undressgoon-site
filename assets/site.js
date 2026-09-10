@@ -1234,6 +1234,7 @@
                 });
               })
               .then(function (payload) {
+                rememberCheckout(payload.orderId);
                 location.href = payload.invoiceUrl;
               })
               .catch(function (err) {
@@ -1254,24 +1255,112 @@
       .catch(function () {});
   }
 
-  function pollCreditsAfterCheckout(startCredits) {
-    if (checkoutCreditPoll) window.clearInterval(checkoutCreditPoll);
-    var tries = 0;
-    checkoutCreditPoll = window.setInterval(function () {
-      tries += 1;
-      refreshWebSession().then(function (session) {
-        var credits = Number(session && session.user && session.user.credits || 0);
-        if (credits > Number(startCredits || 0)) {
-          window.clearInterval(checkoutCreditPoll);
-          checkoutCreditPoll = 0;
-          showCheckout(false);
-          setStatus(t('cardCreditsAdded', 'Payment complete. Credits added to your account.'), 'success');
-        } else if (tries >= 100) {
-          window.clearInterval(checkoutCreditPoll);
-          checkoutCreditPoll = 0;
-        }
-      });
-    }, 3000);
+  var receiptBusy = false;
+  var receiptCursor = 0;
+  var purchaseDialog = null;
+  var receiptMemory = [];
+  function pendingCheckouts() {
+    try {
+      var saved = JSON.parse(localStorage.getItem('ug_pending_purchases') || '[]');
+      return Array.isArray(saved) ? saved.filter(function (item) {
+        return item && item.orderId && Date.now() - item.at < 30 * 86400000;
+      }) : [];
+    }
+    catch (e) { return receiptMemory; }
+  }
+  function savePendingCheckouts(items) {
+    receiptMemory = items;
+    try { localStorage.setItem('ug_pending_purchases', JSON.stringify(items)); } catch (e) {}
+  }
+  function rememberCheckout(orderId) {
+    if (!orderId || !currentSession || !currentSession.user) return;
+    var items = pendingCheckouts().filter(function (item) { return item.orderId !== orderId; });
+    items.push({ orderId: orderId, userId: String(currentSession.user.id), at: Date.now() });
+    savePendingCheckouts(items.slice(-20));
+    pollCreditsAfterCheckout();
+  }
+  function showPurchaseReceipt(receipt) {
+    showCheckout(false);
+    var previousFocus = document.activeElement;
+    var dialog = document.createElement('dialog');
+    purchaseDialog = dialog;
+    dialog.setAttribute('aria-labelledby', 'ug-purchase-title');
+    dialog.style.cssText = 'position:fixed;inset:0;margin:auto;padding:0;border:1px solid #fa347888;border-radius:26px;width:min(440px,calc(100vw - 32px));max-height:90vh;overflow:auto;background:#17131d;color:#fff;box-shadow:0 24px 100px #000a;font-family:inherit;text-align:center;';
+    var offer = receipt.offer;
+    var price = offer ? '$' + (offer.amountCents / 100).toFixed(2) : '';
+    dialog.innerHTML = '<style>dialog#ug-purchase::backdrop{background:#090610bb;backdrop-filter:blur(5px)}#ug-purchase button:focus-visible{outline:3px solid white;outline-offset:3px}</style>' +
+      '<div style="padding:32px 26px;background:radial-gradient(ellipse at top,#ff26752b,transparent 65%)">' +
+      '<div aria-hidden="true" style="margin:0 auto 18px;border-radius:50%;width:58px;height:58px;line-height:58px;font-size:30px;background:#32db8b20;color:#51eba1">✓</div>' +
+      '<h2 id="ug-purchase-title" style="margin:0 0 12px;font-size:26px;color:#fff">Top-up successful!</h2>' +
+      '<p style="color:#d9d2df;line-height:1.6">You’ve successfully added <strong style="color:#fff">' + Number(receipt.creditsAdded) + ' credits</strong> to your account.</p>' +
+      (offer ? '<div style="margin:24px 0 18px;padding:22px 16px;border:1px solid #ff398e66;border-radius:18px;background:#ff238512">' +
+        '<p style="margin:0 0 10px;color:#ffc6df">A little extra?</p><div style="font-size:36px;font-weight:800;color:#fff">+' + Number(offer.credits) + ' credits</div>' +
+        '<p style="margin:10px 0 0;color:#e5dbe7">For just <strong style="color:#fff">' + price + ' more</strong></p></div>' +
+        '<button type="button" data-upgrade style="border:0;border-radius:14px;padding:17px 12px;width:100%;background:linear-gradient(110deg,#ff145d,#e62699);color:#fff;font:inherit;font-weight:800;cursor:pointer">Add ' + Number(offer.credits) + ' credits · ' + price + '</button>' +
+        '<p style="font-size:13px;color:#bcb1c6">Opens a separate checkout. No automatic charge.</p>' : '') +
+      '<p data-error role="alert" style="color:#ffb7bf"></p>' +
+      '<button type="button" data-dismiss style="border:0;background:transparent;color:#ded4e4;padding:12px;font:inherit;cursor:pointer">' + (offer ? 'No thanks, continue' : 'Continue') + '</button></div>';
+    dialog.id = 'ug-purchase';
+    document.body.appendChild(dialog);
+    dialog.querySelector('[data-dismiss]').onclick = function () { dialog.close(); };
+    dialog.addEventListener('click', function (event) { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', function () {
+      dialog.remove(); purchaseDialog = null;
+      if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+    });
+    if (offer) dialog.querySelector('[data-upgrade]').onclick = function () {
+      var button = this;
+      var checkoutWindow = window.open('about:blank', '_blank');
+      if (!checkoutWindow) {
+        dialog.querySelector('[data-error]').textContent = 'Allow popups to open the separate checkout.';
+        return;
+      }
+      try { checkoutWindow.opener = null; } catch (e) {}
+      button.disabled = true;
+      dialog.querySelector('[data-error]').textContent = '';
+      fetch(apiUrl('/web/purchase/upgrade'), { method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: receipt.orderId }) })
+        .then(function (res) { return res.json().then(function (data) {
+          if (!res.ok || !data.ok) throw new Error(data.message || 'Could not open upgrade checkout.');
+          return data;
+        }); })
+        .then(function (data) {
+          rememberCheckout(data.orderId);
+          checkoutWindow.location.replace(data.checkoutUrl);
+          track('postpurchase_upgrade_checkout', { credits: offer.credits, amount_cents: offer.amountCents });
+          dialog.close();
+        })
+        .catch(function (err) {
+          checkoutWindow.close(); button.disabled = false;
+          dialog.querySelector('[data-error]').textContent = err.message;
+        });
+    };
+    dialog.showModal();
+    dialog.querySelector('[data-dismiss]').focus();
+    track('postpurchase_receipt_shown', { credits: receipt.creditsAdded, upgrade_available: !!offer });
+  }
+  function checkPurchaseReceipts() {
+    if (receiptBusy || purchaseDialog || document.hidden || !currentSession || !currentSession.user) return;
+    var eligible = pendingCheckouts().filter(function (entry) { return entry.userId === String(currentSession.user.id); });
+    var item = eligible[receiptCursor++ % eligible.length];
+    if (!item) return;
+    receiptBusy = true;
+    fetch(apiUrl('/web/purchase/receipt?orderId=' + encodeURIComponent(item.orderId)), { credentials: 'include' })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (!data || data.status !== 'fulfilled') return;
+        if (!currentSession || !currentSession.user || String(currentSession.user.id) !== item.userId) return;
+        if (!pendingCheckouts().some(function (entry) { return entry.orderId === item.orderId; })) return;
+        savePendingCheckouts(pendingCheckouts().filter(function (entry) { return entry.orderId !== item.orderId; }));
+        refreshWebSession();
+        showPurchaseReceipt(data);
+      })
+      .catch(function () {})
+      .finally(function () { receiptBusy = false; });
+  }
+  function pollCreditsAfterCheckout() {
+    if (!checkoutCreditPoll) checkoutCreditPoll = window.setInterval(checkPurchaseReceipts, 4000);
+    checkPurchaseReceipts();
   }
 
   function startCardCheckout(code, button) {
@@ -1318,10 +1407,11 @@
         });
       })
       .then(function (payload) {
+        rememberCheckout(payload.orderId);
         checkoutWindow.location.replace(payload.checkoutUrl);
         track('website_card_checkout_opened', { code: code });
         setStatus(t('cardCheckoutOpened', 'Card checkout opened. Return here after payment.'), 'success');
-        pollCreditsAfterCheckout(currentSession && currentSession.user && currentSession.user.credits);
+        pollCreditsAfterCheckout();
       })
       .catch(function (err) {
         try { checkoutWindow.close(); } catch (e) {}
@@ -2643,6 +2733,7 @@
 
     initGoogleLogin();
     initEmailLogin();
+    pollCreditsAfterCheckout();
     refreshWebSession().then(function (session) {
       return validateSavedDiscountAfterLogin(session).then(function () {
         return loadVideoCatalogue().then(function () { return session; });
