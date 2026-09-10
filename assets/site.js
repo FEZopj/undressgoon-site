@@ -1285,21 +1285,21 @@
     var dialog = document.createElement('dialog');
     purchaseDialog = dialog;
     dialog.setAttribute('aria-labelledby', 'ug-purchase-title');
-    dialog.style.cssText = 'position:fixed;inset:0;margin:auto;padding:0;border:1px solid #fa347888;border-radius:26px;width:min(440px,calc(100vw - 32px));max-height:90vh;overflow:auto;background:#17131d;color:#fff;box-shadow:0 24px 100px #000a;font-family:inherit;text-align:center;';
+    dialog.style.cssText = 'position:fixed;inset:0;margin:auto;padding:0;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--border));border-radius:26px;width:min(440px,calc(100vw - 32px));max-height:90vh;overflow:auto;background:var(--surface);color:var(--text);box-shadow:0 24px 100px rgba(0,0,0,.62),0 0 42px var(--glow);font-family:inherit;text-align:center;';
     var offer = receipt.offer;
     var price = offer ? '$' + (offer.amountCents / 100).toFixed(2) : '';
     dialog.innerHTML = '<style>dialog#ug-purchase::backdrop{background:#090610bb;backdrop-filter:blur(5px)}#ug-purchase button:focus-visible{outline:3px solid white;outline-offset:3px}</style>' +
-      '<div style="padding:32px 26px;background:radial-gradient(ellipse at top,#ff26752b,transparent 65%)">' +
-      '<div aria-hidden="true" style="margin:0 auto 18px;border-radius:50%;width:58px;height:58px;line-height:58px;font-size:30px;background:#32db8b20;color:#51eba1">✓</div>' +
-      '<h2 id="ug-purchase-title" style="margin:0 0 12px;font-size:26px;color:#fff">Top-up successful!</h2>' +
-      '<p style="color:#d9d2df;line-height:1.6">You’ve successfully added <strong style="color:#fff">' + Number(receipt.creditsAdded) + ' credits</strong> to your account.</p>' +
-      (offer ? '<div style="margin:24px 0 18px;padding:22px 16px;border:1px solid #ff398e66;border-radius:18px;background:#ff238512">' +
-        '<p style="margin:0 0 10px;color:#ffc6df">A little extra?</p><div style="font-size:36px;font-weight:800;color:#fff">+' + Number(offer.credits) + ' credits</div>' +
-        '<p style="margin:10px 0 0;color:#e5dbe7">For just <strong style="color:#fff">' + price + ' more</strong></p></div>' +
-        '<button type="button" data-upgrade style="border:0;border-radius:14px;padding:17px 12px;width:100%;background:linear-gradient(110deg,#ff145d,#e62699);color:#fff;font:inherit;font-weight:800;cursor:pointer">Add ' + Number(offer.credits) + ' credits · ' + price + '</button>' +
-        '<p style="font-size:13px;color:#bcb1c6">Opens a separate checkout. No automatic charge.</p>' : '') +
-      '<p data-error role="alert" style="color:#ffb7bf"></p>' +
-      '<button type="button" data-dismiss style="border:0;background:transparent;color:#ded4e4;padding:12px;font:inherit;cursor:pointer">' + (offer ? 'No thanks, continue' : 'Continue') + '</button></div>';
+      '<div style="padding:32px 26px;background:radial-gradient(ellipse at top,color-mix(in srgb,var(--accent) 16%,transparent),transparent 65%)">' +
+      '<div aria-hidden="true" style="margin:0 auto 18px;border-radius:50%;width:58px;height:58px;line-height:58px;font-size:30px;background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--green)">✓</div>' +
+      '<h2 id="ug-purchase-title" style="margin:0 0 12px;font-size:26px;color:var(--text)">Top-up successful!</h2>' +
+      '<p style="color:var(--muted);line-height:1.6">You’ve successfully added <strong style="color:var(--text)">' + Number(receipt.creditsAdded) + ' credits</strong> to your account.</p>' +
+      (offer ? '<div style="margin:24px 0 18px;padding:22px 16px;border:1px solid color-mix(in srgb,var(--accent) 42%,var(--border));border-radius:18px;background:color-mix(in srgb,var(--accent) 8%,var(--surface2))">' +
+        '<p style="margin:0 0 10px;color:var(--accent2)">A little extra?</p><div style="font-size:36px;font-weight:800;color:var(--text)">+' + Number(offer.credits) + ' credits</div>' +
+        '<p style="margin:10px 0 0;color:var(--muted)">For just <strong style="color:var(--text)">' + price + ' more</strong></p></div>' +
+        '<button type="button" data-upgrade style="border:0;border-radius:14px;padding:17px 12px;width:100%;background:linear-gradient(135deg,#ff174f,#ff2d55 48%,#b44cff);color:#fff;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 7px 24px var(--glow)">Add ' + Number(offer.credits) + ' credits · ' + price + '</button>' +
+        '<p style="font-size:13px;color:var(--muted)">Opens a separate checkout. No automatic charge.</p>' : '') +
+      '<p data-error role="alert" style="color:var(--accent2)"></p>' +
+      '<button type="button" data-dismiss style="border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);padding:12px;font:inherit;cursor:pointer">' + (offer ? 'No thanks, continue' : 'Continue') + '</button></div>';
     dialog.id = 'ug-purchase';
     document.body.appendChild(dialog);
     dialog.querySelector('[data-dismiss]').onclick = function () { dialog.close(); };
