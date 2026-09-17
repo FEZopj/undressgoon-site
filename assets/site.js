@@ -1311,11 +1311,9 @@
     if (offer) dialog.querySelector('[data-upgrade]').onclick = function () {
       var button = this;
       var checkoutWindow = window.open('about:blank', '_blank');
-      if (!checkoutWindow) {
-        dialog.querySelector('[data-error]').textContent = 'Allow popups to open the separate checkout.';
-        return;
+      if (checkoutWindow) {
+        try { checkoutWindow.opener = null; } catch (e) {}
       }
-      try { checkoutWindow.opener = null; } catch (e) {}
       button.disabled = true;
       dialog.querySelector('[data-error]').textContent = '';
       fetch(apiUrl('/web/purchase/upgrade'), { method: 'POST', credentials: 'include',
@@ -1326,18 +1324,39 @@
         }); })
         .then(function (data) {
           rememberCheckout(data.orderId);
-          checkoutWindow.location.replace(data.checkoutUrl);
-          track('postpurchase_upgrade_checkout', { credits: offer.credits, amount_cents: offer.amountCents });
+          var navigationMode = openCheckoutDestination(checkoutWindow, data.checkoutUrl);
+          track('postpurchase_upgrade_checkout', {
+            order_kind: data.orderKind || 'pack_upgrade',
+            upgrade_parent_order_id: data.parentOrderId || receipt.orderId,
+            upgrade_child_order_id: data.orderId,
+            upgrade_from_product_code: data.fromProductCode || receipt.productCode,
+            upgrade_to_product_code: data.toProductCode || offer.packCode,
+            credits: offer.credits,
+            amount_cents: offer.amountCents,
+            navigation_mode: navigationMode
+          });
           dialog.close();
         })
         .catch(function (err) {
-          checkoutWindow.close(); button.disabled = false;
+          if (checkoutWindow) checkoutWindow.close();
+          button.disabled = false;
           dialog.querySelector('[data-error]').textContent = err.message;
         });
     };
     dialog.showModal();
     dialog.querySelector('[data-dismiss]').focus();
-    track('postpurchase_receipt_shown', { credits: receipt.creditsAdded, upgrade_available: !!offer });
+    track('postpurchase_receipt_shown', {
+      order_id: receipt.orderId,
+      order_kind: receipt.orderKind || 'pack',
+      product_code: receipt.productCode,
+      is_upgrade: (receipt.orderKind === 'pack_upgrade'),
+      upgrade_parent_order_id: receipt.upgrade && receipt.upgrade.parentOrderId,
+      upgrade_child_order_id: receipt.upgrade && receipt.upgrade.childOrderId,
+      upgrade_from_product_code: receipt.upgrade && receipt.upgrade.fromProductCode,
+      upgrade_to_product_code: receipt.upgrade && receipt.upgrade.toProductCode,
+      credits: receipt.creditsAdded,
+      upgrade_available: !!offer
+    });
   }
   function checkPurchaseReceipts() {
     if (receiptBusy || purchaseDialog || document.hidden || !currentSession || !currentSession.user) return;
@@ -1363,6 +1382,17 @@
     checkPurchaseReceipts();
   }
 
+  function openCheckoutDestination(checkoutWindow, checkoutUrl) {
+    if (checkoutWindow && !checkoutWindow.closed) {
+      try {
+        checkoutWindow.location.replace(checkoutUrl);
+        return 'new_tab';
+      } catch (e) {}
+    }
+    window.location.assign(checkoutUrl);
+    return 'same_tab_fallback';
+  }
+
   function startCardCheckout(code, button) {
     if (!currentSession || !currentSession.user) {
       setStatus(t('loginFirst', 'Login with Google first.'), 'error');
@@ -1378,22 +1408,19 @@
       button.textContent = t('opening', 'Opening...');
     }
     var checkoutWindow = window.open('about:blank', '_blank');
-    if (!checkoutWindow) {
-      setStatus(t('popupBlocked', 'Popup blocked. Allow popups and click Card again.'), 'error');
-      if (button) {
-        button.disabled = false;
-        button.innerHTML = original || '<i data-lucide="credit-card"></i> ' + t('payCard', 'Card');
-        refreshIcons();
-      }
-      return;
+    if (checkoutWindow) {
+      try { checkoutWindow.opener = null; } catch (e) {}
+      try {
+        checkoutWindow.document.write('<!doctype html><title>Opening checkout...</title><body style="font-family:Arial,sans-serif;padding:24px">Opening checkout...</body>');
+        checkoutWindow.document.close();
+      } catch (e) {}
     }
-    try { checkoutWindow.opener = null; } catch (e) {}
-    try {
-      checkoutWindow.document.write('<!doctype html><title>Opening checkout...</title><body style="font-family:Arial,sans-serif;padding:24px">Opening checkout...</body>');
-      checkoutWindow.document.close();
-    } catch (e) {}
     setStatus(t('creatingCardCheckout', 'Opening secure card checkout...'), 'working');
-    track('website_checkout_started', { method: 'card', code: code });
+    track('website_checkout_started', {
+      method: 'card',
+      code: code,
+      navigation_mode: checkoutWindow ? 'new_tab' : 'same_tab_fallback'
+    });
     return fetch(apiUrl('/web/card/create'), {
       method: 'POST',
       credentials: 'include',
@@ -1408,9 +1435,11 @@
       })
       .then(function (payload) {
         rememberCheckout(payload.orderId);
-        checkoutWindow.location.replace(payload.checkoutUrl);
-        track('website_card_checkout_opened', { code: code });
-        setStatus(t('cardCheckoutOpened', 'Card checkout opened. Return here after payment.'), 'success');
+        var navigationMode = openCheckoutDestination(checkoutWindow, payload.checkoutUrl);
+        track('website_card_checkout_opened', { code: code, navigation_mode: navigationMode });
+        if (navigationMode === 'new_tab') {
+          setStatus(t('cardCheckoutOpened', 'Card checkout opened. Return here after payment.'), 'success');
+        }
         pollCreditsAfterCheckout();
       })
       .catch(function (err) {
