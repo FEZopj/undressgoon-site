@@ -416,6 +416,7 @@
         '<div class="ug-preview-scan" aria-hidden="true"></div>' +
       '</div>' +
       '<p class="ug-preview-label" id="ug-preview-label"></p>' +
+      '<p class="generation-tip ug-preview-tip" id="ug-preview-tip"></p>' +
       '<div class="ug-preview-bar" aria-hidden="true"><span id="ug-preview-fill"></span></div>';
     panel.insertBefore(el, panel.firstChild);
     return el;
@@ -445,6 +446,73 @@
     { at: 28, key: 'workStep4', text: 'Enhancing the quality' },
     { at: 42, key: 'workStep5', text: 'Adding the finishing touches' }
   ];
+
+  var GENERATION_TIPS = [
+    { key: 'generationTip1', text: 'Use a sharp, well-lit photo for clearer results.' },
+    { key: 'generationTip2', text: 'Keep the subject\'s face visible and unobstructed.' },
+    { key: 'generationTip3', text: 'Match the preset to the pose and framing of your photo.' },
+    { key: 'generationTip4', text: 'Full-body actions work best when the full body is visible.' },
+    { key: 'generationTip5', text: 'A simple background helps preserve the subject consistently.' },
+    { key: 'generationTip6', text: 'Avoid blurry, compressed, or heavily filtered source images.' },
+    { key: 'generationTip7', text: 'Avoid crossed limbs or body parts hidden behind objects.' },
+    { key: 'generationTip8', text: 'Use one clearly visible person unless the preset requires two.' },
+    { key: 'generationTip9', text: 'For a custom prompt, describe one clear, continuous action.' },
+    { key: 'generationTip10', text: 'Start your prompt with the main action you want to see.' },
+    { key: 'generationTip11', text: 'Specify the pace with words like slowly, gently, or energetically.' },
+    { key: 'generationTip12', text: 'Describe the camera: static, close-up, slow zoom, or handheld.' },
+    { key: 'generationTip13', text: 'Say where the subject should look: at the camera, away, or over a shoulder.' },
+    { key: 'generationTip14', text: 'Use chronological wording such as first, then, and finally.' },
+    { key: 'generationTip15', text: 'Avoid contradictory instructions in the same prompt.' },
+    { key: 'generationTip16', text: 'A few focused instructions usually work better than a long list.' },
+    { key: 'generationTip17', text: 'For longer videos, explain how the movement should continue.' },
+    { key: 'generationTip18', text: 'Avoid changing the scene, outfit, pose, and camera all at once.' },
+    { key: 'generationTip19', text: 'Natural movements tend to preserve identity more consistently.' },
+    { key: 'generationTip20', text: 'If a result is unexpected, simplify the prompt or try a clearer photo.' }
+  ];
+  var _generationTipOrder = [];
+  var _generationTipCycle = -1;
+  var _generationTipStarted = 0;
+
+  function shuffleGenerationTips(previousTip) {
+    var shuffled = GENERATION_TIPS.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var swap = shuffled[i];
+      shuffled[i] = shuffled[j];
+      shuffled[j] = swap;
+    }
+    if (previousTip && shuffled.length > 1 && shuffled[0].key === previousTip.key) {
+      var first = shuffled[0];
+      shuffled[0] = shuffled[1];
+      shuffled[1] = first;
+    }
+    return shuffled;
+  }
+
+  function resetGenerationTips() {
+    _generationTipOrder = shuffleGenerationTips(null);
+    _generationTipCycle = 0;
+    _generationTipStarted = Date.now();
+  }
+
+  function currentGenerationTip() {
+    if (!_generationTipStarted || !_generationTipOrder.length) resetGenerationTips();
+    var slot = Math.max(0, Math.floor((Date.now() - _generationTipStarted) / 10000));
+    var cycle = Math.floor(slot / GENERATION_TIPS.length);
+    if (cycle !== _generationTipCycle) {
+      var previousTip = _generationTipOrder[_generationTipOrder.length - 1];
+      _generationTipOrder = shuffleGenerationTips(previousTip);
+      _generationTipCycle = cycle;
+    }
+    var tip = _generationTipOrder[slot % _generationTipOrder.length];
+    return t(tip.key, tip.text);
+  }
+
+  function paintGenerationTip(elementId) {
+    var tip = document.getElementById(elementId);
+    if (!tip) return;
+    tip.innerHTML = '<b>' + esc(t('generationTipLabel', 'Tip:')) + '</b> ' + esc(currentGenerationTip());
+  }
 
   function selectedVideoSecondsValue() {
     var selected = document.querySelector('input[name="video-duration"]:checked');
@@ -492,6 +560,7 @@
       label.innerHTML = '<b>' + Math.round(elapsed) + 's</b> · ' +
         esc(previewStatus(elapsed));
     }
+    paintGenerationTip('ug-preview-tip');
     _pvRaf = window.setTimeout(tickPreview, 250);
   }
 
@@ -591,6 +660,7 @@
       '<div class="gen-loader-copy">' +
         '<strong id="gen-loader-title"></strong>' +
         '<span id="gen-loader-sub"></span>' +
+        '<span class="generation-tip gen-loader-tip" id="gen-loader-tip"></span>' +
       '</div>' +
       '<div class="gen-progress" aria-hidden="true"><span id="gen-progress-bar"></span></div>';
     panel.insertBefore(loader, panel.firstChild);
@@ -632,6 +702,7 @@
     }
     if (title) title.textContent = label;
     if (sub) sub.textContent = detail;
+    paintGenerationTip('gen-loader-tip');
     if (bar) bar.style.width = progress + '%';
     loader.hidden = false;
     if (empty) empty.hidden = true;
@@ -3103,6 +3174,7 @@
 
     function runGeneration(payloadPromise) {
       if (submit) { submit.disabled = true; submit.dataset.busy = '1'; }
+      resetGenerationTips();
       emitUi('ug:generation-started');
       setStatus(t('readingUpload', 'Reading upload...'), 'working');
       paintResults([], []);

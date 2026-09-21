@@ -1740,6 +1740,11 @@ html[data-theme="light"] .gen-orbit::before {
   color: var(--muted);
   font-size: 0.92rem;
 }
+.gen-loader-copy .generation-tip {
+  margin-top: 14px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
 .gen-progress {
   width: 100%;
   height: 9px;
@@ -2907,6 +2912,22 @@ html[data-theme="light"] .toast {
   font-size: .9rem; font-weight: 600; color: var(--muted);
 }
 .ug-preview-label b { color: var(--text); }
+.generation-tip {
+  color: var(--muted);
+}
+.generation-tip b {
+  color: var(--accent2);
+  font-size: inherit;
+  font-weight: 800;
+}
+.ug-preview-tip {
+  max-width: 560px;
+  margin: 0 auto 10px;
+  padding: 0 8px;
+  text-align: center;
+  font-size: .8rem;
+  line-height: 1.45;
+}
 /* the bar genuinely fills; width is set from elapsed time in site.js */
 .ug-preview-bar {
   width: 100%; height: 9px; border-radius: 999px; overflow: hidden;
