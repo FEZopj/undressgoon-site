@@ -1129,6 +1129,16 @@
     var authed = !!user;
     var toast = document.getElementById('reengage-toast');
 
+    // The hero video is acquisition proof for first-time visitors. Once a
+    // customer is signed in, keep the workspace focused on creating instead.
+    var heroVideoExamples = document.querySelectorAll('[data-video-example]');
+    for (var heroIndex = 0; heroIndex < heroVideoExamples.length; heroIndex++) {
+      var heroExample = heroVideoExamples[heroIndex];
+      heroExample.hidden = authed;
+      var heroExamplePlayer = heroExample.querySelector('video');
+      if (authed && heroExamplePlayer) heroExamplePlayer.pause();
+    }
+
     if (account) account.textContent = authed ? ('@' + (user.username || user.id)) : t('notLoggedIn', 'Not logged in');
     if (balance) balance.textContent = authed ? formatCredits(user.credits) : signupCreditCopy();
     var loginCopy = document.getElementById('login-box-copy');
