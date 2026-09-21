@@ -2160,8 +2160,8 @@
         '<legend>' + esc(t('videoLength', 'Video length')) + '</legend>' +
         '<div class="video-duration-options">' +
           '<label><input type="radio" name="video-duration" value="8" checked /><span><strong>8 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>2 ' + esc(t('creditsWord', 'credits')) + '</small></span></label>' +
-          '<label><input type="radio" name="video-duration" value="16" /><span><strong>16 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>4 ' + esc(t('creditsWord', 'credits')) + ' · +2</small></span></label>' +
-          '<label><input type="radio" name="video-duration" value="24" /><span><strong>24 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>6 ' + esc(t('creditsWord', 'credits')) + ' · +4</small></span></label>' +
+          '<label><input type="radio" name="video-duration" value="16" /><span><strong>16 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>4 ' + esc(t('creditsWord', 'credits')) + '</small></span></label>' +
+          '<label><input type="radio" name="video-duration" value="24" /><span><strong>24 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>6 ' + esc(t('creditsWord', 'credits')) + '</small></span></label>' +
         '</div>';
       var variationAnchor = document.getElementById('variation-row');
       if (variationAnchor) variationAnchor.insertAdjacentElement('afterend', duration);
