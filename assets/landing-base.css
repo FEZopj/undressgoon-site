@@ -1469,15 +1469,20 @@ html[data-theme="light"] .preset-grid button.active svg { color: #fff; }
 .saved-video-recipe-actions .saved-video-recipe-delete { padding: 6px 8px; color: var(--muted); }
 .saved-video-recipe-delete svg, .save-video-recipe-btn svg { width: 15px; height: 15px; }
 .save-video-recipe-btn { margin: 10px auto 0; color: var(--accent2); }
-.video-double-length-row {
-  display: flex; align-items: center; gap: 10px; margin: 8px 0 2px;
-  padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px;
-  cursor: pointer; background: var(--surface2, #18181d);
+.video-duration-row { margin: 8px 0 2px; padding: 0; border: 0; }
+.video-duration-row legend { margin-bottom: 7px; color: var(--muted); font-size: .76rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.video-duration-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.video-duration-options label { position: relative; min-width: 0; cursor: pointer; }
+.video-duration-options input { position: absolute; opacity: 0; pointer-events: none; }
+.video-duration-options span { display: grid; gap: 2px; min-height: 56px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface2, #18181d); transition: border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+.video-duration-options strong { color: var(--text); font-size: .86rem; }
+.video-duration-options small { color: var(--muted); font-size: .72rem; }
+.video-duration-options input:checked + span { border-color: var(--accent2); background: color-mix(in srgb, var(--accent2) 10%, var(--surface2, #18181d)); box-shadow: inset 0 0 0 1px var(--accent2); }
+.video-duration-options input:focus-visible + span { outline: 2px solid var(--accent2); outline-offset: 2px; }
+@media (max-width: 480px) {
+  .video-duration-options { grid-template-columns: 1fr; }
+  .video-duration-options span { min-height: 0; grid-template-columns: 1fr auto; align-items: baseline; }
 }
-.video-double-length-row input { width: 17px; height: 17px; accent-color: var(--accent2); }
-.video-double-length-row span { display: grid; gap: 2px; }
-.video-double-length-row strong { color: var(--text); font-size: .86rem; }
-.video-double-length-row small { color: var(--muted); font-size: .76rem; }
 @media (max-width: 480px) {
   .saved-video-recipe { align-items: flex-start; flex-direction: column; }
   .saved-video-recipe span { max-width: 100%; }

@@ -446,12 +446,22 @@
     { at: 42, key: 'workStep5', text: 'Adding the finishing touches' }
   ];
 
+  function selectedVideoSecondsValue() {
+    var selected = document.querySelector('input[name="video-duration"]:checked');
+    var seconds = selected ? Number(selected.value || 8) : 8;
+    return [8, 16, 24].indexOf(seconds) !== -1 ? seconds : 8;
+  }
+
+  function selectedVideoEtaSeconds() {
+    var seconds = selectedVideoSecondsValue();
+    return seconds >= 24 ? 300 : (seconds >= 16 ? 240 : 180);
+  }
+
   function previewStatus(elapsed) {
     if (selectedModeValue() === 'video') {
-      return t(
-        'videoPatientWait',
-        'Video generation can take up to 3 minutes, so please be patient.'
-      );
+      var clipSeconds = selectedVideoSecondsValue();
+      var waitMinutes = Math.round(selectedVideoEtaSeconds() / 60);
+      return t('videoPatientWait' + clipSeconds, 'Your ' + clipSeconds + '-second video can take up to ' + waitMinutes + ' minutes.');
     }
     // past the advertised wait, say why rather than counting on in silence
     if (elapsed > ETA_SECONDS) {
@@ -469,7 +479,7 @@
 
   function tickPreview() {
     var elapsed = (Date.now() - _pvStarted) / 1000;
-    var previewEta = selectedModeValue() === 'video' ? 180 : ETA_SECONDS;
+    var previewEta = selectedModeValue() === 'video' ? selectedVideoEtaSeconds() : ETA_SECONDS;
     // fill towards 92% over the expected wait, then creep, so it never sits
     // still and never claims to be finished early
     var pct = elapsed <= previewEta
@@ -605,7 +615,7 @@
     var sub = document.getElementById('gen-loader-sub');
     var bar = document.getElementById('gen-progress-bar');
     var videoMode = selectedModeValue() === 'video';
-    var eta = videoMode ? 180 : ETA_SECONDS;
+    var eta = videoMode ? selectedVideoEtaSeconds() : ETA_SECONDS;
     var label = videoMode ? t('videoRunningTitle', 'Generating your video') : t('genRunningTitle', 'Generating your image');
     var detail = t('genRunningSub', '{elapsed}s elapsed. Typical wait is {eta}s, sometimes a little longer.')
       .replace('{elapsed}', String(elapsed))
@@ -2060,14 +2070,18 @@
       if (promptField) promptField.insertAdjacentElement('afterend', saved);
       else form.appendChild(saved);
     }
-    if (!document.getElementById('video-double-length-row')) {
-      var duration = document.createElement('label');
-      duration.id = 'video-double-length-row';
-      duration.className = 'video-double-length-row';
+    if (!document.getElementById('video-duration-row')) {
+      var duration = document.createElement('fieldset');
+      duration.id = 'video-duration-row';
+      duration.className = 'video-duration-row';
       duration.hidden = true;
       duration.innerHTML =
-        '<input id="video-double-length" type="checkbox" />' +
-        '<span><strong>' + esc(t('doubleVideoLength', 'Double video length')) + '</strong><small>for +2 credits</small></span>';
+        '<legend>' + esc(t('videoLength', 'Video length')) + '</legend>' +
+        '<div class="video-duration-options">' +
+          '<label><input type="radio" name="video-duration" value="8" checked /><span><strong>8 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>2 ' + esc(t('creditsWord', 'credits')) + '</small></span></label>' +
+          '<label><input type="radio" name="video-duration" value="16" /><span><strong>16 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>4 ' + esc(t('creditsWord', 'credits')) + ' · +2</small></span></label>' +
+          '<label><input type="radio" name="video-duration" value="24" /><span><strong>24 ' + esc(t('secondsWord', 'seconds')) + '</strong><small>6 ' + esc(t('creditsWord', 'credits')) + ' · +4</small></span></label>' +
+        '</div>';
       var variationAnchor = document.getElementById('variation-row');
       if (variationAnchor) variationAnchor.insertAdjacentElement('afterend', duration);
       else form.appendChild(duration);
@@ -2666,8 +2680,8 @@
     var submit = document.getElementById('web-submit');
     var variationSelect = document.getElementById('variation-count');
     var variationCost = document.getElementById('variation-cost');
-    var doubleVideoLengthRow = document.getElementById('video-double-length-row');
-    var doubleVideoLength = document.getElementById('video-double-length');
+    var videoDurationRow = document.getElementById('video-duration-row');
+    var videoDurationInputs = Array.prototype.slice.call(document.querySelectorAll('input[name="video-duration"]'));
     var previewUrl = '';
     var selectedPersonSnapshot = null;
     var pendingGeneration = null;
@@ -2711,7 +2725,8 @@
           if (clear) clear.click();
           selectedPresetKey = '';
           selectedSavedVideoRecipeId = Number(recipe.id || 0);
-          if (doubleVideoLength) doubleVideoLength.checked = false;
+          var standardDuration = document.querySelector('input[name="video-duration"][value="8"]');
+          if (standardDuration) standardDuration.checked = true;
           var prompt = document.getElementById('web-prompt');
           if (prompt) {
             prompt.value = recipe.originalPrompt || '';
@@ -2799,20 +2814,51 @@
       return u ? Math.max(0, Number(u.credits || 0)) : 0;
     }
 
+    function availableVideoDurations() {
+      var options = remoteVideos && Array.isArray(remoteVideos.durationOptions)
+        ? remoteVideos.durationOptions
+        : [];
+      return options.map(function (option) {
+        return {
+          seconds: Number(option && option.seconds || 0),
+          costCredits: Number(option && option.costCredits || 0)
+        };
+      }).filter(function (option) {
+        return [8, 16, 24].indexOf(option.seconds) !== -1 && option.costCredits > 0;
+      }).sort(function (a, b) { return a.seconds - b.seconds; });
+    }
+
+    function selectedVideoDuration() {
+      var options = availableVideoDurations();
+      var selected = document.querySelector('input[name="video-duration"]:checked');
+      var seconds = selected ? Number(selected.value || 8) : 8;
+      var matched = options.find(function (option) { return option.seconds === seconds; });
+      return matched || options[0] || {
+        seconds: 8,
+        costCredits: Number(remoteVideos && remoteVideos.costCredits || 2)
+      };
+    }
+
     function syncVariationControl() {
       if (!variationSelect) return;
       var variationRow = document.getElementById('variation-row');
       var authed = !!(currentSession && currentSession.user);
       var video = selectedModeValue() === 'video';
-      var doubleLengthAvailable = !!(
-        remoteVideos && (remoteVideos.durationOptions || []).some(function (option) {
-          return Number(option && option.seconds || 0) >= 16 && Number(option.costCredits || 0) >= 4;
-        })
-      );
-      if (!doubleLengthAvailable && doubleVideoLength) doubleVideoLength.checked = false;
+      var durationOptions = availableVideoDurations();
+      var availableSeconds = durationOptions.map(function (option) { return option.seconds; });
+      videoDurationInputs.forEach(function (input) {
+        var available = availableSeconds.indexOf(Number(input.value || 0)) !== -1;
+        input.disabled = !available;
+        if (input.closest('label')) input.closest('label').hidden = !available;
+      });
+      var selectedDurationInput = document.querySelector('input[name="video-duration"]:checked');
+      if (!selectedDurationInput || selectedDurationInput.disabled) {
+        var firstAvailableDuration = videoDurationInputs.find(function (input) { return !input.disabled; });
+        if (firstAvailableDuration) firstAvailableDuration.checked = true;
+      }
       if (video) {
-        var isDoubleLength = !!(doubleVideoLength && doubleVideoLength.checked);
-        if (doubleVideoLengthRow) doubleVideoLengthRow.hidden = !doubleLengthAvailable;
+        var videoDuration = selectedVideoDuration();
+        if (videoDurationRow) videoDurationRow.hidden = durationOptions.length < 2;
         variationSelect.value = '1';
         Array.prototype.forEach.call(variationSelect.options, function (option) {
           option.disabled = option.value !== '1';
@@ -2823,7 +2869,7 @@
         var variationLabel = variationRow && variationRow.querySelector('label > span');
         if (variationLabel) variationLabel.textContent = t('videoLabel', 'Video');
         if (variationRow) variationRow.hidden = false;
-        var videoCost = isDoubleLength ? 4 : 2;
+        var videoCost = videoDuration.costCredits;
         if (variationCost) variationCost.textContent = videoCost + ' ' + t('creditsWord', 'credits');
         if (submit && submit.dataset.busy !== '1') {
           submit.innerHTML = '<i data-lucide="video"></i> ' + t('generateVideo', 'Generate video') + ' · ' + videoCost + ' ' + t('creditsWord', 'credits');
@@ -2831,7 +2877,7 @@
         }
         return;
       }
-      if (doubleVideoLengthRow) doubleVideoLengthRow.hidden = true;
+      if (videoDurationRow) videoDurationRow.hidden = true;
       var perImage = costPerImage();
       // Only offer as many images as the user can actually pay for right now.
       var affordable = Math.floor(availableCredits() / perImage);
@@ -2975,7 +3021,7 @@
       payload.append('variations', String(variations));
       if (modeValue === 'video') {
         payload.set('variations', '1');
-        if (doubleVideoLength && doubleVideoLength.checked) payload.append('double_video_length', '1');
+        payload.append('video_seconds', String(selectedVideoDuration().seconds));
         if (selectedSavedVideoRecipeId) payload.append('saved_video_recipe_id', String(selectedSavedVideoRecipeId));
         else if (selectedPresetKey) payload.append('video_preset', selectedPresetKey);
         else payload.append('video_prompt', prompt ? prompt.value.trim() : '');
@@ -3027,7 +3073,9 @@
     }
 
     if (variationSelect) variationSelect.addEventListener('change', syncVariationControl);
-    if (doubleVideoLength) doubleVideoLength.addEventListener('change', syncVariationControl);
+    videoDurationInputs.forEach(function (input) {
+      input.addEventListener('change', syncVariationControl);
+    });
     document.querySelectorAll('input[name="mode"]').forEach(function (input) {
       input.addEventListener('change', function () {
         selectedSavedVideoRecipeId = 0;
@@ -3165,7 +3213,7 @@
       payload.append('mode', snap.mode || 'prompt');
       payload.append('terms_accepted', '1');
       payload.append('variations', String(snap.variations || 1));
-      if (snap.mode === 'video' && snap.doubleVideoLength) payload.append('double_video_length', '1');
+      if (snap.mode === 'video') payload.append('video_seconds', String(snap.videoSeconds || 8));
       if (snap.mode === 'video' && snap.savedVideoRecipeId) {
         payload.append('saved_video_recipe_id', String(snap.savedVideoRecipeId));
       } else if (snap.mode === 'video' && snap.presetKey) {
@@ -3197,7 +3245,7 @@
           variations: variations ? Number(variations.value || 1) : 1,
           presetKey: selectedPresetKey,
           savedVideoRecipeId: selectedSavedVideoRecipeId,
-          doubleVideoLength: !!(doubleVideoLength && doubleVideoLength.checked),
+          videoSeconds: selectedVideoDuration().seconds,
           breastSize: breastSize ? breastSize.value : 'natural',
           pubicHair: pubicHair ? pubicHair.value : 'natural',
           dataUrl: ''
