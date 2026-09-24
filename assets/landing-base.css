@@ -1782,15 +1782,56 @@ html[data-theme="light"] .gen-progress {
   width: 100%;
   display: block;
 }
+.ug-video-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px 14px 0 0;
+  background: #050507;
+}
 .ug-video-result video {
   display: block;
   width: 100%;
   max-height: min(72vh, 760px);
   aspect-ratio: 2 / 3;
   object-fit: contain;
-  border-radius: 14px 14px 0 0;
   background: #050507;
 }
+.ug-video-state {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  color: #fff;
+  background: rgba(5, 5, 7, .82);
+}
+.ug-video-stage.is-loading .ug-video-state,
+.ug-video-stage.has-error .ug-video-state { display: grid; }
+.ug-video-state-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, .24);
+  border-top-color: var(--accent2);
+  border-radius: 50%;
+  animation: gen-spin .8s linear infinite;
+}
+.ug-video-stage.has-error .ug-video-state-spinner { display: none; }
+.ug-video-state-copy { max-width: 330px; font-size: .88rem; line-height: 1.5; }
+.ug-video-retry {
+  min-height: 38px;
+  padding: 8px 18px;
+  border: 1px solid rgba(255, 255, 255, .34);
+  border-radius: 10px;
+  color: #fff;
+  background: rgba(255, 255, 255, .1);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ug-video-retry:hover { border-color: var(--accent2); }
 
 @keyframes gen-spin {
   to { transform: rotate(360deg); }

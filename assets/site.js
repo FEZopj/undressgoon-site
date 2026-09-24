@@ -1977,38 +1977,145 @@
       var name = 'undressgoon-video-' + (idx + 1) + '.mp4';
       var card = document.createElement('div');
       card.className = 'ug-result ug-video-result';
+      var stage = document.createElement('div');
+      stage.className = 'ug-video-stage is-loading';
       var video = document.createElement('video');
       video.controls = true;
       video.playsInline = true;
       video.preload = 'metadata';
-      // Loading the cross-origin endpoint directly works as a download but some
-      // browsers refuse to seek its protected FileResponse inside <video>.
-      // Materialize the signed response as a same-document blob for reliable
-      // metadata, duration and playback; retain the URL as a graceful fallback.
-      fetch(url, { credentials: 'omit', cache: 'no-store' })
-        .then(function (response) {
-          if (!response.ok) throw new Error('Video fetch failed: ' + response.status);
-          return response.blob();
+      var playerState = document.createElement('div');
+      playerState.className = 'ug-video-state';
+      playerState.setAttribute('aria-live', 'polite');
+      playerState.innerHTML =
+        '<span class="ug-video-state-spinner" aria-hidden="true"></span>' +
+        '<span class="ug-video-state-copy">' + esc(t('loadingVideo', 'Loading video…')) + '</span>' +
+        '<button type="button" class="ug-video-retry" hidden>' + esc(t('retryVideo', 'Retry')) + '</button>';
+      stage.appendChild(video);
+      stage.appendChild(playerState);
+
+      var stateCopy = playerState.querySelector('.ug-video-state-copy');
+      var retry = playerState.querySelector('.ug-video-retry');
+      var loadWatch = 0;
+      var fallbackStarted = false;
+      var fallbackController = null;
+      var fallbackRequest = 0;
+      var usingBlob = false;
+      var objectUrl = '';
+
+      function clearVideoWatch() {
+        window.clearTimeout(loadWatch);
+        loadWatch = 0;
+      }
+
+      function markVideoReady() {
+        clearVideoWatch();
+        // If direct range streaming recovered while the blob fallback was still
+        // downloading, keep the working stream and cancel the duplicate fetch.
+        if (!usingBlob && fallbackStarted) {
+          fallbackRequest += 1;
+          if (fallbackController) fallbackController.abort();
+          fallbackController = null;
+          fallbackStarted = false;
+        }
+        stage.classList.remove('is-loading', 'has-error');
+      }
+
+      function showVideoFailure() {
+        clearVideoWatch();
+        stage.classList.remove('is-loading');
+        stage.classList.add('has-error');
+        if (stateCopy) stateCopy.textContent = t(
+          'videoInlineFailed',
+          'The inline player could not load this video. Retry or download it below.'
+        );
+        if (retry) retry.hidden = false;
+      }
+
+      function loadVideoBlobFallback() {
+        if (fallbackStarted || video.readyState >= 1) return;
+        fallbackStarted = true;
+        stage.classList.add('is-loading');
+        stage.classList.remove('has-error');
+        if (stateCopy) stateCopy.textContent = t('preparingVideo', 'Preparing video…');
+        if (retry) retry.hidden = true;
+
+        var requestId = ++fallbackRequest;
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        fallbackController = controller;
+        var abortTimer = controller ? window.setTimeout(function () { controller.abort(); }, 60000) : 0;
+        fetch(url, {
+          credentials: 'omit',
+          cache: 'no-store',
+          signal: controller ? controller.signal : undefined
         })
-        .then(function (blob) {
-          if (!blob.size) throw new Error('Video response was empty');
-          var objectUrl = URL.createObjectURL(blob);
-          video.src = objectUrl;
-          video.load();
-          window.addEventListener('beforeunload', function () {
-            URL.revokeObjectURL(objectUrl);
-          }, { once: true });
-        })
-        .catch(function () {
-          video.src = url;
-          video.load();
-        });
+          .then(function (response) {
+            if (!response.ok) throw new Error('Video fetch failed: ' + response.status);
+            return response.blob();
+          })
+          .then(function (blob) {
+            if (requestId !== fallbackRequest) return;
+            if (!blob.size) throw new Error('Video response was empty');
+            if (abortTimer) window.clearTimeout(abortTimer);
+            fallbackController = null;
+            objectUrl = URL.createObjectURL(blob);
+            usingBlob = true;
+            video.src = objectUrl;
+            video.load();
+          })
+          .catch(function () {
+            if (requestId !== fallbackRequest) return;
+            if (abortTimer) window.clearTimeout(abortTimer);
+            fallbackController = null;
+            showVideoFailure();
+          });
+      }
+
+      function loadVideoDirect() {
+        clearVideoWatch();
+        fallbackRequest += 1;
+        if (fallbackController) {
+          fallbackController.abort();
+          fallbackController = null;
+        }
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+          objectUrl = '';
+        }
+        fallbackStarted = false;
+        usingBlob = false;
+        stage.classList.add('is-loading');
+        stage.classList.remove('has-error');
+        if (stateCopy) stateCopy.textContent = t('loadingVideo', 'Loading video…');
+        if (retry) retry.hidden = true;
+        // The signed endpoint supports byte ranges, so assigning it immediately
+        // lets the browser stream metadata instead of waiting for the entire MP4.
+        video.src = url;
+        video.load();
+        loadWatch = window.setTimeout(function () {
+          if (video.readyState < 1) loadVideoBlobFallback();
+        }, 12000);
+      }
+
+      video.addEventListener('loadedmetadata', markVideoReady);
+      video.addEventListener('canplay', markVideoReady);
+      video.addEventListener('error', function () {
+        if (usingBlob) showVideoFailure();
+        else if (fallbackStarted) showVideoFailure();
+        else loadVideoBlobFallback();
+      });
+      if (retry) retry.addEventListener('click', loadVideoDirect);
+      window.addEventListener('beforeunload', function () {
+        clearVideoWatch();
+        if (fallbackController) fallbackController.abort();
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+      }, { once: true });
+      loadVideoDirect();
       var dl = document.createElement('a');
       dl.className = 'result-download';
       dl.href = url;
       dl.download = name;
       dl.innerHTML = '<i data-lucide="download"></i> ' + esc(t('downloadVideo', 'Download video'));
-      card.appendChild(video);
+      card.appendChild(stage);
       card.appendChild(dl);
       track.appendChild(card);
     });
