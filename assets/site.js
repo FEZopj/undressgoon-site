@@ -1974,6 +1974,8 @@
       var url = typeof item === 'string' ? item : (item && item.url) || '';
       if (!url) return;
       if (!/^https?:\/\//i.test(url) && url.charAt(0) === '/') url = apiUrl(url);
+      var streamUrl = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'delivery=inline';
+      var downloadUrl = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'delivery=download';
       var name = 'undressgoon-video-' + (idx + 1) + '.mp4';
       var card = document.createElement('div');
       card.className = 'ug-result ug-video-result';
@@ -2001,6 +2003,22 @@
       var fallbackRequest = 0;
       var usingBlob = false;
       var objectUrl = '';
+      var playerLoadedReported = false;
+
+      function reportPlayerLoaded() {
+        var jobId = resultMeta && resultMeta.jobId ? String(resultMeta.jobId) : '';
+        if (playerLoadedReported || !jobId) return;
+        playerLoadedReported = true;
+        fetch(apiUrl('/web/generation/' + encodeURIComponent(jobId) + '/delivery'), {
+          method: 'POST',
+          credentials: 'include',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'player_loaded' })
+        }).catch(function () {
+          // Delivery telemetry is best-effort and must never affect playback.
+        });
+      }
 
       function clearVideoWatch() {
         window.clearTimeout(loadWatch);
@@ -2018,6 +2036,7 @@
           fallbackStarted = false;
         }
         stage.classList.remove('is-loading', 'has-error');
+        reportPlayerLoaded();
       }
 
       function showVideoFailure() {
@@ -2043,7 +2062,7 @@
         var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
         fallbackController = controller;
         var abortTimer = controller ? window.setTimeout(function () { controller.abort(); }, 60000) : 0;
-        fetch(url, {
+        fetch(streamUrl, {
           credentials: 'omit',
           cache: 'no-store',
           signal: controller ? controller.signal : undefined
@@ -2089,7 +2108,7 @@
         if (retry) retry.hidden = true;
         // The signed endpoint supports byte ranges, so assigning it immediately
         // lets the browser stream metadata instead of waiting for the entire MP4.
-        video.src = url;
+        video.src = streamUrl;
         video.load();
         loadWatch = window.setTimeout(function () {
           if (video.readyState < 1) loadVideoBlobFallback();
@@ -2112,7 +2131,7 @@
       loadVideoDirect();
       var dl = document.createElement('a');
       dl.className = 'result-download';
-      dl.href = url;
+      dl.href = downloadUrl;
       dl.download = name;
       dl.innerHTML = '<i data-lucide="download"></i> ' + esc(t('downloadVideo', 'Download video'));
       card.appendChild(stage);
